@@ -26,8 +26,17 @@ export async function POST(req: Request) {
     })
   }
 
-  const assistantStream = processAssistantMessage(messages)
+  const assistantStream = await processAssistantMessage(messages)
 
+  // Create and return the response
+  return new Response(assistantStream, {
+    status: 200,
+    headers: {
+      'Content-Type': 'text/plain; charset=utf-8'
+    }
+  })
+  /*
+  return new StreamingTextResponse(assistantStream)
   if (previewToken) {
     openai.apiKey = previewToken
   }
@@ -68,6 +77,7 @@ export async function POST(req: Request) {
   })
 
   return new StreamingTextResponse(stream)
+  */
 }
 
 // This is a global object hash to store our key-value pairs
@@ -223,14 +233,76 @@ async function processAssistantMessage(messages: any) {
   //if so, break out of the loop and then fetch messages.
   //if not, keep polling
   let status = 'active'
-  const interval = setInterval(async () => {
-    const localRun = await openai.beta.threads.runs.retrieve(thread.id, run.id)
-    status = localRun.status
-    if (status === 'completed') {
-      const finalMessages = await openai.beta.threads.messages.list(thread.id)
-      clearInterval(interval)
-      console.log('finalMessages are', finalMessages.data)
+  const nodeReadable = new ReadableStream({
+    start(controller) {
+      const interval = setInterval(async () => {
+        const localRun = await openai.beta.threads.runs.retrieve(
+          thread.id,
+          run.id
+        )
+        status = localRun.status
+        if (status === 'completed') {
+          const finalMessages = await openai.beta.threads.messages.list(
+            thread.id
+          )
+          clearInterval(interval)
+          //loop through finalMessages as long as tthe role is 'assistant'.  Stop at the first 'user' role
+          //then return a string of all messages.content.text.value joined together
+          controller.enqueue(concatenateAssistantMessages(finalMessages.data))
+          console.log('finalMessages are', finalMessages.data)
+          controller.close()
+          return
+        }
+        console.log('status is', status)
+        controller.enqueue('Sara is thinking...\n')
+      }, 500)
+    },
+    cancel() {
+      // This is called if the reader cancels
+      console.log('cancel()')
+    },
+    pull(controller) {
+      // This is called if the reader wants more data
+      console.log('pull()')
     }
-    console.log('status is', status)
-  }, 500)
+  })
+  return nodeReadable
+}
+
+// Function to convert a Node.js stream to a web standard ReadableStream
+/*
+function nodeToWebReadableStream(
+  nodeStream: Readable
+): ReadableStream<Uint8Array> {
+  return new ReadableStream<Uint8Array>({
+    start(controller) {
+      nodeStream.on('data', (chunk: Iterable<number>) => {
+        controller.enqueue(new Uint8Array(chunk))
+      })
+      nodeStream.on('end', () => {
+        controller.close()
+      })
+      nodeStream.on('error', (err: any) => {
+        controller.error(err)
+      })
+    }
+  })
+}
+*/
+function concatenateAssistantMessages(finalMessages: any[]): string {
+  let concatenatedText = ''
+
+  for (const message of finalMessages) {
+    if (message.role === 'assistant') {
+      message.content.forEach((contentItem: any) => {
+        if (contentItem.type === 'text') {
+          concatenatedText += contentItem.text.value + '\n'
+        }
+      })
+    } else if (message.role === 'user') {
+      break
+    }
+  }
+
+  return concatenatedText.trim()
 }
