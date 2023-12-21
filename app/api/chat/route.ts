@@ -4,6 +4,7 @@ import OpenAI from 'openai'
 
 import { auth } from '@/auth'
 import { nanoid } from '@/lib/utils'
+import { Assistant } from 'openai/resources/beta/assistants/assistants'
 
 export const runtime = 'edge'
 
@@ -66,9 +67,8 @@ export async function POST(req: Request) {
   return new StreamingTextResponse(stream)
 }
 
-async function findAssistant(repo: string) {
+async function findAssistant(repo: string): Promise<Assistant | null> {
   const assistants = await openai.beta.assistants.list()
-  console.log('assistants are', assistants.data)
   //assistant.data is an array of objects, look through and see if d.metdata.repo === repo (if the repo field exists)
   //if so, return that assistant
   if (assistants.data.length > 0) {
@@ -79,9 +79,10 @@ async function findAssistant(repo: string) {
     })
     return null
   }
+  return null
 }
 
-async function fetchFileIds(repo: string, email: string) {
+async function fetchFileIds(repo: string, email: string): Promise<string[]> {
   const apiUrl = `https://pt5sl5vwfjn6lsr2k6szuvfhnq0vaxhl.lambda-url.us-west-2.on.aws/api/get_vectordata_from_project?uri=${encodeURIComponent(
     repo as string
   )}&email=${encodeURIComponent(email as string)}`
@@ -92,23 +93,38 @@ async function fetchFileIds(repo: string, email: string) {
       throw new Error(`Error: ${response.status}`)
     }
     const data = await response.json()
-    console.log('data is', data)
-    return data
+    //data.body is json string, convert to an object
+    const parsedData = JSON.parse(data.body)
+    console.log('parsedData is', parsedData)
+    return parsedData
   } catch (error) {
     console.log('error is', error)
   }
-  return null
+  return []
 }
 
-function createAssistant(repo: string) {
-  fetchFileIds(repo, 'alex@polyverse.com')
-  return null
+async function createAssistant(repo: string) {
+  const fileIds = await fetchFileIds(repo, 'alex@polyverse.com')
+  const assistant = await openai.beta.assistants.create({
+    model: 'gpt-4-1106-preview',
+    name: 'Polyverse Boost Sara',
+    file_ids: fileIds,
+    instructions:
+      'You are a coding assitant named Sara. You have access to a the full codebase of a project in your files, including an aispec.md file that summarizes the code. When asked a coding question, unless otherwise explicitly told not to, you give answers that use the relevant frameworks, apis, data structures, and other aspects of the existing code.',
+    tools: [{ type: 'code_interpreter' }, { type: 'retrieval' }],
+    metadata: {
+      repo: repo
+    }
+  })
+  return assistant
 }
 
-function setupAssistant(repo: string) {
+async function setupAssistant(repo: string) {
   //look to see if we have an assistant, if not create one
-  const assistant = findAssistant(repo)
+  let assistant = await findAssistant(repo)
   if (!assistant) {
-    createAssistant(repo)
+    assistant = await createAssistant(repo)
   }
+  console.log('assistant is', assistant)
+  return assistant
 }
