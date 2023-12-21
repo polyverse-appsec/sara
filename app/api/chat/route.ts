@@ -28,6 +28,80 @@ export async function POST(req: Request) {
 
   const assistantStream = await processAssistantMessage(messages)
 
+  let completion = ''
+
+  async function processAssistantMessage(messages: any) {
+    const assistant = await setupAssistant(
+      'http://github.com/polyverse-appsec/thrv.com'
+    )
+    const thread = await findOrCreateThread(messages)
+    console.log('thread is', thread)
+
+    const threadMessages = await updateMessages(thread, messages)
+
+    const run = await openai.beta.threads.runs.create(thread.id, {
+      assistant_id: assistant.id
+    })
+
+    //now every half second poll the thread for to see if we had a completed status
+    //if so, break out of the loop and then fetch messages.
+    //if not, keep polling
+    let status = 'active'
+    const nodeReadable = new ReadableStream({
+      start(controller) {
+        const interval = setInterval(async () => {
+          const localRun = await openai.beta.threads.runs.retrieve(
+            thread.id,
+            run.id
+          )
+          status = localRun.status
+          if (status === 'completed') {
+            const finalMessages = await openai.beta.threads.messages.list(
+              thread.id
+            )
+            clearInterval(interval)
+            //loop through finalMessages as long as tthe role is 'assistant'.  Stop at the first 'user' role
+            //then return a string of all messages.content.text.value joined together
+            completion = concatenateAssistantMessages(finalMessages.data)
+            console.log('completion is', completion)
+            controller.enqueue(completion)
+            persistResult()
+            controller.close()
+            return
+          }
+          controller.enqueue('.')
+        }, 500)
+      }
+    })
+    return nodeReadable
+  }
+
+  // Function to monitor the stream
+  async function persistResult() {
+    const title = json.messages[0].content.substring(0, 100)
+    const id = json.id ?? nanoid()
+    const createdAt = Date.now()
+    const path = `/chat/${id}`
+    const payload = {
+      id,
+      title,
+      userId,
+      createdAt,
+      path,
+      messages: [
+        ...messages,
+        {
+          content: completion,
+          role: 'assistant'
+        }
+      ]
+    }
+    await kv.hmset(`chat:${id}`, payload)
+    await kv.zadd(`user:chat:${userId}`, {
+      score: createdAt,
+      member: `chat:${id}`
+    })
+  }
   // Create and return the response
   return new Response(assistantStream, {
     status: 200,
@@ -35,49 +109,6 @@ export async function POST(req: Request) {
       'Content-Type': 'text/plain; charset=utf-8'
     }
   })
-  /*
-  return new StreamingTextResponse(assistantStream)
-  if (previewToken) {
-    openai.apiKey = previewToken
-  }
-
-  const res = await openai.chat.completions.create({
-    model: 'gpt-4-1106-preview',
-    messages,
-    temperature: 0.7,
-    stream: true
-  })
-
-  const stream = OpenAIStream(res, {
-    async onCompletion(completion) {
-      const title = json.messages[0].content.substring(0, 100)
-      const id = json.id ?? nanoid()
-      const createdAt = Date.now()
-      const path = `/chat/${id}`
-      const payload = {
-        id,
-        title,
-        userId,
-        createdAt,
-        path,
-        messages: [
-          ...messages,
-          {
-            content: completion,
-            role: 'assistant'
-          }
-        ]
-      }
-      await kv.hmset(`chat:${id}`, payload)
-      await kv.zadd(`user:chat:${userId}`, {
-        score: createdAt,
-        member: `chat:${id}`
-      })
-    }
-  })
-
-  return new StreamingTextResponse(stream)
-  */
 }
 
 // This is a global object hash to store our key-value pairs
@@ -216,79 +247,6 @@ async function updateMessages(thread: Thread, messages: any) {
   return null
 }
 
-async function processAssistantMessage(messages: any) {
-  const assistant = await setupAssistant(
-    'http://github.com/polyverse-appsec/thrv.com'
-  )
-  const thread = await findOrCreateThread(messages)
-  console.log('thread is', thread)
-
-  const threadMessages = await updateMessages(thread, messages)
-
-  const run = await openai.beta.threads.runs.create(thread.id, {
-    assistant_id: assistant.id
-  })
-
-  //now every half second poll the thread for to see if we had a completed status
-  //if so, break out of the loop and then fetch messages.
-  //if not, keep polling
-  let status = 'active'
-  const nodeReadable = new ReadableStream({
-    start(controller) {
-      const interval = setInterval(async () => {
-        const localRun = await openai.beta.threads.runs.retrieve(
-          thread.id,
-          run.id
-        )
-        status = localRun.status
-        if (status === 'completed') {
-          const finalMessages = await openai.beta.threads.messages.list(
-            thread.id
-          )
-          clearInterval(interval)
-          //loop through finalMessages as long as tthe role is 'assistant'.  Stop at the first 'user' role
-          //then return a string of all messages.content.text.value joined together
-          controller.enqueue(concatenateAssistantMessages(finalMessages.data))
-          console.log('finalMessages are', finalMessages.data)
-          controller.close()
-          return
-        }
-        console.log('status is', status)
-        controller.enqueue('Sara is thinking...\n')
-      }, 500)
-    },
-    cancel() {
-      // This is called if the reader cancels
-      console.log('cancel()')
-    },
-    pull(controller) {
-      // This is called if the reader wants more data
-      console.log('pull()')
-    }
-  })
-  return nodeReadable
-}
-
-// Function to convert a Node.js stream to a web standard ReadableStream
-/*
-function nodeToWebReadableStream(
-  nodeStream: Readable
-): ReadableStream<Uint8Array> {
-  return new ReadableStream<Uint8Array>({
-    start(controller) {
-      nodeStream.on('data', (chunk: Iterable<number>) => {
-        controller.enqueue(new Uint8Array(chunk))
-      })
-      nodeStream.on('end', () => {
-        controller.close()
-      })
-      nodeStream.on('error', (err: any) => {
-        controller.error(err)
-      })
-    }
-  })
-}
-*/
 function concatenateAssistantMessages(finalMessages: any[]): string {
   let concatenatedText = ''
 

@@ -53,8 +53,8 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
       onFinish() {
         if (!path.includes('chat')) {
           //original template code, fixing it
-          //router.push(`/chat/${id}`, { shallow: true, scroll: false })
-          router.push(`/chat/${id}`, { scroll: false })
+          router.push(`/chat/${id}`, { shallow: true, scroll: false })
+          //router.push(`/chat/${id}`, { scroll: false })
           router.refresh()
         }
       }
