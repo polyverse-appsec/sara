@@ -155,11 +155,22 @@ async function createAssistant(repo: string) {
   return assistant
 }
 
+async function updateAssistant(repo: string, assistant: Assistant) {
+  //make sure we have the most up to date file ids
+  const fileIds = await fetchFileIds(repo, 'alex@polyverse.com')
+  //update the assistant with the new file ids
+  await openai.beta.assistants.update(assistant.id, {
+    file_ids: fileIds
+  })
+}
+
 async function setupAssistant(repo: string) {
   //look to see if we have an assistant, if not create one
   let assistant = await findAssistant(repo)
   if (!assistant) {
     assistant = await createAssistant(repo)
+  } else {
+    updateAssistant(repo, assistant)
   }
   console.log('assistant is', assistant.id, assistant.metadata)
   return assistant
@@ -218,7 +229,7 @@ async function processAssistantMessage(messages: any) {
     if (status === 'completed') {
       const finalMessages = await openai.beta.threads.messages.list(thread.id)
       clearInterval(interval)
-      console.log('finalMessages are', finalMessages)
+      console.log('finalMessages are', finalMessages.data)
     }
     console.log('status is', status)
   }, 500)
