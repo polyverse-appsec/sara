@@ -6,8 +6,15 @@ module.exports = {
         protocol: 'https',
         hostname: 'avatars.githubusercontent.com',
         port: '',
-        pathname: '**',
-      },
-    ],
+        pathname: '**'
+      }
+    ]
   },
-};
+  webpack: (config, { dev }) => {
+    // Enable source maps in development mode
+    if (dev) {
+      config.devtool = 'source-map'
+    }
+    return config
+  }
+}
