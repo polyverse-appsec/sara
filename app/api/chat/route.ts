@@ -5,6 +5,7 @@ import OpenAI from 'openai'
 import { auth } from '@/auth'
 import { nanoid } from '@/lib/utils'
 import { Assistant } from 'openai/resources/beta/assistants/assistants'
+import { Thread } from 'openai/resources/beta/threads/threads'
 
 export const runtime = 'edge'
 
@@ -17,13 +18,15 @@ export async function POST(req: Request) {
   const { messages, previewToken } = json
   const userId = (await auth())?.user.id
 
+  console.log('messages are', messages)
+
   if (!userId) {
     return new Response('Unauthorized', {
       status: 401
     })
   }
 
-  setupAssistant('http://github.com/polyverse-appsec/thrv.com')
+  const assistantStream = processAssistantMessage(messages)
 
   if (previewToken) {
     openai.apiKey = previewToken
@@ -65,6 +68,39 @@ export async function POST(req: Request) {
   })
 
   return new StreamingTextResponse(stream)
+}
+
+// This is a global object hash to store our key-value pairs
+const threadMap: Record<string, string> = {}
+
+// A simple hash function to shorten a long string
+// Note: This is not a cryptographically secure hash and is just for demonstration
+function simpleHash(str: string) {
+  // Ensure str is a string
+  if (typeof str !== 'string') {
+    console.error('simpleHash expects a string argument')
+    return 0 // or handle this case as appropriate
+  }
+
+  let hash = 0
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i)
+    hash = (hash << 5) - hash + char
+    hash = hash & hash // Convert to 32bit integer
+  }
+  return hash
+}
+
+// Function to add a key-value pair to the map
+function addThread(longString: string, value: string): void {
+  const shortKey = simpleHash(longString)
+  threadMap[shortKey] = value
+}
+
+// Function to get a value using a long string key
+function getThread(longString: string): string | undefined {
+  const shortKey = simpleHash(longString)
+  return threadMap[shortKey]
 }
 
 async function findAssistant(repo: string): Promise<Assistant | null> {
@@ -125,6 +161,65 @@ async function setupAssistant(repo: string) {
   if (!assistant) {
     assistant = await createAssistant(repo)
   }
-  console.log('assistant is', assistant)
+  console.log('assistant is', assistant.id, assistant.metadata)
   return assistant
+}
+
+async function findOrCreateThread(messages: any) {
+  //check if we have a thread id in the messages, if so, return that
+  //if not, create a new thread id and return that
+  const threadId = getThread(messages[0].content)
+  if (threadId) {
+    return openai.beta.threads.retrieve(threadId)
+  } else {
+    const newThreadId = await openai.beta.threads.create()
+    addThread(messages, newThreadId.id)
+    return newThreadId
+  }
+}
+
+async function updateMessages(thread: Thread, messages: any) {
+  //add messages to the thread. we will just take the last 'user' message and add it to the thread
+  const length = messages.length
+  const lastMessage = messages[length - 1]
+  if (lastMessage.role === 'user') {
+    const threadMessages = await openai.beta.threads.messages.create(
+      thread.id,
+      {
+        role: 'user',
+        content: lastMessage.content
+      }
+    )
+    return threadMessages
+  }
+  return null
+}
+
+async function processAssistantMessage(messages: any) {
+  const assistant = await setupAssistant(
+    'http://github.com/polyverse-appsec/thrv.com'
+  )
+  const thread = await findOrCreateThread(messages)
+  console.log('thread is', thread)
+
+  const threadMessages = await updateMessages(thread, messages)
+
+  const run = await openai.beta.threads.runs.create(thread.id, {
+    assistant_id: assistant.id
+  })
+
+  //now every half second poll the thread for to see if we had a completed status
+  //if so, break out of the loop and then fetch messages.
+  //if not, keep polling
+  let status = 'active'
+  const interval = setInterval(async () => {
+    const localRun = await openai.beta.threads.runs.retrieve(thread.id, run.id)
+    status = localRun.status
+    if (status === 'completed') {
+      const finalMessages = await openai.beta.threads.messages.list(thread.id)
+      clearInterval(interval)
+      console.log('finalMessages are', finalMessages)
+    }
+    console.log('status is', status)
+  }, 500)
 }
