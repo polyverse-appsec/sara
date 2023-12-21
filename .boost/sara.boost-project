@@ -1,0 +1,957 @@
+{
+  "dataFormatVersion": "1.9.0",
+  "summary": {
+    "projectName": "sara",
+    "summaryUrl": ".boost/sara.summary.boost-notebook",
+    "filesToAnalyze": 100,
+    "filesAnalyzed": 0,
+    "issues": [
+      "No summary file found at .boost/sara.summary.boost-notebook"
+    ]
+  },
+  "sectionSummary": {
+    "summary": {
+      "analysisType": "summary",
+      "status": "not-started",
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "totalCells": 0,
+      "filesAnalyzed": 0
+    }
+  },
+  "files": {
+    "auth.ts": {
+      "sourceRelFile": "auth.ts",
+      "notebookRelFile": ".boost/auth.ts.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".eslintrc.json": {
+      "sourceRelFile": ".eslintrc.json",
+      "notebookRelFile": ".boost/.eslintrc.json.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "postcss.config.js": {
+      "sourceRelFile": "postcss.config.js",
+      "notebookRelFile": ".boost/postcss.config.js.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".env.example": {
+      "sourceRelFile": ".env.example",
+      "notebookRelFile": ".boost/.env.example.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "tsconfig.json": {
+      "sourceRelFile": "tsconfig.json",
+      "notebookRelFile": ".boost/tsconfig.json.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "lib/hooks/use-local-storage.ts": {
+      "sourceRelFile": "lib/hooks/use-local-storage.ts",
+      "notebookRelFile": ".boost/lib/hooks/use-local-storage.ts.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "lib/hooks/use-copy-to-clipboard.tsx": {
+      "sourceRelFile": "lib/hooks/use-copy-to-clipboard.tsx",
+      "notebookRelFile": ".boost/lib/hooks/use-copy-to-clipboard.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "lib/hooks/use-enter-submit.tsx": {
+      "sourceRelFile": "lib/hooks/use-enter-submit.tsx",
+      "notebookRelFile": ".boost/lib/hooks/use-enter-submit.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "lib/types.ts": {
+      "sourceRelFile": "lib/types.ts",
+      "notebookRelFile": ".boost/lib/types.ts.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "lib/utils.ts": {
+      "sourceRelFile": "lib/utils.ts",
+      "notebookRelFile": ".boost/lib/utils.ts.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "prettier.config.cjs": {
+      "sourceRelFile": "prettier.config.cjs",
+      "notebookRelFile": ".boost/prettier.config.cjs.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "package.json": {
+      "sourceRelFile": "package.json",
+      "notebookRelFile": ".boost/package.json.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "lib/hooks/use-at-bottom.tsx": {
+      "sourceRelFile": "lib/hooks/use-at-bottom.tsx",
+      "notebookRelFile": ".boost/lib/hooks/use-at-bottom.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "lib/hooks/use-sidebar.tsx": {
+      "sourceRelFile": "lib/hooks/use-sidebar.tsx",
+      "notebookRelFile": ".boost/lib/hooks/use-sidebar.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "README.md": {
+      "sourceRelFile": "README.md",
+      "notebookRelFile": ".boost/README.md.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "next-env.d.ts": {
+      "sourceRelFile": "next-env.d.ts",
+      "notebookRelFile": ".boost/next-env.d.ts.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "next.config.js": {
+      "sourceRelFile": "next.config.js",
+      "notebookRelFile": ".boost/next.config.js.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "LICENSE": {
+      "sourceRelFile": "LICENSE",
+      "notebookRelFile": ".boost/LICENSE.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "tailwind.config.js": {
+      "sourceRelFile": "tailwind.config.js",
+      "notebookRelFile": ".boost/tailwind.config.js.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "middleware.ts": {
+      "sourceRelFile": "middleware.ts",
+      "notebookRelFile": ".boost/middleware.ts.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "pnpm-lock.yaml": {
+      "sourceRelFile": "pnpm-lock.yaml",
+      "notebookRelFile": ".boost/pnpm-lock.yaml.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "app/share/[id]/page.tsx": {
+      "sourceRelFile": "app/share/[id]/page.tsx",
+      "notebookRelFile": ".boost/app/share/[id]/page.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "app/layout.tsx": {
+      "sourceRelFile": "app/layout.tsx",
+      "notebookRelFile": ".boost/app/layout.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/ui/input.tsx": {
+      "sourceRelFile": "components/ui/input.tsx",
+      "notebookRelFile": ".boost/components/ui/input.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/ui/textarea.tsx": {
+      "sourceRelFile": "components/ui/textarea.tsx",
+      "notebookRelFile": ".boost/components/ui/textarea.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/sidebar-items.tsx": {
+      "sourceRelFile": "components/sidebar-items.tsx",
+      "notebookRelFile": ".boost/components/sidebar-items.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/chat-history.tsx": {
+      "sourceRelFile": "components/chat-history.tsx",
+      "notebookRelFile": ".boost/components/chat-history.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/ui/codeblock.tsx": {
+      "sourceRelFile": "components/ui/codeblock.tsx",
+      "notebookRelFile": ".boost/components/ui/codeblock.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/footer.tsx": {
+      "sourceRelFile": "components/footer.tsx",
+      "notebookRelFile": ".boost/components/footer.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/providers.tsx": {
+      "sourceRelFile": "components/providers.tsx",
+      "notebookRelFile": ".boost/components/providers.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/chat-share-dialog.tsx": {
+      "sourceRelFile": "components/chat-share-dialog.tsx",
+      "notebookRelFile": ".boost/components/chat-share-dialog.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/chat-message.tsx": {
+      "sourceRelFile": "components/chat-message.tsx",
+      "notebookRelFile": ".boost/components/chat-message.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/theme-toggle.tsx": {
+      "sourceRelFile": "components/theme-toggle.tsx",
+      "notebookRelFile": ".boost/components/theme-toggle.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/login-button.tsx": {
+      "sourceRelFile": "components/login-button.tsx",
+      "notebookRelFile": ".boost/components/login-button.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/sidebar-footer.tsx": {
+      "sourceRelFile": "components/sidebar-footer.tsx",
+      "notebookRelFile": ".boost/components/sidebar-footer.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/sidebar-mobile.tsx": {
+      "sourceRelFile": "components/sidebar-mobile.tsx",
+      "notebookRelFile": ".boost/components/sidebar-mobile.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/chat.tsx": {
+      "sourceRelFile": "components/chat.tsx",
+      "notebookRelFile": ".boost/components/chat.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/sidebar.tsx": {
+      "sourceRelFile": "components/sidebar.tsx",
+      "notebookRelFile": ".boost/components/sidebar.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/sidebar-list.tsx": {
+      "sourceRelFile": "components/sidebar-list.tsx",
+      "notebookRelFile": ".boost/components/sidebar-list.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/header.tsx": {
+      "sourceRelFile": "components/header.tsx",
+      "notebookRelFile": ".boost/components/header.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/sidebar-desktop.tsx": {
+      "sourceRelFile": "components/sidebar-desktop.tsx",
+      "notebookRelFile": ".boost/components/sidebar-desktop.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/sidebar-actions.tsx": {
+      "sourceRelFile": "components/sidebar-actions.tsx",
+      "notebookRelFile": ".boost/components/sidebar-actions.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/external-link.tsx": {
+      "sourceRelFile": "components/external-link.tsx",
+      "notebookRelFile": ".boost/components/external-link.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/button-scroll-to-bottom.tsx": {
+      "sourceRelFile": "components/button-scroll-to-bottom.tsx",
+      "notebookRelFile": ".boost/components/button-scroll-to-bottom.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/chat-list.tsx": {
+      "sourceRelFile": "components/chat-list.tsx",
+      "notebookRelFile": ".boost/components/chat-list.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".env.backup": {
+      "sourceRelFile": ".env.backup",
+      "notebookRelFile": ".boost/.env.backup.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/transform.js": {
+      "sourceRelFile": ".next/transform.js",
+      "notebookRelFile": ".boost/.next/transform.js.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/app-build-manifest.json": {
+      "sourceRelFile": ".next/app-build-manifest.json",
+      "notebookRelFile": ".boost/.next/app-build-manifest.json.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/static/media/Geist-Variable.2fa572c0.woff2": {
+      "sourceRelFile": ".next/static/media/Geist-Variable.2fa572c0.woff2",
+      "notebookRelFile": ".boost/.next/static/media/Geist-Variable.2fa572c0.woff2.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/server/next-font-manifest.js": {
+      "sourceRelFile": ".next/server/next-font-manifest.js",
+      "notebookRelFile": ".boost/.next/server/next-font-manifest.js.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/server/pages-manifest.json": {
+      "sourceRelFile": ".next/server/pages-manifest.json",
+      "notebookRelFile": ".boost/.next/server/pages-manifest.json.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/static/media/GeistMono-Variable.9de85959.woff2": {
+      "sourceRelFile": ".next/static/media/GeistMono-Variable.9de85959.woff2",
+      "notebookRelFile": ".boost/.next/static/media/GeistMono-Variable.9de85959.woff2.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/server/next-font-manifest.json": {
+      "sourceRelFile": ".next/server/next-font-manifest.json",
+      "notebookRelFile": ".boost/.next/server/next-font-manifest.json.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/server/server-reference-manifest.json": {
+      "sourceRelFile": ".next/server/server-reference-manifest.json",
+      "notebookRelFile": ".boost/.next/server/server-reference-manifest.json.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/server/middleware-build-manifest.js": {
+      "sourceRelFile": ".next/server/middleware-build-manifest.js",
+      "notebookRelFile": ".boost/.next/server/middleware-build-manifest.js.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/chunks/[turbopack-node]__334336._.js": {
+      "sourceRelFile": ".next/chunks/[turbopack-node]__334336._.js",
+      "notebookRelFile": ".boost/.next/chunks/[turbopack-node]__334336._.js.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/chunks/postcss_config_js_transform_ts_ef9dc9._.js": {
+      "sourceRelFile": ".next/chunks/postcss_config_js_transform_ts_ef9dc9._.js",
+      "notebookRelFile": ".boost/.next/chunks/postcss_config_js_transform_ts_ef9dc9._.js.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/server/pages/_app.js": {
+      "sourceRelFile": ".next/server/pages/_app.js",
+      "notebookRelFile": ".boost/.next/server/pages/_app.js.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/chunks/postcss_config_js_transform_ts_ec06c7._.js": {
+      "sourceRelFile": ".next/chunks/postcss_config_js_transform_ts_ec06c7._.js",
+      "notebookRelFile": ".boost/.next/chunks/postcss_config_js_transform_ts_ec06c7._.js.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/server/pages/_error.js": {
+      "sourceRelFile": ".next/server/pages/_error.js",
+      "notebookRelFile": ".boost/.next/server/pages/_error.js.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/chunks/postcss_config_js_transform_ts_ba5604._.js.map": {
+      "sourceRelFile": ".next/chunks/postcss_config_js_transform_ts_ba5604._.js.map",
+      "notebookRelFile": ".boost/.next/chunks/postcss_config_js_transform_ts_ba5604._.js.map.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/chunks/postcss_config_js_transform_ts_1e8f3f._.js": {
+      "sourceRelFile": ".next/chunks/postcss_config_js_transform_ts_1e8f3f._.js",
+      "notebookRelFile": ".boost/.next/chunks/postcss_config_js_transform_ts_1e8f3f._.js.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/chunks/node_modules__pnpm_f1dc28._.js.map": {
+      "sourceRelFile": ".next/chunks/node_modules__pnpm_f1dc28._.js.map",
+      "notebookRelFile": ".boost/.next/chunks/node_modules__pnpm_f1dc28._.js.map.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/chunks/node_modules__pnpm_f1dc28._.js": {
+      "sourceRelFile": ".next/chunks/node_modules__pnpm_f1dc28._.js",
+      "notebookRelFile": ".boost/.next/chunks/node_modules__pnpm_f1dc28._.js.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/server/pages/_document/pages-manifest.json": {
+      "sourceRelFile": ".next/server/pages/_document/pages-manifest.json",
+      "notebookRelFile": ".boost/.next/server/pages/_document/pages-manifest.json.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/server/pages/_app.js.map": {
+      "sourceRelFile": ".next/server/pages/_app.js.map",
+      "notebookRelFile": ".boost/.next/server/pages/_app.js.map.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/server/app-paths-manifest.json": {
+      "sourceRelFile": ".next/server/app-paths-manifest.json",
+      "notebookRelFile": ".boost/.next/server/app-paths-manifest.json.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/server/middleware-react-loadable-manifest.js": {
+      "sourceRelFile": ".next/server/middleware-react-loadable-manifest.js",
+      "notebookRelFile": ".boost/.next/server/middleware-react-loadable-manifest.js.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/server/middleware-manifest.json": {
+      "sourceRelFile": ".next/server/middleware-manifest.json",
+      "notebookRelFile": ".boost/.next/server/middleware-manifest.json.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/server/server-reference-manifest.js": {
+      "sourceRelFile": ".next/server/server-reference-manifest.js",
+      "notebookRelFile": ".boost/.next/server/server-reference-manifest.js.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/fallback-build-manifest.json": {
+      "sourceRelFile": ".next/fallback-build-manifest.json",
+      "notebookRelFile": ".boost/.next/fallback-build-manifest.json.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/tailwind-indicator.tsx": {
+      "sourceRelFile": "components/tailwind-indicator.tsx",
+      "notebookRelFile": ".boost/components/tailwind-indicator.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/trace": {
+      "sourceRelFile": ".next/trace",
+      "notebookRelFile": ".boost/.next/trace.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "app/actions.ts": {
+      "sourceRelFile": "app/actions.ts",
+      "notebookRelFile": ".boost/app/actions.ts.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/server/pages/_document/react-loadable-manifest.json": {
+      "sourceRelFile": ".next/server/pages/_document/react-loadable-manifest.json",
+      "notebookRelFile": ".boost/.next/server/pages/_document/react-loadable-manifest.json.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/server/pages/_document.js": {
+      "sourceRelFile": ".next/server/pages/_document.js",
+      "notebookRelFile": ".boost/.next/server/pages/_document.js.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/server/pages/_document.js.map": {
+      "sourceRelFile": ".next/server/pages/_document.js.map",
+      "notebookRelFile": ".boost/.next/server/pages/_document.js.map.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/server/pages/_error.js.map": {
+      "sourceRelFile": ".next/server/pages/_error.js.map",
+      "notebookRelFile": ".boost/.next/server/pages/_error.js.map.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/chunks/postcss_config_js_transform_ts_ba5604._.js": {
+      "sourceRelFile": ".next/chunks/postcss_config_js_transform_ts_ba5604._.js",
+      "notebookRelFile": ".boost/.next/chunks/postcss_config_js_transform_ts_ba5604._.js.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/server/pages/_app/build-manifest.json": {
+      "sourceRelFile": ".next/server/pages/_app/build-manifest.json",
+      "notebookRelFile": ".boost/.next/server/pages/_app/build-manifest.json.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/chunks/postcss_config_f19595.js": {
+      "sourceRelFile": ".next/chunks/postcss_config_f19595.js",
+      "notebookRelFile": ".boost/.next/chunks/postcss_config_f19595.js.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/chunks/[turbopack-node]__334336._.js.map": {
+      "sourceRelFile": ".next/chunks/[turbopack-node]__334336._.js.map",
+      "notebookRelFile": ".boost/.next/chunks/[turbopack-node]__334336._.js.map.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/server/pages/_error/build-manifest.json": {
+      "sourceRelFile": ".next/server/pages/_error/build-manifest.json",
+      "notebookRelFile": ".boost/.next/server/pages/_error/build-manifest.json.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/server/pages/_app/react-loadable-manifest.json": {
+      "sourceRelFile": ".next/server/pages/_app/react-loadable-manifest.json",
+      "notebookRelFile": ".boost/.next/server/pages/_app/react-loadable-manifest.json.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/chunks/[node]__next_transform_3beb20.js.map": {
+      "sourceRelFile": ".next/chunks/[node]__next_transform_3beb20.js.map",
+      "notebookRelFile": ".boost/.next/chunks/[node]__next_transform_3beb20.js.map.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/server/pages/_error/react-loadable-manifest.json": {
+      "sourceRelFile": ".next/server/pages/_error/react-loadable-manifest.json",
+      "notebookRelFile": ".boost/.next/server/pages/_error/react-loadable-manifest.json.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/server/pages/_app/pages-manifest.json": {
+      "sourceRelFile": ".next/server/pages/_app/pages-manifest.json",
+      "notebookRelFile": ".boost/.next/server/pages/_app/pages-manifest.json.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/chunks/[node]__next_transform_7c1208.js": {
+      "sourceRelFile": ".next/chunks/[node]__next_transform_7c1208.js",
+      "notebookRelFile": ".boost/.next/chunks/[node]__next_transform_7c1208.js.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/server/pages/_error/pages-manifest.json": {
+      "sourceRelFile": ".next/server/pages/_error/pages-manifest.json",
+      "notebookRelFile": ".boost/.next/server/pages/_error/pages-manifest.json.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/chunks/postcss_config_js_transform_ts_ec06c7._.js.map": {
+      "sourceRelFile": ".next/chunks/postcss_config_js_transform_ts_ec06c7._.js.map",
+      "notebookRelFile": ".boost/.next/chunks/postcss_config_js_transform_ts_ec06c7._.js.map.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/chunks/[node]__next_transform_3beb20.js": {
+      "sourceRelFile": ".next/chunks/[node]__next_transform_3beb20.js",
+      "notebookRelFile": ".boost/.next/chunks/[node]__next_transform_3beb20.js.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/chunks/postcss_config_f19595.js.map": {
+      "sourceRelFile": ".next/chunks/postcss_config_f19595.js.map",
+      "notebookRelFile": ".boost/.next/chunks/postcss_config_f19595.js.map.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/server/middleware/middleware-manifest.json": {
+      "sourceRelFile": ".next/server/middleware/middleware-manifest.json",
+      "notebookRelFile": ".boost/.next/server/middleware/middleware-manifest.json.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/server/app/sign-in/page.js.map": {
+      "sourceRelFile": ".next/server/app/sign-in/page.js.map",
+      "notebookRelFile": ".boost/.next/server/app/sign-in/page.js.map.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/server/edge/chunks/_06e0fa._.js": {
+      "sourceRelFile": ".next/server/edge/chunks/_06e0fa._.js",
+      "notebookRelFile": ".boost/.next/server/edge/chunks/_06e0fa._.js.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/server/app/sign-in/page_client-reference-manifest.js": {
+      "sourceRelFile": ".next/server/app/sign-in/page_client-reference-manifest.js",
+      "notebookRelFile": ".boost/.next/server/app/sign-in/page_client-reference-manifest.js.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/server/app/sign-in/page.js": {
+      "sourceRelFile": ".next/server/app/sign-in/page.js",
+      "notebookRelFile": ".boost/.next/server/app/sign-in/page.js.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/server/edge/chunks/node_modules__pnpm_80a72b._.js": {
+      "sourceRelFile": ".next/server/edge/chunks/node_modules__pnpm_80a72b._.js",
+      "notebookRelFile": ".boost/.next/server/edge/chunks/node_modules__pnpm_80a72b._.js.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/server/chunks/9fa2d_next_dist_e2b4c0._.js.map": {
+      "sourceRelFile": ".next/server/chunks/9fa2d_next_dist_e2b4c0._.js.map",
+      "notebookRelFile": ".boost/.next/server/chunks/9fa2d_next_dist_e2b4c0._.js.map.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/server/chunks/_fe950e._.js": {
+      "sourceRelFile": ".next/server/chunks/_fe950e._.js",
+      "notebookRelFile": ".boost/.next/server/chunks/_fe950e._.js.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    }
+  },
+  "account": {
+    "refreshed": true,
+    "enabled": true,
+    "status": "paid",
+    "trialRemaining": 100,
+    "usageThisMonth": 0,
+    "discountedUsage": 0,
+    "lastOperationCost": 0,
+    "batchOperationCost": 0,
+    "balanceDue": 0,
+    "couponType": "Polyverse Boost Free Trial",
+    "org": "polyverse-appsec",
+    "owner": "alex@polyverse.io",
+    "created": "2023-05-06",
+    "creditCardLinked": false
+  },
+  "uiState": {
+    "analysisState": "quiescent",
+    "activityBarState": {
+      "summaryViewState": {
+        "analysisMode": "analyze-all-mode",
+        "analysisTypesState": {
+          "security": true,
+          "compliance": true,
+          "documentation": true
+        }
+      }
+    }
+  },
+  "settings": {
+    "fileLimit": 100
+  }
+}
