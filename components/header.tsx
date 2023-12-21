@@ -20,6 +20,7 @@ import { UserMenu } from '@/components/user-menu'
 import { SidebarMobile } from './sidebar-mobile'
 import { SidebarToggle } from './sidebar-toggle'
 import { ChatHistory } from './chat-history'
+import Image from 'next/image'
 
 async function UserOrLogin() {
   const session = await auth()
@@ -59,6 +60,14 @@ export function Header() {
         <React.Suspense fallback={<div className="flex-1 overflow-auto" />}>
           <UserOrLogin />
         </React.Suspense>
+      </div>
+      <div className="flex items-center justify-end space-x-2">
+        <Image
+          src="/boostlogo.jpeg" // Adjust the path to your boost.jpg
+          alt="Boost"
+          width={100} // Adjust the width as needed
+          height={50} // Adjust the height as needed
+        />
       </div>
     </header>
   )
