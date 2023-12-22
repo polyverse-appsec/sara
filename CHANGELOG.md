@@ -1,4 +1,4 @@
-Polyverse Sara Static Web UI for Boost
+Polyverse Sara Web UI for Boost
 ======================
 
 # Release Notes
