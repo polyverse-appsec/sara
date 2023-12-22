@@ -65,7 +65,7 @@ export async function POST(req: Request) {
             completion = concatenateAssistantMessages(finalMessages.data)
             console.log('completion is', completion)
             controller.enqueue(completion)
-            persistResult()
+            await persistResult()
             controller.close()
             return
           }
