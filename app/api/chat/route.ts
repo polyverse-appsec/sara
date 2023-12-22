@@ -4,8 +4,10 @@ import OpenAI from 'openai'
 
 import { auth } from '@/auth'
 import { nanoid } from '@/lib/utils'
-import { Assistant } from 'openai/resources/beta/assistants/assistants'
 import { Thread } from 'openai/resources/beta/threads/threads'
+
+import { configAssistant } from '@/lib/polyverse/openai/assistants'
+import { DEMO_REPO } from '@/lib/polyverse/config'
 
 export const runtime = 'edge'
 
@@ -14,6 +16,7 @@ const openai = new OpenAI({
 })
 
 export async function POST(req: Request) {
+  console.log(`In POST of route.ts`)
   const json = await req.json()
   const { messages, previewToken } = json
   const userId = (await auth())?.user.id
@@ -31,9 +34,11 @@ export async function POST(req: Request) {
   let completion = ''
 
   async function processAssistantMessage(messages: any) {
-    const assistant = await setupAssistant(
-      'http://github.com/polyverse-appsec/thrv.com'
-    )
+    const assistant = await configAssistant(DEMO_REPO)
+    console.log(`Configured an assistant with an ID of '${assistant.id}' - metadata: ${JSON.stringify(assistant.metadata)}`)
+
+    // TODO: Start here
+
     const thread = await findOrCreateThread(messages)
     console.log('thread is', thread)
 
@@ -142,79 +147,6 @@ function addThread(longString: string, value: string): void {
 function getThread(longString: string): string | undefined {
   const shortKey = simpleHash(longString)
   return threadMap[shortKey]
-}
-
-async function findAssistant(repo: string): Promise<Assistant | null> {
-  const assistants = await openai.beta.assistants.list()
-  //assistant.data is an array of objects, look through and see if d.metdata.repo === repo (if the repo field exists)
-  //if so, return that assistant
-  if (assistants.data.length > 0) {
-    assistants.data.forEach((d: any) => {
-      if (d.metadata.repo === repo) {
-        return d
-      }
-    })
-    return null
-  }
-  return null
-}
-
-async function fetchFileIds(repo: string, email: string): Promise<string[]> {
-  const apiUrl = `https://pt5sl5vwfjn6lsr2k6szuvfhnq0vaxhl.lambda-url.us-west-2.on.aws/api/get_vectordata_from_project?uri=${encodeURIComponent(
-    repo as string
-  )}&email=${encodeURIComponent(email as string)}`
-
-  try {
-    const response = await fetch(apiUrl)
-    if (!response.ok) {
-      throw new Error(`Error: ${response.status}`)
-    }
-    const data = await response.json()
-    //data.body is json string, convert to an object
-    const parsedData = JSON.parse(data.body)
-    console.log('parsedData is', parsedData)
-    return parsedData
-  } catch (error) {
-    console.log('error is', error)
-  }
-  return []
-}
-
-async function createAssistant(repo: string) {
-  const fileIds = await fetchFileIds(repo, 'alex@polyverse.com')
-  const assistant = await openai.beta.assistants.create({
-    model: 'gpt-4-1106-preview',
-    name: 'Polyverse Boost Sara',
-    file_ids: fileIds,
-    instructions:
-      'You are a coding assistant named Sara. You have access to the full codebase of a project in your files, including an aispec.md file that summarizes the code. When asked a coding question, unless otherwise explicitly told not to, you give answers that use the relevant frameworks, apis, data structures, and other aspects of the existing code.  There are at least three files in your files that will help you answer questions.  1. blueprint.md is a very short summary of the overall architecture. It talks about what programming languages are used, major frameworks, and so forth.  2. aispec.md is another useful, medium size file. It has short summaries of all of the important code.  Finally, allfiles_concat.md is the concatenation of all of the source code in the project.  For all queries, use the blueprint and aispec files. Retrieve code snippets as needed from the concatenated code file.',
-    tools: [{ type: 'code_interpreter' }, { type: 'retrieval' }],
-    metadata: {
-      repo: repo
-    }
-  })
-  return assistant
-}
-
-async function updateAssistant(repo: string, assistant: Assistant) {
-  //make sure we have the most up to date file ids
-  const fileIds = await fetchFileIds(repo, 'alex@polyverse.com')
-  //update the assistant with the new file ids
-  await openai.beta.assistants.update(assistant.id, {
-    file_ids: fileIds
-  })
-}
-
-async function setupAssistant(repo: string) {
-  //look to see if we have an assistant, if not create one
-  let assistant = await findAssistant(repo)
-  if (!assistant) {
-    assistant = await createAssistant(repo)
-  } else {
-    updateAssistant(repo, assistant)
-  }
-  console.log('assistant is', assistant.id, assistant.metadata)
-  return assistant
 }
 
 async function findOrCreateThread(messages: any) {
