@@ -7,6 +7,7 @@ import { nanoid } from '@/lib/utils'
 import { Thread, Threads } from 'openai/resources/beta/threads/threads'
 
 import { configAssistant } from '@/lib/polyverse/openai/assistants'
+import { appendUserMessage } from '@/lib/polyverse/openai/messages'
 import { configThread } from '@/lib/polyverse/openai/threads'
 import { DEMO_REPO } from '@/lib/polyverse/config'
 
@@ -43,8 +44,12 @@ export async function POST(req: Request) {
     const thread = await configThread(messages[0].content)
     console.log(`Configured a thread with an ID of '${thread.id}' - first message content: ${messages[0].content}`)
 
-    const threadMessages = await updateMessages(thread, messages)
+    // Blindly append a user message to the thread. It is 'blind' in the sense
+    // that the same user message could already exist in the thread.
+    const threadMessage = await appendUserMessage(thread, messages)
+    console.log(`Updated message with an ID of '${threadMessage?.id}' - message content: ${JSON.stringify(threadMessage?.content)}`)
 
+    // TODO: Start here
     const run = await openai.beta.threads.runs.create(thread.id, {
       assistant_id: assistant.id
     })
@@ -115,23 +120,6 @@ export async function POST(req: Request) {
       'Content-Type': 'text/plain; charset=utf-8'
     }
   })
-}
-
-async function updateMessages(thread: Thread, messages: any) {
-  //add messages to the thread. we will just take the last 'user' message and add it to the thread
-  const length = messages.length
-  const lastMessage = messages[length - 1]
-  if (lastMessage.role === 'user') {
-    const threadMessages = await openai.beta.threads.messages.create(
-      thread.id,
-      {
-        role: 'user',
-        content: lastMessage.content
-      }
-    )
-    return threadMessages
-  }
-  return null
 }
 
 function concatenateAssistantMessages(finalMessages: any[]): string {
