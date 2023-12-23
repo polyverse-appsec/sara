@@ -4,9 +4,10 @@ import OpenAI from 'openai'
 
 import { auth } from '@/auth'
 import { nanoid } from '@/lib/utils'
-import { Thread } from 'openai/resources/beta/threads/threads'
+import { Thread, Threads } from 'openai/resources/beta/threads/threads'
 
 import { configAssistant } from '@/lib/polyverse/openai/assistants'
+import { configThread } from '@/lib/polyverse/openai/threads'
 import { DEMO_REPO } from '@/lib/polyverse/config'
 
 export const runtime = 'edge'
@@ -16,7 +17,7 @@ const openai = new OpenAI({
 })
 
 export async function POST(req: Request) {
-  console.log(`In POST of route.ts`)
+  console.log(`In POST of route.ts - req: ${JSON.stringify(req)}`)
   const json = await req.json()
   const { messages, previewToken } = json
   const userId = (await auth())?.user.id
@@ -29,6 +30,7 @@ export async function POST(req: Request) {
     })
   }
 
+  // TODO: I think I ultimately want to move this function/refactor it but it depends on a completion in the outer scope
   const assistantStream = await processAssistantMessage(messages)
 
   let completion = ''
@@ -37,10 +39,9 @@ export async function POST(req: Request) {
     const assistant = await configAssistant(DEMO_REPO)
     console.log(`Configured an assistant with an ID of '${assistant.id}' - metadata: ${JSON.stringify(assistant.metadata)}`)
 
-    // TODO: Start here
-
-    const thread = await findOrCreateThread(messages)
-    console.log('thread is', thread)
+    // Configure a thread based off of what would be the first message associated with it
+    const thread = await configThread(messages[0].content)
+    console.log(`Configured a thread with an ID of '${thread.id}' - first message content: ${messages[0].content}`)
 
     const threadMessages = await updateMessages(thread, messages)
 
@@ -114,52 +115,6 @@ export async function POST(req: Request) {
       'Content-Type': 'text/plain; charset=utf-8'
     }
   })
-}
-
-// This is a global object hash to store our key-value pairs
-const threadMap: Record<string, string> = {}
-
-// A simple hash function to shorten a long string
-// Note: This is not a cryptographically secure hash and is just for demonstration
-function simpleHash(str: string) {
-  // Ensure str is a string
-  if (typeof str !== 'string') {
-    console.error('simpleHash expects a string argument')
-    return 0 // or handle this case as appropriate
-  }
-
-  let hash = 0
-  for (let i = 0; i < str.length; i++) {
-    const char = str.charCodeAt(i)
-    hash = (hash << 5) - hash + char
-    hash = hash & hash // Convert to 32bit integer
-  }
-  return hash
-}
-
-// Function to add a key-value pair to the map
-function addThread(longString: string, value: string): void {
-  const shortKey = simpleHash(longString)
-  threadMap[shortKey] = value
-}
-
-// Function to get a value using a long string key
-function getThread(longString: string): string | undefined {
-  const shortKey = simpleHash(longString)
-  return threadMap[shortKey]
-}
-
-async function findOrCreateThread(messages: any) {
-  //check if we have a thread id in the messages, if so, return that
-  //if not, create a new thread id and return that
-  const threadId = getThread(messages[0].content)
-  if (threadId) {
-    return openai.beta.threads.retrieve(threadId)
-  } else {
-    const newThreadId = await openai.beta.threads.create()
-    addThread(messages, newThreadId.id)
-    return newThreadId
-  }
 }
 
 async function updateMessages(thread: Thread, messages: any) {

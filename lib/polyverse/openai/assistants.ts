@@ -1,4 +1,3 @@
-
 import OpenAI from 'openai'
 
 import { Assistant } from 'openai/resources/beta/assistants/assistants'
@@ -64,6 +63,18 @@ export async function findAssistantForRepo(repo: string): Promise<Assistant | un
 export async function updateAssistantFileIDs(fileIDs: string[], { id }: { id: string }): Promise<Assistant> {
     return await oaiClient.beta.assistants.update(id, { file_ids: fileIDs })
 }
+
+// An OpenAI Assistant is the logical representation of an AI assistant we have
+// built for our own application - in this case Sara.
+//
+// Sara has instructions and can leverage models, tools, and knowledge to
+// respond to any user queries she gets.
+//
+// The workflow to use an assistant is:
+// 1. Create OpenAI Assistant object providing instructions and a model
+// 2. Create a OpenAI Thread for any user initiated conversations
+// 3. Add OpenAI Messages to the Thread as user asks questions
+// 4. Run the Assistant on Thread to trigger responses (tooling automatically invoked)
 
 /**
  * Configures an OpenAI assistant for use. Will identify relevant file IDs from a Git repo and
