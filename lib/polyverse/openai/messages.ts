@@ -1,13 +1,7 @@
 import OpenAI from 'openai'
-import { AssistantFilesPage } from 'openai/resources/beta/assistants/files'
-import { threadId } from 'worker_threads'
 
-const OPENAI_MESSAGE_ROLE_ASSISTANT = 'assistant'
-const OPENAI_MESSAGE_ROLE_USER = 'user'
+import { OPENAI_MESSAGE_CONTENT_TYPE_TEXT, OPENAI_MESSAGE_ROLE_USER } from './constants'
 
-const OPENAI_MESSAGE_CONTENT_TYPE_TEXT = 'text'
-
-// TODO: Is this a singleton? Ramifications if it isnt?
 const oaiClient = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY
 })
@@ -31,10 +25,6 @@ const oaiClient = new OpenAI({
  * message or nothing in a promise
  */
 export async function appendUserMessage({ id }: { id: string }, messages: any) {
-    // TODO: Why do we just append? If the user message content is the same as the last message we just end up
-    // appending another message to the thread with the same content. See original method 'updateMessages'
-    // TODO: Review what happens when we just regenerate the content/response from the AI button?
-
     // If the last message is that of a 'user' message just append another user
     // message to the end of the thread
     const { role, content } = messages[messages.length - 1]
@@ -52,18 +42,18 @@ export async function appendUserMessage({ id }: { id: string }, messages: any) {
  */
 export const listMessages = async (threadID: string) => await oaiClient.beta.threads.messages.list(threadID)
 
-// TODO: Comments
+/**
+ * Gathers together all messages from the OpenAI assistant in a thread up to
+ * the first 'user' message found.
+ * 
+ * @param {string} threadID ID of the thread to get 'assistant' messages for
+ * @returns {string} String of all 'assistant' messages concatenated together
+ */
 export const getAssistantMessages = async (threadID: string) => {
     const { data: messages } = await listMessages(threadID)
 
     // Find the first index of a 'user' role messages
     const userIndex = messages.findIndex(({ role }) => role === OPENAI_MESSAGE_ROLE_USER)
-
-    // TODO: What do we do if it is negative 1 here indicating we didn't find it?
-    // TODO: If there is a length then it must have something in it that is all assistant messages
-    // if (userIndex === -1) {
-
-    // }
 
     return messages.slice(0, userIndex).reduce((concatenatedMessage, assistantMessage) => {
         assistantMessage.content.forEach((messageContent) => {
@@ -75,23 +65,4 @@ export const getAssistantMessages = async (threadID: string) => {
 
         return concatenatedMessage
     }, '').trim()
-}
-
-function concatenateAssistantMessages(finalMessages: any[]): string {
-    console.log(`concatenateAssistantMessages - finalMessages: ${JSON.stringify(finalMessages)}`)
-    let concatenatedText = ''
-  
-    for (const message of finalMessages) {
-      if (message.role === 'assistant') {
-        message.content.forEach((contentItem: any) => {
-          if (contentItem.type === 'text') {
-            concatenatedText += contentItem.text.value + '\n'
-          }
-        })
-      } else if (message.role === 'user') {
-        break
-      }
-    }
-  
-    return concatenatedText.trim()
 }
