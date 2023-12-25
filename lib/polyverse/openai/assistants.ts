@@ -2,20 +2,27 @@ import OpenAI from 'openai'
 
 import { Assistant } from 'openai/resources/beta/assistants/assistants'
 
-import { isRecord } from '../typescript/helpers'
-import { getFileIDs } from '../backend/backend'
-
 import { DEMO_EMAIL_ADDRESS } from '../config'
+import { getFileIDs } from '../backend/backend'
+import { isRecord } from '../typescript/helpers'
 
-const OPENAI_MODEL = 'gpt-4-1106-preview'
-const OPENAI_ASSISTANT_TOOL_CODE_INTERPRETER = 'code_interpreter'
-const OPENAI_ASSISTANT_TOOL_CODE_RETRIEVAL = 'retrieval'
+import {
+    OPENAI_ASSISTANT_TOOL_CODE_INTERPRETER,
+    OPENAI_ASSISTANT_TOOL_CODE_RETRIEVAL,
+    OPENAI_MODEL_GPT4_1106_PREVIEW
+} from './constants'
+
 
 const PV_OPENAI_ASSISTANT_NAME = 'Polyverse Boost Sara'
-const PV_OPENAI_ASSISTANT_INSTRUCTIONS = 'You are a coding assistant named Sara. You have access to the full codebase of a project in your files, including an aispec.md file that summarizes the code. When asked a coding question, unless otherwise explicitly told not to, you give answers that use the relevant frameworks, apis, data structures, and other aspects of the existing code.  There are at least three files in your files that will help you answer questions.  1. blueprint.md is a very short summary of the overall architecture. It talks about what programming languages are used, major frameworks, and so forth.  2. aispec.md is another useful, medium size file. It has short summaries of all of the important code.  Finally, allfiles_concat.md is the concatenation of all of the source code in the project.  For all queries, use the blueprint and aispec files. Retrieve code snippets as needed from the concatenated code file.'
+const PV_OPENAI_ASSISTANT_INSTRUCTIONS = 'You are a coding assistant named Sara. ' +
+    'You have access to the full codebase of a project in your files, including an aispec.md file that summarizes the code. ' +
+    'When asked a coding question, unless otherwise explicitly told not to, you give answers that use the relevant frameworks, APIs, data structures, and other aspects of the existing code. ' +
+    'There are at least three files in your files that will help you answer questions. ' + 
+    '1. blueprint.md is a very short summary of the overall architecture. It talks about what programming languages are used, major frameworks, and so forth. ' + 
+    '2. aispec.md is another useful, medium size file. It has short summaries of all of the important code. ' + 
+    '3. Finally, allfiles_concat.md is the concatenation of all of the source code in the project. ' +
+    'For all queries, use the blueprint and aispec files. Retrieve code snippets as needed from the concatenated code file.'
 
-
-// TODO: Is this a singleton? Ramifications if it isnt?
 const oaiClient = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY
 })
@@ -29,7 +36,7 @@ const oaiClient = new OpenAI({
  */
 export async function createAssistantWithFileIDsFromRepo(fileIDs: string[], repo: string): Promise<Assistant> {
     return await oaiClient.beta.assistants.create({
-      model: OPENAI_MODEL,
+      model: OPENAI_MODEL_GPT4_1106_PREVIEW,
       name: PV_OPENAI_ASSISTANT_NAME,
       file_ids: fileIDs,
       instructions: PV_OPENAI_ASSISTANT_INSTRUCTIONS,

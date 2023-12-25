@@ -16,7 +16,6 @@ export async function getFileIDs(repo: string, email: string): Promise<string[]>
       const res = await fetch(url)
   
       if (!res.ok) {
-        // TODO: Log to 3rd party service
         console.error(`Got a failure response while trying to get file IDs for '${repo}/${email}' - Status: ${res.status}`)
         return []
       }
@@ -28,7 +27,6 @@ export async function getFileIDs(repo: string, email: string): Promise<string[]>
   
       return fileIDs
     } catch (error) {
-      // TODO: Log to 3rd party service
       console.error('Error making a request or parsing a response for file IDs: ', error)
     }
   

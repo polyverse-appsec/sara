@@ -2,10 +2,6 @@ import OpenAI from 'openai'
 
 import { Threads } from 'openai/resources/beta/threads/threads'
 
-// TODO: Does this need to be prettieried? Are we following the same tabbing/spacing?
-
-
-// TODO: Is this a singleton? Ramifications if it isnt?
 const oaiClient = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY
 })
@@ -75,8 +71,6 @@ function mapThreadID(messageContent: string, threadID: string) {
  * @returns {Promise<Thread>} Promise with the configured OpenAI thread
  */
 export async function configThread(messageContent: string): Promise<Threads.Thread> {
-    // TODO: Note this function deviates from the original one 'findOrCreateThread'
-    // in that is just takes the first indexed message for the content
     const threadID = getThreadIDFromMessageContent(messageContent)
 
     if (threadID) {
