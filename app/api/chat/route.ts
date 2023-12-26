@@ -18,6 +18,7 @@ export async function POST(req: Request) {
   const json = await req.json()
   const { messages, previewToken } = json
   const userId = (await auth())?.user.id
+  console.log(`In POST of route.ts - json: ${JSON.stringify(json)}`)
 
   console.log('messages are', messages)
 
@@ -27,7 +28,9 @@ export async function POST(req: Request) {
     })
   }
 
-  const persistAssistantMessagesCallback = async (retrievedAssistantMessages: string) => {
+  const persistAssistantMessagesCallback = async (
+    retrievedAssistantMessages: string
+  ) => {
     const title = json.messages[0].content.substring(0, 100)
     const id = json.id ?? nanoid()
     const createdAt = Date.now()
@@ -54,7 +57,10 @@ export async function POST(req: Request) {
     })
   }
 
-  const assistantMessagesStream = await querySara(messages, persistAssistantMessagesCallback)
+  const assistantMessagesStream = await querySara(
+    messages,
+    persistAssistantMessagesCallback
+  )
 
   // Create and return the response
   return new Response(assistantMessagesStream, {
