@@ -67,7 +67,7 @@ export function Header() {
       </div>
       <div className="flex items-center justify-end space-x-2">
         <Image
-          src="/boostlogo.jpeg" // Adjust the path to your boost.jpg
+          src="/boostlogo.png" // Adjust the path to your boost.jpg
           alt="Boost"
           width={100} // Adjust the width as needed
           height={50} // Adjust the height as needed
