@@ -18,7 +18,6 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { IconExternalLink } from '@/components/ui/icons'
 
-
 function getUserInitials(name: string) {
   const [firstName, lastName] = name.split(' ')
   return lastName ? `${firstName[0]}${lastName[0]}` : firstName.slice(0, 2)
@@ -39,24 +38,23 @@ export function GithubOrgSelect({ session }: GithubOrgSelectProps) {
   // State to track if dropdown is open
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  // Fetch organizations when the dropdown is opened
-  useEffect(() => {
-    if (isDropdownOpen) {
-      getOrganizations().then(data => {
-        // Check if data is an array (as expected)
-        if (Array.isArray(data)) {
-          setOrganizations(data);
-        } else {
-          // Handle error case
-          console.error('Error fetching organizations:', data.error);
-        }
-      }).catch(error => {
-        // Handle error
-        console.error('Error fetching organizations:', error);
-      });
-    }
-  }, [isDropdownOpen]);
+  const fetchOrganizations = () => {
+    console.log('Fetching organizations')
+    getOrganizations().then(data => {
+      if (Array.isArray(data)) {
+        setOrganizations(data);
+      } else {
+        console.error('Error fetching organizations:', data.error);
+      }
+    }).catch(error => {
+      console.error('Error fetching organizations:', error);
+    });
+  };
 
+  useEffect(() => {
+    fetchOrganizations();
+  }, []);
+  
   return (
     <div className="flex items-center justify-between">
       <DropdownMenu>
@@ -79,7 +77,6 @@ export function GithubOrgSelect({ session }: GithubOrgSelectProps) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent sideOffset={8} align="start" className="w-[180px]">
-          hello
           <DropdownMenuSeparator />
           {
             organizations.map(org => (
