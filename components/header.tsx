@@ -21,7 +21,7 @@ import { SidebarMobile } from './sidebar-mobile'
 import { SidebarToggle } from './sidebar-toggle'
 import { ChatHistory } from './chat-history'
 import Image from 'next/image'
-import GitHubPanel from './github-panel'
+import {GithubPanel} from './github-panel'
 
 async function UserOrLogin() {
   const session = await auth()
@@ -49,31 +49,34 @@ async function UserOrLogin() {
             <Link href="/sign-in?callbackUrl=/">Login</Link>
           </Button>
         )}
+        {session?.user ? (
+          <>
+            <IconSeparator className="w-6 h-6 text-muted-foreground/50" />
+            <GithubPanel session={session} />
+          </>
+        ) : null}
+        )
       </div>
     </>
   )
 }
 
-export async function Header() {
-  const session = await auth()
+export function Header() {
   return (
-    <header className="sticky top-0 z-50 flex flex-col items-center w-full px-4 border-b shrink-0 bg-gradient-to-b from-background/10 via-background/50 to-background/80 backdrop-blur-xl">
-      {/* First row */}
-      <div className="flex items-center justify-between w-full h-16">
+    <header className="sticky top-0 z-50 flex items-center justify-between w-full h-16 px-4 border-b shrink-0 bg-gradient-to-b from-background/10 via-background/50 to-background/80 backdrop-blur-xl">
+      <div className="flex items-center">
         <React.Suspense fallback={<div className="flex-1 overflow-auto" />}>
           <UserOrLogin />
         </React.Suspense>
-        <div className="flex items-center justify-end space-x-2">
-          <Image
-            src="/boostlogo.png" // Adjust the path to your boost.jpg
-            alt="Boost"
-            width={102} // Adjust the width as needed
-            height={38} // Adjust the height as needed
-          />
-        </div>
       </div>
-      {/* Second row - GithubPanel */}
-      <GitHubPanel isLoggedIn={!!session?.user} />
+      <div className="flex items-center justify-end space-x-2">
+        <Image
+          src="/boostlogo.jpeg" // Adjust the path to your boost.jpg
+          alt="Boost"
+          width={100} // Adjust the width as needed
+          height={50} // Adjust the height as needed
+        />
+      </div>
     </header>
   )
 }

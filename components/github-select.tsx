@@ -8,34 +8,19 @@ import {
   SelectGroup,
   // Other imports if necessary
 } from '@/components/ui/select'; // Update the import path
-
-interface Option {
-  value: string;
-  label: string;
-}
+import { GithubOrgSelect } from './github-org-select';
+import { GithubRepoSelect } from './github-repo-select';
+import { type Session } from 'next-auth';
 
 interface GitHubSelectProps {
-  label: string;
-  options: Option[];
+  session: Session; // Add the session prop
 }
 
-const GitHubSelect: React.FC<GitHubSelectProps> = ({ label, options }) => {
+export function GithubSelect({ session }: GitHubSelectProps) {
   return (
-    <Select>
-      <SelectTrigger>
-        <SelectValue placeholder={label} />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectGroup>
-          {options.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
-              {option.label}
-            </SelectItem>
-          ))}
-        </SelectGroup>
-      </SelectContent>
-    </Select>
-  );
-};
-
-export default GitHubSelect;
+    <>
+      <GithubOrgSelect session={session} />
+      <GithubRepoSelect session={session} />
+    </>
+  )
+}
