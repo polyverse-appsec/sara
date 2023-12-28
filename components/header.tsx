@@ -50,12 +50,8 @@ async function UserOrLogin() {
           </Button>
         )}
         {session?.user ? (
-          <>
-            <IconSeparator className="w-6 h-6 text-muted-foreground/50" />
             <GithubPanel session={session} />
-          </>
         ) : null}
-        )
       </div>
     </>
   )

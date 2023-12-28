@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { IconSeparator } from '@/components/ui/icons';
 import {
   Select,
   SelectValue,
@@ -19,7 +20,9 @@ interface GitHubSelectProps {
 export function GithubSelect({ session }: GitHubSelectProps) {
   return (
     <>
+      <IconSeparator className="w-6 h-6 text-muted-foreground/50" />
       <GithubOrgSelect session={session} />
+      <IconSeparator className="w-6 h-6 text-muted-foreground/50" />
       <GithubRepoSelect session={session} />
     </>
   )

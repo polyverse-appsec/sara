@@ -126,3 +126,37 @@ export async function shareChat(id: string) {
 
   return payload
 }
+
+/*
+ * Github related functions
+ */
+
+export async function getOrganizations() {
+  const session = await auth()
+
+  if (!session?.user?.id) {
+    return {
+      error: 'Unauthorized'
+    }
+  }
+
+  console.log(`In getOrganizations - session: ${JSON.stringify(session)}`)
+  return ['alexgo', 'polyverse', 'polyverse-appsec']
+}
+
+export async function getRepositories(org: string) {
+  const session = await auth()
+
+  if (!session?.user?.id) {
+    return {
+      error: 'Unauthorized'
+    }
+  }
+  return [
+    'polyverse-appsec/nextjs-chat',
+    'polyverse-appsec/nextjs-chat-2',
+    'polyverse-appsec/nextjs-chat-3',
+    'polyverse-appsec/nextjs-chat-4',
+    'polyverse-appsec/nextjs-chat-5'
+  ]
+}
