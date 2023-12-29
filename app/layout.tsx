@@ -2,6 +2,8 @@ import { Toaster } from 'react-hot-toast'
 import { GeistSans } from 'geist/font/sans'
 import { GeistMono } from 'geist/font/mono'
 
+// Import 'global.css' to apply styling rules to all of our components in all of
+// our routes
 import '@/app/globals.css'
 import { cn } from '@/lib/utils'
 import { TailwindIndicator } from '@/components/tailwind-indicator'
@@ -34,6 +36,12 @@ interface RootLayoutProps {
   children: React.ReactNode
 }
 
+// In NextJS layouts are shared UI between multiple pages. On navigation,
+// layouts preserve state, remain interactive, and do not re-render. Layouts
+// can also be nested.
+//
+// In this files/component case this is our root layout which will be shared
+// across all of our pages.
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" suppressHydrationWarning>

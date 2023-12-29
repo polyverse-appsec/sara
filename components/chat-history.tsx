@@ -13,7 +13,7 @@ interface ChatHistoryProps {
 
 export async function ChatHistory({ userId }: ChatHistoryProps) {
   return (
-    <div className="flex flex-col h-full">
+    <div>
       <div className="px-2 my-4">
         <Link
           href="/"
