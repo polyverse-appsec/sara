@@ -6,6 +6,10 @@ import { kv } from '@vercel/kv'
 
 import { auth } from '@/auth'
 import { type Chat } from '@/lib/types'
+import {
+  fetchUserOrganizations,
+  Organization
+} from '@/lib/polyverse/github/repos'
 
 export async function getChats(userId?: string | null) {
   if (!userId) {
@@ -131,17 +135,17 @@ export async function shareChat(id: string) {
  * Github related functions
  */
 
-export async function getOrganizations() {
+export async function getOrganizations(): Promise<Organization[]> {
   const session = await auth()
 
   if (!session?.user?.id) {
-    return {
-      error: 'Unauthorized'
-    }
+    throw new Error('Unauthorized')
   }
 
-  console.log(`In getOrganizations - session: ${JSON.stringify(session)}`)
-  return ['alexgo', 'polyverse', 'polyverse-appsec']
+  const orgs = await fetchUserOrganizations({
+    accessToken: session.accessToken
+  })
+  return orgs
 }
 
 export async function getRepositories(org: string) {

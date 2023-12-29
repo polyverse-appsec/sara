@@ -7,6 +7,7 @@ import { signOut } from 'next-auth/react'
 import { Button } from '@/components/ui/button'
 import { getOrganizations } from '@/app/actions'
 import React, { useState, useEffect } from 'react';
+import { Organization } from '@/lib/polyverse/github/repos'
 
 
 import {
@@ -33,7 +34,7 @@ export function GithubOrgSelect({ session }: GithubOrgSelectProps) {
   const user = session.user;
 
   // State to store organizations
-  const [organizations, setOrganizations] = useState<string[]>(["alexgo"]);
+  const [organizations, setOrganizations] = useState<Organization[]>([]);
 
   // State to track if dropdown is open
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -44,7 +45,7 @@ export function GithubOrgSelect({ session }: GithubOrgSelectProps) {
       if (Array.isArray(data)) {
         setOrganizations(data);
       } else {
-        console.error('Error fetching organizations:', data.error);
+        console.error('Error fetching organizations:', data);
       }
     }).catch(error => {
       console.error('Error fetching organizations:', error);
@@ -54,7 +55,7 @@ export function GithubOrgSelect({ session }: GithubOrgSelectProps) {
   useEffect(() => {
     fetchOrganizations();
   }, []);
-  
+
   return (
     <div className="flex items-center justify-between">
       <DropdownMenu>
@@ -80,8 +81,8 @@ export function GithubOrgSelect({ session }: GithubOrgSelectProps) {
           <DropdownMenuSeparator />
           {
             organizations.map(org => (
-              <DropdownMenuItem key={org}>
-                {org}
+              <DropdownMenuItem key={org.login}>
+                {org.login}
               </DropdownMenuItem>
             ))
           }
