@@ -1,17 +1,51 @@
 'use client'
 
+import { Chat } from '@/lib/types'
+
 import { useState } from 'react'
 
 import { Treeview } from './ui/treeview'
 
-import { data } from './ui/treeview-data-test'
+// TODO: Delete this file
+// import { data } from './ui/treeview-data-test'
 
 // TODO: I want to wrap this with a <div> and try to put in the following to make it fit: flex flex-col h-full
 // Note that I tried this and it didn't work - made things arguably worse. Look at the elements in the developer tools
 // to sus out more of what is going on
 
-export default function TaskTree() {
+type TaskTreeProps = {
+    tasks: Chat[]
+}
+
+// TODO: Comment
+const prepTasksForTreeNodes = (tasks: Chat[]) => tasks.map(({ id, title: content }) => ({ id, content }))
+
+// TODO: Comments
+export default function TaskTree({ tasks }: TaskTreeProps) {
     const [selected, select] = useState<string | null>(null)
+
+    const preppedTasks = prepTasksForTreeNodes(tasks)
+
+    // TODO: Need to ensure that tasks objects match that of Node objects in terms of identifiers and stuff on the objs - look at the props
+    // export interface Chat extends Record<string, any> {
+    //     id: string
+    //     title: string
+    //     createdAt: Date
+    //     userId: string
+    //     path: string
+    //     messages: Message[]
+    //     sharePath?: string
+    //   }
+
+
+    // export type TreeNodeType = {
+    //     id: string
+    //     name: string
+    //     children?: TreeNodeType[]
+    //     icon?: ReactNode
+    // }
+
+    // TODO: Do I need a <React.Suspense> in here until my tasks are fully loaded?
 
     // className="w-72 h-full border-[1.5px] border-slate-200 m-4"
 
@@ -23,8 +57,8 @@ export default function TaskTree() {
             value={selected}
             onChange={select}
         >
-            {data.map(node => (
-                <Treeview.Node node={node} key={node.id} />
+            {preppedTasks.map(preppedTask => (
+                <Treeview.Node node={preppedTask} key={preppedTask.id} />
             ))}
         </Treeview.Root>
     )
