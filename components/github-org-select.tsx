@@ -26,35 +26,15 @@ function getUserInitials(name: string) {
 
 interface GithubOrgSelectProps {
   session: Session;
+  selectedOrganization: Organization | null;
+  organizations: Organization[];
+  onOrganizationChange: (org: Organization) => void;
   // other props if any
 }
 
-export function GithubOrgSelect({ session }: GithubOrgSelectProps) {
+export function GithubOrgSelect({ session, organizations, selectedOrganization, onOrganizationChange}: GithubOrgSelectProps) {
   // component implementation
   const user = session.user;
-
-  // State to store organizations
-  const [organizations, setOrganizations] = useState<Organization[]>([]);
-
-  // State to track if dropdown is open
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
-  const fetchOrganizations = () => {
-    console.log('Fetching organizations')
-    getOrganizations().then(data => {
-      if (Array.isArray(data)) {
-        setOrganizations(data);
-      } else {
-        console.error('Error fetching organizations:', data);
-      }
-    }).catch(error => {
-      console.error('Error fetching organizations:', error);
-    });
-  };
-
-  useEffect(() => {
-    fetchOrganizations();
-  }, []);
 
   return (
     <div className="flex items-center justify-between">
