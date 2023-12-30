@@ -8,6 +8,7 @@ import { auth } from '@/auth'
 import { type Chat } from '@/lib/types'
 import {
   fetchUserOrganizations,
+  fetchOrganizationRepositories,
   Organization
 } from '@/lib/polyverse/github/repos'
 
@@ -156,11 +157,9 @@ export async function getRepositories(org: string) {
       error: 'Unauthorized'
     }
   }
-  return [
-    'polyverse-appsec/nextjs-chat',
-    'polyverse-appsec/nextjs-chat-2',
-    'polyverse-appsec/nextjs-chat-3',
-    'polyverse-appsec/nextjs-chat-4',
-    'polyverse-appsec/nextjs-chat-5'
-  ]
+  const repos = await fetchOrganizationRepositories({
+    accessToken: session.accessToken,
+    org
+  })
+  return repos
 }

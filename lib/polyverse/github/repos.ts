@@ -42,16 +42,11 @@ export type FetchOrgReposParams = {
   org: string
 }
 
-// Define the return type using Octokit's types
-export type FetchOrgReposReturnType = ReturnType<
-  InstanceType<typeof Octokit>['rest']['repos']['listForOrg']
->
-
 // Function to fetch repositories for an organization
 export async function fetchOrganizationRepositories({
   accessToken,
   org
-}: FetchOrgReposParams): Promise<FetchOrgReposReturnType> {
+}: FetchOrgReposParams): Promise<string[]> {
   const octokit = new Octokit({
     auth: accessToken
   })
@@ -60,8 +55,8 @@ export async function fetchOrganizationRepositories({
     const response = await octokit.rest.repos.listForOrg({
       org
     })
-
-    return response
+    //response has the repo array in the data field.  we just want the name
+    return response.data.map(repo => repo.name)
   } catch (error) {
     console.error('Error fetching repositories:', error)
     throw error

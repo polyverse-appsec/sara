@@ -17,8 +17,8 @@ declare module 'next-auth' {
     organization?: Organization
     repository?: string
     referenceRepositories?: {
-      org: Organization
-      repo: string
+      organization: Organization
+      repository: string
     }[]
   }
 }
