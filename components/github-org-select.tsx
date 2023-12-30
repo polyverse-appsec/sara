@@ -41,11 +41,11 @@ export function GithubOrgSelect({ session, organizations, selectedOrganization, 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="pl-0">
-            {user?.image ? (
+            {selectedOrganization?.avatar_url ? (
               <Image
                 className="w-6 h-6 transition-opacity duration-300 rounded-full select-none ring-1 ring-zinc-100/10 hover:opacity-80"
-                src={user?.image ? `${user.image}&s=60` : ''}
-                alt={user.name ?? 'Avatar'}
+                src={selectedOrganization?.avatar_url ? `${selectedOrganization.avatar_url}&s=60` : ''}
+                alt={selectedOrganization?.login ?? 'Avatar'}
                 height={48}
                 width={48}
               />
@@ -54,15 +54,28 @@ export function GithubOrgSelect({ session, organizations, selectedOrganization, 
                 {user?.name ? getUserInitials(user?.name) : null}
               </div>
             )}
-            <span className="ml-2">alexgo</span>
+            {selectedOrganization?.login ? (
+            <span className="ml-2">{selectedOrganization.login}</span>
+            ) : "Select Organization"}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent sideOffset={8} align="start" className="w-[180px]">
           <DropdownMenuSeparator />
           {
-            organizations.map(org => (
-              <DropdownMenuItem key={org.login}>
+            organizations.map((org, index) => (
+              <DropdownMenuItem key={index}
+                onSelect={(event)=> onOrganizationChange(org) }>
+                <Image
+                  className="w-6 h-6 transition-opacity duration-300 rounded-full select-none ring-1 ring-zinc-100/10 hover:opacity-80"
+                  src={org?.avatar_url ? `${org.avatar_url}&s=60` : ''}
+                  alt={org.login ?? 'Avatar'}
+                  height={48}
+                  width={48}
+              />
+              <span className="ml-2">
                 {org.login}
+              </span>
+
               </DropdownMenuItem>
             ))
           }

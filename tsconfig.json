@@ -25,6 +25,7 @@
     ],
     "strictNullChecks": true
   },
+  "typeRoots": ["./types"],
   "include": [
     "next-env.d.ts",
     "next-auth.d.ts",
