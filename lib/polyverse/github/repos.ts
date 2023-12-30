@@ -52,11 +52,14 @@ export async function fetchOrganizationRepositories({
   })
 
   try {
-    const response = await octokit.rest.repos.listForOrg({
-      org
+    const response = await octokit.request('GET /orgs/' + org + '/repos', {
+      type: 'all',
+      headers: {
+        'X-GitHub-Api-Version': '2022-11-28'
+      }
     })
     //response has the repo array in the data field.  we just want the name
-    return response.data.map(repo => repo.name)
+    return response.data.map((repo: { name: any }) => repo.name)
   } catch (error) {
     console.error('Error fetching repositories:', error)
     throw error
