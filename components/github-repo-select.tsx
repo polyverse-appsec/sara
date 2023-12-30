@@ -21,9 +21,11 @@ function getUserInitials(name: string) {
 
 interface GithubRepoSelectProps {
   session: Session;
+  selectedRepository: string | null;
+  repositories: string[];
   // other props if any
 }
-export function GithubRepoSelect({ session }: GithubRepoSelectProps) {
+export function GithubRepoSelect({ session, selectedRepository, repositories }: GithubRepoSelectProps) { 
   const user = session.user;
   return (
     <div className="flex items-center justify-between">

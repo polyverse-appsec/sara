@@ -30,6 +30,7 @@ export function GithubSelect({ session }: GitHubSelectProps) {
     const [organizations, setOrganizations] = useState<Organization[]>([]);
     const [selectedOrganization, setSelectedOrganization] = useState<Organization | null>(null);
     const [repositories, setRepositories] = useState([]);
+    const [selectedRepository, setSelectedRepository] = useState<string | null>(null);
   
     // State to track if dropdown is open
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -69,7 +70,7 @@ export function GithubSelect({ session }: GitHubSelectProps) {
         selectedOrganization={selectedOrganization}
         onOrganizationChange={handleOrganizationChange} />
       <IconSeparator className="w-6 h-6 text-muted-foreground/50" />
-      <GithubRepoSelect session={session} />
+      <GithubRepoSelect session={session} selectedRepository={selectedRepository} repositories={repositories}/>
     </>
   )
 }
