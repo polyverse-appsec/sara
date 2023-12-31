@@ -114,8 +114,6 @@ export function Root({ children, className, value, onChange, initialReducerState
 // Each node in a treeview can have 'n' number of descendants, which means our
 // data structure will be an n-ary tree. Use a recursive type in TypeScript to
 // define this type.
-//
-// 
 export type TreeNodeType = {
     id: string
     content: string
@@ -159,9 +157,6 @@ export function Arrow({ open, className }: IconProps) {
     )
 }
 
-// TODO: Start here on understanding this work: https://www.joshuawootonn.com/react-treeview-component#why-do-we-use-value-and-onchange
-// I was able to get the tree to fit nicely last night after moving some <div> with className props around
-
 export const Node = function TreeNode({
     node: { id, content, children }
 }: NodeProps) {
@@ -174,11 +169,6 @@ export const Node = function TreeNode({
     console.log(`In <Node> isOpen: ${isOpen}`)
     console.log(`In <Node> id: ${id}`)
     console.log(`In <Node> content: ${content}`)
-
-    // TODO: Had to cut some the icon as I couldn't get it to work
-    // <div className="absolute left-2 top-1 flex h-6 w-6 items-center justify-center"><IconMessage className="mr-2" /></div>
-
-    // TODO: Look into changing the fonts being rendered in the 'className'
 
     // Render the current nodes name and recursively render descendant nodes
     // within a '<ul>'. We render a hierarchical structure by using padding on

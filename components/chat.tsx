@@ -38,11 +38,6 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
   const [previewTokenDialog, setPreviewTokenDialog] = useState(IS_PREVIEW)
   const [previewTokenInput, setPreviewTokenInput] = useState(previewToken ?? '')
 
-  // TODO: So my question is this. Since 'useChat()' will cause a re-render when
-  // the messages gets updated then will my <TreeView> component automatically
-  // re-render as well since it consumes those messages? If so I ought to be able
-  // to test this - right? - if I have the new chat button enabled?
-
   // 'useChat' comes from the Vercel API: https://sdk.vercel.ai/docs/api-reference/use-chat
   //
   // After a message is submitted the 'useChat' hook will automatically append a

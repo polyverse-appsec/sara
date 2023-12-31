@@ -12,7 +12,6 @@ interface ChatHistoryProps {
 }
 
 export async function ChatHistory({ userId }: ChatHistoryProps) {
-  console.log(`<ChatHistory> render`)
   return (
     <div className="flex flex-col h-full">
       <div className="px-2 my-4">

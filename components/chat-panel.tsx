@@ -52,7 +52,6 @@ export function ChatPanel({
               Stop generating
             </Button>
           ) : (
-            // TODO: What does the length being >= 2 indicate? That there is a user and assistant message?
             messages?.length >= 2 && (
               <div className="flex space-x-2">
                 <Button variant="outline" onClick={() => reload()}>
@@ -88,9 +87,6 @@ export function ChatPanel({
         <div className="px-4 py-2 space-y-4 border-t shadow-lg bg-background sm:rounded-t-xl sm:border md:py-4">
           <PromptForm
             onSubmit={async value => {
-              // TODO: Example shows just a `handleSubmit` being passed to the form
-              // https://sdk.vercel.ai/docs/api-reference/use-chat
-              
               // Append a new chat message triggering an API call to our
               // endpoint passing in an ID, the content of the form for the
               // message and a role as user.

@@ -12,27 +12,12 @@ import { IconPlus } from '@/components/ui/icons'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { ClearHistory } from '@/components/clear-history'
 
-
-// TODO: Comments
 type TaskDataLoaderProps = {
     userId: string
 }
 
-// TODO: Start here - I got the task titles rendered but now I need to make it so if I click on any of them I can navigate to the past threads
-
-// TODO: Comments
 export default async function TaskDataLoader({ userId }: TaskDataLoaderProps) {
-    // TODO: This pattern was originally implemented in <SidebarList> and used React 'cache()' - Do I want to as well?
-    // See: https://react.dev/reference/react/cache#usage
-
-    console.log(`<TaskDataLoader> render before getChats`)
-
-    // TODO: Discuss how tasks is really a chat
     const tasks = await getChats(userId)
-    console.log(`<TaskDataLoader> render after getChats`)
-    console.log(`TaskDataLoader fetched tasks length: ${JSON.stringify(tasks?.length)}`)
-
-    // TODO: Uncomment the ThemeToggle and ClearHistory
 
     // If the user hasn't provided any of their tasks yet then state that
     // otherwise render the task tree.

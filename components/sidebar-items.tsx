@@ -14,7 +14,6 @@ interface SidebarItemsProps {
 
 export function SidebarItems({ chats }: SidebarItemsProps) {
   if (!chats?.length) return null
-  console.log(`<SidebarItems> render`)
 
   return (
     <AnimatePresence>
