@@ -5,105 +5,105 @@ import { TreeNodeType } from "./treeview";
 export const data: TreeNodeType[] = [
     {
         id: uuid(),
-        name: 'components',
+        content: 'components',
         children: [
             {
                 id: uuid(),
-                name: 'toggle-group',
+                content: 'toggle-group',
                 children: [
                     {
                         id: uuid(),
-                        name: 'index.ts',
+                        content: 'index.ts',
                     },
                     {
                         id: uuid(),
-                        name: 'toggle-group.tsx',
+                        content: 'toggle-group.tsx',
                     },
                 ],
             },
             {
                 id: uuid(),
-                name: 'treeview',
+                content: 'treeview',
                 children: [
                     {
                         id: uuid(),
-                        name: 'icons.tsx',
+                        content: 'icons.tsx',
                     },
                     {
                         id: uuid(),
-                        name: 'index.tsx',
+                        content: 'index.tsx',
                     },
                     {
                         id: uuid(),
-                        name: 'treeview.tsx',
+                        content: 'treeview.tsx',
                     },
                 ],
             },
             {
                 id: uuid(),
-                name: 'long-component-folder-name-that-overflows',
+                content: 'long-component-folder-name-that-overflows',
                 children: [
                     {
                         id: uuid(),
-                        name: 'index.tsx',
+                        content: 'index.tsx',
                     },
                     {
                         id: uuid(),
-                        name: 'long-component.tsx',
+                        content: 'long-component.tsx',
                     },
                 ],
             },
             {
                 id: uuid(),
-                name: 'index.tsx',
+                content: 'index.tsx',
                             },
             {
                 id: uuid(),
-                name: 'long-util-file-name-that-overflows.tsx',
+                content: 'long-util-file-name-that-overflows.tsx',
             },
             {
                 id: uuid(),
-                name: 'roving-tabindex.tsx',
+                content: 'roving-tabindex.tsx',
             },
         ],
     },
     {
         id: uuid(),
-        name: 'lib',
+        content: 'lib',
         children: [
             {
                 id: uuid(),
-                name: 'treeview',
+                content: 'treeview',
                 children: [
                     {
                         id: uuid(),
-                        name: 'index.ts',
+                        content: 'index.ts',
                     },
                     {
                         id: uuid(),
-                        name: 'initialValue.ts',
+                        content: 'initialValue.ts',
                     },
                     {
                         id: uuid(),
-                        name: 'tree-state.tsx',
+                        content: 'tree-state.tsx',
                     },
                     {
                         id: uuid(),
-                        name: 'useTreeNode.tsx',
+                        content: 'useTreeNode.tsx',
                     },
                 ],
             },
             {
                 id: uuid(),
-                name: 'utils',
+                content: 'utils',
                 children: [
                     {
                         id: uuid(),
-                        name: 'chainable-map.ts',
+                        content: 'chainable-map.ts',
                     },
                     {
                         id: uuid(),
-                        name: 'index.ts',
+                        content: 'index.ts',
                     },
                 ],
             },
@@ -111,112 +111,112 @@ export const data: TreeNodeType[] = [
     },
     {
         id: uuid(),
-        name: 'pages',
+        content: 'pages',
         children: [
             {
                 id: uuid(),
-                name: '_app.tsx',
+                content: '_app.tsx',
             },
             {
                 id: uuid(),
-                name: '_document.tsx',
+                content: '_document.tsx',
             },
             {
                 id: uuid(),
-                name: 'index.tsx',
+                content: 'index.tsx',
             },
             {
                 id: uuid(),
-                name: 'toggle-group.tsx',
+                content: 'toggle-group.tsx',
             },
             {
                 id: uuid(),
-                name: 'treeview.tsx',
+                content: 'treeview.tsx',
             },
         ],
     },
     {
         id: uuid(),
-        name: 'public',
+        content: 'public',
         children: [
             {
                 id: uuid(),
-                name: 'favicon.ico',
+                content: 'favicon.ico',
             },
             {
                 id: uuid(),
-                name: 'file.png',
+                content: 'file.png',
             },
             {
                 id: uuid(),
-                name: 'folder.png',
+                content: 'folder.png',
             },
             {
                 id: uuid(),
-                name: 'next.svg',
+                content: 'next.svg',
             },
             {
                 id: uuid(),
-                name: 'thirteen.svg',
+                content: 'thirteen.svg',
             },
             {
                 id: uuid(),
-                name: 'vercel.svg',
+                content: 'vercel.svg',
             },
         ],
     },
     {
         id: uuid(),
-        name: 'styles',
+        content: 'styles',
         children: [
             {
                 id: uuid(),
-                name: 'global.css',
+                content: 'global.css',
             },
         ],
     },
     {
         id: uuid(),
-        name: '.eslintrc.json',
+        content: '.eslintrc.json',
     },
     {
         id: uuid(),
-        name: '.gitignore',
+        content: '.gitignore',
     },
     {
         id: uuid(),
-        name: '.prettierrc.js',
+        content: '.prettierrc.js',
     },
     {
         id: uuid(),
-        name: 'next-env.d.ts',
+        content: 'next-env.d.ts',
     },
     {
         id: uuid(),
-        name: 'next.config.js',
+        content: 'next.config.js',
     },
     {
         id: uuid(),
-        name: 'package.json',
+        content: 'package.json',
     },
     {
         id: uuid(),
-        name: 'postcss.config.js',
+        content: 'postcss.config.js',
     },
     {
         id: uuid(),
-        name: 'README.md',
+        content: 'README.md',
     },
     {
         id: uuid(),
-        name: 'tailwind.config.js',
+        content: 'tailwind.config.js',
     },
     {
         id: uuid(),
-        name: 'tsconfig.json',
+        content: 'tsconfig.json',
     },
     {
         id: uuid(),
-        name: 'yarn.lock',
+        content: 'yarn.lock',
     },
 ]
