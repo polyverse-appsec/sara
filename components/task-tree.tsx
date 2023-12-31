@@ -22,9 +22,12 @@ const prepTasksForTreeNodes = (tasks: Chat[]) => tasks.map(({ id, title: content
 
 // TODO: Comments
 export default function TaskTree({ tasks }: TaskTreeProps) {
+    // TODO: 12/30 6:13 PM - Is this controlled state causing a problem? Am I getting new tasks but not re-rendering because I need to use a reducer or something?
     const [selected, select] = useState<string | null>(null)
 
     const preppedTasks = prepTasksForTreeNodes(tasks)
+
+    console.log(`In <TaskTree> preppedTasks: ${JSON.stringify(preppedTasks)}`)
 
     // TODO: Need to ensure that tasks objects match that of Node objects in terms of identifiers and stuff on the objs - look at the props
     // export interface Chat extends Record<string, any> {

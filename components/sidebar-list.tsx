@@ -17,7 +17,9 @@ const loadChats = cache(async (userId?: string) => {
 // Is this because SidebarList is an async component? It allows us to use await to fetch the data
 // TODO: Will my componets work if they are client compnoent? Or do I need to create a higher order componet that is server side - changing the boundaries - and then pass the data to my client components
 export async function SidebarList({ userId }: SidebarListProps) {
+  console.log(`<SidebarList> render before loadChats`)
   const chats = await loadChats(userId)
+  console.log(`<SidebarList> render after loadChats`)
 
   console.log(`Fetched chats length: ${JSON.stringify(chats?.length)}`)
 
