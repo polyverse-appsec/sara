@@ -55,8 +55,11 @@ export async function fetchOrganizationRepositories({
 
   try {
     while (true) {
-      const response = await octokit.request('GET /user/repos', {
-        visibility: 'all',
+      // the api /user/repos is supposed to return all repos for the user, but it doesn't seem to work
+      // for private repos unless we have the repo permission. but if we have the repo permission,
+      // we can use the more direct /orgs/:org/repos api
+      const response = await octokit.request('GET /orgs/' + org + '/repos', {
+        type: 'all',
         per_page: 100,
         page: page,
         headers: {
@@ -69,11 +72,6 @@ export async function fetchOrganizationRepositories({
       }
 
       repoNames.push(...response.data.map((repo: { name: any }) => repo.name))
-
-      console.log(
-        `Fetched page ${page}:`,
-        response.data.map((repo: { name: any }) => repo.name)
-      )
       page++
     }
 

@@ -9,7 +9,9 @@ export const {
 } = NextAuth({
   providers: [
     GitHub({
-      authorization: { params: { scope: 'user:email, read:org, read:user' } }
+      authorization: {
+        params: { scope: 'user:email, read:org, read:user, repo' }
+      }
     })
   ],
   callbacks: {
