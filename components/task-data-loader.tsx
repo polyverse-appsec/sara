@@ -23,6 +23,9 @@ export default async function TaskDataLoader({ userId }: TaskDataLoaderProps) {
     // otherwise render the task tree.
     return (
         <div className="flex flex-col h-full">
+            <h1 className="px-4 py-2 text-xl font-bold text-center text-muted-foreground">
+                Tasks for Selected Repo
+            </h1>
             <div className="px-2 my-4">
                 <Link
                     href="/"
@@ -32,7 +35,7 @@ export default async function TaskDataLoader({ userId }: TaskDataLoaderProps) {
                     )}
                 >
                     <IconPlus className="-translate-x-2 stroke-2" />
-                    New Chat
+                    New Task
                 </Link>
             </div>
             <div className="flex flex-1 flex-col overflow-hidden">

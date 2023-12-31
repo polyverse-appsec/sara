@@ -14,6 +14,9 @@ interface ChatHistoryProps {
 export async function ChatHistory({ userId }: ChatHistoryProps) {
   return (
     <div className="flex flex-col h-full">
+      <h1 className="px-4 py-2 text-xl font-bold text-center text-muted-foreground">
+        Chats for Selected Task
+      </h1>
       <div className="px-2 my-4">
         <Link
           href="/"

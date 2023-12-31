@@ -18,7 +18,7 @@ export async function SidebarDesktop() {
       <div className="flex flex-col h-full">
         {/* @ts-ignore */}
         <TaskDataLoader userId={session.user.id} />
-        {/*<ChatHistory userId={session.user.id} />*/}
+        {<ChatHistory userId={session.user.id} />}
       </div>
     </Sidebar>
   )
