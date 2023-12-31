@@ -1,5 +1,6 @@
 import clsx from 'clsx'
 import { Dispatch, ReactNode, createContext, useContext, useReducer } from 'react'
+import { IconMessage, IconUsers } from './icons'
 
 // This was put together using this tutorial: https://www.joshuawootonn.com/react-treeview-component
 
@@ -72,10 +73,19 @@ type RootProps = {
     className?: string
     value: string | null
     onChange: (id: string) => void
+    initialReducerState?: Map<string, boolean>
 }
 
-export function Root({ children, className, value, onChange }: RootProps) {
-    const [open, dispatch] = useReducer(treeviewReducer, new Map<string, boolean>())
+export function Root({ children, className, value, onChange, initialReducerState }: RootProps) {
+    // console.log(`In <Root> - initialReducerState: ${JSON.stringify([...initialReducerState.entries()])}`)
+
+    console.log(`Terinary eval of the initialReducerState: ${initialReducerState ? "true" : "false"}`)
+
+    const [open, dispatch] = useReducer(treeviewReducer, initialReducerState ? initialReducerState : new Map<string, boolean>())
+
+    // console.log(`In <Root> - open: ${JSON.stringify([...open.entries()])}`)
+    console.log(`In <Root> - children: ${children}`)
+
 
     // 'clsx' is an alternative to 'classNames' and is useful for deriving a
     // list of classes from state
@@ -106,7 +116,7 @@ export function Root({ children, className, value, onChange }: RootProps) {
 // define this type.
 export type TreeNodeType = {
     id: string
-    name: string
+    content: string
     children?: TreeNodeType[]
     icon?: ReactNode
 }
@@ -147,17 +157,18 @@ export function Arrow({ open, className }: IconProps) {
     )
 }
 
-// TODO: Start here on understanding this work: https://www.joshuawootonn.com/react-treeview-component#why-do-we-use-value-and-onchange
-// I was able to get the tree to fit nicely last night after moving some <div> with className props around
-
 export const Node = function TreeNode({
-    node: { id, name, children }
+    node: { id, content, children }
 }: NodeProps) {
+    console.log(`In <Node>`)
+
     // Use the 'TreeViewContext' so we can consume open state
     const { open, dispatch, selectedID, selectID } = useContext(TreeViewContext)
     const isOpen = open.get(id)
 
-    // TODO: Look into changing the fonts being rendered in the 'className'
+    console.log(`In <Node> isOpen: ${isOpen}`)
+    console.log(`In <Node> id: ${id}`)
+    console.log(`In <Node> content: ${content}`)
 
     // Render the current nodes name and recursively render descendant nodes
     // within a '<ul>'. We render a hierarchical structure by using padding on
@@ -181,43 +192,47 @@ export const Node = function TreeNode({
     // Use 'shring-0' with our arrow to prevent it from shrinking in the case of
     // text overflow
     return (
-        <li className="flex flex-col cursor-pointer select-none">
-            <div
-                className={clsx(
-                    'flex items-center space-x-2 font-mono font-medium rounded-sm px-1',
-                    selectedID === id ? 'bg-slate-700' : 'bg-transparent'
-                )}
-                onClick={() => {
-                    // Search all of the tree state - represented by 'open' -
-                    // for the node ID and if it is already open then dispatch
-                    // an action to close it. Otherwise open it.
-                    isOpen
-                        ? dispatch({
-                            id, type: TreeViewActionTypes.CLOSE
-                        })
-                        : dispatch({
-                            id, type: TreeViewActionTypes.OPEN
-                        })
-                    selectID(id)
-                }}
-            >
-                {children?.length ? (
-                    <Arrow className="h-4 w-4 shrink-0" open={isOpen} />
-                ) : (
-                    <span className="h-4 w-4 shrink-0" />
-                )}
-                <span className="text-ellipsis whitespace-nowrap overflow-hidden">{name}</span>
+        <div>
+            <div className="relative h-8">
+                <li className="flex flex-col cursor-pointer select-none">
+                    <div
+                        className={clsx(
+                            'flex items-center space-x-2 rounded-sm px-1',
+                            selectedID === id ? 'bg-slate-700' : 'bg-transparent'
+                        )}
+                        onClick={() => {
+                            // Search all of the tree state - represented by 'open' -
+                            // for the node ID and if it is already open then dispatch
+                            // an action to close it. Otherwise open it.
+                            isOpen
+                                ? dispatch({
+                                    id, type: TreeViewActionTypes.CLOSE
+                                })
+                                : dispatch({
+                                    id, type: TreeViewActionTypes.OPEN
+                                })
+                            selectID(id)
+                        }}
+                    >
+                        {children?.length ? (
+                            <Arrow className="h-4 w-4 shrink-0" open={isOpen} />
+                        ) : (
+                            <span className="h-4 w-4 shrink-0" />
+                        )}
+                        <span className="text-ellipsis whitespace-nowrap overflow-hidden">{content}</span>
+                    </div>
+                    {
+                    // Conditionally render based on if the parent is open
+                    children?.length && open.get(id) && (
+                        <ul className="pl-4">
+                            {children.map(node => (
+                                <Node node={node} key={node.id} />
+                            ))}
+                        </ul>
+                    )}
+                </li>
             </div>
-            {
-            // Conditionally render based on if the parent is open
-            children?.length && open.get(id) && (
-                <ul className="pl-4">
-                    {children.map(node => (
-                        <Node node={node} key={node.id} />
-                    ))}
-                </ul>
-            )}
-        </li>
+        </div>
     )
 }
 

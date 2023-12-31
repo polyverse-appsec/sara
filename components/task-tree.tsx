@@ -1,19 +1,24 @@
 'use client'
 
+import { Chat } from '@/lib/types'
+
 import { useState } from 'react'
 
 import { Treeview } from './ui/treeview'
 
-import { data } from './ui/treeview-data-test'
+// TODO: Delete this file
+// import { data } from './ui/treeview-data-test'
 
-// TODO: I want to wrap this with a <div> and try to put in the following to make it fit: flex flex-col h-full
-// Note that I tried this and it didn't work - made things arguably worse. Look at the elements in the developer tools
-// to sus out more of what is going on
+type TaskTreeProps = {
+    tasks: Chat[]
+}
 
-export default function TaskTree() {
+const prepTasksForTreeNodes = (tasks: Chat[]) => tasks.map(({ id, title: content }) => ({ id, content }))
+
+export default function TaskTree({ tasks }: TaskTreeProps) {
     const [selected, select] = useState<string | null>(null)
 
-    // className="w-72 h-full border-[1.5px] border-slate-200 m-4"
+    const preppedTasks = prepTasksForTreeNodes(tasks)
 
     // Our tree is a controlled component. We use 'value' as the selected item
     // in the tree and 'onChange' is how we select it. For more on controlled
@@ -23,8 +28,8 @@ export default function TaskTree() {
             value={selected}
             onChange={select}
         >
-            {data.map(node => (
-                <Treeview.Node node={node} key={node.id} />
+            {preppedTasks.map(preppedTask => (
+                <Treeview.Node node={preppedTask} key={preppedTask.id} />
             ))}
         </Treeview.Root>
     )

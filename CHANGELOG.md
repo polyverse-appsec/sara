@@ -3,6 +3,18 @@ Polyverse Sara Web UI for Boost
 
 # Release Notes
 
+## Version 0.2.0: December 30th, 2023
+
+### New Features
+- Implement React TaskTree component
+  - Note: Business logic not yet hooked up
+
+### Enhancements
+- N/A
+
+### Bug Fixes
+- N/A
+
 ## Version 0.1.0: December 21st, 2023
 
 ### New Features

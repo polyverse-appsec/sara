@@ -26,6 +26,7 @@ export async function ChatHistory({ userId }: ChatHistoryProps) {
           New Chat
         </Link>
       </div>
+
       <React.Suspense
         fallback={
           <div className="flex flex-col flex-1 px-4 space-y-4 overflow-auto">
