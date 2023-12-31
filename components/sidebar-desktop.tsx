@@ -3,7 +3,7 @@ import { Sidebar } from '@/components/sidebar'
 import { auth } from '@/auth'
 import { ChatHistory } from '@/components/chat-history'
 
-import TaskDataLoader from './task-data-loader'
+import {TaskDataLoader} from './task-data-loader'
 
 export async function SidebarDesktop() {
   const session = await auth()

@@ -6,14 +6,16 @@ import { useState } from 'react'
 
 import { Treeview } from './ui/treeview'
 
+import { Task } from '@/lib/types'
+
 // TODO: Delete this file
 // import { data } from './ui/treeview-data-test'
 
 type TaskTreeProps = {
-    tasks: Chat[]
+    tasks: Task[]
 }
 
-const prepTasksForTreeNodes = (tasks: Chat[]) => tasks.map(({ id, title: content }) => ({ id, content }))
+const prepTasksForTreeNodes = (tasks: Task[]) => tasks.map(({ id, title }) => ( { id: id, content: title }))
 
 export default function TaskTree({ tasks }: TaskTreeProps) {
     const [selected, select] = useState<string | null>(null)
