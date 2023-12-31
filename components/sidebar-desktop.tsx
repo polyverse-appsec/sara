@@ -4,12 +4,6 @@ import { auth } from '@/auth'
 import { ChatHistory } from '@/components/chat-history'
 
 import TaskDataLoader from './task-data-loader'
-// TODO: Some notes for myself
-// With regards to the UX for providing a message/request for the first time I
-// see that the <Chat>/<ChatPanel> gets updated lots and once the message is
-// finished I see the backend compile /chat/[id]. This must be pushed on as a route
-// from the callback passed in to 'useChat()' in the <Chat> component
-
 
 export async function SidebarDesktop() {
   const session = await auth()
