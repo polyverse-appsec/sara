@@ -7,7 +7,7 @@ import { signOut } from 'next-auth/react'
 import { Button } from '@/components/ui/button'
 import { getOrganizations } from '@/app/actions'
 import React, { useState, useEffect } from 'react';
-import { Organization } from '@/lib/polyverse/github/repos'
+import { Organization } from '@/lib/types'
 
 
 import {

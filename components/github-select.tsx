@@ -14,11 +14,12 @@ import { GithubRepoSelect } from './github-repo-select';
 import { type Session } from 'next-auth';
 import { getOrganizations, getRepositories } from '@/app/actions'
 import { useState, useEffect } from 'react';
-import { Organization } from '@/lib/polyverse/github/repos'
+import { Organization, Repository } from '@/lib/types'
 
 interface GitHubSelectProps {
   session: Session; // Add the session prop
 }
+import { useAppContext } from '@/lib/hooks/app-context';
 
 export function GithubSelect({ session }: GitHubSelectProps) {
 
@@ -26,11 +27,11 @@ export function GithubSelect({ session }: GitHubSelectProps) {
     // component implementation
     const user = session.user;
 
+    const { selectedOrganization, setSelectedOrganization, selectedRepository, setSelectedRepository } = useAppContext();
+
     // State to store organizations
     const [organizations, setOrganizations] = useState<Organization[]>([]);
-    const [selectedOrganization, setSelectedOrganization] = useState<Organization | null>(null);
-    const [repositories, setRepositories] = useState<string[]>([]);
-    const [selectedRepository, setSelectedRepository] = useState<string | null>(null);
+    const [repositories, setRepositories] = useState<Repository[]>([]);
   
     // State to track if dropdown is open
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -76,7 +77,7 @@ export function GithubSelect({ session }: GitHubSelectProps) {
       fetchRepositories(org);
     };
 
-    const handleRepositoryChange = (repo: string) => {
+    const handleRepositoryChange = (repo: Repository) => {
       console.log('Repository changed:', repo);
       setSelectedRepository(repo);
 

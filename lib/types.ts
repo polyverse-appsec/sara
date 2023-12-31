@@ -36,6 +36,12 @@ export interface User extends Record<string, any> {
   email?: string
 }
 
+// Define the simplified Organization type
+export type Organization = {
+  login: string // The organization's login name
+  avatar_url: string // The URL of the organization's avatar
+}
+
 export interface Repository extends Record<string, any> {
   id: string
   name: string

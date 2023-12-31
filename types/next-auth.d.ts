@@ -1,6 +1,6 @@
 import NextAuth, { DefaultSession } from 'next-auth'
 
-import { Organization } from './lib/polyverse/github/repos'
+import { Organization, Repository } from '@/lib/types'
 
 declare module 'next-auth' {
   /**
@@ -15,7 +15,7 @@ declare module 'next-auth' {
     } & DefaultSession['user']
     accessToken: string
     organization?: Organization
-    repository?: string
+    repository?: Repository
     referenceRepositories?: {
       organization: Organization
       repository: string

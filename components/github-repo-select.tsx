@@ -13,6 +13,7 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { IconExternalLink } from '@/components/ui/icons'
+import { Repository } from '@/lib/types'
 
 function getUserInitials(name: string) {
   const [firstName, lastName] = name.split(' ')
@@ -21,9 +22,9 @@ function getUserInitials(name: string) {
 
 interface GithubRepoSelectProps {
   session: Session;
-  selectedRepository: string | null;
-  repositories: string[];
-  onRepositoryChange: (repo: string) => void;
+  selectedRepository: Repository | null;
+  repositories: Repository[];
+  onRepositoryChange: (repo: Repository) => void;
   // other props if any
 }
 export function GithubRepoSelect({ session, selectedRepository, repositories, onRepositoryChange }: GithubRepoSelectProps) { 
@@ -34,7 +35,7 @@ export function GithubRepoSelect({ session, selectedRepository, repositories, on
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="pl-0">
             {selectedRepository ? (
-              <span className="ml-2">{selectedRepository}</span>
+              <span className="ml-2">{selectedRepository.name}</span>
             ) : (
               <span className="ml-2">Select Repository</span>
             )}
@@ -43,10 +44,10 @@ export function GithubRepoSelect({ session, selectedRepository, repositories, on
         <DropdownMenuContent sideOffset={8} align="start" className="w-[180px]">
           {
           repositories.map((repo) => (
-              <DropdownMenuItem key={repo}
+              <DropdownMenuItem key={repo.name}
                 onSelect={(event)=> onRepositoryChange(repo) }>
               <span className="ml-2">
-                {repo}
+                {repo.name}
               </span>
               </DropdownMenuItem>
             ))

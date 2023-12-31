@@ -1,14 +1,8 @@
 import { Octokit } from '@octokit/rest'
-
+import { Organization, Repository } from '@/lib/types'
 // Define a type for the function's parameters
 export type FetchUserOrgsParams = {
   accessToken: string
-}
-
-// Define the simplified Organization type
-export type Organization = {
-  login: string // The organization's login name
-  avatar_url: string // The URL of the organization's avatar
 }
 
 // Function to fetch user's organizations
@@ -46,12 +40,12 @@ export type FetchOrgReposParams = {
 export async function fetchOrganizationRepositories({
   accessToken,
   org
-}: FetchOrgReposParams): Promise<string[]> {
+}: FetchOrgReposParams): Promise<Repository[]> {
   const octokit = new Octokit({
     auth: accessToken
   })
   let page = 1
-  const repoNames = []
+  const repos = []
 
   try {
     while (true) {
@@ -71,11 +65,17 @@ export async function fetchOrganizationRepositories({
         break // Exit the loop if no more repos are returned
       }
 
-      repoNames.push(...response.data.map((repo: { name: any }) => repo.name))
+      repos.push(
+        ...response.data.map((repo: { name: any; description: any }) => ({
+          name: repo.name,
+          description: repo.description,
+          orgId: org
+        }))
+      )
       page++
     }
 
-    return repoNames
+    return repos
   } catch (error) {
     console.error('Error fetching repositories:', error)
     throw error

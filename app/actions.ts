@@ -8,9 +8,9 @@ import { auth } from '@/auth'
 import { type Chat } from '@/lib/types'
 import {
   fetchUserOrganizations,
-  fetchOrganizationRepositories,
-  Organization
+  fetchOrganizationRepositories
 } from '@/lib/polyverse/github/repos'
+import { Organization, Repository } from '@/lib/types'
 
 export async function getChats(userId?: string | null) {
   if (!userId) {
@@ -149,13 +149,11 @@ export async function getOrganizations(): Promise<Organization[]> {
   return orgs
 }
 
-export async function getRepositories(org: string) {
+export async function getRepositories(org: string): Promise<Repository[]> {
   const session = await auth()
 
   if (!session?.user?.id) {
-    return {
-      error: 'Unauthorized'
-    }
+    throw new Error('Unauthorized')
   }
   const repos = await fetchOrganizationRepositories({
     accessToken: session.accessToken,
