@@ -34,6 +34,7 @@ export interface User extends Record<string, any> {
   username: string
   image?: string
   email?: string
+  defaultTask?: Task
 }
 
 // Define the simplified Organization type
@@ -43,7 +44,7 @@ export type Organization = {
 }
 
 export interface Repository extends Record<string, any> {
-  id: string
+  full_name: string
   name: string
   description: string
   orgId: string
@@ -52,6 +53,7 @@ export interface Repository extends Record<string, any> {
     repository: string
   }[]
   tasks?: Task[]
+  defaultTask?: Task
 }
 
 export interface Task extends Record<string, any> {

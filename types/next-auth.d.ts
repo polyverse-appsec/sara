@@ -1,6 +1,6 @@
 import NextAuth, { DefaultSession } from 'next-auth'
 
-import { Organization, Repository } from '@/lib/types'
+import { Organization, Repository, Task } from '@/lib/types'
 
 declare module 'next-auth' {
   /**
@@ -14,8 +14,9 @@ declare module 'next-auth' {
       email?: string
     } & DefaultSession['user']
     accessToken: string
-    organization?: Organization
-    repository?: Repository
+    activeOrganization?: Organization
+    activeRepository?: Repository
+    activeTask?: Task
     referenceRepositories?: {
       organization: Organization
       repository: string

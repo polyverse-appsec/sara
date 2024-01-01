@@ -17,7 +17,8 @@ export async function POST(req: Request) {
   console.log(`In POST of route.ts - req: ${JSON.stringify(req)}`)
   const json = await req.json()
   const { messages, previewToken } = json
-  const userId = (await auth())?.user.id
+  const session = await auth()
+  const userId = session?.user.id
   console.log(`In POST of route.ts - json: ${JSON.stringify(json)}`)
 
   console.log('messages are', messages)
@@ -51,7 +52,12 @@ export async function POST(req: Request) {
     }
 
     await kv.hmset(`chat:${id}`, payload)
-    await kv.zadd(`user:chat:${userId}`, {
+
+    let key = `user:chat:${userId}`
+    if (session.activeTask?.id) {
+      key = `task:chats:${session.activeTask?.id}`
+    }
+    await kv.zadd(key, {
       score: createdAt,
       member: `chat:${id}`
     })

@@ -66,11 +66,14 @@ export async function fetchOrganizationRepositories({
       }
 
       repos.push(
-        ...response.data.map((repo: { name: any; description: any }) => ({
-          name: repo.name,
-          description: repo.description,
-          orgId: org
-        }))
+        ...response.data.map(
+          (repo: { name: any; description: any; full_name: string }) => ({
+            name: repo.name,
+            full_name: repo.full_name,
+            description: repo.description,
+            orgId: org
+          })
+        )
       )
       page++
     }

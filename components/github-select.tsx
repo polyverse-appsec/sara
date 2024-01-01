@@ -72,7 +72,7 @@ export function GithubSelect({ session }: GitHubSelectProps) {
       console.log('Organization changed:', org);
       setSelectedOrganization(org);
 
-      session.organization = org;
+      session.activeOrganization = org;
       // Reset repositories when organization changes
       fetchRepositories(org);
     };
@@ -81,7 +81,7 @@ export function GithubSelect({ session }: GitHubSelectProps) {
       console.log('Repository changed:', repo);
       setSelectedRepository(repo);
 
-      session.repository = repo;
+      session.activeRepository = repo;
     }
   
   return (
