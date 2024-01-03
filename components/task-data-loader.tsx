@@ -33,7 +33,7 @@ export  function TaskDataLoader({ userId }: TaskDataLoaderProps) {
    
     const { selectedRepository } = useAppContext();
 
-    console.log(`<TaskDataLoader> render - selectedRepository: ${JSON.stringify(selectedRepository)}`)
+    // console.log(`<TaskDataLoader> render - selectedRepository: ${JSON.stringify(selectedRepository)}`)
 
     function fetchTasks() {
         console.log('Fetching tasks')

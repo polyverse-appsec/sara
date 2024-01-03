@@ -9,6 +9,9 @@ import {
   SelectGroup,
   // Other imports if necessary
 } from '@/components/ui/select'; // Update the import path
+
+import { getOrCreateRepository, getRepository } from '@/app/actions';
+
 import { GithubOrgSelect } from './github-org-select';
 import { GithubRepoSelect } from './github-repo-select';
 import { type Session } from 'next-auth';
@@ -77,9 +80,14 @@ export function GithubSelect({ session }: GitHubSelectProps) {
       fetchRepositories(org);
     };
 
-    const handleRepositoryChange = (repo: Repository) => {
-      console.log('Repository changed:', repo);
+    const handleRepositoryChange = async (repo: Repository) => {
+      const retrievedRepo = await getRepository(repo.full_name, session.user.id)
+
+      // Set the React context of the selected repo
       setSelectedRepository(repo);
+
+      // Persist the repo in the KV store
+      const getOrCreatedRepo = await getOrCreateRepository(repo, session.user.id)
 
       session.activeRepository = repo;
     }

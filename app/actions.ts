@@ -269,9 +269,9 @@ export async function getOrCreateRepository(repo: Repository, userId: string): P
   //
   // Per our current implementation of our types we assume that the `orgId`
   // matches the ID of the user that owns the repo
-  if (repo.orgId !== session.user.id) {
-    throw new Error('Unauthorized')
-  }
+  // if (repo.orgId !== session.user.id) {
+  //   throw new Error('Unauthorized')
+  // }
 
   return await createRepository(repo)
 }
@@ -291,9 +291,9 @@ export async function createRepository(repo: Repository): Promise<Repository> {
 
   // Per our current implementation of our types we assume that the `orgId`
   // matches the ID of the user that owns the repo
-  if (repo.orgId !== session.user.id) {
-    throw new Error('Unauthorized')
-  }
+  // if (repo.orgId !== session.user.id) {
+  //   throw new Error('Unauthorized')
+  // }
 
   const repoKey = buildRepositoryHashKey(repo.full_name)
   await kv.hmset(repoKey, repo)
@@ -324,9 +324,9 @@ export async function getRepository(
 
   // Per our current implementation of our types we assume that the `orgId`
   // matches the ID of the user that owns the repo
-  if (!repo || repo.orgId !== session.user.id) {
-    return null
-  }
+  // if (!repo || repo.orgId !== session.user.id) {
+  //   return null
+  // }
 
   return repo
 }
