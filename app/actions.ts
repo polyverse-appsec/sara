@@ -143,7 +143,7 @@ export async function shareChat(id: string) {
     sharePath: `/share/${chat.id}`
   }
 
-  await kv.hmset(`chat:${chat.id}`, payload)
+  await kv.hset(`chat:${chat.id}`, payload)
 
   return payload
 }
@@ -196,7 +196,7 @@ export async function createTask(task: Task): Promise<Task> {
     createdAt
   }
 
-  await kv.hmset(`task:${id}`, taskData)
+  await kv.hset(`task:${id}`, taskData)
   await kv.zadd(`user:tasks:${session.user.id}`, {
     score: +createdAt,
     member: `task:${id}`
@@ -296,7 +296,43 @@ export async function createRepository(repo: Repository): Promise<Repository> {
   // }
 
   const repoKey = buildRepositoryHashKey(repo.full_name)
-  await kv.hmset(repoKey, repo)
+  await kv.hset(repoKey, repo)
+
+  return repo
+}
+
+// TODO Chris: Should this funciton work in a way where we pull the existing repo first
+// and then spread out the properties on it from the 'repo' param and then update it?
+// My concern is that empty properies on the passed in 'repo' it will remove the fields.
+// But maybe this isn't how Redis behaves and my lack of knowledge is posing this question?
+
+/**
+ * Updates a the fields of an existing repository object. Note that if the repo
+ * doesn't yet exist then it will create the object as well based on current
+ * implementation.
+ *
+ * @param {Repository} repo Fully formed instance of Repository object to
+ * update.
+ * @returns {Repository} The updated repository object.
+ */
+export async function updateRepo(repo: Repository): Promise<Repository> {
+  const session = await auth()
+
+  if (!session?.user?.id) {
+    throw new Error('Unauthorized')
+  }
+
+  // TODO: Should we just ahve a createOrUpdateRepo function? Is creating same behavior
+  // as updating?
+
+  // Per our current implementation of our types we assume that the `orgId`
+  // matches the ID of the user that owns the repo
+  // if (repo.orgId !== session.user.id) {
+  //   throw new Error('Unauthorized')
+  // }
+
+  const repoKey = buildRepositoryHashKey(repo.full_name)
+  await kv.hset(repoKey, repo)
 
   return repo
 }

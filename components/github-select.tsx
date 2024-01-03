@@ -19,10 +19,12 @@ import { getOrganizations, getRepositoriesForOrg } from '@/app/actions'
 import { useState, useEffect } from 'react';
 import { Organization, Repository } from '@/lib/types'
 
+import { useAppContext } from '@/lib/hooks/app-context';
+import { configDefaultRepositoryTask } from '@/lib/polyverse/task/task';
+
 interface GitHubSelectProps {
   session: Session; // Add the session prop
 }
-import { useAppContext } from '@/lib/hooks/app-context';
 
 export function GithubSelect({ session }: GitHubSelectProps) {
 
@@ -81,15 +83,16 @@ export function GithubSelect({ session }: GitHubSelectProps) {
     };
 
     const handleRepositoryChange = async (repo: Repository) => {
-      const retrievedRepo = await getRepository(repo.full_name, session.user.id)
+      // Persist the repo in the KV store
+      const retrievedRepo = await getOrCreateRepository(repo, session.user.id)
+
+      // Ensure that there is a default task on the repo
+      const configedRepo = await configDefaultRepositoryTask(retrievedRepo, session.user.id)
 
       // Set the React context of the selected repo
-      setSelectedRepository(repo);
+      setSelectedRepository(configedRepo);
 
-      // Persist the repo in the KV store
-      const getOrCreatedRepo = await getOrCreateRepository(repo, session.user.id)
-
-      session.activeRepository = repo;
+      session.activeRepository = configedRepo;
     }
   
   return (
