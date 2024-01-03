@@ -32,7 +32,13 @@ export function GithubSelect({ session }: GitHubSelectProps) {
     // component implementation
     const user = session.user;
 
-    const { selectedOrganization, setSelectedOrganization, selectedRepository, setSelectedRepository } = useAppContext();
+    const {
+      selectedOrganization,
+      setSelectedOrganization,
+      selectedRepository,
+      setSelectedRepository,
+      setSelectedActiveTask
+    } = useAppContext();
 
     // State to store organizations
     const [organizations, setOrganizations] = useState<Organization[]>([]);
@@ -89,8 +95,13 @@ export function GithubSelect({ session }: GitHubSelectProps) {
       // Ensure that there is a default task on the repo
       const configedRepo = await configDefaultRepositoryTask(retrievedRepo, session.user.id)
 
-      // Set the React context of the selected repo
+      // Ensure we set the relevant information in our apps context for other
+      // core components to function correctly
       setSelectedRepository(configedRepo);
+
+      if (configedRepo.defaultTask) {
+        setSelectedActiveTask(configedRepo.defaultTask)
+      }
 
       session.activeRepository = configedRepo;
     }
