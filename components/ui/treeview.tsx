@@ -77,15 +77,7 @@ type RootProps = {
 }
 
 export function Root({ children, className, value, onChange, initialReducerState }: RootProps) {
-    // console.log(`In <Root> - initialReducerState: ${JSON.stringify([...initialReducerState.entries()])}`)
-
-    console.log(`Terinary eval of the initialReducerState: ${initialReducerState ? "true" : "false"}`)
-
     const [open, dispatch] = useReducer(treeviewReducer, initialReducerState ? initialReducerState : new Map<string, boolean>())
-
-    // console.log(`In <Root> - open: ${JSON.stringify([...open.entries()])}`)
-    console.log(`In <Root> - children: ${children}`)
-
 
     // 'clsx' is an alternative to 'classNames' and is useful for deriving a
     // list of classes from state
@@ -160,15 +152,9 @@ export function Arrow({ open, className }: IconProps) {
 export const Node = function TreeNode({
     node: { id, content, children }
 }: NodeProps) {
-    console.log(`In <Node>`)
-
     // Use the 'TreeViewContext' so we can consume open state
     const { open, dispatch, selectedID, selectID } = useContext(TreeViewContext)
     const isOpen = open.get(id)
-
-    console.log(`In <Node> isOpen: ${isOpen}`)
-    console.log(`In <Node> id: ${id}`)
-    console.log(`In <Node> content: ${content}`)
 
     // Render the current nodes name and recursively render descendant nodes
     // within a '<ul>'. We render a hierarchical structure by using padding on

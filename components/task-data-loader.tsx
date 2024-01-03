@@ -22,26 +22,22 @@ type TaskDataLoaderProps = {
     userId: string
 }
 
+//TODO this is temporary until we hook into the real task db
+const convertChatToTask = ({ id, title, createdAt, userId}: Chat): Task => ({
+    id, title, description: title, createdAt, userId, repositoryId: "temporary repository id"
+})
+
 export  function TaskDataLoader({ userId }: TaskDataLoaderProps) {
     //const tasks = await getChats(userId)
     const [tasks , setTasks] = useState<Task[]>([]);
    
-    // BUGBUG: this is not working.  for some reason TaskDataLoader is running on the server side
     const { selectedRepository } = useAppContext();
-    
-    //TODO this is temporary until we hook into the real task db
-    function convertChatToTask(chat: Chat): Task {
-        return {
-            id: chat.id,
-            title: chat.title,
-            description: chat.title,
-            createdAt: chat.createdAt,
-            userId: chat.userId,
-            repositoryId: "temporary repository id"
-        }
-    }
+
+    console.log(`<TaskDataLoader> render - selectedRepository: ${JSON.stringify(selectedRepository)}`)
+
     function fetchTasks() {
         console.log('Fetching tasks')
+
         getChats(userId).then(data => {
           if (Array.isArray(data)) {
             const tempTasks = data.map(convertChatToTask)
@@ -53,10 +49,23 @@ export  function TaskDataLoader({ userId }: TaskDataLoaderProps) {
         }).catch(error => {
           console.error('Error fetching tasks:', error);
         });
-      }
+    }
+
+    // Effects let you specify side effects that is caused by the rendering
+    // itself, rather than a particular event.
+    //
+    // Everytime the component renders React will update the screen and then run
+    // the code inside 'useEffect()'. Note that by default this will run after
+    // every render. Setting state triggers rendering so it is possible to find
+    // yourself in an infinite loop.
+    //
+    // To prevent re-rendering you can provide dependencies to the 'useEffect()'
+    // function. To learn more about them see:
+    // https://react.dev/learn/synchronizing-with-effects
     useEffect(() => {
         fetchTasks();
-    })
+    }, [])
+
     // If the user hasn't provided any of their tasks yet then state that
     // otherwise render the task tree.
     return (

@@ -12,7 +12,7 @@ import {
 import { GithubOrgSelect } from './github-org-select';
 import { GithubRepoSelect } from './github-repo-select';
 import { type Session } from 'next-auth';
-import { getOrganizations, getRepositories } from '@/app/actions'
+import { getOrganizations, getRepositoriesForOrg } from '@/app/actions'
 import { useState, useEffect } from 'react';
 import { Organization, Repository } from '@/lib/types'
 
@@ -52,7 +52,7 @@ export function GithubSelect({ session }: GitHubSelectProps) {
     const fetchRepositories = (org: Organization) => {
       console.log('Fetching repositories for organization:', org);
       if (org) {
-        getRepositories(org.login).then(data => {
+        getRepositoriesForOrg(org.login).then(data => {
           if (Array.isArray(data)) {
             setRepositories(data);
           } else {

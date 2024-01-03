@@ -13,6 +13,8 @@ import {
 import { Organization, Repository, Task } from '@/lib/types'
 import { nanoid } from '@/lib/utils'
 
+const KEY_SEGMENT_REPOSITORY = 'repository'
+
 export async function getChats(userId?: string | null, taskId?: string) {
   if (!userId) {
     return []
@@ -163,7 +165,7 @@ export async function getOrganizations(): Promise<Organization[]> {
   return orgs
 }
 
-export async function getRepositories(org: string): Promise<Repository[]> {
+export async function getRepositoriesForOrg(org: string): Promise<Repository[]> {
   const session = await auth()
 
   if (!session?.user?.id) {
@@ -226,6 +228,60 @@ export async function getTask(
  * Repository related functions
  */
 
+/**
+ * Builds the hash key for persisting and retrieving repository fields.
+ *
+ * @param {string} fullRepoName Full name of the repository
+ * @returns Hash key for repository.
+ */
+const buildRepositoryHashKey = (fullRepoName: string) => `${KEY_SEGMENT_REPOSITORY}:${fullRepoName}`
+
+/**
+ * Server action that retrieves the most recent persisted information about a
+ * specific repository identified in the `repo.full_name` data member. If the
+ * repository doesn't exist then persists any information contained within the
+ * fully formed `repo` parameter.
+ *
+ * @param {Repository} repo Object instance of a repo. Must be fully formed in
+ * the event the repo doesn't exist and is to be created.
+ * @param {string} userId The ID of the user who is authorized to retrieve or
+ * persist the repo name.
+ * @returns {Repository} Retrieved or persisted repository info.
+ */
+export async function getOrCreateRepository(repo: Repository, userId: string): Promise<Repository> {
+  // Rather than delegate auth to functions we consume we protect ourselves and
+  // do a check here before we consume each method as well in case there are any
+  // behavioral changes to said consumed functions.
+  const session = await auth()
+
+  // Apply business logic auth check for `getRepository`
+  if (!session?.user?.id || userId !== session.user.id) {
+    throw new Error('Unauthorized')
+  }
+
+  const retrievedRepo = await getRepository(repo.full_name, userId)
+
+  if (retrievedRepo) {
+    return retrievedRepo
+  }
+
+  // Apply business logic auth check for `createRepository`
+  //
+  // Per our current implementation of our types we assume that the `orgId`
+  // matches the ID of the user that owns the repo
+  if (repo.orgId !== session.user.id) {
+    throw new Error('Unauthorized')
+  }
+
+  return await createRepository(repo)
+}
+
+/**
+ * Hashes the fields of a repository object.
+ *
+ * @param {Repository} repo Fully formed instance of Repository object.
+ * @returns {Repository} The presisted repository object.
+ */
 export async function createRepository(repo: Repository): Promise<Repository> {
   const session = await auth()
 
@@ -233,18 +289,28 @@ export async function createRepository(repo: Repository): Promise<Repository> {
     throw new Error('Unauthorized')
   }
 
-  // Assuming the orgId should match the session user ID for authorization
+  // Per our current implementation of our types we assume that the `orgId`
+  // matches the ID of the user that owns the repo
   if (repo.orgId !== session.user.id) {
     throw new Error('Unauthorized')
   }
 
-  await kv.hmset(`repository:${repo.full_name}`, repo)
+  const repoKey = buildRepositoryHashKey(repo.full_name)
+  await kv.hmset(repoKey, repo)
 
   return repo
 }
 
+/**
+ * Retrieves the fields of a repository if it exists. If not it returns `null`.
+ *
+ * @param {string} fullRepoName The full name of the repository to retrieve.
+ * @param {string} userId The ID of the user that is authorized to retrieve the
+ * details of the repository.
+ * @returns {(Repositry|null)} The repository if it exists otherwise `null`.
+ */
 export async function getRepository(
-  fullName: string,
+  fullRepoName: string,
   userId: string
 ): Promise<Repository | null> {
   const session = await auth()
@@ -253,8 +319,11 @@ export async function getRepository(
     throw new Error('Unauthorized')
   }
 
-  const repo = await kv.hgetall<Repository>(`repository:${fullName}`)
+  const repoKey = buildRepositoryHashKey(fullRepoName)
+  const repo = await kv.hgetall<Repository>(repoKey)
 
+  // Per our current implementation of our types we assume that the `orgId`
+  // matches the ID of the user that owns the repo
   if (!repo || repo.orgId !== session.user.id) {
     return null
   }
