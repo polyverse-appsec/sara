@@ -18,31 +18,33 @@ import { config } from 'process'
 import { Assistant } from 'openai/resources/beta/assistants/assistants'
 import { configAssistant } from '@/lib/polyverse/openai/assistants'
 
-export async function getChats(userId?: string | null, taskId?: string) {
-  if (!userId) {
+export async function getChats(taskId?: string | null) {
+  if (!taskId) {
     return []
   }
 
   try {
     const pipeline = kv.pipeline()
     //if we have a taskId, get the chats associated with that task, otherwise get the chats associated with the user
-    const chats: string[] = await kv.zrange(
-      taskId ? `task:chats:${taskId}` : `user:chat:${userId}`,
-      0,
-      -1,
-      {
-        rev: true
-      }
-    )
+    const key = `task:chats:${taskId}`
+    console.log(`In getChats - key: ${key}`)
+    const chats: string[] = await kv.zrange(key, 0, -1, {
+      rev: true
+    })
 
+    if (!chats.length) {
+      console.log('no chats found')
+      return []
+    }
     for (const chat of chats) {
       pipeline.hgetall(chat)
     }
 
     const results = await pipeline.exec()
-
+    console.log(`In getChats - results: ${JSON.stringify(results)}`)
     return results as Chat[]
   } catch (error) {
+    console.error('Error getting chats: ', error)
     return []
   }
 }
@@ -282,18 +284,22 @@ export async function getOrCreateRepositoryfromGithub(
 
 async function checkAndUpdateRepository(
   retrievedRepo: Repository,
-  incomingRepo: Repository
+  incomingGithubRepo: Repository
 ): Promise<Repository> {
   //go through the fields of the incoming Repo, and for every non-null field, check to see if it matches the retrieved repo
   //if it's different, then set a flag to update the repo. Be sure not to clobber fields like the Assistant field,
   //as the incoming Repo will not have that field--just the github repo info
   let updateRepo = false
-  for (const key in incomingRepo) {
-    if (incomingRepo[key] && incomingRepo[key] !== retrievedRepo[key]) {
+  for (const key in incomingGithubRepo) {
+    if (
+      incomingGithubRepo[key] &&
+      incomingGithubRepo[key] !== retrievedRepo[key]
+    ) {
       updateRepo = true
-      retrievedRepo[key] = incomingRepo[key]
+      retrievedRepo[key] = incomingGithubRepo[key]
     }
   }
+  console.log(`updateRepo: ${updateRepo}`)
   if (updateRepo) {
     const repoKey = buildRepositoryHashKey(retrievedRepo.full_name)
     await kv.hset(repoKey, retrievedRepo)

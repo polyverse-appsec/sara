@@ -27,7 +27,6 @@ interface GitHubSelectProps {
 }
 
 export function GithubSelect({ session }: GitHubSelectProps) {
-  console.log('GithubSelect session:', session)
   // component implementation
   const user = session.user
 

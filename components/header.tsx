@@ -21,16 +21,17 @@ import { SidebarMobile } from './sidebar-mobile'
 import { SidebarToggle } from './sidebar-toggle'
 import { ChatHistory } from './chat-history'
 import Image from 'next/image'
-import {GithubPanel} from './github-panel'
+import { GithubPanel } from './github-panel'
 
 async function UserOrLogin() {
   const session = await auth()
+  //BUGBUG (alexgo)--the mobile version needs to use the real activeTask.
   return (
     <>
       {session?.user ? (
         <>
           <SidebarMobile>
-            <ChatHistory userId={session.user.id} />
+            <ChatHistory task={null} />
           </SidebarMobile>
           <SidebarToggle />
         </>
@@ -49,9 +50,7 @@ async function UserOrLogin() {
             <Link href="/sign-in?callbackUrl=/">Login</Link>
           </Button>
         )}
-        {session?.user ? (
-            <GithubPanel session={session} />
-        ) : null}
+        {session?.user ? <GithubPanel session={session} /> : null}
       </div>
     </>
   )

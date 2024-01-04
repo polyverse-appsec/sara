@@ -19,9 +19,9 @@ export async function POST(req: Request) {
   const { messages, repo, task, chat } = json
   const session = await auth()
   const userId = session?.user.id
-  console.log(`In POST of route.ts - json: ${JSON.stringify(json)}`)
+  //console.log(`In POST of route.ts - json: ${JSON.stringify(json)}`)
 
-  console.log('messages are', messages)
+  //console.log('messages are', messages)
 
   if (!userId) {
     return new Response('Unauthorized', {
@@ -54,9 +54,10 @@ export async function POST(req: Request) {
     await kv.hmset(`chat:${id}`, payload)
 
     let key = `user:chat:${userId}`
-    if (session.activeTask?.id) {
-      key = `task:chats:${session.activeTask?.id}`
+    if (task?.id) {
+      key = `task:chats:${task.id}`
     }
+    console.log(`storing chat at key: ${key}`)
     await kv.zadd(key, {
       score: createdAt,
       member: `chat:${id}`

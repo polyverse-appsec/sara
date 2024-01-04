@@ -1,20 +1,30 @@
+'use client'
+import React, { useState, useEffect } from 'react'
 import { clearChats, getChats } from '@/app/actions'
 import { ClearHistory } from '@/components/clear-history'
 import { SidebarItems } from '@/components/sidebar-items'
 import { ThemeToggle } from '@/components/theme-toggle'
-import { cache } from 'react'
+import { Task, Chat } from '@/lib/types'
+import { useAppContext } from '@/lib/hooks/app-context'
 
 interface SidebarListProps {
-  userId?: string
+  task: Task | null
   children?: React.ReactNode
 }
 
-const loadChats = cache(async (userId?: string) => {
-  return await getChats(userId)
-})
+export function SidebarList({ task }: SidebarListProps) {
+  const [chats, setChats] = useState([] as Chat[])
+  const { selectedActiveTask } = useAppContext()
 
-export async function SidebarList({ userId }: SidebarListProps) {
-  const chats = await loadChats(userId)
+  useEffect(() => {
+    const fetchChats = async () => {
+      const loadedChats = await getChats(selectedActiveTask?.id || null)
+      console.log('loadedChats', loadedChats)
+      setChats(loadedChats)
+    }
+
+    fetchChats()
+  }, [selectedActiveTask])
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">

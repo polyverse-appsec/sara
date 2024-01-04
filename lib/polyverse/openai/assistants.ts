@@ -47,10 +47,6 @@ function mapFileInfotoPromptAndIds(fileInfo: ProjectDataReference[]) {
   const fileIDs = fileInfo.map(({ id }) => id)
   const prompt = getOpenAiAssistantInstructions(fileTypes)
 
-  console.log(`fileTypes: ${JSON.stringify(fileTypes)}`)
-  console.log(`prompt: ${prompt}`)
-  console.log(`fileIDs: ${JSON.stringify(fileIDs)}`)
-
   return { prompt, fileIDs }
 }
 /**

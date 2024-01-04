@@ -6,12 +6,13 @@ import { cn } from '@/lib/utils'
 import { SidebarList } from '@/components/sidebar-list'
 import { buttonVariants } from '@/components/ui/button'
 import { IconPlus } from '@/components/ui/icons'
+import { Task } from '@/lib/types'
 
 interface ChatHistoryProps {
-  userId?: string
+  task: Task | null
 }
 
-export async function ChatHistory({ userId }: ChatHistoryProps) {
+export function ChatHistory({ task }: ChatHistoryProps) {
   return (
     <div className="flex flex-col h-full">
       <h1 className="px-4 py-2 text-xl font-bold text-center text-muted-foreground">
@@ -29,22 +30,8 @@ export async function ChatHistory({ userId }: ChatHistoryProps) {
           New Chat
         </Link>
       </div>
-
-      <React.Suspense
-        fallback={
-          <div className="flex flex-col flex-1 px-4 space-y-4 overflow-auto">
-            {Array.from({ length: 10 }).map((_, i) => (
-              <div
-                key={i}
-                className="w-full h-6 rounded-md shrink-0 animate-pulse bg-zinc-200 dark:bg-zinc-800"
-              />
-            ))}
-          </div>
-        }
-      >
-        {/* @ts-ignore */}
-        <SidebarList userId={userId} />
-      </React.Suspense>
+      {/* @ts-ignore */}
+      <SidebarList task={task} />
     </div>
   )
 }
