@@ -1,5 +1,6 @@
 import { useEffect, ReactNode } from 'react'
 import { useAppContext } from '@/lib/hooks/app-context'
+import { tickleProjectFromRepoChange } from '@/app/actions'
 
 const useDataWatcher = () => {
   const { selectedRepository } = useAppContext()
@@ -11,6 +12,13 @@ const useDataWatcher = () => {
         'useDataWatcher: selectedRepository changed to: ',
         selectedRepository
       )
+      if (selectedRepository) {
+        console.log(
+          'useDataWatcher: selectedRepository.name changed to: ',
+          selectedRepository.name
+        )
+        tickleProjectFromRepoChange(selectedRepository)
+      }
     }
 
     doWorkBasedOnData()

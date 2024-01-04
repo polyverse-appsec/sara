@@ -13,6 +13,7 @@ import {
 import { Organization, Repository, Task } from '@/lib/types'
 import { nanoid } from '@/lib/utils'
 import { createDefaultRepositoryTask } from '@/lib/polyverse/task/task'
+import { tickleProject } from '@/lib/polyverse/backend/backend'
 
 export async function getChats(userId?: string | null, taskId?: string) {
   if (!userId) {
@@ -250,7 +251,7 @@ const buildRepositoryHashKey = (fullRepoName: string) =>
  * persist the repo name.
  * @returns {Repository} Retrieved or persisted repository info.
  */
-export async function getOrCreateRepository(
+export async function getOrCreateRepositoryfromGithub(
   repo: Repository,
   userId: string
 ): Promise<Repository> {
@@ -390,4 +391,19 @@ export async function getRepository(
   // }
 
   return repo
+}
+
+/*
+ * Sara AI related functions.  Note that these are interwined with the repository creation and update functions
+ * but separated out to make it easier to follow the code.
+ *
+ */
+
+export async function tickleProjectFromRepoChange(repo: Repository) {
+  const session = await auth()
+
+  if (!session?.user?.id) {
+    throw new Error('Unauthorized')
+  }
+  await tickleProject(repo, session.user.email || '')
 }
