@@ -18,9 +18,6 @@ import { config } from 'process'
 import { Assistant } from 'openai/resources/beta/assistants/assistants'
 import { configAssistant } from '@/lib/polyverse/openai/assistants'
 
-// TODO: Concern that this will swall errors up and not surface issues with our
-// logic
-
 /**
  * Helper method that deletes properties from an object whose properties
  * evaluate to undefined. Note that it modifies the object in place.
@@ -36,6 +33,7 @@ const stripUndefinedObjectProperties = (objectToStrip: any) => {
   if (typeof objectToStrip === 'object' && objectToStrip !== null) {
     Object.keys(objectToStrip).forEach(key => {
       if (objectToStrip[key] === undefined) {
+        console.log(`Stripping key '${key}' from object`)
         delete objectToStrip[key]
       }
     })
@@ -234,6 +232,9 @@ export async function createTask(task: Task): Promise<Task> {
     createdAt
   }
 
+  // We are being defensive here so we don't blow up the KV store when writing.
+  // Correct thing to do would be to identify where we are putting 'undefined'
+  // properties on the object we are writing and fix the logic.
   stripUndefinedObjectProperties(taskData)
 
   await kv.hset(`task:${id}`, taskData)
