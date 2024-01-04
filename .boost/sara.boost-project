@@ -39,33 +39,6 @@
       "issueCells": 0,
       "sections": {}
     },
-    ".next/package.json": {
-      "sourceRelFile": ".next/package.json",
-      "notebookRelFile": ".boost/.next/package.json.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "package.json": {
-      "sourceRelFile": "package.json",
-      "notebookRelFile": ".boost/package.json.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    ".env.example": {
-      "sourceRelFile": ".env.example",
-      "notebookRelFile": ".boost/.env.example.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
     "components/chat-scroll-anchor.tsx": {
       "sourceRelFile": "components/chat-scroll-anchor.tsx",
       "notebookRelFile": ".boost/components/chat-scroll-anchor.tsx.boost-notebook",
@@ -129,15 +102,6 @@
       "issueCells": 0,
       "sections": {}
     },
-    "components/clear-history.tsx": {
-      "sourceRelFile": "components/clear-history.tsx",
-      "notebookRelFile": ".boost/components/clear-history.tsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
     "components/sidebar-item.tsx": {
       "sourceRelFile": "components/sidebar-item.tsx",
       "notebookRelFile": ".boost/components/sidebar-item.tsx.boost-notebook",
@@ -150,78 +114,6 @@
     "types/next-auth.d.ts": {
       "sourceRelFile": "types/next-auth.d.ts",
       "notebookRelFile": ".boost/types/next-auth.d.ts.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "lib/utils.ts": {
-      "sourceRelFile": "lib/utils.ts",
-      "notebookRelFile": ".boost/lib/utils.ts.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "lib/types.ts": {
-      "sourceRelFile": "lib/types.ts",
-      "notebookRelFile": ".boost/lib/types.ts.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "lib/polyverse/config.ts": {
-      "sourceRelFile": "lib/polyverse/config.ts",
-      "notebookRelFile": ".boost/lib/polyverse/config.ts.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "lib/polyverse/openai/assistants.ts": {
-      "sourceRelFile": "lib/polyverse/openai/assistants.ts",
-      "notebookRelFile": ".boost/lib/polyverse/openai/assistants.ts.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "lib/polyverse/openai/constants.ts": {
-      "sourceRelFile": "lib/polyverse/openai/constants.ts",
-      "notebookRelFile": ".boost/lib/polyverse/openai/constants.ts.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "lib/polyverse/openai/messages.ts": {
-      "sourceRelFile": "lib/polyverse/openai/messages.ts",
-      "notebookRelFile": ".boost/lib/polyverse/openai/messages.ts.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "lib/polyverse/openai/runs.ts": {
-      "sourceRelFile": "lib/polyverse/openai/runs.ts",
-      "notebookRelFile": ".boost/lib/polyverse/openai/runs.ts.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "components/user-menu.tsx": {
-      "sourceRelFile": "components/user-menu.tsx",
-      "notebookRelFile": ".boost/components/user-menu.tsx.boost-notebook",
       "totalCells": 0,
       "completedCells": 0,
       "errorCells": 0,
@@ -273,315 +165,9 @@
       "issueCells": 0,
       "sections": {}
     },
-    "app/(chat)/layout.tsx": {
-      "sourceRelFile": "app/(chat)/layout.tsx",
-      "notebookRelFile": ".boost/app/(chat)/layout.tsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "app/(chat)/page.tsx": {
-      "sourceRelFile": "app/(chat)/page.tsx",
-      "notebookRelFile": ".boost/app/(chat)/page.tsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "lib/polyverse/backend/backend.ts": {
-      "sourceRelFile": "lib/polyverse/backend/backend.ts",
-      "notebookRelFile": ".boost/lib/polyverse/backend/backend.ts.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "lib/polyverse/github/repos.ts": {
-      "sourceRelFile": "lib/polyverse/github/repos.ts",
-      "notebookRelFile": ".boost/lib/polyverse/github/repos.ts.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "lib/polyverse/sara/sara.ts": {
-      "sourceRelFile": "lib/polyverse/sara/sara.ts",
-      "notebookRelFile": ".boost/lib/polyverse/sara/sara.ts.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "app/actions.ts": {
-      "sourceRelFile": "app/actions.ts",
-      "notebookRelFile": ".boost/app/actions.ts.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    ".next/images-manifest.json": {
-      "sourceRelFile": ".next/images-manifest.json",
-      "notebookRelFile": ".boost/.next/images-manifest.json.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    ".next/cache/fetch-cache/10b9930f5c111bd1939b916cb3bffd24c77433dfd874579b59622e11d7dd2ab5": {
-      "sourceRelFile": ".next/cache/fetch-cache/10b9930f5c111bd1939b916cb3bffd24c77433dfd874579b59622e11d7dd2ab5",
-      "notebookRelFile": ".boost/.next/cache/fetch-cache/10b9930f5c111bd1939b916cb3bffd24c77433dfd874579b59622e11d7dd2ab5.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    ".next/cache/fetch-cache/239e78ed11e11580b60d9df3872501b48889d2a5cd042d639e86bf9246650cc0": {
-      "sourceRelFile": ".next/cache/fetch-cache/239e78ed11e11580b60d9df3872501b48889d2a5cd042d639e86bf9246650cc0",
-      "notebookRelFile": ".boost/.next/cache/fetch-cache/239e78ed11e11580b60d9df3872501b48889d2a5cd042d639e86bf9246650cc0.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    ".next/prerender-manifest.js": {
-      "sourceRelFile": ".next/prerender-manifest.js",
-      "notebookRelFile": ".boost/.next/prerender-manifest.js.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
     "components/task-data-loader.tsx": {
       "sourceRelFile": "components/task-data-loader.tsx",
       "notebookRelFile": ".boost/components/task-data-loader.tsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "components/tailwind-indicator.tsx": {
-      "sourceRelFile": "components/tailwind-indicator.tsx",
-      "notebookRelFile": ".boost/components/tailwind-indicator.tsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "components/task-tree.tsx": {
-      "sourceRelFile": "components/task-tree.tsx",
-      "notebookRelFile": ".boost/components/task-tree.tsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "components/ui/label.tsx": {
-      "sourceRelFile": "components/ui/label.tsx",
-      "notebookRelFile": ".boost/components/ui/label.tsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "components/ui/treeview.tsx": {
-      "sourceRelFile": "components/ui/treeview.tsx",
-      "notebookRelFile": ".boost/components/ui/treeview.tsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "components/ui/tooltip.tsx": {
-      "sourceRelFile": "components/ui/tooltip.tsx",
-      "notebookRelFile": ".boost/components/ui/tooltip.tsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "components/ui/sheet.tsx": {
-      "sourceRelFile": "components/ui/sheet.tsx",
-      "notebookRelFile": ".boost/components/ui/sheet.tsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "components/ui/icons.tsx": {
-      "sourceRelFile": "components/ui/icons.tsx",
-      "notebookRelFile": ".boost/components/ui/icons.tsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "components/ui/switch.tsx": {
-      "sourceRelFile": "components/ui/switch.tsx",
-      "notebookRelFile": ".boost/components/ui/switch.tsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "components/github-org-select.tsx": {
-      "sourceRelFile": "components/github-org-select.tsx",
-      "notebookRelFile": ".boost/components/github-org-select.tsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "components/ui/separator.tsx": {
-      "sourceRelFile": "components/ui/separator.tsx",
-      "notebookRelFile": ".boost/components/ui/separator.tsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "lib/hooks/use-local-storage.ts": {
-      "sourceRelFile": "lib/hooks/use-local-storage.ts",
-      "notebookRelFile": ".boost/lib/hooks/use-local-storage.ts.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "components/ui/badge.tsx": {
-      "sourceRelFile": "components/ui/badge.tsx",
-      "notebookRelFile": ".boost/components/ui/badge.tsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "lib/hooks/use-copy-to-clipboard.tsx": {
-      "sourceRelFile": "lib/hooks/use-copy-to-clipboard.tsx",
-      "notebookRelFile": ".boost/lib/hooks/use-copy-to-clipboard.tsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "lib/hooks/app-context.tsx": {
-      "sourceRelFile": "lib/hooks/app-context.tsx",
-      "notebookRelFile": ".boost/lib/hooks/app-context.tsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "lib/hooks/use-sidebar.tsx": {
-      "sourceRelFile": "lib/hooks/use-sidebar.tsx",
-      "notebookRelFile": ".boost/lib/hooks/use-sidebar.tsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "lib/hooks/use-at-bottom.tsx": {
-      "sourceRelFile": "lib/hooks/use-at-bottom.tsx",
-      "notebookRelFile": ".boost/lib/hooks/use-at-bottom.tsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "lib/hooks/use-enter-submit.tsx": {
-      "sourceRelFile": "lib/hooks/use-enter-submit.tsx",
-      "notebookRelFile": ".boost/lib/hooks/use-enter-submit.tsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "components/ui/treeview-data-test.tsx": {
-      "sourceRelFile": "components/ui/treeview-data-test.tsx",
-      "notebookRelFile": ".boost/components/ui/treeview-data-test.tsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "components/ui/input.tsx": {
-      "sourceRelFile": "components/ui/input.tsx",
-      "notebookRelFile": ".boost/components/ui/input.tsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "components/ui/alert-dialog.tsx": {
-      "sourceRelFile": "components/ui/alert-dialog.tsx",
-      "notebookRelFile": ".boost/components/ui/alert-dialog.tsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "components/markdown.tsx": {
-      "sourceRelFile": "components/markdown.tsx",
-      "notebookRelFile": ".boost/components/markdown.tsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "components/ui/codeblock.tsx": {
-      "sourceRelFile": "components/ui/codeblock.tsx",
-      "notebookRelFile": ".boost/components/ui/codeblock.tsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "components/chat-message-actions.tsx": {
-      "sourceRelFile": "components/chat-message-actions.tsx",
-      "notebookRelFile": ".boost/components/chat-message-actions.tsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "components/providers.tsx": {
-      "sourceRelFile": "components/providers.tsx",
-      "notebookRelFile": ".boost/components/providers.tsx.boost-notebook",
       "totalCells": 0,
       "completedCells": 0,
       "errorCells": 0,
@@ -606,105 +192,6 @@
       "issueCells": 0,
       "sections": {}
     },
-    "app/layout.tsx": {
-      "sourceRelFile": "app/layout.tsx",
-      "notebookRelFile": ".boost/app/layout.tsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "app/api/chat/route.ts": {
-      "sourceRelFile": "app/api/chat/route.ts",
-      "notebookRelFile": ".boost/app/api/chat/route.ts.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "lib/polyverse/typescript/helpers.ts": {
-      "sourceRelFile": "lib/polyverse/typescript/helpers.ts",
-      "notebookRelFile": ".boost/lib/polyverse/typescript/helpers.ts.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "components/github-panel.tsx": {
-      "sourceRelFile": "components/github-panel.tsx",
-      "notebookRelFile": ".boost/components/github-panel.tsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "app/(chat)/chat/[id]/page.tsx": {
-      "sourceRelFile": "app/(chat)/chat/[id]/page.tsx",
-      "notebookRelFile": ".boost/app/(chat)/chat/[id]/page.tsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    ".next/export-marker.json": {
-      "sourceRelFile": ".next/export-marker.json",
-      "notebookRelFile": ".boost/.next/export-marker.json.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "app/api/auth/[...nextauth]/route.ts": {
-      "sourceRelFile": "app/api/auth/[...nextauth]/route.ts",
-      "notebookRelFile": ".boost/app/api/auth/[...nextauth]/route.ts.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "components/chat.tsx": {
-      "sourceRelFile": "components/chat.tsx",
-      "notebookRelFile": ".boost/components/chat.tsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    ".next/static/media/d82a8a076d0105b5-s.p.woff2": {
-      "sourceRelFile": ".next/static/media/d82a8a076d0105b5-s.p.woff2",
-      "notebookRelFile": ".boost/.next/static/media/d82a8a076d0105b5-s.p.woff2.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "components/empty-screen.tsx": {
-      "sourceRelFile": "components/empty-screen.tsx",
-      "notebookRelFile": ".boost/components/empty-screen.tsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "components/chat-list.tsx": {
-      "sourceRelFile": "components/chat-list.tsx",
-      "notebookRelFile": ".boost/components/chat-list.tsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
     "components/button-scroll-to-bottom.tsx": {
       "sourceRelFile": "components/button-scroll-to-bottom.tsx",
       "notebookRelFile": ".boost/components/button-scroll-to-bottom.tsx.boost-notebook",
@@ -714,171 +201,27 @@
       "issueCells": 0,
       "sections": {}
     },
-    "components/github-repo-select.tsx": {
-      "sourceRelFile": "components/github-repo-select.tsx",
-      "notebookRelFile": ".boost/components/github-repo-select.tsx.boost-notebook",
+    ".next/transform.js": {
+      "sourceRelFile": ".next/transform.js",
+      "notebookRelFile": ".boost/.next/transform.js.boost-notebook",
       "totalCells": 0,
       "completedCells": 0,
       "errorCells": 0,
       "issueCells": 0,
       "sections": {}
     },
-    "components/sidebar-actions.tsx": {
-      "sourceRelFile": "components/sidebar-actions.tsx",
-      "notebookRelFile": ".boost/components/sidebar-actions.tsx.boost-notebook",
+    ".next/next-minimal-server.js.nft.json": {
+      "sourceRelFile": ".next/next-minimal-server.js.nft.json",
+      "notebookRelFile": ".boost/.next/next-minimal-server.js.nft.json.boost-notebook",
       "totalCells": 0,
       "completedCells": 0,
       "errorCells": 0,
       "issueCells": 0,
       "sections": {}
     },
-    "components/sidebar-list.tsx": {
-      "sourceRelFile": "components/sidebar-list.tsx",
-      "notebookRelFile": ".boost/components/sidebar-list.tsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "components/sidebar.tsx": {
-      "sourceRelFile": "components/sidebar.tsx",
-      "notebookRelFile": ".boost/components/sidebar.tsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "components/header.tsx": {
-      "sourceRelFile": "components/header.tsx",
-      "notebookRelFile": ".boost/components/header.tsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "components/sidebar-desktop.tsx": {
-      "sourceRelFile": "components/sidebar-desktop.tsx",
-      "notebookRelFile": ".boost/components/sidebar-desktop.tsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "components/external-link.tsx": {
-      "sourceRelFile": "components/external-link.tsx",
-      "notebookRelFile": ".boost/components/external-link.tsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "components/sidebar-footer.tsx": {
-      "sourceRelFile": "components/sidebar-footer.tsx",
-      "notebookRelFile": ".boost/components/sidebar-footer.tsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    ".next/types/package.json": {
-      "sourceRelFile": ".next/types/package.json",
-      "notebookRelFile": ".boost/.next/types/package.json.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "components/sidebar-mobile.tsx": {
-      "sourceRelFile": "components/sidebar-mobile.tsx",
-      "notebookRelFile": ".boost/components/sidebar-mobile.tsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "components/chat-share-dialog.tsx": {
-      "sourceRelFile": "components/chat-share-dialog.tsx",
-      "notebookRelFile": ".boost/components/chat-share-dialog.tsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "components/chat-message.tsx": {
-      "sourceRelFile": "components/chat-message.tsx",
-      "notebookRelFile": ".boost/components/chat-message.tsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "components/github-select.tsx": {
-      "sourceRelFile": "components/github-select.tsx",
-      "notebookRelFile": ".boost/components/github-select.tsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    ".next/cache/.tsbuildinfo": {
-      "sourceRelFile": ".next/cache/.tsbuildinfo",
-      "notebookRelFile": ".boost/.next/cache/.tsbuildinfo.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    ".next/types/app/api/chat/route.ts": {
-      "sourceRelFile": ".next/types/app/api/chat/route.ts",
-      "notebookRelFile": ".boost/.next/types/app/api/chat/route.ts.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    ".next/cache/eslint/.cache_6ocfdg": {
-      "sourceRelFile": ".next/cache/eslint/.cache_6ocfdg",
-      "notebookRelFile": ".boost/.next/cache/eslint/.cache_6ocfdg.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    ".next/server/edge-runtime-webpack.js": {
-      "sourceRelFile": ".next/server/edge-runtime-webpack.js",
-      "notebookRelFile": ".boost/.next/server/edge-runtime-webpack.js.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    ".next/cache/webpack/server-production/5.pack": {
-      "sourceRelFile": ".next/cache/webpack/server-production/5.pack",
-      "notebookRelFile": ".boost/.next/cache/webpack/server-production/5.pack.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    ".next/routes-manifest.json": {
-      "sourceRelFile": ".next/routes-manifest.json",
-      "notebookRelFile": ".boost/.next/routes-manifest.json.boost-notebook",
+    ".next/static/css/c404bc238839596a.css": {
+      "sourceRelFile": ".next/static/css/c404bc238839596a.css",
+      "notebookRelFile": ".boost/.next/static/css/c404bc238839596a.css.boost-notebook",
       "totalCells": 0,
       "completedCells": 0,
       "errorCells": 0,
@@ -894,9 +237,567 @@
       "issueCells": 0,
       "sections": {}
     },
-    ".next/cache/webpack/client-production/4.pack": {
-      "sourceRelFile": ".next/cache/webpack/client-production/4.pack",
-      "notebookRelFile": ".boost/.next/cache/webpack/client-production/4.pack.boost-notebook",
+    "components/external-link.tsx": {
+      "sourceRelFile": "components/external-link.tsx",
+      "notebookRelFile": ".boost/components/external-link.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/static/chunks/[turbopack]_dev_client_hmr-client_ts_ad4949._.js.map": {
+      "sourceRelFile": ".next/static/chunks/[turbopack]_dev_client_hmr-client_ts_ad4949._.js.map",
+      "notebookRelFile": ".boost/.next/static/chunks/[turbopack]_dev_client_hmr-client_ts_ad4949._.js.map.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/routes-manifest.json": {
+      "sourceRelFile": ".next/routes-manifest.json",
+      "notebookRelFile": ".boost/.next/routes-manifest.json.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/static/CavgubBTjOK5q4tMiNaBV/_buildManifest.js": {
+      "sourceRelFile": ".next/static/CavgubBTjOK5q4tMiNaBV/_buildManifest.js",
+      "notebookRelFile": ".boost/.next/static/CavgubBTjOK5q4tMiNaBV/_buildManifest.js.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/sidebar-desktop.tsx": {
+      "sourceRelFile": "components/sidebar-desktop.tsx",
+      "notebookRelFile": ".boost/components/sidebar-desktop.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/static/CavgubBTjOK5q4tMiNaBV/_ssgManifest.js": {
+      "sourceRelFile": ".next/static/CavgubBTjOK5q4tMiNaBV/_ssgManifest.js",
+      "notebookRelFile": ".boost/.next/static/CavgubBTjOK5q4tMiNaBV/_ssgManifest.js.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/sidebar-actions.tsx": {
+      "sourceRelFile": "components/sidebar-actions.tsx",
+      "notebookRelFile": ".boost/components/sidebar-actions.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/header.tsx": {
+      "sourceRelFile": "components/header.tsx",
+      "notebookRelFile": ".boost/components/header.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/sidebar-mobile.tsx": {
+      "sourceRelFile": "components/sidebar-mobile.tsx",
+      "notebookRelFile": ".boost/components/sidebar-mobile.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "package.json": {
+      "sourceRelFile": "package.json",
+      "notebookRelFile": ".boost/package.json.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/sidebar-footer.tsx": {
+      "sourceRelFile": "components/sidebar-footer.tsx",
+      "notebookRelFile": ".boost/components/sidebar-footer.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/chat.tsx": {
+      "sourceRelFile": "components/chat.tsx",
+      "notebookRelFile": ".boost/components/chat.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/sidebar.tsx": {
+      "sourceRelFile": "components/sidebar.tsx",
+      "notebookRelFile": ".boost/components/sidebar.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/sidebar-list.tsx": {
+      "sourceRelFile": "components/sidebar-list.tsx",
+      "notebookRelFile": ".boost/components/sidebar-list.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/github-repo-select.tsx": {
+      "sourceRelFile": "components/github-repo-select.tsx",
+      "notebookRelFile": ".boost/components/github-repo-select.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/theme-toggle.tsx": {
+      "sourceRelFile": "components/theme-toggle.tsx",
+      "notebookRelFile": ".boost/components/theme-toggle.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/login-button.tsx": {
+      "sourceRelFile": "components/login-button.tsx",
+      "notebookRelFile": ".boost/components/login-button.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/images-manifest.json": {
+      "sourceRelFile": ".next/images-manifest.json",
+      "notebookRelFile": ".boost/.next/images-manifest.json.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/ui/dialog.tsx": {
+      "sourceRelFile": "components/ui/dialog.tsx",
+      "notebookRelFile": ".boost/components/ui/dialog.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/ui/icons.tsx": {
+      "sourceRelFile": "components/ui/icons.tsx",
+      "notebookRelFile": ".boost/components/ui/icons.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/ui/switch.tsx": {
+      "sourceRelFile": "components/ui/switch.tsx",
+      "notebookRelFile": ".boost/components/ui/switch.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/ui/treeview.tsx": {
+      "sourceRelFile": "components/ui/treeview.tsx",
+      "notebookRelFile": ".boost/components/ui/treeview.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/ui/separator.tsx": {
+      "sourceRelFile": "components/ui/separator.tsx",
+      "notebookRelFile": ".boost/components/ui/separator.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/react-loadable-manifest.json": {
+      "sourceRelFile": ".next/react-loadable-manifest.json",
+      "notebookRelFile": ".boost/.next/react-loadable-manifest.json.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/ui/badge.tsx": {
+      "sourceRelFile": "components/ui/badge.tsx",
+      "notebookRelFile": ".boost/components/ui/badge.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/clear-history.tsx": {
+      "sourceRelFile": "components/clear-history.tsx",
+      "notebookRelFile": ".boost/components/clear-history.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/ui/tooltip.tsx": {
+      "sourceRelFile": "components/ui/tooltip.tsx",
+      "notebookRelFile": ".boost/components/ui/tooltip.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/ui/label.tsx": {
+      "sourceRelFile": "components/ui/label.tsx",
+      "notebookRelFile": ".boost/components/ui/label.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/build-manifest.json": {
+      "sourceRelFile": ".next/build-manifest.json",
+      "notebookRelFile": ".boost/.next/build-manifest.json.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/required-server-files.json": {
+      "sourceRelFile": ".next/required-server-files.json",
+      "notebookRelFile": ".boost/.next/required-server-files.json.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "app/(chat)/page.tsx": {
+      "sourceRelFile": "app/(chat)/page.tsx",
+      "notebookRelFile": ".boost/app/(chat)/page.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/ui/button.tsx": {
+      "sourceRelFile": "components/ui/button.tsx",
+      "notebookRelFile": ".boost/components/ui/button.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/BUILD_ID": {
+      "sourceRelFile": ".next/BUILD_ID",
+      "notebookRelFile": ".boost/.next/BUILD_ID.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "app/(chat)/layout.tsx": {
+      "sourceRelFile": "app/(chat)/layout.tsx",
+      "notebookRelFile": ".boost/app/(chat)/layout.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/ui/codeblock.tsx": {
+      "sourceRelFile": "components/ui/codeblock.tsx",
+      "notebookRelFile": ".boost/components/ui/codeblock.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "app/(chat)/chat/[id]/page.tsx": {
+      "sourceRelFile": "app/(chat)/chat/[id]/page.tsx",
+      "notebookRelFile": ".boost/app/(chat)/chat/[id]/page.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/ui/treeview-data-test.tsx": {
+      "sourceRelFile": "components/ui/treeview-data-test.tsx",
+      "notebookRelFile": ".boost/components/ui/treeview-data-test.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/ui/input.tsx": {
+      "sourceRelFile": "components/ui/input.tsx",
+      "notebookRelFile": ".boost/components/ui/input.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/export-marker.json": {
+      "sourceRelFile": ".next/export-marker.json",
+      "notebookRelFile": ".boost/.next/export-marker.json.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/ui/textarea.tsx": {
+      "sourceRelFile": "components/ui/textarea.tsx",
+      "notebookRelFile": ".boost/components/ui/textarea.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/chat-message.tsx": {
+      "sourceRelFile": "components/chat-message.tsx",
+      "notebookRelFile": ".boost/components/chat-message.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/providers.tsx": {
+      "sourceRelFile": "components/providers.tsx",
+      "notebookRelFile": ".boost/components/providers.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/app-path-routes-manifest.json": {
+      "sourceRelFile": ".next/app-path-routes-manifest.json",
+      "notebookRelFile": ".boost/.next/app-path-routes-manifest.json.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/next-server.js.nft.json": {
+      "sourceRelFile": ".next/next-server.js.nft.json",
+      "notebookRelFile": ".boost/.next/next-server.js.nft.json.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/app-build-manifest.json": {
+      "sourceRelFile": ".next/app-build-manifest.json",
+      "notebookRelFile": ".boost/.next/app-build-manifest.json.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/chat-share-dialog.tsx": {
+      "sourceRelFile": "components/chat-share-dialog.tsx",
+      "notebookRelFile": ".boost/components/chat-share-dialog.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/github-select.tsx": {
+      "sourceRelFile": "components/github-select.tsx",
+      "notebookRelFile": ".boost/components/github-select.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/ui/select.tsx": {
+      "sourceRelFile": "components/ui/select.tsx",
+      "notebookRelFile": ".boost/components/ui/select.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/ui/dropdown-menu.tsx": {
+      "sourceRelFile": "components/ui/dropdown-menu.tsx",
+      "notebookRelFile": ".boost/components/ui/dropdown-menu.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/package.json": {
+      "sourceRelFile": ".next/package.json",
+      "notebookRelFile": ".boost/.next/package.json.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/user-menu.tsx": {
+      "sourceRelFile": "components/user-menu.tsx",
+      "notebookRelFile": ".boost/components/user-menu.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/chat-list.tsx": {
+      "sourceRelFile": "components/chat-list.tsx",
+      "notebookRelFile": ".boost/components/chat-list.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/server/middleware/middleware-manifest.json": {
+      "sourceRelFile": ".next/server/middleware/middleware-manifest.json",
+      "notebookRelFile": ".boost/.next/server/middleware/middleware-manifest.json.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/server/pages-manifest.json": {
+      "sourceRelFile": ".next/server/pages-manifest.json",
+      "notebookRelFile": ".boost/.next/server/pages-manifest.json.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/server/edge-runtime-webpack.js": {
+      "sourceRelFile": ".next/server/edge-runtime-webpack.js",
+      "notebookRelFile": ".boost/.next/server/edge-runtime-webpack.js.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/server/edge-runtime-webpack.js.map": {
+      "sourceRelFile": ".next/server/edge-runtime-webpack.js.map",
+      "notebookRelFile": ".boost/.next/server/edge-runtime-webpack.js.map.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/chunks/postcss_config_js_transform_ts_4eec04._.js": {
+      "sourceRelFile": ".next/chunks/postcss_config_js_transform_ts_4eec04._.js",
+      "notebookRelFile": ".boost/.next/chunks/postcss_config_js_transform_ts_4eec04._.js.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/server/app/twitter-image.png.meta": {
+      "sourceRelFile": ".next/server/app/twitter-image.png.meta",
+      "notebookRelFile": ".boost/.next/server/app/twitter-image.png.meta.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/server/middleware-manifest.json": {
+      "sourceRelFile": ".next/server/middleware-manifest.json",
+      "notebookRelFile": ".boost/.next/server/middleware-manifest.json.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/server/functions-config-manifest.json": {
+      "sourceRelFile": ".next/server/functions-config-manifest.json",
+      "notebookRelFile": ".boost/.next/server/functions-config-manifest.json.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/chunks/node_modules__pnpm_1a5327._.js": {
+      "sourceRelFile": ".next/chunks/node_modules__pnpm_1a5327._.js",
+      "notebookRelFile": ".boost/.next/chunks/node_modules__pnpm_1a5327._.js.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/server/server-reference-manifest.js": {
+      "sourceRelFile": ".next/server/server-reference-manifest.js",
+      "notebookRelFile": ".boost/.next/server/server-reference-manifest.js.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/server/app/twitter-image.png.body": {
+      "sourceRelFile": ".next/server/app/twitter-image.png.body",
+      "notebookRelFile": ".boost/.next/server/app/twitter-image.png.body.boost-notebook",
       "totalCells": 0,
       "completedCells": 0,
       "errorCells": 0,
@@ -912,9 +813,108 @@
       "issueCells": 0,
       "sections": {}
     },
-    ".next/server/edge-runtime-webpack.js.map": {
-      "sourceRelFile": ".next/server/edge-runtime-webpack.js.map",
-      "notebookRelFile": ".boost/.next/server/edge-runtime-webpack.js.map.boost-notebook",
+    "components/empty-screen.tsx": {
+      "sourceRelFile": "components/empty-screen.tsx",
+      "notebookRelFile": ".boost/components/empty-screen.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/static/media/GeistMono-Variable.73b9cba3.woff2": {
+      "sourceRelFile": ".next/static/media/GeistMono-Variable.73b9cba3.woff2",
+      "notebookRelFile": ".boost/.next/static/media/GeistMono-Variable.73b9cba3.woff2.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/trace": {
+      "sourceRelFile": ".next/trace",
+      "notebookRelFile": ".boost/.next/trace.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/chunks/node_modules__pnpm_f1dc28._.js.map": {
+      "sourceRelFile": ".next/chunks/node_modules__pnpm_f1dc28._.js.map",
+      "notebookRelFile": ".boost/.next/chunks/node_modules__pnpm_f1dc28._.js.map.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/server/app/chat/[id]/page/react-loadable-manifest.json": {
+      "sourceRelFile": ".next/server/app/chat/[id]/page/react-loadable-manifest.json",
+      "notebookRelFile": ".boost/.next/server/app/chat/[id]/page/react-loadable-manifest.json.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/static/media/Geist-Variable.aeca8183.woff2": {
+      "sourceRelFile": ".next/static/media/Geist-Variable.aeca8183.woff2",
+      "notebookRelFile": ".boost/.next/static/media/Geist-Variable.aeca8183.woff2.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/server/middleware.js.map": {
+      "sourceRelFile": ".next/server/middleware.js.map",
+      "notebookRelFile": ".boost/.next/server/middleware.js.map.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/chunks/node_modules__pnpm_f1dc28._.js": {
+      "sourceRelFile": ".next/chunks/node_modules__pnpm_f1dc28._.js",
+      "notebookRelFile": ".boost/.next/chunks/node_modules__pnpm_f1dc28._.js.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/ui/sheet.tsx": {
+      "sourceRelFile": "components/ui/sheet.tsx",
+      "notebookRelFile": ".boost/components/ui/sheet.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components/github-org-select.tsx": {
+      "sourceRelFile": "components/github-org-select.tsx",
+      "notebookRelFile": ".boost/components/github-org-select.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/static/chunks/9fa2d_next_dist_pages__error_5836db.js.map": {
+      "sourceRelFile": ".next/static/chunks/9fa2d_next_dist_pages__error_5836db.js.map",
+      "notebookRelFile": ".boost/.next/static/chunks/9fa2d_next_dist_pages__error_5836db.js.map.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next/server/app/chat/[id]/page/server-reference-manifest.json": {
+      "sourceRelFile": ".next/server/app/chat/[id]/page/server-reference-manifest.json",
+      "notebookRelFile": ".boost/.next/server/app/chat/[id]/page/server-reference-manifest.json.boost-notebook",
       "totalCells": 0,
       "completedCells": 0,
       "errorCells": 0,
@@ -926,16 +926,16 @@
     "refreshed": true,
     "enabled": true,
     "status": "paid",
-    "trialRemaining": 0,
+    "trialRemaining": 100,
     "usageThisMonth": 0,
     "discountedUsage": 0,
     "lastOperationCost": 0,
     "batchOperationCost": 0,
     "balanceDue": 0,
-    "couponType": "None",
+    "couponType": "Polyverse Boost Free Trial",
     "org": "polyverse-appsec",
     "owner": "alex@polyverse.io",
-    "created": "2023-05-02",
+    "created": "2023-05-06",
     "creditCardLinked": false
   },
   "uiState": {
