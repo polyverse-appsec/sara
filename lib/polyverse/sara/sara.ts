@@ -2,6 +2,7 @@ import { configAssistant } from '../openai/assistants'
 import { appendUserMessage, getAssistantMessages } from '../openai/messages'
 import { getThreadRunStatus, runAssistantOnThread } from '../openai/runs'
 import { configThread } from '../openai/threads'
+import { Repository, Chat, Task } from '@/lib/types'
 
 import { DEMO_REPO } from '@/lib/polyverse/config'
 
@@ -30,16 +31,18 @@ import { DEMO_REPO } from '@/lib/polyverse/config'
  * streaming Sara's response in realtime.
  */
 export const querySara = async (
+  repo: Repository,
+  task: Task,
+  chat: Chat,
   question: any,
   fullSaraResponseCallback?: any
 ) => {
-  const assistant = await configAssistant(DEMO_REPO)
-  console.log(
-    `Configured an assistant with an ID of '${
-      assistant.id
-    }' - metadata: ${JSON.stringify(assistant.metadata)}`
-  )
+  const assistant = repo.assistant
 
+  if (!assistant) {
+    console.log(`No assistant found for repo: ${repo.full_name}`)
+    return
+  }
   // Configure a thread based off of what would be the first message associated with it
   const thread = await configThread(question[0].content)
   console.log(

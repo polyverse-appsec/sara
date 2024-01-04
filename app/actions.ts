@@ -14,6 +14,9 @@ import { Organization, Repository, Task } from '@/lib/types'
 import { nanoid } from '@/lib/utils'
 import { createDefaultRepositoryTask } from '@/lib/polyverse/task/task'
 import { tickleProject } from '@/lib/polyverse/backend/backend'
+import { config } from 'process'
+import { Assistant } from 'openai/resources/beta/assistants/assistants'
+import { configAssistant } from '@/lib/polyverse/openai/assistants'
 
 export async function getChats(userId?: string | null, taskId?: string) {
   if (!userId) {
@@ -406,4 +409,20 @@ export async function tickleProjectFromRepoChange(repo: Repository) {
     throw new Error('Unauthorized')
   }
   await tickleProject(repo, session.user.email || '')
+}
+
+export async function getOrCreateAssistantForRepo(
+  repo: Repository
+): Promise<Assistant | null> {
+  const session = await auth()
+
+  if (!session?.user?.id) {
+    throw new Error('Unauthorized')
+  }
+
+  if (!repo.assistant) {
+    //we don't have an assistant, so create one
+    return await configAssistant(repo, session.user.email || '')
+  }
+  return null
 }

@@ -16,7 +16,7 @@ const openai = new OpenAI({
 export async function POST(req: Request) {
   console.log(`In POST of route.ts - req: ${JSON.stringify(req)}`)
   const json = await req.json()
-  const { messages, previewToken, repo, task, chat } = json
+  const { messages, repo, task, chat } = json
   const session = await auth()
   const userId = session?.user.id
   console.log(`In POST of route.ts - json: ${JSON.stringify(json)}`)
@@ -64,6 +64,9 @@ export async function POST(req: Request) {
   }
 
   const assistantMessagesStream = await querySara(
+    repo,
+    task,
+    chat,
     messages,
     persistAssistantMessagesCallback
   )

@@ -89,3 +89,9 @@ export type ServerActionResult<Result> = Promise<
       error: string
     }
 >
+export interface ProjectDataReference {
+  name: string
+  type: string
+  id: string
+  last_updated: number
+}

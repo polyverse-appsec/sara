@@ -8,6 +8,7 @@ import { isRecord } from '../typescript/helpers'
 
 import { OPENAI_MODEL } from './constants'
 import { task_func } from './task_func'
+import { Repository } from '@/lib/types'
 
 const PV_OPENAI_ASSISTANT_NAME = 'Polyverse Boost Sara'
 const PV_OPENAI_ASSISTANT_INSTRUCTIONS =
@@ -36,7 +37,7 @@ const oaiClient = new OpenAI({
  */
 export async function createAssistantWithFileIDsFromRepo(
   fileIDs: string[],
-  repo: string
+  repo_full_name: string
 ): Promise<Assistant> {
   return await oaiClient.beta.assistants.create({
     model: OPENAI_MODEL,
@@ -44,7 +45,7 @@ export async function createAssistantWithFileIDsFromRepo(
     file_ids: fileIDs,
     instructions: PV_OPENAI_ASSISTANT_INSTRUCTIONS,
     tools: [{ type: 'code_interpreter' }, { type: 'retrieval' }, task_func],
-    metadata: { repo }
+    metadata: { repo_full_name }
   })
 }
 
@@ -101,17 +102,23 @@ export async function updateAssistantFileIDs(
  * @param {string} repo Git URL to identify relevant file IDs for
  * @returns {Promise<Assistant>} Promise with the configured OpenAI assistant
  */
-export async function configAssistant(repo: string): Promise<Assistant> {
+export async function configAssistant(
+  repo: Repository,
+  email: string
+): Promise<Assistant> {
   // Get the file IDs associated with the repo first since we will end up
   // using them whether we need to create a new OpenAI assistant or there is
   // one already existing that we have its file IDs updated.
-  const fileIDs = await getFileIDs(repo, DEMO_EMAIL_ADDRESS)
+  const fileInfo = await getFileIDs(repo, email)
 
-  const existingAssistant = await findAssistantForRepo(repo)
+  const existingAssistant = await findAssistantForRepo(repo.full_name)
+
+  //TODO we need to keep track of all of the fileID info, for now get the ID field
+  const fileIDs = fileInfo.map(({ id }) => id)
 
   if (existingAssistant) {
     return await updateAssistantFileIDs(fileIDs, existingAssistant)
   }
 
-  return await createAssistantWithFileIDsFromRepo(fileIDs, repo)
+  return await createAssistantWithFileIDsFromRepo(fileIDs, repo.full_name)
 }

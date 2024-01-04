@@ -1,14 +1,7 @@
-import { Repository } from '../../types'
+import { Repository, ProjectDataReference } from '../../types'
 
-const GET_VECTORDATA_FROM_PROJECT_URL =
-  'https://pt5sl5vwfjn6lsr2k6szuvfhnq0vaxhl.lambda-url.us-west-2.on.aws/api/get_vectordata_from_project'
 const USER_PROJECT_URL_BASE =
   'https://pt5sl5vwfjn6lsr2k6szuvfhnq0vaxhl.lambda-url.us-west-2.on.aws/api/user_project'
-
-const buildGetVectorDataFromProjectURL = (repo: string, email: string) =>
-  `${GET_VECTORDATA_FROM_PROJECT_URL}?uri=${encodeURIComponent(
-    repo
-  )}&email=${encodeURIComponent(email)}`
 
 /**
  * Gets the files IDs associated with a user and a Git repo.
@@ -18,34 +11,37 @@ const buildGetVectorDataFromProjectURL = (repo: string, email: string) =>
  * @returns {Promise<string[]>} Promise of an array of strings. Array will be empty in the event of an error.
  */
 export async function getFileIDs(
-  repo: string,
+  repo: Repository,
   email: string
-): Promise<string[]> {
-  const url = buildGetVectorDataFromProjectURL(repo, email)
+): Promise<ProjectDataReference[]> {
+  const url = `${USER_PROJECT_URL_BASE}/${repo.orgId}/${repo.name}/data_references`
 
+  console.log(`getFileIDs - url: ${url}`)
   try {
-    const res = await fetch(url)
+    const res = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'x-user-account': email
+      }
+    })
 
     if (!res.ok) {
       console.error(
-        `Got a failure response while trying to get file IDs for '${repo}/${email}' - Status: ${res.status}`
+        `Got a failure response while trying to get file ids for '${repo.orgId}/${repo.name} for ${email}' - Status: ${res.status}`
       )
       return []
     }
 
-    const rawData = await res.json()
-    const fileIDs = JSON.parse(rawData.body)
-
-    console.log(`Parsed file IDs: ${fileIDs}`)
-
-    return fileIDs
+    const json = await res.json()
+    console.log(`getFileIDs - json: ${JSON.stringify(json)}`)
+    //json should be an array of ProjectDataReference objects
+    return json as ProjectDataReference[]
   } catch (error) {
     console.error(
-      'Error making a request or parsing a response for file IDs: ',
+      'Error making a request or parsing a response for project ID: ',
       error
     )
   }
-
   return []
 }
 
