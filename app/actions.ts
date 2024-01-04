@@ -13,8 +13,6 @@ import {
 import { Organization, Repository, Task } from '@/lib/types'
 import { nanoid } from '@/lib/utils'
 
-const KEY_SEGMENT_REPOSITORY = 'repository'
-
 export async function getChats(userId?: string | null, taskId?: string) {
   if (!userId) {
     return []
@@ -165,7 +163,9 @@ export async function getOrganizations(): Promise<Organization[]> {
   return orgs
 }
 
-export async function getRepositoriesForOrg(org: string): Promise<Repository[]> {
+export async function getRepositoriesForOrg(
+  org: string
+): Promise<Repository[]> {
   const session = await auth()
 
   if (!session?.user?.id) {
@@ -234,7 +234,8 @@ export async function getTask(
  * @param {string} fullRepoName Full name of the repository
  * @returns Hash key for repository.
  */
-const buildRepositoryHashKey = (fullRepoName: string) => `${KEY_SEGMENT_REPOSITORY}:${fullRepoName}`
+const buildRepositoryHashKey = (fullRepoName: string) =>
+  `repository:${fullRepoName}`
 
 /**
  * Server action that retrieves the most recent persisted information about a
@@ -248,7 +249,10 @@ const buildRepositoryHashKey = (fullRepoName: string) => `${KEY_SEGMENT_REPOSITO
  * persist the repo name.
  * @returns {Repository} Retrieved or persisted repository info.
  */
-export async function getOrCreateRepository(repo: Repository, userId: string): Promise<Repository> {
+export async function getOrCreateRepository(
+  repo: Repository,
+  userId: string
+): Promise<Repository> {
   // Rather than delegate auth to functions we consume we protect ourselves and
   // do a check here before we consume each method as well in case there are any
   // behavioral changes to said consumed functions.
@@ -262,20 +266,35 @@ export async function getOrCreateRepository(repo: Repository, userId: string): P
   const retrievedRepo = await getRepository(repo.full_name, userId)
 
   if (retrievedRepo) {
-    return retrievedRepo
+    //do a quick check to see if the retrieved repo has the same data as the passed in repo
+    //if it doesn't, then update the repo
+    const verifiedRepo = await checkAndUpdateRepository(retrievedRepo, repo)
+    return verifiedRepo
   }
-
-  // Apply business logic auth check for `createRepository`
-  //
-  // Per our current implementation of our types we assume that the `orgId`
-  // matches the ID of the user that owns the repo
-  // if (repo.orgId !== session.user.id) {
-  //   throw new Error('Unauthorized')
-  // }
 
   return await createRepository(repo)
 }
 
+async function checkAndUpdateRepository(
+  retrievedRepo: Repository,
+  incomingRepo: Repository
+): Promise<Repository> {
+  //go through the fields of the incoming Repo, and for every non-null field, check to see if it matches the retrieved repo
+  //if it's different, then set a flag to update the repo. Be sure not to clobber fields like the Assistant field,
+  //as the incoming Repo will not have that field--just the github repo info
+  let updateRepo = false
+  for (const key in incomingRepo) {
+    if (incomingRepo[key] && incomingRepo[key] !== retrievedRepo[key]) {
+      updateRepo = true
+      retrievedRepo[key] = incomingRepo[key]
+    }
+  }
+  if (updateRepo) {
+    const repoKey = buildRepositoryHashKey(retrievedRepo.full_name)
+    await kv.hset(repoKey, retrievedRepo)
+  }
+  return retrievedRepo
+}
 /**
  * Hashes the fields of a repository object.
  *
@@ -301,15 +320,14 @@ export async function createRepository(repo: Repository): Promise<Repository> {
   return repo
 }
 
-// TODO Chris: Should this funciton work in a way where we pull the existing repo first
-// and then spread out the properties on it from the 'repo' param and then update it?
-// My concern is that empty properies on the passed in 'repo' it will remove the fields.
-// But maybe this isn't how Redis behaves and my lack of knowledge is posing this question?
-
 /**
  * Updates a the fields of an existing repository object. Note that if the repo
  * doesn't yet exist then it will create the object as well based on current
  * implementation.
+ *
+ * CAUTION: Only call this API with a fully formed repository object. If you
+ * call this API with a partially formed repository object it will clobber the
+ * existing repository object with the partially formed one.
  *
  * @param {Repository} repo Fully formed instance of Repository object to
  * update.

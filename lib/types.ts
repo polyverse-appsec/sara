@@ -1,4 +1,6 @@
 import { type Message } from 'ai'
+import { Assistant } from 'openai/resources/beta/assistants/assistants'
+import { Threads } from 'openai/resources/beta/threads/threads'
 
 /*
  ** Sara data model **
@@ -45,6 +47,7 @@ export type Organization = {
 
 export interface Repository extends Record<string, any> {
   full_name: string
+  html_url: string
   name: string
   description: string
   orgId: string
@@ -54,6 +57,7 @@ export interface Repository extends Record<string, any> {
   }[]
   tasks?: Task[]
   defaultTask?: Task
+  assistant?: Assistant
 }
 
 export interface Task extends Record<string, any> {
@@ -76,6 +80,7 @@ export interface Chat extends Record<string, any> {
   messages: Message[]
   sharePath?: string
   taskId?: string
+  thread?: Threads.Thread
 }
 
 export type ServerActionResult<Result> = Promise<

@@ -21,6 +21,7 @@ import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { toast } from 'react-hot-toast'
 import { usePathname, useRouter } from 'next/navigation'
+import { useAppContext } from '@/lib/hooks/app-context'
 
 const IS_PREVIEW = process.env.VERCEL_ENV === 'preview'
 export interface ChatProps extends React.ComponentProps<'div'> {
@@ -37,6 +38,9 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
   )
   const [previewTokenDialog, setPreviewTokenDialog] = useState(IS_PREVIEW)
   const [previewTokenInput, setPreviewTokenInput] = useState(previewToken ?? '')
+
+  const { selectedActiveChat, selectedRepository, selectedActiveTask } =
+    useAppContext()
 
   // 'useChat' comes from the Vercel API: https://sdk.vercel.ai/docs/api-reference/use-chat
   //
@@ -63,7 +67,10 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
       id,
       body: {
         id,
-        previewToken
+        previewToken,
+        repo: selectedRepository,
+        task: selectedActiveTask,
+        chat: selectedActiveChat
       },
       onResponse(response) {
         if (response.status === 401) {
