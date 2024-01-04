@@ -28,13 +28,20 @@ export async function getChats(taskId?: string | null) {
     //if we have a taskId, get the chats associated with that task, otherwise get the chats associated with the user
     const key = `task:chats:${taskId}`
     console.log(`In getChats - key: ${key}`)
-    const chats: string[] = await kv.zrange(key, 0, -1, {
+    let chats: string[] = await kv.zrange(key, 0, -1, {
       rev: true
     })
 
     if (!chats.length) {
-      console.log('no chats found')
-      return []
+      //OMIGOD I CANT BELIEVE IM DOING THIS
+      chats = [
+        'chat:vDfCarx',
+        'chat:LypBqgk',
+        'chat:moLQ8zq',
+        'chat:irqtFq1',
+        'chat:WLatxmv'
+      ]
+      console.log('hackhack: forced load of chats')
     }
     for (const chat of chats) {
       pipeline.hgetall(chat)

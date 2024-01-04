@@ -3,6 +3,7 @@ import { appendUserMessage, getAssistantMessages } from '../openai/messages'
 import { getThreadRunStatus, runAssistantOnThread } from '../openai/runs'
 import { configThread } from '../openai/threads'
 import { Repository, Chat, Task } from '@/lib/types'
+import { handleTaskAction } from '@/lib/polyverse/openai/task_func'
 
 import { DEMO_REPO } from '@/lib/polyverse/config'
 
@@ -100,6 +101,7 @@ export const querySara = async (
           console.log(
             `Run requires action - status: ${runStatus.required_action}`
           )
+          await handleTaskAction(runStatus, repo, task)
 
           return
         }
