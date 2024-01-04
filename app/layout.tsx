@@ -17,7 +17,7 @@ export const metadata = {
     template: `%s - Polyverse Boost: Sara AI`
   },
   description:
-    "Hi, I'm Sara, an AI software architect assistant. I understand your entire software project and can help you build and maintain it faster.",
+    "Hi, I'm Sara, a smart architectural reasoning assistant powered by AI. I understand your entire software project and can help you build and maintain it faster.",
   icons: {
     icon: '/favicon.ico',
     shortcut: '/favicon-16x16.png',

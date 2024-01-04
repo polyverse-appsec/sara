@@ -41,11 +41,13 @@ export function EmptyScreen({ setInput }: Pick<UseChatHelpers, 'setInput'>) {
         </div>
 
         <p className="mb-2 leading-normal text-muted-foreground">
-          I&apos;m an AI software architect assistant. I understand your entire
-          software project and can help you build and maintain it faster.
+          I&apos;m a <b>s</b>mart <b>a</b>rchitectural <b>r</b>easoning <b>a</b>
+          ssistant powered by AI. I understand your entire software project and
+          can help you build and maintain it faster.
         </p>
         <p className="leading-normal text-muted-foreground">
-          You can start a conversation in the text box below or try the following examples:
+          You can start a conversation in the text box below or try the
+          following examples:
         </p>
         <div className="mt-4 flex flex-col items-start space-y-2">
           {exampleMessages.map((message, index) => (
