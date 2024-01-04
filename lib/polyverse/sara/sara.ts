@@ -94,7 +94,12 @@ export const querySara = async (
 
           return
         } else if (status === 'requires_action') {
-          console.log(`Run requires action - status: ${runStatus}`)
+          //dump the whole run status object
+          const alldata = JSON.stringify(runStatus)
+          console.log(`all the info: Run requires action - status: ${alldata}`)
+          console.log(
+            `Run requires action - status: ${runStatus.required_action}`
+          )
 
           return
         }

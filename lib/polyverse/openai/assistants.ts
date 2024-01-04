@@ -3,7 +3,7 @@ import OpenAI from 'openai'
 import { Assistant } from 'openai/resources/beta/assistants/assistants'
 
 import { DEMO_EMAIL_ADDRESS } from '../config'
-import { getFileIDs } from '../backend/backend'
+import { getFileInfo } from '../backend/backend'
 import { isRecord } from '../typescript/helpers'
 
 import { OPENAI_MODEL } from './constants'
@@ -140,7 +140,7 @@ export async function configAssistant(
   // Get the file IDs associated with the repo first since we will end up
   // using them whether we need to create a new OpenAI assistant or there is
   // one already existing that we have its file IDs updated.
-  const fileInfo = await getFileIDs(repo, email)
+  const fileInfo = await getFileInfo(repo, email)
 
   const existingAssistant = await findAssistantForRepo(repo.full_name)
 

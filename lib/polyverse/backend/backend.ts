@@ -10,13 +10,12 @@ const USER_PROJECT_URL_BASE =
  * @param email {string} Email associated with user.
  * @returns {Promise<string[]>} Promise of an array of strings. Array will be empty in the event of an error.
  */
-export async function getFileIDs(
+export async function getFileInfo(
   repo: Repository,
   email: string
 ): Promise<ProjectDataReference[]> {
-  const url = `${USER_PROJECT_URL_BASE}/${repo.orgId}/${repo.name}-demo/data_references`
+  const url = `${USER_PROJECT_URL_BASE}/${repo.orgId}/${repo.name}/data_references`
 
-  console.log(`getFileIDs - url: ${url}`)
   try {
     const res = await fetch(url, {
       method: 'GET',
@@ -33,9 +32,9 @@ export async function getFileIDs(
     }
 
     const json = await res.json()
-    console.log(`getFileIDs - json: ${JSON.stringify(json)}`)
+    const fileInfo = JSON.parse(json.body)
     //json should be an array of ProjectDataReference objects
-    return json as ProjectDataReference[]
+    return fileInfo as ProjectDataReference[]
   } catch (error) {
     console.error(
       'Error making a request or parsing a response for project ID: ',
