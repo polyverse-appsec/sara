@@ -12,6 +12,7 @@ import {
 } from '@/lib/polyverse/github/repos'
 import { Organization, Repository, Task } from '@/lib/types'
 import { nanoid } from '@/lib/utils'
+import { createDefaultRepositoryTask } from '@/lib/polyverse/task/task'
 
 export async function getChats(userId?: string | null, taskId?: string) {
   if (!userId) {
@@ -272,7 +273,7 @@ export async function getOrCreateRepository(
     return verifiedRepo
   }
 
-  return await createRepository(repo)
+  return await createRepositoryFromGithub(repo)
 }
 
 async function checkAndUpdateRepository(
@@ -298,10 +299,12 @@ async function checkAndUpdateRepository(
 /**
  * Hashes the fields of a repository object.
  *
- * @param {Repository} repo Fully formed instance of Repository object.
+ * @param {Repository} githubRepo Fully formed instance of Repository object.
  * @returns {Repository} The presisted repository object.
  */
-export async function createRepository(repo: Repository): Promise<Repository> {
+export async function createRepositoryFromGithub(
+  githubRepo: Repository
+): Promise<Repository> {
   const session = await auth()
 
   if (!session?.user?.id) {
@@ -313,11 +316,15 @@ export async function createRepository(repo: Repository): Promise<Repository> {
   // if (repo.orgId !== session.user.id) {
   //   throw new Error('Unauthorized')
   // }
+  githubRepo.defaultTask = await createDefaultRepositoryTask(
+    githubRepo,
+    session.user.id
+  )
 
-  const repoKey = buildRepositoryHashKey(repo.full_name)
-  await kv.hset(repoKey, repo)
+  const repoKey = buildRepositoryHashKey(githubRepo.full_name)
+  await kv.hset(repoKey, githubRepo)
 
-  return repo
+  return githubRepo
 }
 
 /**
