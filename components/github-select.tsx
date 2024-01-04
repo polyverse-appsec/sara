@@ -10,7 +10,7 @@ import {
   // Other imports if necessary
 } from '@/components/ui/select' // Update the import path
 
-import { getOrCreateRepositoryfromGithub, getRepository } from '@/app/actions'
+import { getOrCreateRepositoryFromGithub, getRepository } from '@/app/actions'
 
 import { GithubOrgSelect } from './github-org-select'
 import { GithubRepoSelect } from './github-repo-select'
@@ -92,7 +92,7 @@ export function GithubSelect({ session }: GitHubSelectProps) {
 
   const handleRepositoryChange = async (repo: Repository) => {
     // Persist the repo in the KV store
-    const retrievedRepo = await getOrCreateRepositoryfromGithub(
+    const retrievedRepo = await getOrCreateRepositoryFromGithub(
       repo,
       session.user.id
     )

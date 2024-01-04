@@ -18,6 +18,30 @@ import { config } from 'process'
 import { Assistant } from 'openai/resources/beta/assistants/assistants'
 import { configAssistant } from '@/lib/polyverse/openai/assistants'
 
+// TODO: Concern that this will swall errors up and not surface issues with our
+// logic
+
+/**
+ * Helper method that deletes properties from an object whose properties
+ * evaluate to undefined. Note that it modifies the object in place.
+ *
+ * This is useful invoke on objects before you hash them in Redis. Failure to do
+ * so can result in errors such as: 
+ ⨯ UpstashError: ERR unsupported arg type: %!q(<nil>): <nil>
+ *
+ * @param {object} objectToStrip Object to strip undefined properties from.
+ */
+const stripUndefinedObjectProperties = (objectToStrip: any) => {
+  // Guard against `null` as it is considered an object in JS
+  if (typeof objectToStrip === 'object' && objectToStrip !== null) {
+    Object.keys(objectToStrip).forEach(key => {
+      if (objectToStrip[key] === undefined) {
+        delete objectToStrip[key]
+      }
+    })
+  }
+}
+
 export async function getChats(taskId?: string | null) {
   if (!taskId) {
     return []
@@ -210,6 +234,8 @@ export async function createTask(task: Task): Promise<Task> {
     createdAt
   }
 
+  stripUndefinedObjectProperties(taskData)
+
   await kv.hset(`task:${id}`, taskData)
   await kv.zadd(`user:tasks:${session.user.id}`, {
     score: +createdAt,
@@ -263,7 +289,7 @@ const buildRepositoryHashKey = (fullRepoName: string) =>
  * persist the repo name.
  * @returns {Repository} Retrieved or persisted repository info.
  */
-export async function getOrCreateRepositoryfromGithub(
+export async function getOrCreateRepositoryFromGithub(
   repo: Repository,
   userId: string
 ): Promise<Repository> {
