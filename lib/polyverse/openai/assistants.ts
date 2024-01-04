@@ -18,7 +18,10 @@ const PV_OPENAI_ASSISTANT_INSTRUCTIONS =
   '1. blueprint.md is a very short summary of the overall architecture. It talks about what programming languages are used, major frameworks, and so forth. ' +
   '2. aispec.md is another useful, medium size file. It has short summaries of all of the important code. ' +
   '3. Finally, allfiles_concat.md is the concatenation of all of the source code in the project. ' +
-  'For all queries, use the blueprint and aispec files. Retrieve code snippets as needed from the concatenated code file.'
+  'For all queries, use the blueprint and aispec files. Retrieve code snippets as needed from the concatenated code file.' +
+  'If you are asked a question that requires multiple steps, you should record the steps in a task management database ' +
+  'using the submitTaskSteps function. ' +
+  'And then continue to respond as you normally would (i.e. give both the answer and call the submitTaskSteps function). '
 
 const oaiClient = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
