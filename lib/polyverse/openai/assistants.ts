@@ -2,7 +2,6 @@ import OpenAI from 'openai'
 
 import { Assistant } from 'openai/resources/beta/assistants/assistants'
 
-import { DEMO_EMAIL_ADDRESS } from '../config'
 import { getFileInfo } from '../backend/backend'
 import { isRecord } from '../typescript/helpers'
 

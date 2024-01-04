@@ -1,6 +1,7 @@
 import { Assistant } from 'openai/resources/beta/assistants/assistants'
 import { Repository, Task } from '@/lib/types'
 import OpenAI from 'openai'
+import { Run } from 'openai/resources/beta/threads/runs/runs'
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
@@ -38,30 +39,17 @@ export const task_func: Assistant.Function = {
   }
 }
 
-export async function handleTaskAction(
-  data: any,
-  repo: Repository,
-  task: Task
-) {
-  //for now, we just log the task steps to the console
-  data.required_action.submit_tool_outputs.forEach((call: any) => {
-    console.log(`Task step: ${call.function.arguments}`)
-  })
+export type TaskForGoalType = {
+  title: string
+  description: string
+}
 
-  const toolOutputs = data.required_action.submit_tool_outputs.tool_calls.map(
-    (call: { id: string }) => {
-      return {
-        tool_call_id: call.id,
-        output: 'finished'
-      }
-    }
-  )
+export type SubmitTasksForGoalType = {
+  tasks: TaskForGoalType[]
+}
 
-  const run = await openai.beta.threads.runs.submitToolOutputs(
-    data.thread_id,
-    data.id,
-    {
-      tool_outputs: toolOutputs
-    }
-  )
+export const submitTaskSteps = async (toolCallArgs: SubmitTasksForGoalType) => {
+  if (toolCallArgs) {
+    toolCallArgs.tasks.forEach(({title, description}) => console.log(`Persist task with title '${title}' with description of: ${description}`))
+  }
 }
