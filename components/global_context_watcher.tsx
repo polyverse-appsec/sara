@@ -1,4 +1,4 @@
-import { useEffect, ReactNode, AppContext } from 'react'
+import { useEffect, ReactNode } from 'react'
 import { useAppContext } from '@/lib/hooks/app-context'
 
 const useDataWatcher = () => {
