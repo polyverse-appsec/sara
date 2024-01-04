@@ -8,26 +8,51 @@ import { isRecord } from '../typescript/helpers'
 
 import { OPENAI_MODEL } from './constants'
 import { task_func } from './task_func'
-import { Repository } from '@/lib/types'
+import { ProjectDataReference, Repository } from '@/lib/types'
 
 const PV_OPENAI_ASSISTANT_NAME = 'Polyverse Boost Sara'
-const PV_OPENAI_ASSISTANT_INSTRUCTIONS =
-  'You are a coding assistant named Sara. ' +
-  'You have access to the full codebase of a project in your files, including an aispec.md file that summarizes the code. ' +
-  'When asked a coding question, unless otherwise explicitly told not to, you give answers that use the relevant frameworks, APIs, data structures, and other aspects of the existing code. ' +
-  'There are at least three files in your files that will help you answer questions. ' +
-  '1. blueprint.md is a very short summary of the overall architecture. It talks about what programming languages are used, major frameworks, and so forth. ' +
-  '2. aispec.md is another useful, medium size file. It has short summaries of all of the important code. ' +
-  '3. Finally, allfiles_concat.md is the concatenation of all of the source code in the project. ' +
-  'For all queries, use the blueprint and aispec files. Retrieve code snippets as needed from the concatenated code file.' +
-  'If you are asked a question that requires multiple steps, you should record the steps in a task management database ' +
-  'using the submitTaskSteps function. ' +
-  'And then continue to respond as you normally would (i.e. give both the answer and call the submitTaskSteps function). '
+
+interface FileTypes {
+  blueprint: string
+  aispec: string
+  projectsource: string
+}
+
+function getOpenAiAssistantInstructions(fileTypes: FileTypes): string {
+  return `
+    You are a coding assistant named Sara. 
+    You have access to the full codebase of a project in your files, including an ${fileTypes.aispec} file that summarizes the code. 
+    When asked a coding question, unless otherwise explicitly told not to, you give answers that use the relevant frameworks, APIs, data structures, and other aspects of the existing code. 
+    There are at least three files in your files that will help you answer questions. 
+    1. ${fileTypes.blueprint} is a very short summary of the overall architecture. It talks about what programming languages are used, major frameworks, and so forth. 
+    2. ${fileTypes.aispec} is another useful, medium size file. It has short summaries of all of the important code. 
+    3. ${fileTypes.projectsource} is the concatenation of all of the source code in the project. 
+    For all queries, use the ${fileTypes.blueprint} and ${fileTypes.aispec} files. Retrieve code snippets as needed from the concatenated code file ${fileTypes.projectsource}.
+    
+    Important: If you are asked a question that requires multiple steps, you should record the steps in a task management database 
+    using the submitTaskSteps function. 
+    And then continue to respond as you normally would (i.e. give both the answer and call the submitTaskSteps function). `
+}
 
 const oaiClient = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 })
 
+function mapFileInfotoPromptAndIds(fileInfo: ProjectDataReference[]) {
+  let fileTypes: FileTypes = { aispec: '', blueprint: '', projectsource: '' }
+  fileInfo.map(({ name, type }) => {
+    fileTypes[type as keyof FileTypes] = name
+  })
+
+  const fileIDs = fileInfo.map(({ id }) => id)
+  const prompt = getOpenAiAssistantInstructions(fileTypes)
+
+  console.log(`fileTypes: ${JSON.stringify(fileTypes)}`)
+  console.log(`prompt: ${prompt}`)
+  console.log(`fileIDs: ${JSON.stringify(fileIDs)}`)
+
+  return { prompt, fileIDs }
+}
 /**
  * Creates an OpenAI assistant with files attached to it (by ID) from the repo provided.
  *
@@ -36,14 +61,16 @@ const oaiClient = new OpenAI({
  * @returns {Promise<Assistant>} Promise with the created OpenAI assistant.
  */
 export async function createAssistantWithFileIDsFromRepo(
-  fileIDs: string[],
+  fileInfo: ProjectDataReference[],
   repo_full_name: string
 ): Promise<Assistant> {
+  const { prompt, fileIDs } = mapFileInfotoPromptAndIds(fileInfo)
+
   return await oaiClient.beta.assistants.create({
     model: OPENAI_MODEL,
     name: PV_OPENAI_ASSISTANT_NAME,
     file_ids: fileIDs,
-    instructions: PV_OPENAI_ASSISTANT_INSTRUCTIONS,
+    instructions: prompt,
     tools: [{ type: 'code_interpreter' }, { type: 'retrieval' }, task_func],
     metadata: { repo_full_name }
   })
@@ -64,7 +91,7 @@ export async function findAssistantForRepo(
 
   // API Assistant object reference: https://platform.openai.com/docs/api-reference/assistants/object
   return assistants?.data?.find(
-    ({ metadata }) => isRecord(metadata) && metadata.repo === repo
+    ({ metadata }) => isRecord(metadata) && metadata.repo_full_name === repo
   )
 }
 
@@ -75,11 +102,15 @@ export async function findAssistantForRepo(
  * @param {Assistant} assistant Existing OpenAI assistant with the 'id' field filled out
  * @returns Promise<Assistant> asdf
  */
-export async function updateAssistantFileIDs(
-  fileIDs: string[],
+export async function updateAssistantPromptAndFiles(
+  fileInfo: ProjectDataReference[],
   { id }: { id: string }
 ): Promise<Assistant> {
-  return await oaiClient.beta.assistants.update(id, { file_ids: fileIDs })
+  const { prompt, fileIDs } = mapFileInfotoPromptAndIds(fileInfo)
+  return await oaiClient.beta.assistants.update(id, {
+    file_ids: fileIDs,
+    instructions: prompt
+  })
 }
 
 // An OpenAI Assistant is the logical representation of an AI assistant we have
@@ -113,12 +144,9 @@ export async function configAssistant(
 
   const existingAssistant = await findAssistantForRepo(repo.full_name)
 
-  //TODO we need to keep track of all of the fileID info, for now get the ID field
-  const fileIDs = fileInfo.map(({ id }) => id)
-
   if (existingAssistant) {
-    return await updateAssistantFileIDs(fileIDs, existingAssistant)
+    return await updateAssistantPromptAndFiles(fileInfo, existingAssistant)
   }
 
-  return await createAssistantWithFileIDsFromRepo(fileIDs, repo.full_name)
+  return await createAssistantWithFileIDsFromRepo(fileInfo, repo.full_name)
 }

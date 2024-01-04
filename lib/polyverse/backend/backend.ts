@@ -14,7 +14,7 @@ export async function getFileIDs(
   repo: Repository,
   email: string
 ): Promise<ProjectDataReference[]> {
-  const url = `${USER_PROJECT_URL_BASE}/${repo.orgId}/${repo.name}/data_references`
+  const url = `${USER_PROJECT_URL_BASE}/${repo.orgId}/${repo.name}-demo/data_references`
 
   console.log(`getFileIDs - url: ${url}`)
   try {
