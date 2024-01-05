@@ -7,7 +7,7 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 })
 
-export const task_func: Assistant.Function = {
+export const submitTaskStepsAssistantFunction: Assistant.Function = {
   type: 'function',
   function: {
     name: 'submitTaskSteps',

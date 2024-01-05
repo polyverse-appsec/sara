@@ -1,16 +1,13 @@
 import { configAssistant } from '../openai/assistants'
 import { appendUserMessage, getAssistantMessages } from '../openai/messages'
-import { getThreadRunStatus, runAssistantOnThread } from '../openai/runs'
+import {
+  getThreadRunStatus,
+  handleRequiresActionStatus,
+  runAssistantOnThread
+} from '../openai/runs'
+
 import { configThread } from '../openai/threads'
 import { Repository, Chat, Task } from '@/lib/types'
-import { submitTaskSteps } from '@/lib/polyverse/openai/task_func'
-
-import OpenAI from 'openai'
-
-// TODO: Move to the tool func file later
-const oaiClient = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
-})
 
 /**
  * Callback for those interested into the response that Sara returned.
@@ -99,40 +96,7 @@ export const querySara = async (
 
           return
         } else if (status === 'requires_action') {
-          // TODO: This logic can be moved to the `tools_func` file later for cleanup
-          // Identify what tools to call
-          const toolCalls =
-            runStatus.required_action?.submit_tool_outputs.tool_calls
-
-          if (toolCalls) {
-            for (const toolCall of toolCalls) {
-              const functionName = toolCall.function.name
-
-              const args = JSON.parse(toolCall.function.arguments)
-
-              if (functionName === 'submitTaskSteps') {
-                await submitTaskSteps(args)
-              }
-
-              // Submit tool outputs to all the assistant to continue running
-              // on the thread to completion.
-              await oaiClient.beta.threads.runs.submitToolOutputs(
-                thread.id,
-                runID,
-                // While `tool_outputs` is required to have an array value it
-                // can be empty per the OpenAI API docs if nothing further is
-                // required.
-                {
-                  tool_outputs: [
-                    {
-                      tool_call_id: toolCall.id,
-                      output: ''
-                    }
-                  ]
-                }
-              )
-            }
-          }
+          await handleRequiresActionStatus(thread.id, runID, runStatus)
 
           return
         }
