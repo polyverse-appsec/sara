@@ -6,6 +6,7 @@ import { auth } from '@/auth'
 import { nanoid } from '@/lib/utils'
 
 import { querySara } from '@/lib/polyverse/sara/sara'
+import { stripUndefinedObjectProperties } from '@/lib/polyverse/backend/backend'
 
 export const runtime = 'edge'
 
@@ -42,6 +43,8 @@ export async function POST(req: Request) {
       userId,
       createdAt,
       path,
+      taskId: task?.id,
+      repoId: repo?.full_name,
       messages: [
         ...messages,
         {
@@ -51,7 +54,8 @@ export async function POST(req: Request) {
       ]
     }
 
-    await kv.hmset(`chat:${id}`, payload)
+    const cleanPayload = stripUndefinedObjectProperties(payload)
+    await kv.hmset(`chat:${id}`, cleanPayload)
 
     let key = `user:chat:${userId}`
     if (task?.id) {

@@ -46,7 +46,7 @@ export type Organization = {
 }
 
 export interface Repository extends Record<string, any> {
-  full_name: string
+  full_name: string // the full_name doubles as the id. we do not have a seperate id so we can easily look up by name.
   html_url: string
   name: string
   description: string
@@ -80,6 +80,7 @@ export interface Chat extends Record<string, any> {
   messages: Message[]
   sharePath?: string
   taskId?: string
+  repoId?: string
   thread?: Threads.Thread
 }
 

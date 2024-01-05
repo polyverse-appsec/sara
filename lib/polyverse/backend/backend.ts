@@ -77,3 +77,37 @@ export async function tickleProject(
 
   return ''
 }
+
+/**
+ * Helper method that creates a shallow copy of the given object with all properties
+ * that evaluate to undefined removed. This does not modify the original object.
+ *
+ * This is useful to invoke on objects before you hash them in Redis. Failure to do
+ * so can result in errors such as:
+ * ⨯ UpstashError: ERR unsupported arg type: %!q(<nil>): <nil>
+ *
+ * @param {object} objectToStrip Object from which undefined properties will be stripped.
+ * @returns {Record<string, any>} A new object with undefined properties removed.
+ */
+export function stripUndefinedObjectProperties(
+  objectToStrip: any
+): Record<string, any> {
+  // Guard against `null` as it is considered an object in JS
+  if (typeof objectToStrip !== 'object' || objectToStrip === null) {
+    return objectToStrip
+  }
+
+  const strippedObject: Record<string, any> = {}
+  Object.keys(objectToStrip).forEach(key => {
+    if (objectToStrip[key] !== undefined) {
+      strippedObject[key] = objectToStrip[key]
+    } else {
+      console.log(`Stripping key '${key}' from object`)
+      console.log(
+        'BUGBUGBUBUGBUG: WE SHOULD NEVER GET HERE!! SOMETHING IS WRONG'
+      )
+    }
+  })
+
+  return strippedObject
+}

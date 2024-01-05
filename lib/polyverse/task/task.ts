@@ -8,7 +8,8 @@ import { createTask, getRepository, getTask, updateRepo } from '@/app/actions'
  * @param {Repository} repo Repo to copy
  * @returns {Repository} Deep copy of repo
  */
-const deepCopyRepo = (repo: Repository): Repository => JSON.parse(JSON.stringify(repo)) as Repository
+const deepCopyRepo = (repo: Repository): Repository =>
+  JSON.parse(JSON.stringify(repo)) as Repository
 
 /**
  * Checks to see if a repository has a default task and if it doesn't creates
@@ -22,7 +23,10 @@ const deepCopyRepo = (repo: Repository): Repository => JSON.parse(JSON.stringify
  * @returns {Promise<Repository>} Deep copied instance of the repository with
  * the default task set on it.
  */
-export async function configDefaultRepositoryTask(repo: Repository, userId: string): Promise<Repository> {
+export async function configDefaultRepositoryTask(
+  repo: Repository,
+  userId: string
+): Promise<Repository> {
   // Check to see if there is a task associated with the repo provided as a
   // parameter.
   if (repo.defaultTask?.id) {
@@ -62,7 +66,6 @@ export async function createDefaultRepositoryTask(
   repo: Repository,
   userId: string
 ): Promise<Task> {
-
   const defaultTask: Task = {
     id: '', // Generate an ID or leave it for the createTask function to handle
     title: `Task for ${repo.name}`,
@@ -73,7 +76,7 @@ export async function createDefaultRepositoryTask(
     // For the demo we are setting the userId as the owner of this task
     // userId: repo.orgId, // Assuming the orgId represents the user who owns this repo
     userId,
-    repositoryId: repo.id,
+    repositoryId: repo.full_name,
     chats: [],
     subtasks: []
   }

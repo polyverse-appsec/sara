@@ -17,30 +17,9 @@ import { tickleProject } from '@/lib/polyverse/backend/backend'
 import { config } from 'process'
 import { Assistant } from 'openai/resources/beta/assistants/assistants'
 import { configAssistant } from '@/lib/polyverse/openai/assistants'
+import { stripUndefinedObjectProperties } from '@/lib/polyverse/backend/backend'
 
 const TEN_MINS_IN_MILLIS = 600000
-
-/**
- * Helper method that deletes properties from an object whose properties
- * evaluate to undefined. Note that it modifies the object in place.
- *
- * This is useful invoke on objects before you hash them in Redis. Failure to do
- * so can result in errors such as: 
- ⨯ UpstashError: ERR unsupported arg type: %!q(<nil>): <nil>
- *
- * @param {object} objectToStrip Object to strip undefined properties from.
- */
-const stripUndefinedObjectProperties = (objectToStrip: any) => {
-  // Guard against `null` as it is considered an object in JS
-  if (typeof objectToStrip === 'object' && objectToStrip !== null) {
-    Object.keys(objectToStrip).forEach(key => {
-      if (objectToStrip[key] === undefined) {
-        console.log(`Stripping key '${key}' from object`)
-        delete objectToStrip[key]
-      }
-    })
-  }
-}
 
 export async function getChats(taskId?: string | null) {
   if (!taskId) {
@@ -52,7 +31,7 @@ export async function getChats(taskId?: string | null) {
 
     //if we have a taskId, get the chats associated with that task, otherwise get the chats associated with the user
     const taskChatsKey = `task:chats:${taskId}`
-    const dateScoreInMillis = (Date.now() + TEN_MINS_IN_MILLIS)
+    const dateScoreInMillis = Date.now() + TEN_MINS_IN_MILLIS
 
     // The original implementation of this based on
     // https://github.com/vercel/ai-chatbot had a call of `zrange` with the
@@ -436,6 +415,31 @@ export async function getRepository(
   }
 
   const repoKey = buildRepositoryHashKey(fullRepoName)
+  const repo = await kv.hgetall<Repository>(repoKey)
+
+  // Per our current implementation of our types we assume that the `orgId`
+  // matches the ID of the user that owns the repo
+  // if (!repo || repo.orgId !== session.user.id) {
+  //   return null
+  // }
+
+  return repo
+}
+
+/*
+ * getRepositoryFromId
+ */
+export async function getRepositoryFromId(
+  repoId: string,
+  userId: string
+): Promise<Repository | null> {
+  const session = await auth()
+
+  if (!session?.user?.id || userId !== session.user.id) {
+    throw new Error('Unauthorized')
+  }
+
+  const repoKey = `repository:${repoId}`
   const repo = await kv.hgetall<Repository>(repoKey)
 
   // Per our current implementation of our types we assume that the `orgId`

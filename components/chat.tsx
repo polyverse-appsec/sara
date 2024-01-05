@@ -16,20 +16,22 @@ import {
   DialogHeader,
   DialogTitle
 } from '@/components/ui/dialog'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { toast } from 'react-hot-toast'
 import { usePathname, useRouter } from 'next/navigation'
 import { useAppContext } from '@/lib/hooks/app-context'
+import { Chat, Repository, Task } from '@/lib/types'
+import { getRepositoryFromId, getOrganizations, getTask } from '@/app/actions'
 
 const IS_PREVIEW = process.env.VERCEL_ENV === 'preview'
 export interface ChatProps extends React.ComponentProps<'div'> {
   initialMessages?: Message[]
-  id?: string
+  chat: Chat
 }
 
-export function Chat({ id, initialMessages, className }: ChatProps) {
+export function Chat({ chat, initialMessages, className }: ChatProps) {
   const router = useRouter()
   const path = usePathname()
   const [previewToken, setPreviewToken] = useLocalStorage<string | null>(
@@ -39,8 +41,15 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
   const [previewTokenDialog, setPreviewTokenDialog] = useState(IS_PREVIEW)
   const [previewTokenInput, setPreviewTokenInput] = useState(previewToken ?? '')
 
-  const { selectedActiveChat, selectedRepository, selectedActiveTask } =
-    useAppContext()
+  const {
+    selectedActiveChat,
+    setSelectedActiveChat,
+    selectedRepository,
+    setSelectedRepository,
+    selectedActiveTask,
+    setSelectedActiveTask,
+    setSelectedOrganization
+  } = useAppContext()
 
   // 'useChat' comes from the Vercel API: https://sdk.vercel.ai/docs/api-reference/use-chat
   //
@@ -64,9 +73,9 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
   const { messages, append, reload, stop, isLoading, input, setInput } =
     useChat({
       initialMessages,
-      id,
+      id: chat.id,
       body: {
-        id,
+        id: chat.id,
         previewToken,
         repo: selectedRepository,
         task: selectedActiveTask,
@@ -84,11 +93,60 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
           //original template code, fixing it for local deployment (there is no
           //shallow option in next.js)
           //router.push(`/chat/${id}`, { shallow: true, scroll: false })
-          router.push(`/chat/${id}`, { scroll: false })
+          router.push(`/chat/${chat.id}`, { scroll: false })
           router.refresh()
         }
       }
     })
+
+  useEffect(() => {
+    async function checkChat() {
+      //chats can be reached by direct deep links (e.g. /chat/1234)
+      //so we need to see if our appContext has been set and matches.
+      //if it's different than the chat that has come in through props, reset the appContext to match
+      //the chat that has come in.
+      // the chatId, repoId, and taskId must all match the ids in the chat prop
+      //, otherwise we need to reset the appContext
+      if (!chat.taskId || !chat.repoId) {
+        //this is an old chat made before the 1/4/24 update.  just log the error for now, it can
+        //be fixed by just adding more content to the chat.
+        console.log(
+          'chat.tsx: chat is missing taskId or repoId. Fix this by asking another question to the chat with the repo set, and the chat will be updated'
+        )
+        return
+      }
+      //now we see if the chat matches the appContext selectedRepository and selectedActiveTask
+      //if it doesn't, we need to reset the appContext
+      if (
+        chat.taskId !== selectedActiveTask?.id ||
+        chat.repoId !== selectedRepository?.full_name
+      ) {
+        //reset the appContext to match the chat
+        console.log('chat.tsx: resetting appContext to match chat')
+        const task = await getTask(chat.taskId, chat.userId)
+        const repo = await getRepositoryFromId(chat.repoId, chat.userId)
+        //we don't store organizations, fetch the user orgs and filter by org.login to match
+        //the repo.orgId
+        const orgs = await getOrganizations()
+        const org = orgs.filter(org => org.login == repo?.orgId)[0]
+        setSelectedOrganization(org)
+        setSelectedRepository(repo)
+        setSelectedActiveTask(task)
+        setSelectedActiveChat(chat)
+      }
+    }
+    checkChat()
+  }, [
+    chat,
+    selectedActiveChat,
+    setSelectedActiveChat,
+    selectedActiveTask,
+    setSelectedActiveTask,
+    selectedRepository,
+    setSelectedRepository,
+    setSelectedOrganization
+  ])
+
   return (
     <>
       <div className={cn('pb-[200px] pt-4 md:pt-10', className)}>
@@ -102,7 +160,7 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
         )}
       </div>
       <ChatPanel
-        id={id}
+        id={chat.id}
         isLoading={isLoading}
         stop={stop}
         append={append}
