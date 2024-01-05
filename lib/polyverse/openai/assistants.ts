@@ -6,8 +6,9 @@ import { getFileInfo } from '../backend/backend'
 import { isRecord } from '../typescript/helpers'
 
 import { OPENAI_MODEL } from './constants'
-import { task_func } from './task_func'
 import { ProjectDataReference, Repository } from '@/lib/types'
+
+import { submitTaskStepsAssistantFunction } from './assistantTools'
 
 const PV_OPENAI_ASSISTANT_NAME = 'Polyverse Boost Sara'
 
@@ -66,7 +67,7 @@ export async function createAssistantWithFileIDsFromRepo(
     name: PV_OPENAI_ASSISTANT_NAME,
     file_ids: fileIDs,
     instructions: prompt,
-    tools: [{ type: 'code_interpreter' }, { type: 'retrieval' }, task_func],
+    tools: [{ type: 'code_interpreter' }, { type: 'retrieval' }, submitTaskStepsAssistantFunction],
     metadata: { repo_full_name }
   })
 }

@@ -19,7 +19,6 @@ export function SidebarList({ task }: SidebarListProps) {
   useEffect(() => {
     const fetchChats = async () => {
       const loadedChats = await getChats(selectedActiveTask?.id || null)
-      console.log('loadedChats', loadedChats)
       setChats(loadedChats)
     }
 
