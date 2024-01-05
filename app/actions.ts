@@ -227,27 +227,17 @@ export async function createTask(task: Task): Promise<Task> {
   // properties on the object we are writing and fix the logic.
   stripUndefinedObjectProperties(taskData)
 
-
-
-
-
-
-  console.log(`***** Persisting task to task:${id}`)
   await kv.hset(`task:${id}`, taskData)
 
-  console.log(`***** Adding to the user set of tasks at user:tasks:${session.user.id}: task:${id}`)
   await kv.zadd(`user:tasks:${session.user.id}`, {
     score: +createdAt,
     member: `task:${id}`
   })
 
-  console.log(`***** Adding to the user set of tasks at repo:tasks:${task.repositoryId}: task:${id}`)
   await kv.zadd(`repo:tasks:${task.repositoryId}`, {
     score: +createdAt,
     member: `task:${id}`
   })
-
-  // repo:tasks:${repoId}
 
   return taskData
 }
