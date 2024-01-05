@@ -1,12 +1,10 @@
 'use client'
 
-import { Chat } from '@/lib/types'
-
 import { useState } from 'react'
 
 import { Treeview } from './ui/treeview'
 
-import { Task } from '@/lib/types'
+import { Task } from '@/lib/dataModelTypes'
 
 // TODO: Delete this file
 // import { data } from './ui/treeview-data-test'

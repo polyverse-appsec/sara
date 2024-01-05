@@ -1,5 +1,5 @@
 import { Octokit } from '@octokit/rest'
-import { Organization, Repository } from '@/lib/types'
+import { Organization, Repository } from '@/lib/dataModelTypes'
 // Define a type for the function's parameters
 export type FetchUserOrgsParams = {
   accessToken: string

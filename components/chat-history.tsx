@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils'
 import { SidebarList } from '@/components/sidebar-list'
 import { buttonVariants } from '@/components/ui/button'
 import { IconPlus } from '@/components/ui/icons'
-import { Task } from '@/lib/types'
+import { Task } from '@/lib/dataModelTypes'
 
 interface ChatHistoryProps {
   task: Task | null

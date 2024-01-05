@@ -1,6 +1,6 @@
 
 'use client'
-import { clearChats, getChats } from "@/app/actions"
+import { clearChats, getTasksAssociatedWithRepo } from "@/app/actions"
 
 import TaskTree from "./task-tree"
 
@@ -14,7 +14,7 @@ import { IconPlus } from '@/components/ui/icons'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { ClearHistory } from '@/components/clear-history'
 import { useAppContext } from '@/lib/hooks/app-context';
-import { Task, Chat } from '@/lib/types';
+import { Task, Chat } from '@/lib/dataModelTypes';
 import { use, useState, useEffect} from "react"
 
 
@@ -28,27 +28,25 @@ const convertChatToTask = ({ id, title, createdAt, userId}: Chat): Task => ({
 })
 
 export  function TaskDataLoader({ userId }: TaskDataLoaderProps) {
-    //const tasks = await getChats(userId)
-    const [tasks , setTasks] = useState<Task[]>([]);
-   
-    const { selectedRepository } = useAppContext();
+    const [tasks , setTasks] = useState<Task[]>([])
+    const { selectedRepository, tasksLastGeneratedAt, selectedActiveChat } = useAppContext()
 
-    // console.log(`<TaskDataLoader> render - selectedRepository: ${JSON.stringify(selectedRepository)}`)
+    console.log(`<TaskDataLoader> render - tasksLastGeneratedAt: ${tasksLastGeneratedAt}`)
+    console.log(`<TaskDataLoader> render - selectedActiveChat.userID: ${selectedActiveChat?.userId}`)
 
-    function fetchTasks() {
-        console.log('Fetching tasks')
+    async function fetchTasks() {
+        if (!selectedRepository?.full_name) {
+            console.log(`Aborting task fetch since no repo selected`)
+            return
+        }
 
-        getChats(userId).then(data => {
-          if (Array.isArray(data)) {
-            const tempTasks = data.map(convertChatToTask)
-            console.log(tempTasks)
-            setTasks(data.map(convertChatToTask));
-          } else {
-            console.error('Error fetching tasks:', data);
-          }
-        }).catch(error => {
-          console.error('Error fetching tasks:', error);
-        });
+        try {
+            const tasks = await getTasksAssociatedWithRepo(selectedRepository.full_name)
+            console.log(`***** Retrieved tasks: ${JSON.stringify(tasks)}`)
+            setTasks(tasks)
+        } catch (err) {
+            console.error('***** Error fetching tasks:', err);
+        }
     }
 
     // Effects let you specify side effects that is caused by the rendering
@@ -64,7 +62,7 @@ export  function TaskDataLoader({ userId }: TaskDataLoaderProps) {
     // https://react.dev/learn/synchronizing-with-effects
     useEffect(() => {
         fetchTasks();
-    }, [])
+    }, [selectedRepository, tasksLastGeneratedAt])
 
     // If the user hasn't provided any of their tasks yet then state that
     // otherwise render the task tree.

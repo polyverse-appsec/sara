@@ -1,6 +1,6 @@
 'use client'
 
-import { Chat } from '@/lib/types'
+import { Chat } from '@/lib/dataModelTypes'
 import { AnimatePresence, motion } from 'framer-motion'
 
 import { removeChat, shareChat } from '@/app/actions'

@@ -22,7 +22,7 @@ import { Input } from './ui/input'
 import { toast } from 'react-hot-toast'
 import { usePathname, useRouter } from 'next/navigation'
 import { useAppContext } from '@/lib/hooks/app-context'
-import { Chat, Repository, Task } from '@/lib/types'
+import { Chat, Repository, Task } from '@/lib/dataModelTypes'
 import { getRepositoryFromId, getOrganizations, getTask } from '@/app/actions'
 
 const IS_PREVIEW = process.env.VERCEL_ENV === 'preview'
@@ -48,7 +48,8 @@ export function Chat({ chat, initialMessages, className }: ChatProps) {
     setSelectedRepository,
     selectedActiveTask,
     setSelectedActiveTask,
-    setSelectedOrganization
+    setSelectedOrganization,
+    setTasksLastGeneratedAt
   } = useAppContext()
 
   // 'useChat' comes from the Vercel API: https://sdk.vercel.ai/docs/api-reference/use-chat
@@ -88,7 +89,6 @@ export function Chat({ chat, initialMessages, className }: ChatProps) {
       },
       onFinish() {
         // The 'onFinish()' callback gets called after the chat stream ends
-
         if (!path.includes('chat')) {
           //original template code, fixing it for local deployment (there is no
           //shallow option in next.js)
@@ -99,6 +99,13 @@ export function Chat({ chat, initialMessages, className }: ChatProps) {
           router.push(`/chat/${chat.id}`, { scroll: false })
           router.refresh()
         }
+
+        // Regardless of if tasks have actually been generated as a result of
+        // this chat update the app context from when this chat finished in
+        // the event tasks were generated. If so then any React components
+        // that require knowing when new tasks have been generated will
+        // re-render and query for those tasks.
+        setTasksLastGeneratedAt(Date.now())
       }
     })
 

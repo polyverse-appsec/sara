@@ -1,6 +1,6 @@
 import NextAuth from 'next-auth'
 import GitHub from 'next-auth/providers/github'
-import { Organization } from '@/lib/types'
+import { Organization } from '@/lib/dataModelTypes'
 import exp from 'constants'
 
 export const {

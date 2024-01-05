@@ -227,17 +227,60 @@ export async function createTask(task: Task): Promise<Task> {
   // properties on the object we are writing and fix the logic.
   stripUndefinedObjectProperties(taskData)
 
+
+
+
+
+
   console.log(`***** Persisting task to task:${id}`)
-  console.log(`***** Adding to the user set of tasks at user:tasks:${session.user.id}: task:${id}`)
-
-
   await kv.hset(`task:${id}`, taskData)
+
+  console.log(`***** Adding to the user set of tasks at user:tasks:${session.user.id}: task:${id}`)
   await kv.zadd(`user:tasks:${session.user.id}`, {
     score: +createdAt,
     member: `task:${id}`
   })
 
+  console.log(`***** Adding to the user set of tasks at repo:tasks:${task.repositoryId}: task:${id}`)
+  await kv.zadd(`repo:tasks:${task.repositoryId}`, {
+    score: +createdAt,
+    member: `task:${id}`
+  })
+
+  // repo:tasks:${repoId}
+
   return taskData
+}
+
+const createRepoTasksRepoIDKey = (repoID: string) => `repo:tasks:${repoID}`
+const createUserTasksUserIDKey = (userID: string) => `user:tasks:${userID}`
+const createTaskTaskIDKey = (taskID: string) => `task:${taskID}`
+
+export const getTasksAssociatedWithRepo = async (repoID: string): Promise<Task[]> => {
+  const session = await auth()
+
+  // BUGBUG: Ummmmm This is bad - Turning off for demo purposes but we need to
+  // be able to pass in user ID for this method from the client side when we
+  // invoke it but I don't think we figured out how to pass that info around yet
+  // if (!session?.user?.id || session.user.id !== userID) {
+  //   throw new Error('Unauthorized')
+  // }
+
+  // First start by getting all of tasks associated with a user...
+  const key = createRepoTasksRepoIDKey(repoID)
+  const taskKeys = await kv.zrange(key, 0, -1) as string[]
+
+  if (taskKeys.length === 0) {
+    return []
+  }
+
+  // Then get all of the tasks for the user based on the retrieved IDs...
+  const taskPipeline = kv.pipeline()
+  taskKeys.forEach(taskKey => taskPipeline.hgetall(taskKey))
+
+  const tasks = await taskPipeline.exec() as Task[]
+
+  return tasks
 }
 
 export async function getTask(

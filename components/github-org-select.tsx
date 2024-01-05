@@ -2,12 +2,10 @@
 
 import Image from 'next/image'
 import { type Session } from 'next-auth'
-import { signOut } from 'next-auth/react'
 
 import { Button } from '@/components/ui/button'
-import { getOrganizations } from '@/app/actions'
-import React, { useState, useEffect } from 'react';
-import { Organization } from '@/lib/types'
+import React from 'react';
+import { Organization } from '@/lib/dataModelTypes'
 
 
 import {
@@ -17,7 +15,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import { IconExternalLink } from '@/components/ui/icons'
 
 function getUserInitials(name: string) {
   const [firstName, lastName] = name.split(' ')

@@ -1,7 +1,7 @@
 'use client'
 
 import React, { createContext, useState, useContext, ReactNode } from 'react'
-import { User, Organization, Repository, Task, Chat } from '@/lib/types'
+import { User, Organization, Repository, Task, Chat } from '@/lib/dataModelTypes'
 
 interface AppContextType {
   user: User | null
@@ -18,6 +18,10 @@ interface AppContextType {
 
   selectedActiveChat: Chat | null
   setSelectedActiveChat: (chat: Chat | null) => void
+
+  tasksLastGeneratedAt: number | null
+  setTasksLastGeneratedAt: (generatedAt: number | null) => void
+
 }
 
 const AppContext = createContext<AppContextType | null>(null)
@@ -48,6 +52,9 @@ export function AppProvider({ children }: AppProviderProps) {
   const [selectedActiveChat, setSelectedActiveChat] = useState<Chat | null>(
     null
   )
+  const [tasksLastGeneratedAt, setTasksLastGeneratedAt] = useState<number | null>(
+    null
+  )
 
   const value = {
     user,
@@ -59,7 +66,9 @@ export function AppProvider({ children }: AppProviderProps) {
     selectedActiveTask,
     setSelectedActiveTask,
     selectedActiveChat,
-    setSelectedActiveChat
+    setSelectedActiveChat,
+    tasksLastGeneratedAt,
+    setTasksLastGeneratedAt
   }
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>

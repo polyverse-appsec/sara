@@ -4,7 +4,7 @@ import { clearChats, getChats } from '@/app/actions'
 import { ClearHistory } from '@/components/clear-history'
 import { SidebarItems } from '@/components/sidebar-items'
 import { ThemeToggle } from '@/components/theme-toggle'
-import { Task, Chat } from '@/lib/types'
+import { Task, Chat } from '@/lib/dataModelTypes'
 import { useAppContext } from '@/lib/hooks/app-context'
 
 interface SidebarListProps {
