@@ -1,4 +1,3 @@
-import { configAssistant } from '../openai/assistants'
 import { appendUserMessage, getAssistantMessages } from '../openai/messages'
 import {
   getThreadRunStatus,
@@ -7,7 +6,7 @@ import {
 } from '../openai/runs'
 
 import { configThread } from '../openai/threads'
-import { Repository, Chat, Task } from '@/lib/types'
+import { Repository, Chat, Task } from '@/lib/dataModelTypes'
 
 /**
  * Callback for those interested into the response that Sara returned.
@@ -26,14 +25,19 @@ import { Repository, Chat, Task } from '@/lib/types'
  * returned which can be consumed or passed along to something like a 'Response'
  * object instance.
  *
- * @param question List of questions to ask Sara. Only the
+ * @param {string} userID The ID of the user whom we made a request to Sara on
+ * their behalf.
+ * @param repo 
+ * @param task 
+ * @param chat 
+ * @param question List of questions to ask Sara.
  * @param {FullSaraResponseCallback} [fullSaraResponseCallback] Optional
  * callback with Saras full response.
- *
  * @returns {ReadableStream} A 'ReadableStream' object that can be used for
  * streaming Sara's response in realtime.
  */
 export const querySara = async (
+  userID: string,
   repo: Repository,
   task: Task,
   chat: Chat,
@@ -96,7 +100,7 @@ export const querySara = async (
 
           return
         } else if (status === 'requires_action') {
-          await handleRequiresActionStatus(thread.id, runID, runStatus)
+          await handleRequiresActionStatus(userID, repo.full_name, thread.id, runID, runStatus)
 
           return
         }

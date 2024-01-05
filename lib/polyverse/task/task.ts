@@ -1,5 +1,5 @@
 // Import necessary types and functions
-import { Task, User, Repository } from '@/lib/types'
+import { Task, User, Repository } from '@/lib/dataModelTypes'
 import { createTask, getRepository, getTask, updateRepo } from '@/app/actions'
 
 /**

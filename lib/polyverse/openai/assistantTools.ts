@@ -1,7 +1,9 @@
 import { Assistant } from 'openai/resources/beta/assistants/assistants'
-import { Repository, Task } from '@/lib/types'
 import OpenAI from 'openai'
-import { Run } from 'openai/resources/beta/threads/runs/runs'
+import { createTask } from '@/app/actions'
+import { create } from 'domain'
+import { Task } from '@/lib/dataModelTypes'
+import { nanoid } from '@/lib/utils'
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
@@ -39,17 +41,55 @@ export const submitTaskStepsAssistantFunction: Assistant.Function = {
   }
 }
 
+const buildTaskInstance = (userId: string, repositoryId: string, { title, description }: TaskForGoalType): Task => {
+  return {
+    id: nanoid(),
+    title,
+    description,
+    createdAt: new Date(),
+    userId,
+    repositoryId,
+    chats: [],
+    subtasks: []
+  }
+}
+
+/**
+ * Type representing the task information the OpenAI Assistant will provide us
+ * when she invokes the `submitTaskSteps`.
+ */
 export type TaskForGoalType = {
+  /** Title of the task */
   title: string
+
+  /** Description of the task */
   description: string
 }
 
+/**
+ * Type representing the type of info we can expect to get from the OpenAI
+ * Assistant running on a thread that is requesting to invoke the
+ * `submitTaskSteps`.
+ */
 export type SubmitTasksForGoalType = {
   tasks: TaskForGoalType[]
 }
 
-export const submitTaskSteps = async (toolCallArgs: SubmitTasksForGoalType) => {
+const getBuildTaskInstanceClosure = (userID: string, repoID: string) => {
+  // Return a function that can be invoked to map a `TaskForGoalType` which we
+  // receive from Sara when she tries to invoke the `submitTaskSteps` function
+  // to a `Task` instance from our data model.
+  //
+  // Commonly used for persistence purposes
+  return (task: TaskForGoalType) => {
+    return buildTaskInstance(userID, repoID, task)
+  }
+}
+
+export const submitTaskSteps = async (userID: string, repoID: string, toolCallArgs: SubmitTasksForGoalType) => {
   if (toolCallArgs) {
-    toolCallArgs.tasks.forEach(({title, description}) => console.log(`Persist task with title '${title}' with description of: ${description}`))
+    const tasksToPersist = toolCallArgs.tasks.map(getBuildTaskInstanceClosure(userID, repoID))
+
+    tasksToPersist.forEach((task: Task) => createTask(task))
   }
 }

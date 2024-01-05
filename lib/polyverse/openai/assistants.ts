@@ -6,7 +6,7 @@ import { getFileInfo } from '../backend/backend'
 import { isRecord } from '../typescript/helpers'
 
 import { OPENAI_MODEL } from './constants'
-import { ProjectDataReference, Repository } from '@/lib/types'
+import { ProjectDataReference, Repository } from '@/lib/dataModelTypes'
 
 import { submitTaskStepsAssistantFunction } from './assistantTools'
 
@@ -18,7 +18,7 @@ interface FileTypes {
   projectsource: string
 }
 
-function getOpenAiAssistantInstructions(fileTypes: FileTypes): string {
+function getOpenAIAssistantInstructions(fileTypes: FileTypes): string {
   return `
     You are a coding assistant named Sara. 
     You have access to the full codebase of a project in your files, including an ${fileTypes.aispec} file that summarizes the code. 
@@ -38,14 +38,14 @@ const oaiClient = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 })
 
-function mapFileInfotoPromptAndIds(fileInfo: ProjectDataReference[]) {
+function mapFileInfoToPromptAndIDs(fileInfo: ProjectDataReference[]) {
   let fileTypes: FileTypes = { aispec: '', blueprint: '', projectsource: '' }
   fileInfo.map(({ name, type }) => {
     fileTypes[type as keyof FileTypes] = name
   })
 
   const fileIDs = fileInfo.map(({ id }) => id)
-  const prompt = getOpenAiAssistantInstructions(fileTypes)
+  const prompt = getOpenAIAssistantInstructions(fileTypes)
 
   return { prompt, fileIDs }
 }
@@ -60,7 +60,7 @@ export async function createAssistantWithFileIDsFromRepo(
   fileInfo: ProjectDataReference[],
   repo_full_name: string
 ): Promise<Assistant> {
-  const { prompt, fileIDs } = mapFileInfotoPromptAndIds(fileInfo)
+  const { prompt, fileIDs } = mapFileInfoToPromptAndIDs(fileInfo)
 
   return await oaiClient.beta.assistants.create({
     model: OPENAI_MODEL,
@@ -102,7 +102,7 @@ export async function updateAssistantPromptAndFiles(
   fileInfo: ProjectDataReference[],
   { id }: { id: string }
 ): Promise<Assistant> {
-  const { prompt, fileIDs } = mapFileInfotoPromptAndIds(fileInfo)
+  const { prompt, fileIDs } = mapFileInfoToPromptAndIDs(fileInfo)
   return await oaiClient.beta.assistants.update(id, {
     file_ids: fileIDs,
     instructions: prompt

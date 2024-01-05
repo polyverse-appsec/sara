@@ -5,12 +5,12 @@ import { redirect } from 'next/navigation'
 import { kv } from '@vercel/kv'
 
 import { auth } from '@/auth'
-import { type Chat } from '@/lib/types'
+import { type Chat } from '@/lib/dataModelTypes'
 import {
   fetchUserOrganizations,
   fetchOrganizationRepositories
 } from '@/lib/polyverse/github/repos'
-import { Organization, Repository, Task } from '@/lib/types'
+import { Organization, Repository, Task } from '@/lib/dataModelTypes'
 import { nanoid } from '@/lib/utils'
 import { createDefaultRepositoryTask } from '@/lib/polyverse/task/task'
 import { tickleProject } from '@/lib/polyverse/backend/backend'
@@ -226,6 +226,10 @@ export async function createTask(task: Task): Promise<Task> {
   // Correct thing to do would be to identify where we are putting 'undefined'
   // properties on the object we are writing and fix the logic.
   stripUndefinedObjectProperties(taskData)
+
+  console.log(`***** Persisting task to task:${id}`)
+  console.log(`***** Adding to the user set of tasks at user:tasks:${session.user.id}: task:${id}`)
+
 
   await kv.hset(`task:${id}`, taskData)
   await kv.zadd(`user:tasks:${session.user.id}`, {

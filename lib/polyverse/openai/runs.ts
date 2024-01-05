@@ -58,12 +58,23 @@ const buildToolOutput = (toolCallID: string, output: string = ''): ToolOutput =>
  * the relevant functions for the OpenAI Assistant working on the thread and
  * provide back the relevant output.
  *
+ * @param {string} userID ID of the user whom asked a question of Sara that
+ * triggered her to require further action from our backend.
+ * @param {string} repoID ID of the repo the user set as the active repo when
+ * asking a question of Sara when she asked for additional action from our
+ * backend.
  * @param {string} threadID ID of thread OpenAI Assistant is working on
  * @param {string} runID ID of the run on the thread
  * @param {Run} runStatus Details of the run status and what actions need to be
  * taken.
  */
-export const handleRequiresActionStatus = async (threadID: string, runID: string, runStatus: Run) => {
+export const handleRequiresActionStatus = async (
+  userID: string,
+  repoID: string,
+  threadID: string,
+  runID: string,
+  runStatus: Run) =>
+{
   // Identify any tool calls to us
   if (runStatus.required_action?.type === 'submit_tool_outputs' &&
       runStatus.required_action?.submit_tool_outputs.tool_calls) {
@@ -78,9 +89,9 @@ export const handleRequiresActionStatus = async (threadID: string, runID: string
       const { name: toolName, arguments: toolArgs } = toolCall.function
 
       if (toolName === 'submitTaskSteps') {
-        const parsedArgs = JSON.parse(toolArgs)
+        const parsedArgsAsTasks = JSON.parse(toolArgs)
 
-        await submitTaskSteps(parsedArgs)
+        await submitTaskSteps(userID, repoID, parsedArgsAsTasks)
 
         // While we don't generate any output from `submitTaskSteps` we still
         // need to response back to OpenAI with a tool output response object
