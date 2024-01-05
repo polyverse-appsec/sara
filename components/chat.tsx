@@ -93,6 +93,9 @@ export function Chat({ chat, initialMessages, className }: ChatProps) {
           //original template code, fixing it for local deployment (there is no
           //shallow option in next.js)
           //router.push(`/chat/${id}`, { shallow: true, scroll: false })
+          console.log(
+            `chat.tsx: router.push and doing redirect to chat/${chat.id}`
+          )
           router.push(`/chat/${chat.id}`, { scroll: false })
           router.refresh()
         }

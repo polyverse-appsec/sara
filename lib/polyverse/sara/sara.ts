@@ -91,18 +91,18 @@ export const querySara = async (
           controller.enqueue('\n')
           controller.enqueue(assistantMessages)
 
-          controller.close()
-
           // Call bck for anyone that is interested in the message that was retrieved
           if (fullSaraResponseCallback) {
-            fullSaraResponseCallback(assistantMessages)
+            await fullSaraResponseCallback(assistantMessages)
           }
+          controller.close()
 
           return
         } else if (status === 'requires_action') {
           // TODO: This logic can be moved to the `tools_func` file later for cleanup
           // Identify what tools to call
-          const toolCalls = runStatus.required_action?.submit_tool_outputs.tool_calls
+          const toolCalls =
+            runStatus.required_action?.submit_tool_outputs.tool_calls
 
           if (toolCalls) {
             for (const toolCall of toolCalls) {
