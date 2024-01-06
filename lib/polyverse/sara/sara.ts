@@ -45,6 +45,7 @@ export const querySara = async (
   fullSaraResponseCallback?: any
 ) => {
   const assistant = repo.assistant
+  const encoder = new TextEncoder()
 
   if (!assistant) {
     console.log(`No assistant found for repo: ${repo.full_name}`)
@@ -89,8 +90,8 @@ export const querySara = async (
 
           // Enqueue a new line first since we have been creating a progress bar
           // of dots while waiting for our answer
-          controller.enqueue('\n')
-          controller.enqueue(assistantMessages)
+          controller.enqueue(encoder.encode('\n'))
+          controller.enqueue(encoder.encode(assistantMessages))
 
           // Call bck for anyone that is interested in the message that was retrieved
           if (fullSaraResponseCallback) {
@@ -115,7 +116,7 @@ export const querySara = async (
         }
 
         // Show a little progress bar of dots if messages aren't yet ready
-        controller.enqueue('.')
+        controller.enqueue(encoder.encode('.'))
       }, 500)
     }
   })
