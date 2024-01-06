@@ -54,6 +54,7 @@ export async function POST(req: Request) {
       ]
     }
 
+    console.log("starting to store chat's messages for chat id: ", id)
     const cleanPayload = stripUndefinedObjectProperties(payload)
     await kv.hmset(`chat:${id}`, cleanPayload)
 
@@ -66,6 +67,7 @@ export async function POST(req: Request) {
       score: createdAt,
       member: `chat:${id}`
     })
+    console.log(`stored chat at key: ${key}`)
   }
 
   const assistantMessagesStream = await querySara(

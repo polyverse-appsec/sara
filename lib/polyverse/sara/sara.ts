@@ -27,9 +27,9 @@ import { Repository, Chat, Task } from '@/lib/dataModelTypes'
  *
  * @param {string} userID The ID of the user whom we made a request to Sara on
  * their behalf.
- * @param repo 
- * @param task 
- * @param chat 
+ * @param repo
+ * @param task
+ * @param chat
  * @param question List of questions to ask Sara.
  * @param {FullSaraResponseCallback} [fullSaraResponseCallback] Optional
  * callback with Saras full response.
@@ -94,13 +94,22 @@ export const querySara = async (
 
           // Call bck for anyone that is interested in the message that was retrieved
           if (fullSaraResponseCallback) {
+            console.log('Calling fullSaraResponseCallback')
             await fullSaraResponseCallback(assistantMessages)
+            console.log('Called fullSaraResponseCallback')
           }
+          console.log('Closing controller')
           controller.close()
 
           return
         } else if (status === 'requires_action') {
-          await handleRequiresActionStatus(userID, repo.full_name, thread.id, runID, runStatus)
+          await handleRequiresActionStatus(
+            userID,
+            repo.full_name,
+            thread.id,
+            runID,
+            runStatus
+          )
 
           return
         }
