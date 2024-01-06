@@ -56,7 +56,7 @@ export async function tickleProject(
       headers: {
         'x-user-account': email
       },
-      body: JSON.stringify({ resources: [repo.html_url] })
+      body: JSON.stringify({ resources: [{"uri": repo.html_url}] })
     })
 
     if (!res.ok) {
