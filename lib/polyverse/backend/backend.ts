@@ -31,8 +31,7 @@ export async function getFileInfo(
       return []
     }
 
-    const json = await res.json()
-    const fileInfo = JSON.parse(json.body)
+    const fileInfo = await res.json()
     //json should be an array of ProjectDataReference objects
     return fileInfo as ProjectDataReference[]
   } catch (error) {
