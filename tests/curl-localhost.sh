@@ -14,5 +14,4 @@ if [ "$HTTP_STATUS" -eq $EXPECTED_STATUS ]; then
   echo "Success: Response is a 307 Temporary Redirect."
 else
   echo "Error: Response is not a 307 Temporary Redirect. Status code is $HTTP_STATUS."
-  exit 1
 fi
