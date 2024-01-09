@@ -1,6 +1,6 @@
 import NextAuth, { DefaultSession } from 'next-auth'
 
-import { Organization, Repository, Task } from '@/lib/dataModelTypes'
+import { Organization, Project, Task } from '@/lib/dataModelTypes'
 
 declare module 'next-auth' {
   /**
@@ -15,7 +15,7 @@ declare module 'next-auth' {
     } & DefaultSession['user']
     accessToken: string
     activeOrganization?: Organization
-    activeRepository?: Repository
+    activeRepository?: Project
     activeTask?: Task
     referenceRepositories?: {
       organization: Organization

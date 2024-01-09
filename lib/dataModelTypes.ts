@@ -45,7 +45,7 @@ export type Organization = {
   avatar_url: string // The URL of the organization's avatar
 }
 
-export interface Repository extends Record<string, any> {
+export interface Project extends Record<string, any> {
   full_name: string // the full_name doubles as the id. we do not have a seperate id so we can easily look up by name.
   html_url: string
   name: string

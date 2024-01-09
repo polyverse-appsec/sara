@@ -10,7 +10,7 @@ import {
   fetchUserOrganizations,
   fetchOrganizationRepositories
 } from '@/lib/polyverse/github/repos'
-import { Organization, Repository, Task } from '@/lib/dataModelTypes'
+import { Organization, Project, Task } from '@/lib/dataModelTypes'
 import { nanoid } from '@/lib/utils'
 import { createDefaultRepositoryTask } from '@/lib/polyverse/task/task'
 import { tickleProject } from '@/lib/polyverse/backend/backend'
@@ -189,9 +189,7 @@ export async function getOrganizations(): Promise<Organization[]> {
   return orgs
 }
 
-export async function getRepositoriesForOrg(
-  org: string
-): Promise<Repository[]> {
+export async function getRepositoriesForOrg(org: string): Promise<Project[]> {
   const session = await auth()
 
   if (!session?.user?.id) {
@@ -246,7 +244,9 @@ const createRepoTasksRepoIDKey = (repoID: string) => `repo:tasks:${repoID}`
 const createUserTasksUserIDKey = (userID: string) => `user:tasks:${userID}`
 const createTaskTaskIDKey = (taskID: string) => `task:${taskID}`
 
-export const getTasksAssociatedWithRepo = async (repoID: string): Promise<Task[]> => {
+export const getTasksAssociatedWithRepo = async (
+  repoID: string
+): Promise<Task[]> => {
   const session = await auth()
 
   // BUGBUG: Ummmmm This is bad - Turning off for demo purposes but we need to
@@ -258,7 +258,7 @@ export const getTasksAssociatedWithRepo = async (repoID: string): Promise<Task[]
 
   // First start by getting all of tasks associated with a user...
   const key = createRepoTasksRepoIDKey(repoID)
-  const taskKeys = await kv.zrange(key, 0, -1) as string[]
+  const taskKeys = (await kv.zrange(key, 0, -1)) as string[]
 
   if (taskKeys.length === 0) {
     return []
@@ -268,7 +268,7 @@ export const getTasksAssociatedWithRepo = async (repoID: string): Promise<Task[]
   const taskPipeline = kv.pipeline()
   taskKeys.forEach(taskKey => taskPipeline.hgetall(taskKey))
 
-  const tasks = await taskPipeline.exec() as Task[]
+  const tasks = (await taskPipeline.exec()) as Task[]
 
   return tasks
 }
@@ -311,16 +311,16 @@ const buildRepositoryHashKey = (fullRepoName: string) =>
  * repository doesn't exist then persists any information contained within the
  * fully formed `repo` parameter.
  *
- * @param {Repository} repo Object instance of a repo. Must be fully formed in
+ * @param {Project} repo Object instance of a repo. Must be fully formed in
  * the event the repo doesn't exist and is to be created.
  * @param {string} userId The ID of the user who is authorized to retrieve or
  * persist the repo name.
- * @returns {Repository} Retrieved or persisted repository info.
+ * @returns {Project} Retrieved or persisted repository info.
  */
 export async function getOrCreateRepositoryFromGithub(
-  repo: Repository,
+  repo: Project,
   userId: string
-): Promise<Repository> {
+): Promise<Project> {
   // Rather than delegate auth to functions we consume we protect ourselves and
   // do a check here before we consume each method as well in case there are any
   // behavioral changes to said consumed functions.
@@ -344,9 +344,9 @@ export async function getOrCreateRepositoryFromGithub(
 }
 
 async function checkAndUpdateRepository(
-  retrievedRepo: Repository,
-  incomingGithubRepo: Repository
-): Promise<Repository> {
+  retrievedRepo: Project,
+  incomingGithubRepo: Project
+): Promise<Project> {
   //go through the fields of the incoming Repo, and for every non-null field, check to see if it matches the retrieved repo
   //if it's different, then set a flag to update the repo. Be sure not to clobber fields like the Assistant field,
   //as the incoming Repo will not have that field--just the github repo info
@@ -370,12 +370,12 @@ async function checkAndUpdateRepository(
 /**
  * Hashes the fields of a repository object.
  *
- * @param {Repository} githubRepo Fully formed instance of Repository object.
- * @returns {Repository} The presisted repository object.
+ * @param {Project} githubRepo Fully formed instance of Repository object.
+ * @returns {Project} The presisted repository object.
  */
 export async function createRepositoryFromGithub(
-  githubRepo: Repository
-): Promise<Repository> {
+  githubRepo: Project
+): Promise<Project> {
   const session = await auth()
 
   if (!session?.user?.id) {
@@ -407,11 +407,11 @@ export async function createRepositoryFromGithub(
  * call this API with a partially formed repository object it will clobber the
  * existing repository object with the partially formed one.
  *
- * @param {Repository} repo Fully formed instance of Repository object to
+ * @param {Project} repo Fully formed instance of Repository object to
  * update.
- * @returns {Repository} The updated repository object.
+ * @returns {Project} The updated repository object.
  */
-export async function updateRepo(repo: Repository): Promise<Repository> {
+export async function updateRepo(repo: Project): Promise<Project> {
   const session = await auth()
 
   if (!session?.user?.id) {
@@ -444,7 +444,7 @@ export async function updateRepo(repo: Repository): Promise<Repository> {
 export async function getRepository(
   fullRepoName: string,
   userId: string
-): Promise<Repository | null> {
+): Promise<Project | null> {
   const session = await auth()
 
   if (!session?.user?.id || userId !== session.user.id) {
@@ -452,7 +452,7 @@ export async function getRepository(
   }
 
   const repoKey = buildRepositoryHashKey(fullRepoName)
-  const repo = await kv.hgetall<Repository>(repoKey)
+  const repo = await kv.hgetall<Project>(repoKey)
 
   // Per our current implementation of our types we assume that the `orgId`
   // matches the ID of the user that owns the repo
@@ -469,7 +469,7 @@ export async function getRepository(
 export async function getRepositoryFromId(
   repoId: string,
   userId: string
-): Promise<Repository | null> {
+): Promise<Project | null> {
   const session = await auth()
 
   if (!session?.user?.id || userId !== session.user.id) {
@@ -477,7 +477,7 @@ export async function getRepositoryFromId(
   }
 
   const repoKey = `repository:${repoId}`
-  const repo = await kv.hgetall<Repository>(repoKey)
+  const repo = await kv.hgetall<Project>(repoKey)
 
   // Per our current implementation of our types we assume that the `orgId`
   // matches the ID of the user that owns the repo
@@ -494,7 +494,7 @@ export async function getRepositoryFromId(
  *
  */
 
-export async function tickleProjectFromRepoChange(repo: Repository) {
+export async function tickleProjectFromRepoChange(repo: Project) {
   const session = await auth()
 
   if (!session?.user?.id) {
@@ -504,7 +504,7 @@ export async function tickleProjectFromRepoChange(repo: Repository) {
 }
 
 export async function getOrCreateAssistantForRepo(
-  repo: Repository
+  repo: Project
 ): Promise<Assistant | null> {
   const session = await auth()
 

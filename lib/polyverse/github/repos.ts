@@ -1,5 +1,5 @@
 import { Octokit } from '@octokit/rest'
-import { Organization, Repository } from '@/lib/dataModelTypes'
+import { Organization, Project } from '@/lib/dataModelTypes'
 // Define a type for the function's parameters
 export type FetchUserOrgsParams = {
   accessToken: string
@@ -40,7 +40,7 @@ export type FetchOrgReposParams = {
 export async function fetchOrganizationRepositories({
   accessToken,
   org
-}: FetchOrgReposParams): Promise<Repository[]> {
+}: FetchOrgReposParams): Promise<Project[]> {
   const octokit = new Octokit({
     auth: accessToken
   })

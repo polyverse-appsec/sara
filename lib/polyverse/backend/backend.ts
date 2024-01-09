@@ -1,4 +1,4 @@
-import { Repository, ProjectDataReference } from '@/lib/dataModelTypes'
+import { Project, ProjectDataReference } from '@/lib/dataModelTypes'
 
 const USER_PROJECT_URL_BASE =
   'https://pt5sl5vwfjn6lsr2k6szuvfhnq0vaxhl.lambda-url.us-west-2.on.aws/api/user_project'
@@ -11,7 +11,7 @@ const USER_PROJECT_URL_BASE =
  * @returns {Promise<string[]>} Promise of an array of strings. Array will be empty in the event of an error.
  */
 export async function getFileInfo(
-  repo: Repository,
+  repo: Project,
   email: string
 ): Promise<ProjectDataReference[]> {
   const url = `${USER_PROJECT_URL_BASE}/${repo.orgId}/${repo.name}/data_references`
@@ -44,7 +44,7 @@ export async function getFileInfo(
 }
 
 export async function tickleProject(
-  repo: Repository,
+  repo: Project,
   email: string
 ): Promise<string> {
   const url = `${USER_PROJECT_URL_BASE}/${repo.orgId}/${repo.name}`
@@ -56,7 +56,7 @@ export async function tickleProject(
       headers: {
         'x-user-account': email
       },
-      body: JSON.stringify({ resources: [{"uri": repo.html_url}] })
+      body: JSON.stringify({ resources: [{ uri: repo.html_url }] })
     })
 
     if (!res.ok) {

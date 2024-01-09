@@ -6,7 +6,7 @@ import { getFileInfo } from '../backend/backend'
 import { isRecord } from '../typescript/helpers'
 
 import { OPENAI_MODEL } from './constants'
-import { ProjectDataReference, Repository } from '@/lib/dataModelTypes'
+import { ProjectDataReference, Project } from '@/lib/dataModelTypes'
 
 import { submitTaskStepsAssistantFunction } from './assistantTools'
 
@@ -67,7 +67,11 @@ export async function createAssistantWithFileIDsFromRepo(
     name: PV_OPENAI_ASSISTANT_NAME,
     file_ids: fileIDs,
     instructions: prompt,
-    tools: [{ type: 'code_interpreter' }, { type: 'retrieval' }, submitTaskStepsAssistantFunction],
+    tools: [
+      { type: 'code_interpreter' },
+      { type: 'retrieval' },
+      submitTaskStepsAssistantFunction
+    ],
     metadata: { repo_full_name }
   })
 }
@@ -130,7 +134,7 @@ export async function updateAssistantPromptAndFiles(
  * @returns {Promise<Assistant>} Promise with the configured OpenAI assistant
  */
 export async function configAssistant(
-  repo: Repository,
+  repo: Project,
   email: string
 ): Promise<Assistant> {
   // Get the file IDs associated with the repo first since we will end up

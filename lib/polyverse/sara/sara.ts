@@ -6,7 +6,7 @@ import {
 } from '../openai/runs'
 
 import { configThread } from '../openai/threads'
-import { Repository, Chat, Task } from '@/lib/dataModelTypes'
+import { Project, Chat, Task } from '@/lib/dataModelTypes'
 
 /**
  * Callback for those interested into the response that Sara returned.
@@ -38,7 +38,7 @@ import { Repository, Chat, Task } from '@/lib/dataModelTypes'
  */
 export const querySara = async (
   userID: string,
-  repo: Repository,
+  repo: Project,
   task: Task,
   chat: Chat,
   question: any,

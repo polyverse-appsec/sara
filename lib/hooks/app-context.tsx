@@ -1,7 +1,7 @@
 'use client'
 
 import React, { createContext, useState, useContext, ReactNode } from 'react'
-import { User, Organization, Repository, Task, Chat } from '@/lib/dataModelTypes'
+import { User, Organization, Project, Task, Chat } from '@/lib/dataModelTypes'
 
 interface AppContextType {
   user: User | null
@@ -10,8 +10,8 @@ interface AppContextType {
   selectedOrganization: Organization | null
   setSelectedOrganization: (organization: Organization | null) => void
 
-  selectedRepository: Repository | null
-  setSelectedRepository: (repository: Repository | null) => void
+  selectedRepository: Project | null
+  setSelectedRepository: (repository: Project | null) => void
 
   selectedActiveTask: Task | null
   setSelectedActiveTask: (task: Task | null) => void
@@ -21,7 +21,6 @@ interface AppContextType {
 
   tasksLastGeneratedAt: number | null
   setTasksLastGeneratedAt: (generatedAt: number | null) => void
-
 }
 
 const AppContext = createContext<AppContextType | null>(null)
@@ -44,17 +43,18 @@ export function AppProvider({ children }: AppProviderProps) {
   const [user, setUser] = useState<User | null>(null)
   const [selectedOrganization, setSelectedOrganization] =
     useState<Organization | null>(null)
-  const [selectedRepository, setSelectedRepository] =
-    useState<Repository | null>(null)
+  const [selectedRepository, setSelectedRepository] = useState<Project | null>(
+    null
+  )
   const [selectedActiveTask, setSelectedActiveTask] = useState<Task | null>(
     null
   )
   const [selectedActiveChat, setSelectedActiveChat] = useState<Chat | null>(
     null
   )
-  const [tasksLastGeneratedAt, setTasksLastGeneratedAt] = useState<number | null>(
-    null
-  )
+  const [tasksLastGeneratedAt, setTasksLastGeneratedAt] = useState<
+    number | null
+  >(null)
 
   const value = {
     user,

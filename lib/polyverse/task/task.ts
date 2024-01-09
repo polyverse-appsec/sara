@@ -1,32 +1,32 @@
 // Import necessary types and functions
-import { Task, User, Repository } from '@/lib/dataModelTypes'
+import { Task, User, Project } from '@/lib/dataModelTypes'
 import { createTask, getRepository, getTask, updateRepo } from '@/app/actions'
 
 /**
  * Performs a deep copy of an instance of a Repository.
  *
- * @param {Repository} repo Repo to copy
- * @returns {Repository} Deep copy of repo
+ * @param {Project} repo Repo to copy
+ * @returns {Project} Deep copy of repo
  */
-const deepCopyRepo = (repo: Repository): Repository =>
-  JSON.parse(JSON.stringify(repo)) as Repository
+const deepCopyRepo = (repo: Project): Project =>
+  JSON.parse(JSON.stringify(repo)) as Project
 
 /**
  * Checks to see if a repository has a default task and if it doesn't creates
  * one. If one should exist it returns the default task as part of the provided
  * repo.
  *
- * @param {Repository} repo Repository with filled in default task ID to search
+ * @param {Project} repo Repository with filled in default task ID to search
  * on.
  * @param {string} userId ID of user whom this repository object has been
  * created for.
- * @returns {Promise<Repository>} Deep copied instance of the repository with
+ * @returns {Promise<Project>} Deep copied instance of the repository with
  * the default task set on it.
  */
 export async function configDefaultRepositoryTask(
-  repo: Repository,
+  repo: Project,
   userId: string
-): Promise<Repository> {
+): Promise<Project> {
   // Check to see if there is a task associated with the repo provided as a
   // parameter.
   if (repo.defaultTask?.id) {
@@ -58,12 +58,12 @@ export async function configDefaultRepositoryTask(
  * Creates a default repository task. Note that the repo doesn't have the task
  * associated with it after calling this.
  *
- * @param {Repository} repo Repository to create the default task for
+ * @param {Project} repo Repository to create the default task for
  * @param {string} userId User ID assocaited with the created repository
  * @returns {Promise<Task>} Created default task
  */
 export async function createDefaultRepositoryTask(
-  repo: Repository,
+  repo: Project,
   userId: string
 ): Promise<Task> {
   const defaultTask: Task = {

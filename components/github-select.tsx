@@ -17,7 +17,7 @@ import { GithubRepoSelect } from './github-repo-select'
 import { type Session } from 'next-auth'
 import { getOrganizations, getRepositoriesForOrg } from '@/app/actions'
 import { useState, useEffect } from 'react'
-import { Organization, Repository } from '@/lib/dataModelTypes'
+import { Organization, Project } from '@/lib/dataModelTypes'
 
 import { useAppContext } from '@/lib/hooks/app-context'
 import { configDefaultRepositoryTask } from '@/lib/polyverse/task/task'
@@ -40,7 +40,7 @@ export function GithubSelect({ session }: GitHubSelectProps) {
 
   // State to store organizations
   const [organizations, setOrganizations] = useState<Organization[]>([])
-  const [repositories, setRepositories] = useState<Repository[]>([])
+  const [repositories, setRepositories] = useState<Project[]>([])
 
   // State to track if dropdown is open
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
@@ -90,7 +90,7 @@ export function GithubSelect({ session }: GitHubSelectProps) {
     fetchRepositories(org)
   }
 
-  const handleRepositoryChange = async (repo: Repository) => {
+  const handleRepositoryChange = async (repo: Project) => {
     // Persist the repo in the KV store
     const retrievedRepo = await getOrCreateRepositoryFromGithub(
       repo,
