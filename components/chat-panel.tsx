@@ -1,13 +1,11 @@
 import * as React from 'react'
 import { type UseChatHelpers } from 'ai/react'
 
-import { shareChat } from '@/app/actions'
 import { Button } from '@/components/ui/button'
 import { PromptForm } from '@/components/prompt-form'
 import { ButtonScrollToBottom } from '@/components/button-scroll-to-bottom'
 import { IconRefresh, IconShare, IconStop } from '@/components/ui/icons'
 import { FooterText } from '@/components/footer'
-import { ChatShareDialog } from '@/components/chat-share-dialog'
 
 export interface ChatPanelProps
   extends Pick<
@@ -58,28 +56,6 @@ export function ChatPanel({
                   <IconRefresh className="mr-2" />
                   Regenerate response
                 </Button>
-                {id && title ? (
-                  <>
-                    <Button
-                      variant="outline"
-                      onClick={() => setShareDialogOpen(true)}
-                    >
-                      <IconShare className="mr-2" />
-                      Share
-                    </Button>
-                    <ChatShareDialog
-                      open={shareDialogOpen}
-                      onOpenChange={setShareDialogOpen}
-                      onCopy={() => setShareDialogOpen(false)}
-                      shareChat={shareChat}
-                      chat={{
-                        id,
-                        title,
-                        messages
-                      }}
-                    />
-                  </>
-                ) : null}
               </div>
             )
           )}
