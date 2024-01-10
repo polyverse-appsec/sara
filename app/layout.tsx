@@ -19,7 +19,7 @@ export const metadata = {
   description:
     "Hi, I'm Sara, a smart architectural reasoning assistant powered by AI. I understand your entire software project and can help you build and maintain it faster.",
   icons: {
-    icon: '/favicon.ico',
+    icon: '/Sara_Cartoon_Portrait.ico',
     shortcut: '/favicon-16x16.png',
     apple: '/apple-touch-icon.png'
   }
