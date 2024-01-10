@@ -1,27 +1,18 @@
 import * as React from 'react'
 import Link from 'next/link'
-
-import { cn } from '@/lib/utils'
 import { auth } from '@/auth'
-import { clearChats } from '@/app/actions'
 import { Button, buttonVariants } from '@/components/ui/button'
-import { Sidebar } from '@/components/sidebar'
-import { SidebarList } from '@/components/sidebar-list'
 import {
-  IconGitHub,
   IconNextChat,
   IconSeparator,
-  IconVercel
 } from '@/components/ui/icons'
-import { SidebarFooter } from '@/components/sidebar-footer'
-import { ThemeToggle } from '@/components/theme-toggle'
-import { ClearHistory } from '@/components/clear-history'
 import { UserMenu } from '@/components/user-menu'
 import { SidebarMobile } from './sidebar-mobile'
 import { SidebarToggle } from './sidebar-toggle'
 import { ChatHistory } from './chat-history'
 import Image from 'next/image'
 import { GithubPanel } from './github-panel'
+import Sara32x32 from '../public/Sara_Cartoon_Portrait-32x32.png'
 
 async function UserOrLogin() {
   const session = await auth()
@@ -36,9 +27,8 @@ async function UserOrLogin() {
           <SidebarToggle />
         </>
       ) : (
-        <Link href="/" target="_blank" rel="nofollow">
-          <IconNextChat className="w-6 h-6 mr-2 dark:hidden" inverted />
-          <IconNextChat className="hidden w-6 h-6 mr-2 dark:block" />
+        <Link href="/" target="_self" rel="nofollow">
+          <Image src={Sara32x32} alt="Sara Architecture Assistant" />
         </Link>
       )}
       <div className="flex items-center">
