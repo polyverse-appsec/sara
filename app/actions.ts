@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation'
 import { kv } from '@vercel/kv'
 
 import { auth } from '@/auth'
-import { type Chat } from '@/lib/dataModelTypes'
+import { type Chat, Repository, User } from '@/lib/dataModelTypes'
 import {
   fetchUserOrganizations,
   fetchOrganizationRepositories
@@ -94,14 +94,14 @@ export async function removeChat({ id, path }: { id: string; path: string }) {
       error: 'Unauthorized'
     }
   }
-
+  /* BUGBUG come back to this
   await kv.del(`chat:${id}`)
   if (session.activeTask?.id) {
     await kv.zrem(`task:chats:${session.activeTask?.id}`, `chat:${id}`)
   } else {
     await kv.zrem(`user:chat:${session.user.id}`, `chat:${id}`)
   }
-
+*/
   revalidatePath('/')
   return revalidatePath(path)
 }
@@ -114,6 +114,9 @@ export async function clearChats() {
       error: 'Unauthorized'
     }
   }
+
+  /*
+ BUGBUG come back to this
   let key = `user:chat:${session.user.id}`
   if (session.activeTask?.id) {
     key = `task:chats:${session.activeTask?.id}`
@@ -130,7 +133,7 @@ export async function clearChats() {
   }
 
   await pipeline.exec()
-
+*/
   revalidatePath('/')
   return redirect('/')
 }
@@ -189,7 +192,9 @@ export async function getOrganizations(): Promise<Organization[]> {
   return orgs
 }
 
-export async function getRepositoriesForOrg(org: string): Promise<Project[]> {
+export async function getRepositoriesForOrg(
+  org: string
+): Promise<Repository[]> {
   const session = await auth()
 
   if (!session?.user?.id) {
@@ -293,54 +298,55 @@ export async function getTask(
 }
 
 /*
- * Repository related functions
+ * Project related functions
  */
 
 /**
- * Builds the hash key for persisting and retrieving repository fields.
+ * Builds the hash key for persisting and retrieving project fields.
  *
  * @param {string} fullRepoName Full name of the repository
  * @returns Hash key for repository.
  */
-const buildRepositoryHashKey = (fullRepoName: string) =>
-  `repository:${fullRepoName}`
+const buildProjectHashKey = (projId: string) => `project:${projId}`
 
 /**
  * Server action that retrieves the most recent persisted information about a
- * specific repository identified in the `repo.full_name` data member. If the
+ * specific project identified in the `repo.full_name` data member. If the
  * repository doesn't exist then persists any information contained within the
  * fully formed `repo` parameter.
  *
- * @param {Project} repo Object instance of a repo. Must be fully formed in
- * the event the repo doesn't exist and is to be created.
+ * @param {Project} proj Object instance of a repo. Must be fully formed in
+ * the event the projcect doesn't exist and is to be created.
  * @param {string} userId The ID of the user who is authorized to retrieve or
  * persist the repo name.
  * @returns {Project} Retrieved or persisted repository info.
  */
-export async function getOrCreateRepositoryFromGithub(
-  repo: Project,
-  userId: string
-): Promise<Project> {
+export async function getOrCreateProjectFromRepository(
+  repo: Repository,
+  user: User
+): Promise<Project | null> {
   // Rather than delegate auth to functions we consume we protect ourselves and
   // do a check here before we consume each method as well in case there are any
   // behavioral changes to said consumed functions.
   const session = await auth()
 
   // Apply business logic auth check for `getRepository`
-  if (!session?.user?.id || userId !== session.user.id) {
+  if (!session?.user?.id) {
     throw new Error('Unauthorized')
   }
-
-  const retrievedRepo = await getRepository(repo.full_name, userId)
+  /* BUGBUG come back to this
+  const retrievedRepo = await getRepository(proj.full_name, userId)
 
   if (retrievedRepo) {
     //do a quick check to see if the retrieved repo has the same data as the passed in repo
     //if it doesn't, then update the repo
-    const verifiedRepo = await checkAndUpdateRepository(retrievedRepo, repo)
+    const verifiedRepo = await checkAndUpdateRepository(retrievedRepo, proj)
     return verifiedRepo
   }
 
-  return await createRepositoryFromGithub(repo)
+  return await createRepositoryFromGithub(proj)
+*/
+  return null
 }
 
 async function checkAndUpdateRepository(
@@ -362,7 +368,7 @@ async function checkAndUpdateRepository(
   }
   console.log(`updateRepo: ${updateRepo}`)
   if (updateRepo) {
-    const repoKey = buildRepositoryHashKey(retrievedRepo.full_name)
+    const repoKey = buildProjectHashKey(retrievedRepo.full_name)
     await kv.hset(repoKey, retrievedRepo)
   }
   return retrievedRepo
@@ -392,7 +398,7 @@ export async function createRepositoryFromGithub(
     session.user.id
   )
 
-  const repoKey = buildRepositoryHashKey(githubRepo.full_name)
+  const repoKey = buildProjectHashKey(githubRepo.full_name)
   await kv.hset(repoKey, githubRepo)
 
   return githubRepo
@@ -427,7 +433,7 @@ export async function updateRepo(repo: Project): Promise<Project> {
   //   throw new Error('Unauthorized')
   // }
 
-  const repoKey = buildRepositoryHashKey(repo.full_name)
+  const repoKey = buildProjectHashKey(repo.full_name)
   await kv.hset(repoKey, repo)
 
   return repo
@@ -442,7 +448,7 @@ export async function updateRepo(repo: Project): Promise<Project> {
  * @returns {(Repositry|null)} The repository if it exists otherwise `null`.
  */
 export async function getRepository(
-  fullRepoName: string,
+  projId: string,
   userId: string
 ): Promise<Project | null> {
   const session = await auth()
@@ -451,8 +457,8 @@ export async function getRepository(
     throw new Error('Unauthorized')
   }
 
-  const repoKey = buildRepositoryHashKey(fullRepoName)
-  const repo = await kv.hgetall<Project>(repoKey)
+  const repoKey = buildProjectHashKey(projId)
+  const proj = await kv.hgetall<Project>(repoKey)
 
   // Per our current implementation of our types we assume that the `orgId`
   // matches the ID of the user that owns the repo
@@ -460,7 +466,7 @@ export async function getRepository(
   //   return null
   // }
 
-  return repo
+  return proj
 }
 
 /*

@@ -8,14 +8,16 @@ import { Threads } from 'openai/resources/beta/threads/threads'
 We have a user, represented by a github id. We store additional information about the user,
 such as their email address.
 
-Each user has a set of repositories that they have access to. The ids of these repositories is stored in a set called `user:repos:${userId}`.
+The principal object is a project.  a project consists of a set of repositories.
 
-Each repository object is stored in a KV namespace called `repo:${repoid}`. Note that the id is *per user*. I.e. in a team
+Each user has a set of projects that they have access to. The ids of these repositories is stored in an array off of the user object.
+
+Each project object is stored in a KV namespace called `project:${projectid}`. Note that the id is *per user*. I.e. in a team
 environment, each user will have their own repository object to hang on to their own specific chats (which are not shared by default)
 
 Each repository has a set of reference repositories. This is stored in the data fields of the repository object
 
-A respository has a set of tasks. The ids of these tasks is stored in a sorted set called `repo:tasks:${repoId}`.
+A project has a set of tasks. The ids of these tasks is stored in a sorted set called `project:tasks:${repoId}`.
 
 Each task is stored in a KV namespace called `task:${taskId}`.
 
@@ -37,6 +39,8 @@ export interface User extends Record<string, any> {
   image?: string
   email?: string
   defaultTask?: Task
+  projects?: Project[]
+  lastActiveProject?: Project
 }
 
 // Define the simplified Organization type
@@ -45,16 +49,23 @@ export type Organization = {
   avatar_url: string // The URL of the organization's avatar
 }
 
-export interface Project extends Record<string, any> {
-  full_name: string // the full_name doubles as the id. we do not have a seperate id so we can easily look up by name.
+export interface Repository extends Record<string, any> {
+  id: string
+  userId: string
+  name: string
+  full_name: string
   html_url: string
+  description: string
+  organization: Organization
+  image?: string
+}
+export interface Project extends Record<string, any> {
+  id: string
   name: string
   description: string
-  orgId: string
-  referenceRepositories?: {
-    organization: string
-    repository: string
-  }[]
+  userId: string
+  mainRepository: Repository
+  referenceRepositories?: Repository[]
   tasks?: Task[]
   defaultTask?: Task
   assistant?: Assistant

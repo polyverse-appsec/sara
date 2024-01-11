@@ -10,14 +10,14 @@ import {
   // Other imports if necessary
 } from '@/components/ui/select' // Update the import path
 
-import { getOrCreateRepositoryFromGithub, getRepository } from '@/app/actions'
+import { getOrCreateProjectFromRepository, getRepository } from '@/app/actions'
 
 import { GithubOrgSelect } from './github-org-select'
 import { GithubRepoSelect } from './github-repo-select'
 import { type Session } from 'next-auth'
 import { getOrganizations, getRepositoriesForOrg } from '@/app/actions'
 import { useState, useEffect } from 'react'
-import { Organization, Project } from '@/lib/dataModelTypes'
+import { Organization, Project, Repository } from '@/lib/dataModelTypes'
 
 import { useAppContext } from '@/lib/hooks/app-context'
 import { configDefaultRepositoryTask } from '@/lib/polyverse/task/task'
@@ -33,14 +33,14 @@ export function GithubSelect({ session }: GitHubSelectProps) {
   const {
     selectedOrganization,
     setSelectedOrganization,
-    selectedRepository,
-    setSelectedRepository,
+    selectedProject,
+    setSelectedProject,
     setSelectedActiveTask
   } = useAppContext()
 
   // State to store organizations
   const [organizations, setOrganizations] = useState<Organization[]>([])
-  const [repositories, setRepositories] = useState<Project[]>([])
+  const [repositories, setRepositories] = useState<Repository[]>([])
 
   // State to track if dropdown is open
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
@@ -85,27 +85,27 @@ export function GithubSelect({ session }: GitHubSelectProps) {
     console.log('Organization changed:', org)
     setSelectedOrganization(org)
 
-    session.activeOrganization = org
     // Reset repositories when organization changes
     fetchRepositories(org)
   }
 
-  const handleRepositoryChange = async (repo: Project) => {
+  const handleRepositoryChange = async (repo: Repository) => {
     // Persist the repo in the KV store
-    const retrievedRepo = await getOrCreateRepositoryFromGithub(
+    const retrievedProject = await getOrCreateProjectFromRepository(
       repo,
       session.user.id
     )
 
     // Ensure we set the relevant information in our apps context for other
     // core components to function correctly
-    setSelectedRepository(retrievedRepo)
-
-    if (retrievedRepo.defaultTask) {
+    setSelectedProject(retrievedProject)
+    /* BUGBUG fix this
+    if (retrievedRepo?defaultTask) {
       setSelectedActiveTask(retrievedRepo.defaultTask)
     }
 
     session.activeRepository = retrievedRepo
+    */
   }
 
   return (
@@ -119,8 +119,7 @@ export function GithubSelect({ session }: GitHubSelectProps) {
       />
       <IconSeparator className="w-6 h-6 text-muted-foreground/50" />
       <GithubRepoSelect
-        session={session}
-        selectedRepository={selectedRepository}
+        selectedRepository={selectedProject?.mainRepository ?? null}
         repositories={repositories}
         onRepositoryChange={handleRepositoryChange}
       />

@@ -44,8 +44,8 @@ export function Chat({ chat, initialMessages, className }: ChatProps) {
   const {
     selectedActiveChat,
     setSelectedActiveChat,
-    selectedRepository,
-    setSelectedRepository,
+    selectedProject: selectedRepository,
+    setSelectedProject: setSelectedRepository,
     selectedActiveTask,
     setSelectedActiveTask,
     setSelectedOrganization,

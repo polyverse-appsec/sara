@@ -6,7 +6,10 @@ import {
 } from '@/app/actions'
 
 const useDataWatcher = () => {
-  const { selectedRepository, setSelectedRepository } = useAppContext()
+  const {
+    selectedProject: selectedRepository,
+    setSelectedProject: setSelectedRepository
+  } = useAppContext()
 
   useEffect(() => {
     // This effect will run whenever 'data' changes

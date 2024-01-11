@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { IconExternalLink } from '@/components/ui/icons'
-import { Project } from '@/lib/dataModelTypes'
+import { Repository } from '@/lib/dataModelTypes'
 
 function getUserInitials(name: string) {
   const [firstName, lastName] = name.split(' ')
@@ -21,19 +21,16 @@ function getUserInitials(name: string) {
 }
 
 interface GithubRepoSelectProps {
-  session: Session
-  selectedRepository: Project | null
-  repositories: Project[]
-  onRepositoryChange: (repo: Project) => void
+  selectedRepository: Repository | null
+  repositories: Repository[]
+  onRepositoryChange: (repo: Repository) => void
   // other props if any
 }
 export function GithubRepoSelect({
-  session,
   selectedRepository,
   repositories,
   onRepositoryChange
 }: GithubRepoSelectProps) {
-  const user = session.user
   return (
     <div className="flex items-center justify-between">
       <DropdownMenu>

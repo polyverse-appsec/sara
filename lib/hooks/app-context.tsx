@@ -10,8 +10,8 @@ interface AppContextType {
   selectedOrganization: Organization | null
   setSelectedOrganization: (organization: Organization | null) => void
 
-  selectedRepository: Project | null
-  setSelectedRepository: (repository: Project | null) => void
+  selectedProject: Project | null
+  setSelectedProject: (project: Project | null) => void
 
   selectedActiveTask: Task | null
   setSelectedActiveTask: (task: Task | null) => void
@@ -43,9 +43,7 @@ export function AppProvider({ children }: AppProviderProps) {
   const [user, setUser] = useState<User | null>(null)
   const [selectedOrganization, setSelectedOrganization] =
     useState<Organization | null>(null)
-  const [selectedRepository, setSelectedRepository] = useState<Project | null>(
-    null
-  )
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null)
   const [selectedActiveTask, setSelectedActiveTask] = useState<Task | null>(
     null
   )
@@ -61,8 +59,8 @@ export function AppProvider({ children }: AppProviderProps) {
     setUser,
     selectedOrganization,
     setSelectedOrganization,
-    selectedRepository,
-    setSelectedRepository,
+    selectedProject: selectedProject,
+    setSelectedProject: setSelectedProject,
     selectedActiveTask,
     setSelectedActiveTask,
     selectedActiveChat,
