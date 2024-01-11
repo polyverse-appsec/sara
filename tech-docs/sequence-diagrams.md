@@ -4,6 +4,7 @@ This doc contains sequence diagrams throughout Sara. They are typically MermaidJ
 
 ## Updating OpenAI Assistant On Repository Change (Assistant Exists)
 
+**Last Updated:** 1/11/24
 This diagram presumes the OpenAI Assistant already exists. A different diagram would be used for when it didn't exist.
 
 ```mermaid
