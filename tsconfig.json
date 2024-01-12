@@ -23,7 +23,8 @@
         "name": "next"
       }
     ],
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "outDir": "dist/esm"
   },
   "typeRoots": ["./types"],
   "include": [
@@ -31,7 +32,8 @@
     "next-auth.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "test/**/*.ts"
   ],
   "exclude": ["node_modules"]
 }
