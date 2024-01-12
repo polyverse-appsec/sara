@@ -54,6 +54,7 @@ export async function tickleProject(
     const res = await fetch(url, {
       method: 'POST',
       headers: {
+        'Content-Type': 'application/json',
         'x-user-account': email
       },
       body: JSON.stringify({ resources: [{"uri": repo.html_url}] })
