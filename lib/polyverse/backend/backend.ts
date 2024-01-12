@@ -1,7 +1,7 @@
 import { Repository, ProjectDataReference } from '@/lib/dataModelTypes'
 
 const USER_PROJECT_URL_BASE =
-  'http://localhost:3000/api/user_project'
+  'https://pt5sl5vwfjn6lsr2k6szuvfhnq0vaxhl.lambda-url.us-west-2.on.aws/api/user_project'
 
 /**
  * Gets the files IDs associated with a user and a Git repo.
@@ -47,18 +47,16 @@ export async function tickleProject(
   repo: Repository,
   email: string
 ): Promise<string> {
-  const url = `${USER_PROJECT_URL_BASE}/${repo.orgId}/${repo.name}/data_references`
+  const url = `${USER_PROJECT_URL_BASE}/${repo.orgId}/${repo.name}`
 
   try {
-    const body = JSON.stringify({ resources: [{"uri": repo.html_url}] })
-
-    console.log(`tickleProject - url: ${url} - email: ${email} - body: ${body}`)
-
+    
     const res = await fetch(url, {
       method: 'POST',
       headers: {
         'x-user-account': email
-      }
+      },
+      body: JSON.stringify({ resources: [{"uri": repo.html_url}] })
     })
 
     if (!res.ok) {
