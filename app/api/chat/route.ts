@@ -56,6 +56,7 @@ export async function POST(req: Request) {
 
     console.log("starting to store chat's messages for chat id: ", id)
     const cleanPayload = stripUndefinedObjectProperties(payload)
+    console.log(`****** persistAssistantMessagesCallback - userId typeof: ${typeof cleanPayload["userId"]}`)
     await kv.hmset(`chat:${id}`, cleanPayload)
 
     let key = `user:chat:${userId}`

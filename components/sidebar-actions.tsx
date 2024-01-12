@@ -73,12 +73,15 @@ export function SidebarActions({
                 event.preventDefault()
                 // @ts-ignore
                 startRemoveTransition(async () => {
+                  console.log(`***** SidebarActions - startRemoveTransition`)
                   const result = await removeChat({
                     id: chat.id,
                     path: chat.path
                   })
+                  console.log(`***** SidebarActions - startRemoveTransition - after removeChat`)
 
                   if (result && 'error' in result) {
+                    console.log(`***** SidebarActions - startRemoveTransition - in error`)
                     toast.error(result.error)
                     return
                   }

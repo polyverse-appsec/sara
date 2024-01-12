@@ -31,9 +31,6 @@ export  function TaskDataLoader({ userId }: TaskDataLoaderProps) {
     const [tasks , setTasks] = useState<Task[]>([])
     const { selectedRepository, tasksLastGeneratedAt, selectedActiveChat } = useAppContext()
 
-    console.log(`<TaskDataLoader> render - tasksLastGeneratedAt: ${tasksLastGeneratedAt}`)
-    console.log(`<TaskDataLoader> render - selectedActiveChat.userID: ${selectedActiveChat?.userId}`)
-
     async function fetchTasks() {
         if (!selectedRepository?.full_name) {
             console.log(`Aborting task fetch since no repo selected`)

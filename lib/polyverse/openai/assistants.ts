@@ -103,10 +103,14 @@ export async function updateAssistantPromptAndFiles(
   { id }: { id: string }
 ): Promise<Assistant> {
   const { prompt, fileIDs } = mapFileInfoToPromptAndIDs(fileInfo)
-  return await oaiClient.beta.assistants.update(id, {
+
+  const updateParams = {
     file_ids: fileIDs,
     instructions: prompt
-  })
+  }
+  console.log(`***** assistants.ts#updateAssistantPromptAndFiles - Updating OpenAI assistant with id '${id}' with info: ${JSON.stringify(updateParams)}`)
+  
+  return await oaiClient.beta.assistants.update(id, updateParams)
 }
 
 // An OpenAI Assistant is the logical representation of an AI assistant we have
@@ -137,6 +141,8 @@ export async function configAssistant(
   // using them whether we need to create a new OpenAI assistant or there is
   // one already existing that we have its file IDs updated.
   const fileInfo = await getFileInfo(repo, email)
+
+  console.log(`***** assistants.ts#configAssistant - return value from getFileInfo: ${JSON.stringify(fileInfo)}`)
 
   const existingAssistant = await findAssistantForRepo(repo.full_name)
 

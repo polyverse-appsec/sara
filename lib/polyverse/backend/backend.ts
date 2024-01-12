@@ -17,6 +17,7 @@ export async function getFileInfo(
   const url = `${USER_PROJECT_URL_BASE}/${repo.orgId}/${repo.name}/data_references`
 
   try {
+    console.log(`***** backend.ts#getFileInfo - url: ${url}`)
     const res = await fetch(url, {
       method: 'GET',
       headers: {
@@ -26,8 +27,9 @@ export async function getFileInfo(
 
     if (!res.ok) {
       console.error(
-        `Got a failure response while trying to get file ids for '${repo.orgId}/${repo.name} for ${email}' - Status: ${res.status}`
+        `***** backend.ts#getFileInfo - Got a failure response while trying to get file ids for '${repo.orgId}/${repo.name} for ${email}' - Status: ${res.status}`
       )
+      console.error(`***** backend.ts#getFileInfo - Error response body: ${await res.text()}`)
       return []
     }
 
@@ -47,32 +49,49 @@ export async function tickleProject(
   repo: Repository,
   email: string
 ): Promise<string> {
-  const url = `${USER_PROJECT_URL_BASE}/${repo.orgId}/${repo.name}`
+  const url = `${USER_PROJECT_URL_BASE}/${repo.orgId}/${repo.name}/data_references`
 
-  console.log(`tickleProject - url: ${url}`)
   try {
+    const body = JSON.stringify({ resources: [{"uri": repo.html_url}] })
+
+    console.log(`tickleProject - url: ${url} - email: ${email} - body: ${body}`)
+
+    // TODO: Old body when we thought tickle was the above URL without `data_references`
+    // const res = await fetch(url, {
+    //   method: 'POST',
+    //   headers: {
+    //     'x-user-account': email,
+    //     'Content-Type': 'application/json'
+    //   },
+    //   body
+    // })
+
     const res = await fetch(url, {
       method: 'POST',
       headers: {
         'x-user-account': email
-      },
-      body: JSON.stringify({ resources: [{"uri": repo.html_url}] })
+      }
     })
 
     if (!res.ok) {
+      console.log(`***** backend.ts#tickleProject - Got a failure response while trying to start project: ${await res.text()}`)
       console.error(
         `Got a failure response while trying to start project for '${repo.orgId}/${repo.name} for ${email}' - Status: ${res.status}`
       )
       return ''
     }
 
+    console.log(`***** backend.ts#tickleProject - exiting inside of try/catch`)
     return ''
   } catch (error) {
+    console.log(`***** backend.ts#tickleProject - Error making a request`)
     console.error(
       'Error making a request or parsing a response for project ID: ',
       error
     )
   }
+
+  console.log(`***** backend.ts#tickleProject - exiting outside of try/catch`)
 
   return ''
 }

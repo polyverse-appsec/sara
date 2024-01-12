@@ -24,8 +24,11 @@ const useDataWatcher = () => {
         }
       }
     }
+
     updateAIOnRepositoryChange()
-  }, [selectedRepository, setSelectedRepository]) // Dependency array with 'data' to watch for its changes
+  }, [selectedRepository]) // Dependency array with 'data' to watch for its changes
+
+  // TODO: is this dependency array the problem with `setSelectedRepository` provided?
 }
 
 interface GlobalContextWatcherProps {

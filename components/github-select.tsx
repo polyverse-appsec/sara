@@ -46,7 +46,6 @@ export function GithubSelect({ session }: GitHubSelectProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 
   const fetchOrganizations = () => {
-    console.log('Fetching organizations')
     getOrganizations()
       .then(data => {
         if (Array.isArray(data)) {
@@ -61,7 +60,6 @@ export function GithubSelect({ session }: GitHubSelectProps) {
   }
 
   const fetchRepositories = (org: Organization) => {
-    console.log('Fetching repositories for organization:', org)
     if (org) {
       getRepositoriesForOrg(org.login)
         .then(data => {
