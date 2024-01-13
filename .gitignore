@@ -34,7 +34,7 @@ yarn-error.log*
 
 .env
 .vercel
-.vscode
+#.vscode
 .env*.local
 
 # Compiled TypeScript files. Typically these are generated as a result of
