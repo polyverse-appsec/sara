@@ -127,17 +127,17 @@ def main():
         print("Project created successfully. Running additional scripts...")
 
         # run_script(args.path_to_summarizer, "--rawonly")
-        #subprocess.run([python_cmd, args.path_to_summarizer, "--rawonly"], check=True, capture_output=True, text=True)
-        #print("Raw files generated successfully.")
+        subprocess.run([python_cmd, args.path_to_summarizer, "--rawonly"], check=True, capture_output=True, text=True)
+        print("Raw files generated successfully.")
 
         # run_script(args.path_to_summarizer, "")
-        #subprocess.run([python_cmd, args.path_to_summarizer], check=True, capture_output=True, text=True)
-        #print("Processed summary files generated successfully.")
+        subprocess.run([python_cmd, args.path_to_summarizer], check=True, capture_output=True, text=True)
+        print("Processed summary files generated successfully.")
 
         # Post files to openai
         for output_file, resource_name in [
-            #("allfiles_combined.md", "projectsource"),
-            #("aispec.md", "aispec"),
+            ("allfiles_combined.md", "projectsource"),
+            ("aispec.md", "aispec"),
             # placeholder blueprint code, make sure you have a blueprint.md file in this directory before running
             ("blueprint.md", "blueprint"),
         ]:

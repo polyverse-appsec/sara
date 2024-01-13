@@ -32,7 +32,8 @@ We use `git` hooks to verify certain functionality before commits are made. Some
 ## Running For Development
 
 ## Current Backend Project Testing Workflow
-Currently, to upload project files to storage for Sara to use, you'll need to manually upload them with the scripy create_project.py located in the node-boost-api project in /scripts. You will need to
+Currently, to upload project files to storage for Sara to use, you'll need to manually upload them with the scripy create_project.py located in the node-boost-api project in /scripts. It is also located in the /scripts folder in sara.
+You will need to
 1. Copy the script into the home directory of the project you want to upload to storage for sara to reference.
 2. The script currently does not support blueprint generation, so you'll need to make sure you have the blueprint.md in the project directory before you run the script.
 3. In the directory of the project you want to upload, run the command: 
