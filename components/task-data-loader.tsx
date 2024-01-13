@@ -31,9 +31,6 @@ export  function TaskDataLoader({ userId }: TaskDataLoaderProps) {
     const [tasks , setTasks] = useState<Task[]>([])
     const { selectedRepository, tasksLastGeneratedAt, selectedActiveChat } = useAppContext()
 
-    console.log(`<TaskDataLoader> render - tasksLastGeneratedAt: ${tasksLastGeneratedAt}`)
-    console.log(`<TaskDataLoader> render - selectedActiveChat.userID: ${selectedActiveChat?.userId}`)
-
     async function fetchTasks() {
         if (!selectedRepository?.full_name) {
             console.log(`Aborting task fetch since no repo selected`)
@@ -42,10 +39,9 @@ export  function TaskDataLoader({ userId }: TaskDataLoaderProps) {
 
         try {
             const tasks = await getTasksAssociatedWithRepo(selectedRepository.full_name)
-            console.log(`***** Retrieved tasks: ${JSON.stringify(tasks)}`)
             setTasks(tasks)
         } catch (err) {
-            console.error('***** Error fetching tasks:', err);
+            console.error('Error fetching tasks:', err);
         }
     }
 
@@ -61,7 +57,7 @@ export  function TaskDataLoader({ userId }: TaskDataLoaderProps) {
     // function. To learn more about them see:
     // https://react.dev/learn/synchronizing-with-effects
     useEffect(() => {
-        fetchTasks();
+        fetchTasks()
     }, [selectedRepository, tasksLastGeneratedAt])
 
     // If the user hasn't provided any of their tasks yet then state that
@@ -95,10 +91,6 @@ export  function TaskDataLoader({ userId }: TaskDataLoaderProps) {
                             <p className="text-sm text-muted-foreground">No task history</p>
                         </div>
                     )}
-                </div>
-                <div className="flex items-center justify-between p-4">
-                    <ThemeToggle />
-                    <ClearHistory clearChats={clearChats} isEnabled={tasks?.length > 0} />
                 </div>
             </div>
         </div>
