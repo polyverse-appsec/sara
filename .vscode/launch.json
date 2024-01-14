@@ -1,0 +1,15 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Next.js: Node Attach",
+            "type": "node",
+            "request": "attach",
+            "port": 3000,
+            "restart": true,
+            "sourceMaps": true,
+            "cwd": "${workspaceFolder}",
+            "skipFiles": ["node_modules/**"]
+        }
+    ]
+}

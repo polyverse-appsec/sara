@@ -32,8 +32,9 @@ export async function getFileInfo(
     }
 
     const fileInfo = await res.json()
+    const fileArray = JSON.parse(fileInfo.body);
     //json should be an array of ProjectDataReference objects
-    return fileInfo as ProjectDataReference[]
+    return fileArray as ProjectDataReference[]
   } catch (error) {
     console.error(
       'Error making a request or parsing a response for project ID: ',
@@ -49,11 +50,12 @@ export async function tickleProject(
 ): Promise<string> {
   const url = `${USER_PROJECT_URL_BASE}/${repo.orgId}/${repo.name}`
 
-  console.log(`tickleProject - url: ${url}`)
   try {
+    
     const res = await fetch(url, {
       method: 'POST',
       headers: {
+        'Content-Type': 'application/json',
         'x-user-account': email
       },
       body: JSON.stringify({ resources: [{ uri: repo.html_url }] })

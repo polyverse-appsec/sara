@@ -2,19 +2,23 @@
 
 - [Sara](#Sara)
   - [Quickstart](#Quickstart)
-  - [Configuring For Development](#Configuring-For-Development)
-    - [Configuring For Git Commits](#Configuring-For-Git-Commits)
+  - [Design & Technical Docs](#Design--Technical-Docs)
+  - [Committing Code](#Committing-Code)
   - [Running For Development](#Running-For-Development)
     - [Running Locally](#Running-Locally)
   - [Testing](#Testing)
-    - [Running The Tests](#Running-The-Tests)
+    - [How The Tests Work](#How-The-Tests-Work)
+    - [Testing With `node-boost-api` Service](#Testing-With-node-boost-api-Service)
   - [Features](#Features)
     - [Model Providers](#Model-Providers)
+  - [Resources](#Resources)
 
 ## Quickstart
 
+If you haven't yet installed `pnpm` you can do so by running the following: `curl -fsSL https://get.pnpm.io/install.sh | sh -`
+
 ```bash
-$ npm i -g Vercel
+$ pnpm add -g vercel
 $ vercel link
 $ vercel env pull
 $ pnpm install
@@ -23,11 +27,21 @@ $ pnpm dev
 
 Your app template should now be running on [localhost:3000](http://localhost:3000/).
 
-## Configuring For Development
+## Design & Technical Docs
 
-### Configuring For Git Commits
+* [Sequence Diagrams](tech-docs/sequence-diagrams.md)
 
-We use `git` hooks to verify certain functionality before commits are made. Some configuration is required to setup these `git` hooks. To ensure that they are installed run `pnpm install` once you clone your repository.
+## Committing Code
+
+![We Be 2 Fast 2 Furious](https://media3.giphy.com/media/gdwril4zFP3j8twBmP/giphy.gif?cid=ecf05e47apgxahj8kkdbey5lqu318v6txgrtj64sc2u7t8oh&ep=v1_gifs_search&rid=giphy.gif&ct=g)
+
+Currently the team is operating with less processes, procedures, and tooling that larger organizations might. Currently we are checking directly into `main` without any PRs.
+
+This works well to increase our velocity when we are a small team and tight team but requires trust. We work on the honor system here so while you are free to commit code to `main` please consider these items before you do so:
+
+* Run the tests before checking into `main`
+* If you believe the set of changes you have are high risk then quickly ask someone in [Engineering on Slack](https://polyverse.slack.com/archives/C0501S5LWNA) for a live code review
+* We typically don't do feature branches here at the moment but if you believe you have a large set of changes that are going to be very disruptive while working on them it might be worth considering (e.g. changing the whole data model)
 
 ## Running For Development
 
@@ -45,11 +59,39 @@ Your app template should now be running on [localhost:3000](http://localhost:300
 
 ## Testing
 
-Tests will run before each time you make a `git commit`. To do so you will need to have the local instance of Sara running. You can learn more about how to run locally in the [Running Locally](#Running-Locally) section.
+We use [MochaJS](https://mochajs.org/) as a testing framework. To run the tests ensure you have `Sara` running (`pnpm run dev`) and then simply run the following command: `pnpm run test`.
 
-### Running The Tests
+Please run these tests before every commit to `main`.
 
-You can run the tests by running `pnpm run test`. Note that these tests require a local instance of Sara running. You can learn more about how to run locally in the [Running Locally](#Running-Locally) section.
+### How The Tests Work
+
+While we use [MochaJS](https://mochajs.org/) as a testing framework the way we actually run our tests is a little atypical (take a gander at the `test` script in `package.json`). This section provides context to developers as to why they are ran this way.
+
+`Sara` originally started as a fork of a public demonstration of NextJS interfacing with OpenAI. The forked project provided non-insignificant set of TypeScript compiler options (see `tsconfig.json`). The TypeScript compiler options compiles to support [`ECMAScript modules`](https://nodejs.org/api/esm.html) yet `package.json` excludes the `type` field and thus modules are considered [`CommonJS`](https://nodejs.org/api/modules.html#modules-commonjs-modules) by default.
+
+When we added `MochaJS` tests we wished to preserve type checking in the tests with TypeScript. This coupled with NextJS providing its own set of build tools (i.e. `next build`) as well as the differneces in module support between the `tsconfig.json` and `package.json` the current way we believe we can get `MochaJS` tests to work is to compile them first before running them and then "tricking" `Node` into treating the compiled code as [`ECMAScript modules`](https://nodejs.org/api/esm.html). For more details you can review the details of the `test` script in `package.json`.
+
+### Testing With `node-boost-api` Service
+
+The [`node-boost-api`](https://github.com/polyverse-appsec/boost-node-api) project is used to develop an `Express JS` server that is deployed to AWS Lambda. `Sara` communicates with it to provide as well as retrieve info about users projects/repos. Some of this information retrieved is then used to improve the prompts we provide to OpenAI that `Sara` depends on.
+
+The [`node-boost-api`](https://github.com/polyverse-appsec/boost-node-api) also initiates file uploads of a users repo for introspection purposes. At the time of writing (1/13/24) the file upload logic isn't yet implemented but a manual path for initiating the file upload does exist:
+
+* Copy the script located at `scripts/create_project.py` into the root directory of the project/repo you wish to upload for `Sara`
+* Ensure you have `blueprint.md` in the root directory where the script is located
+* Run the following command:
+
+```
+python create_project.py --email [YOUR_GITHUB_EMAIL] --organization [ORGANIZATION_NAME] --github_uri [URI_OF_GITHUB_PROJ] --path_to_summarizer [PATH_TO_SUMMARIZER_SCRIPT]  --project_name [PROJ_NAME]
+```
+
+Example usage:
+
+```
+python create_project.py --email aaron@polyverse.com --organization polyverse-appsec --github_uri https://github.com/polyverse-appsec/sara --path_to_summarizer ../summarizer/main.py  --project_name sara
+```
+
+* Overtime `Sara` ought to be able to make requests to [`node-boost-api`](https://github.com/polyverse-appsec/boost-node-api) to get the file IDs for the uploaded files
 
 ## Features
 
@@ -68,5 +110,13 @@ You can run the tests by running `pnpm run test`. Note that these tests require 
 
 This template ships with OpenAI `gpt-3.5-turbo` as the default. However, thanks to the [Vercel AI SDK](https://sdk.vercel.ai/docs), you can switch LLM providers to [Anthropic](https://anthropic.com), [Cohere](https://cohere.com/), [Hugging Face](https://huggingface.co), or using [LangChain](https://js.langchain.com) with just a few lines of code.
 
+## Resources
 
-
+* [NextJS Docs](https://nextjs.org/docs)
+* [Vercel KV Docs](https://vercel.com/docs/storage/vercel-kv)
+  * [@vercel/kv SDK/API Reference](https://vercel.com/docs/storage/vercel-kv/kv-reference)
+* [Redis Docs](https://redis.io/docs/)
+* [React Tutorials](https://react.dev/learn)
+* [React API Reference](https://react.dev/reference/react)
+* [Tailwind CSS Docs](https://tailwindcss.com/docs/installation)
+* [MochaJS Docs](https://mochajs.org/)
