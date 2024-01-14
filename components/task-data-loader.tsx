@@ -11,8 +11,6 @@ import { buttonVariants } from '@/components/ui/button'
 
 import { IconPlus } from '@/components/ui/icons'
 
-import { ThemeToggle } from '@/components/theme-toggle'
-import { ClearHistory } from '@/components/clear-history'
 import { useAppContext } from '@/lib/hooks/app-context';
 import { Task, Chat } from '@/lib/dataModelTypes';
 import { use, useState, useEffect} from "react"
