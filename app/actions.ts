@@ -18,6 +18,7 @@ import { config } from 'process'
 import { Assistant } from 'openai/resources/beta/assistants/assistants'
 import { configAssistant } from '@/lib/polyverse/openai/assistants'
 import { stripUndefinedObjectProperties } from '@/lib/polyverse/backend/backend'
+import { get } from 'http'
 
 const TEN_MINS_IN_MILLIS = 600000
 
@@ -536,4 +537,46 @@ export async function getOrCreateAssistantForRepo(
     return await configAssistant(repo, session.user.email || '')
   }
   return null
+}
+
+/*
+ * User object related functions
+ *
+ */
+export async function getOrCreateUserFromSession(session: any): Promise<User> {
+  if (!session?.user?.id) {
+    throw new Error('Unauthorized')
+  }
+
+  const user = await getUser(session.user.id)
+
+  if (user) {
+    return user
+  }
+
+  return await createUser(session.user)
+}
+
+export async function getUser(userId: string): Promise<User | null> {
+  const user = await kv.hgetall<User>(`user:${userId}`)
+
+  if (!user) {
+    return null
+  }
+
+  return user
+}
+
+export async function createUser(user: User): Promise<User> {
+  const session = await auth()
+
+  if (!session?.user?.id || user.id !== session.user.id) {
+    throw new Error('Unauthorized')
+  }
+
+  //note that most fields of user will be empty except those in the session object
+
+  await kv.hset(`user:${user.id}`, user)
+
+  return user
 }

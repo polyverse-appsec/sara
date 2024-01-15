@@ -1,7 +1,15 @@
 'use client'
 
-import React, { createContext, useState, useContext, ReactNode } from 'react'
+import React, {
+  createContext,
+  useState,
+  useContext,
+  ReactNode,
+  useEffect
+} from 'react'
 import { User, Organization, Project, Task, Chat } from '@/lib/dataModelTypes'
+import { useSession } from 'next-auth/react'
+import { getOrCreateUserFromSession } from '@/app/actions'
 
 interface AppContextType {
   user: User | null
@@ -68,6 +76,29 @@ export function AppProvider({ children }: AppProviderProps) {
     tasksLastGeneratedAt,
     setTasksLastGeneratedAt
   }
+
+  const { data: session } = useSession()
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      console.log('AppProvider: session: ', session)
+      if (session) {
+        try {
+          const user = await getOrCreateUserFromSession(session)
+          console.log('AppProvider: user: ', user)
+          setUser(user) // Set the user in context
+          // You can also set other states here based on the returned user data
+        } catch (error) {
+          console.error('Error fetching user:', error)
+          // Handle errors appropriately
+        }
+      } else {
+        setUser(null) // Reset user in context if session is not available
+      }
+    }
+
+    fetchUser()
+  }, [session])
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>
 }

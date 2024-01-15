@@ -7,19 +7,23 @@ import { SidebarProvider } from '@/lib/hooks/use-sidebar'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { AppProvider } from '@/lib/hooks/app-context'
 import { GlobalContextWatcher } from './global_context_watcher'
+import { SessionProvider } from 'next-auth/react'
 
 export function Providers({ children, ...props }: ThemeProviderProps) {
   return (
     <NextThemesProvider {...props}>
-      <AppProvider>
-        {' '}
-        {/* New AppProvider added here */}
-        <GlobalContextWatcher>
-          <SidebarProvider>
-            <TooltipProvider>{children}</TooltipProvider>
-          </SidebarProvider>
-        </GlobalContextWatcher>
-      </AppProvider>
+      <SessionProvider>
+        {/* New SessionProvider added here */}
+        <AppProvider>
+          {' '}
+          {/* New AppProvider added here */}
+          <GlobalContextWatcher>
+            <SidebarProvider>
+              <TooltipProvider>{children}</TooltipProvider>
+            </SidebarProvider>
+          </GlobalContextWatcher>
+        </AppProvider>
+      </SessionProvider>
     </NextThemesProvider>
   )
 }
