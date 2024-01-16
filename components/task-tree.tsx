@@ -4,7 +4,7 @@ import { useState } from 'react'
 
 import { Treeview } from './ui/treeview'
 
-import { Task } from '@/lib/dataModelTypes'
+import { Task } from '@/lib/polyverse/data-model/dataModelTypes'
 
 // TODO: Delete this file
 // import { data } from './ui/treeview-data-test'

@@ -64,7 +64,7 @@ export interface Task extends Record<string, any> {
   id: string
   title: string
   description: string
-  createdAt: Date
+  createdAt: number
   userId: string
   repositoryId: string
   chats?: Chat[]
@@ -74,7 +74,10 @@ export interface Task extends Record<string, any> {
 export interface Chat extends Record<string, any> {
   id: string
   title: string
-  createdAt: Date
+  // Number of milliseconds elapsed since the epoch. For more info on using the
+  // standard `Date` object with this see:
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now
+  createdAt: number
   userId: string
   path: string
   messages: Message[]

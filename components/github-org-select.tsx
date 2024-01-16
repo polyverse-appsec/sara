@@ -5,7 +5,7 @@ import { type Session } from 'next-auth'
 
 import { Button } from '@/components/ui/button'
 import React from 'react';
-import { Organization } from '@/lib/dataModelTypes'
+import { Organization } from '@/lib/polyverse/data-model/dataModelTypes'
 
 
 import {

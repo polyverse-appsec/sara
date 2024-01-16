@@ -17,7 +17,7 @@ import { GithubRepoSelect } from './github-repo-select'
 import { type Session } from 'next-auth'
 import { getOrganizations, getRepositoriesForOrg } from '@/app/actions'
 import { useState, useEffect } from 'react'
-import { Organization, Repository } from '@/lib/dataModelTypes'
+import { Organization, Repository } from '@/lib/polyverse/data-model/dataModelTypes'
 
 import { useAppContext } from '@/lib/hooks/app-context'
 import { configDefaultRepositoryTask } from '@/lib/polyverse/task/task'

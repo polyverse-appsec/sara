@@ -6,7 +6,7 @@ import { getFileInfo } from '../backend/backend'
 import { isRecord } from '../typescript/helpers'
 
 import { OPENAI_MODEL } from './constants'
-import { ProjectDataReference, Repository } from '@/lib/dataModelTypes'
+import { ProjectDataReference, Repository } from '@/lib/polyverse/data-model/dataModelTypes'
 
 import { submitTaskStepsAssistantFunction } from './assistantTools'
 

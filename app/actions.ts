@@ -5,21 +5,54 @@ import { redirect } from 'next/navigation'
 import { kv } from '@vercel/kv'
 
 import { auth } from '@/auth'
-import { type Chat } from '@/lib/dataModelTypes'
+import { type Chat } from '@/lib/polyverse/data-model/dataModelTypes'
 import {
   fetchUserOrganizations,
   fetchOrganizationRepositories
 } from '@/lib/polyverse/github/repos'
-import { Organization, Repository, Task } from '@/lib/dataModelTypes'
+import { Organization, Repository, Task } from '@/lib/polyverse/data-model/dataModelTypes'
 import { nanoid } from '@/lib/utils'
 import { createDefaultRepositoryTask } from '@/lib/polyverse/task/task'
 import { tickleProject } from '@/lib/polyverse/backend/backend'
-import { config } from 'process'
 import { Assistant } from 'openai/resources/beta/assistants/assistants'
 import { configAssistant } from '@/lib/polyverse/openai/assistants'
 import { stripUndefinedObjectProperties } from '@/lib/polyverse/backend/backend'
 
 const TEN_MINS_IN_MILLIS = 600000
+
+export async function createChat(userID: string, chatID: string, chat: Chat, task: any | null): Promise<Chat> {
+  
+  // TODO: What about auth?
+
+  // Set some minimally required properties
+  const createdAt = Date.now()
+  chat.createdAt = createdAt
+
+  if (!chat.id) {
+    chat.id = nanoid()
+  }
+  
+  console.log("starting to store chat's messages for chat id: ", chatID)
+  const cleanPayload = stripUndefinedObjectProperties(chat)
+  await kv.hmset(`chat:${chatID}`, cleanPayload)
+
+  let key = `user:chat:${userID}`
+
+  if (task?.id) {
+    key = `task:chats:${task.id}`
+  }
+
+  console.log(`storing chat at key: ${key}`)
+
+  await kv.zadd(key, {
+    score: createdAt,
+    member: `chat:${chatID}`
+  })
+
+  console.log(`stored chat at key: ${key}`)
+
+  return chat
+}
 
 export async function getChats(taskId?: string | null) {
   if (!taskId) {
@@ -227,7 +260,7 @@ export async function createTask(task: Task): Promise<Task> {
   }
 
   const id = task.id || nanoid()
-  const createdAt = task.createdAt || new Date()
+  const createdAt = task.createdAt || Date.now()
   const taskData = {
     ...task,
     id,

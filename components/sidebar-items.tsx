@@ -1,6 +1,6 @@
 'use client'
 
-import { Chat } from '@/lib/dataModelTypes'
+import { Chat } from '@/lib/polyverse/data-model/dataModelTypes'
 import { AnimatePresence, motion } from 'framer-motion'
 
 import { removeChat } from '@/app/actions'

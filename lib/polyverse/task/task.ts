@@ -1,5 +1,5 @@
 // Import necessary types and functions
-import { Task, User, Repository } from '@/lib/dataModelTypes'
+import { Task, User, Repository } from '@/lib/polyverse/data-model/dataModelTypes'
 import { createTask, getRepository, getTask, updateRepo } from '@/app/actions'
 
 /**
@@ -70,7 +70,7 @@ export async function createDefaultRepositoryTask(
     id: '', // Generate an ID or leave it for the createTask function to handle
     title: `Task for ${repo.name}`,
     description: `Default task for repository ${repo.name}`,
-    createdAt: new Date(),
+    createdAt: Date.now(),
     // TODO: Commented out for 1/4 Thursday demo - Was hitting auth error in `createTask`
     // on the following logic: if (!session?.user?.id || task.userId !== session.user.id)
     // For the demo we are setting the userId as the owner of this task
@@ -90,7 +90,7 @@ export async function createDefaultUserTask(user: User): Promise<Task> {
     id: '', // Generate an ID or leave it for the createTask function to handle
     title: `Task for ${user.username}`,
     description: `Default task for user ${user.username}`,
-    createdAt: new Date(),
+    createdAt: Date.now(),
     userId: user.id,
     repositoryId: '', // Set this if you have a default repository for the user
     chats: [],

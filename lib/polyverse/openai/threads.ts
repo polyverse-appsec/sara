@@ -29,7 +29,7 @@ function hashString(stringToHash: string) {
     }
   
     return hash
-  }
+}
 
 /**
  * Attempts to retrieve a thread ID based on the contents of a message via a

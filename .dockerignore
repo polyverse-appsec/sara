@@ -1,0 +1,2 @@
+# Ignore for Dockerfile.local-dev
+node_modules

@@ -1,4 +1,4 @@
-import { Repository, ProjectDataReference } from '@/lib/dataModelTypes'
+import { Repository, ProjectDataReference } from '@/lib/polyverse/data-model/dataModelTypes'
 
 const USER_PROJECT_URL_BASE =
   'https://pt5sl5vwfjn6lsr2k6szuvfhnq0vaxhl.lambda-url.us-west-2.on.aws/api/user_project'

@@ -12,7 +12,7 @@ import { buttonVariants } from '@/components/ui/button'
 import { IconPlus } from '@/components/ui/icons'
 
 import { useAppContext } from '@/lib/hooks/app-context';
-import { Task, Chat } from '@/lib/dataModelTypes';
+import { Task, Chat } from '@/lib/polyverse/data-model/dataModelTypes';
 import { use, useState, useEffect} from "react"
 
 

@@ -1,6 +1,6 @@
 import NextAuth, { DefaultSession } from 'next-auth'
 
-import { Organization, Repository, Task } from '@/lib/dataModelTypes'
+import { Organization, Repository, Task } from '@/lib/polyverse/data-model/dataModelTypes'
 
 declare module 'next-auth' {
   /**

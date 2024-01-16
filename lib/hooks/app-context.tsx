@@ -1,7 +1,7 @@
 'use client'
 
 import React, { createContext, useState, useContext, ReactNode } from 'react'
-import { User, Organization, Repository, Task, Chat } from '@/lib/dataModelTypes'
+import { User, Organization, Repository, Task, Chat } from '@/lib/polyverse/data-model/dataModelTypes'
 
 interface AppContextType {
   user: User | null

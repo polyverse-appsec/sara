@@ -10,7 +10,7 @@ export default function IndexPage() {
     title: 'Chat',
     userId: '1',
     messages: [],
-    createdAt: new Date(),
+    createdAt: Date.now(),
     path: `/chat/${id}`
   }
 

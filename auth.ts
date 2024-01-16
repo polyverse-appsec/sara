@@ -1,12 +1,14 @@
 import NextAuth from 'next-auth'
 import GitHub from 'next-auth/providers/github'
-import { Organization } from '@/lib/dataModelTypes'
+import { Organization } from '@/lib/polyverse/data-model/dataModelTypes'
 import exp from 'constants'
 
 export const {
   handlers: { GET, POST },
   auth
 } = NextAuth({
+  // TODO: Review - Make sure we fully understand what this is doing? Maybe only set if provided in an environment variable
+  trustHost: true,
   providers: [
     GitHub({
       authorization: {

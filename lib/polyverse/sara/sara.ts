@@ -6,7 +6,7 @@ import {
 } from '../openai/runs'
 
 import { configThread } from '../openai/threads'
-import { Repository, Chat, Task } from '@/lib/dataModelTypes'
+import { Repository, Chat, Task } from '@/lib/polyverse/data-model/dataModelTypes'
 
 /**
  * Callback for those interested into the response that Sara returned.

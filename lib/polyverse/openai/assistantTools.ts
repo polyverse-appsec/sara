@@ -2,7 +2,7 @@ import { Assistant } from 'openai/resources/beta/assistants/assistants'
 import OpenAI from 'openai'
 import { createTask } from '@/app/actions'
 import { create } from 'domain'
-import { Task } from '@/lib/dataModelTypes'
+import { Task } from '@/lib/polyverse/data-model/dataModelTypes'
 import { nanoid } from '@/lib/utils'
 
 const openai = new OpenAI({
@@ -46,7 +46,7 @@ const buildTaskInstance = (userId: string, repositoryId: string, { title, descri
     id: nanoid(),
     title,
     description,
-    createdAt: new Date(),
+    createdAt: Date.now(),
     userId,
     repositoryId,
     chats: [],

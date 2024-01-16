@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { IconExternalLink } from '@/components/ui/icons'
-import { Repository } from '@/lib/dataModelTypes'
+import { Repository } from '@/lib/polyverse/data-model/dataModelTypes'
 
 function getUserInitials(name: string) {
   const [firstName, lastName] = name.split(' ')

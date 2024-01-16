@@ -22,7 +22,7 @@ import { Input } from './ui/input'
 import { toast } from 'react-hot-toast'
 import { usePathname, useRouter } from 'next/navigation'
 import { useAppContext } from '@/lib/hooks/app-context'
-import { Chat, Repository, Task } from '@/lib/dataModelTypes'
+import { Chat, Repository, Task } from '@/lib/polyverse/data-model/dataModelTypes'
 import { getRepositoryFromId, getOrganizations, getTask } from '@/app/actions'
 
 const IS_PREVIEW = process.env.VERCEL_ENV === 'preview'
