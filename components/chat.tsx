@@ -23,7 +23,7 @@ import { toast } from 'react-hot-toast'
 import { usePathname, useRouter } from 'next/navigation'
 import { useAppContext } from '@/lib/hooks/app-context'
 import { Chat, Project, Task } from '@/lib/dataModelTypes'
-import { getRepositoryFromId, getOrganizations, getTask } from '@/app/actions'
+import { getProject, getOrganizations, getTask } from '@/app/actions'
 
 const IS_PREVIEW = process.env.VERCEL_ENV === 'preview'
 export interface ChatProps extends React.ComponentProps<'div'> {
@@ -44,8 +44,8 @@ export function Chat({ chat, initialMessages, className }: ChatProps) {
   const {
     selectedActiveChat,
     setSelectedActiveChat,
-    selectedProject: selectedRepository,
-    setSelectedProject: setSelectedRepository,
+    selectedProject,
+    setSelectedProject,
     selectedActiveTask,
     setSelectedActiveTask,
     setSelectedOrganization,
@@ -78,7 +78,7 @@ export function Chat({ chat, initialMessages, className }: ChatProps) {
       body: {
         id: chat.id,
         previewToken,
-        repo: selectedRepository,
+        project: selectedProject,
         task: selectedActiveTask,
         chat: selectedActiveChat
       },
@@ -129,18 +129,18 @@ export function Chat({ chat, initialMessages, className }: ChatProps) {
       //if it doesn't, we need to reset the appContext
       if (
         chat.taskId !== selectedActiveTask?.id ||
-        chat.projectId !== selectedRepository?.full_name
+        chat.projectId !== selectedProject?.id
       ) {
         //reset the appContext to match the chat
         console.log('chat.tsx: resetting appContext to match chat')
         const task = await getTask(chat.taskId, chat.userId)
-        const repo = await getRepositoryFromId(chat.projectId, chat.userId)
+        const project = await getProject(chat.projectId)
         //we don't store organizations, fetch the user orgs and filter by org.login to match
         //the repo.orgId
         const orgs = await getOrganizations()
-        const org = orgs.filter(org => org.login == repo?.orgId)[0]
+        const org = orgs.filter(org => org.login == project?.orgId)[0]
         setSelectedOrganization(org)
-        setSelectedRepository(repo)
+        setSelectedProject(project)
         setSelectedActiveTask(task)
         setSelectedActiveChat(chat)
       }
@@ -152,9 +152,9 @@ export function Chat({ chat, initialMessages, className }: ChatProps) {
     setSelectedActiveChat,
     selectedActiveTask,
     setSelectedActiveTask,
-    selectedRepository,
-    setSelectedRepository,
-    setSelectedOrganization
+    setSelectedOrganization,
+    selectedProject,
+    setSelectedProject
   ])
 
   return (
