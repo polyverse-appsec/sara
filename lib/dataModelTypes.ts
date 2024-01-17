@@ -39,8 +39,8 @@ export interface User extends Record<string, any> {
   image?: string
   email?: string
   defaultTask?: Task
-  projects?: Project[]
-  lastActiveProject?: Project
+  projectIds?: string[]
+  lastActiveProjectId: string
 }
 
 // Define the simplified Organization type
@@ -64,8 +64,8 @@ export interface Project extends Record<string, any> {
   name: string
   description: string
   userId: string
-  mainRepository: Repository
-  referenceRepositories?: Repository[]
+  mainRepositoryId: string
+  referenceRepositoriesIds?: string[]
   tasks?: Task[]
   defaultTask?: Task
   assistant?: Assistant
@@ -77,7 +77,7 @@ export interface Task extends Record<string, any> {
   description: string
   createdAt: Date
   userId: string
-  repositoryId: string
+  projectId: string
   chats?: Chat[]
   subtasks?: Task[]
 }
@@ -91,7 +91,7 @@ export interface Chat extends Record<string, any> {
   messages: Message[]
   sharePath?: string
   taskId?: string
-  repoId?: string
+  projectId?: string
   thread?: Threads.Thread
 }
 

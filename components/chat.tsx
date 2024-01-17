@@ -117,7 +117,7 @@ export function Chat({ chat, initialMessages, className }: ChatProps) {
       //the chat that has come in.
       // the chatId, repoId, and taskId must all match the ids in the chat prop
       //, otherwise we need to reset the appContext
-      if (!chat.taskId || !chat.repoId) {
+      if (!chat.taskId || !chat.projectId) {
         //this is an old chat made before the 1/4/24 update.  just log the error for now, it can
         //be fixed by just adding more content to the chat.
         console.log(
@@ -129,12 +129,12 @@ export function Chat({ chat, initialMessages, className }: ChatProps) {
       //if it doesn't, we need to reset the appContext
       if (
         chat.taskId !== selectedActiveTask?.id ||
-        chat.repoId !== selectedRepository?.full_name
+        chat.projectId !== selectedRepository?.full_name
       ) {
         //reset the appContext to match the chat
         console.log('chat.tsx: resetting appContext to match chat')
         const task = await getTask(chat.taskId, chat.userId)
-        const repo = await getRepositoryFromId(chat.repoId, chat.userId)
+        const repo = await getRepositoryFromId(chat.projectId, chat.userId)
         //we don't store organizations, fetch the user orgs and filter by org.login to match
         //the repo.orgId
         const orgs = await getOrganizations()

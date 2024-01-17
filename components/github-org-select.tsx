@@ -4,9 +4,8 @@ import Image from 'next/image'
 import { type Session } from 'next-auth'
 
 import { Button } from '@/components/ui/button'
-import React from 'react';
-import { Organization } from '@/lib/dataModelTypes'
-
+import React from 'react'
+import { Organization, User } from '@/lib/dataModelTypes'
 
 import {
   DropdownMenu,
@@ -22,26 +21,34 @@ function getUserInitials(name: string) {
 }
 
 interface GithubOrgSelectProps {
-  session: Session;
-  selectedOrganization: Organization | null;
-  organizations: Organization[];
-  onOrganizationChange: (org: Organization) => void;
+  user: User
+  selectedOrganization: Organization | null
+  organizations: Organization[]
+  onOrganizationChange: (org: Organization) => void
   // other props if any
 }
 
-export function GithubOrgSelect({ session, organizations, selectedOrganization, onOrganizationChange}: GithubOrgSelectProps) {
+export function GithubOrgSelect({
+  user,
+  organizations,
+  selectedOrganization,
+  onOrganizationChange
+}: GithubOrgSelectProps) {
   // component implementation
-  const user = session.user;
 
   return (
     <div className="flex items-center justify-between">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="pl-0">
+          <Button variant="ghost" className="pl-0">
             {selectedOrganization?.avatar_url ? (
               <Image
                 className="w-6 h-6 transition-opacity duration-300 rounded-full select-none ring-1 ring-zinc-100/10 hover:opacity-80"
-                src={selectedOrganization?.avatar_url ? `${selectedOrganization.avatar_url}&s=60` : ''}
+                src={
+                  selectedOrganization?.avatar_url
+                    ? `${selectedOrganization.avatar_url}&s=60`
+                    : ''
+                }
                 alt={selectedOrganization?.login ?? 'Avatar'}
                 height={48}
                 width={48}
@@ -52,32 +59,31 @@ export function GithubOrgSelect({ session, organizations, selectedOrganization, 
               </div>
             )}
             {selectedOrganization?.login ? (
-            <span className="ml-2">{selectedOrganization.login}</span>
-            ) : "Select Organization"}
+              <span className="ml-2">{selectedOrganization.login}</span>
+            ) : (
+              'Select Organization'
+            )}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent sideOffset={8} align="start" className="w-[180px]">
           <DropdownMenuSeparator />
-          {
-            organizations.map((org, index) => (
-              <DropdownMenuItem key={index}
-                onSelect={(event)=> onOrganizationChange(org) }>
-                <Image
-                  className="w-6 h-6 transition-opacity duration-300 rounded-full select-none ring-1 ring-zinc-100/10 hover:opacity-80"
-                  src={org?.avatar_url ? `${org.avatar_url}&s=60` : ''}
-                  alt={org.login ?? 'Avatar'}
-                  height={48}
-                  width={48}
+          {organizations.map((org, index) => (
+            <DropdownMenuItem
+              key={index}
+              onSelect={event => onOrganizationChange(org)}
+            >
+              <Image
+                className="w-6 h-6 transition-opacity duration-300 rounded-full select-none ring-1 ring-zinc-100/10 hover:opacity-80"
+                src={org?.avatar_url ? `${org.avatar_url}&s=60` : ''}
+                alt={org.login ?? 'Avatar'}
+                height={48}
+                width={48}
               />
-              <span className="ml-2">
-                {org.login}
-              </span>
-
-              </DropdownMenuItem>
-            ))
-          }
+              <span className="ml-2">{org.login}</span>
+            </DropdownMenuItem>
+          ))}
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
-  );
+  )
 }

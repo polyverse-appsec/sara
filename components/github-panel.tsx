@@ -1,23 +1,16 @@
 'use client'
 
-import React, { useState } from 'react';
-import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@radix-ui/react-collapsible';
-import { Button } from '@/components/ui/button'; // Adjust import as needed
-import {GithubSelect} from '@/components/github-select'; // Adjust import as needed, using default import
-import { type Session } from 'next-auth'
+import React, { useState } from 'react'
+import {
+  Collapsible,
+  CollapsibleTrigger,
+  CollapsibleContent
+} from '@radix-ui/react-collapsible'
+import { Button } from '@/components/ui/button' // Adjust import as needed
+import { GithubSelect } from '@/components/github-select' // Adjust import as needed, using default import
 
-export interface GithubPanelProps {
-  session: Session;
-}
-export function GithubPanel ({session }: GithubPanelProps) {
-
-  if (!session?.user){
-    return null;
-  }
-
-  return (
-    <GithubSelect session={session} />
-  );
+export function GithubPanel() {
+  return <GithubSelect />
 
   /*
   return (
@@ -37,5 +30,4 @@ export function GithubPanel ({session }: GithubPanelProps) {
     </Collapsible>
   );
   */
-};
-
+}

@@ -8,17 +8,16 @@ import { auth } from '@/auth'
 import { type Chat, Repository, User } from '@/lib/dataModelTypes'
 import {
   fetchUserOrganizations,
-  fetchOrganizationRepositories
+  fetchOrganizationRepositories,
+  getOrCreateRepoFromGithubRepo
 } from '@/lib/polyverse/github/repos'
 import { Organization, Project, Task } from '@/lib/dataModelTypes'
 import { nanoid } from '@/lib/utils'
-import { createDefaultRepositoryTask } from '@/lib/polyverse/task/task'
 import { tickleProject } from '@/lib/polyverse/backend/backend'
-import { config } from 'process'
 import { Assistant } from 'openai/resources/beta/assistants/assistants'
 import { configAssistant } from '@/lib/polyverse/openai/assistants'
 import { stripUndefinedObjectProperties } from '@/lib/polyverse/backend/backend'
-import { get } from 'http'
+import { createNewProjectFromRepository } from '@/lib/polyverse/project/project'
 
 const TEN_MINS_IN_MILLIS = 600000
 
@@ -217,7 +216,15 @@ export async function getRepositoriesForOrg(
     accessToken: session.accessToken,
     org
   })
-  return repos
+
+  //IMPORTANT note:  the repo's returned from fetchOrganizationRepositories are github repos, and may be missing extra information we have
+  //so loop through the repos and either lookup or create the repo data stucture in out system
+  const fullRepos = []
+  for (const repo of repos) {
+    const fullRepo = await getOrCreateRepoFromGithubRepo(repo, session.user.id)
+    fullRepos.push(fullRepo)
+  }
+  return fullRepos
 }
 
 /*
@@ -250,7 +257,7 @@ export async function createTask(task: Task): Promise<Task> {
     member: `task:${id}`
   })
 
-  await kv.zadd(`repo:tasks:${task.repositoryId}`, {
+  await kv.zadd(`repo:tasks:${task.projectId}`, {
     score: +createdAt,
     member: `task:${id}`
   })
@@ -315,14 +322,6 @@ export async function getTask(
  */
 
 /**
- * Builds the hash key for persisting and retrieving project fields.
- *
- * @param {string} fullRepoName Full name of the repository
- * @returns Hash key for repository.
- */
-const buildProjectHashKey = (projId: string) => `project:${projId}`
-
-/**
  * Server action that retrieves the most recent persisted information about a
  * specific project identified in the `repo.full_name` data member. If the
  * repository doesn't exist then persists any information contained within the
@@ -347,80 +346,41 @@ export async function getOrCreateProjectFromRepository(
   if (!session?.user?.id) {
     throw new Error('Unauthorized')
   }
-  /* BUGBUG come back to this
-  const retrievedRepo = await getRepository(proj.full_name, userId)
 
-  if (retrievedRepo) {
-    //do a quick check to see if the retrieved repo has the same data as the passed in repo
-    //if it doesn't, then update the repo
-    const verifiedRepo = await checkAndUpdateRepository(retrievedRepo, proj)
-    return verifiedRepo
+  //go through the user.projects array and see if we have a project with the same name as the repo
+
+  const retrievedProject = await getProject(
+    `project:${repo.full_name}:${user.id}`
+  )
+
+  if (retrievedProject) {
+    return retrievedProject
   }
 
-  return await createRepositoryFromGithub(proj)
-*/
-  return null
+  const newProj = await createNewProjectFromRepository(repo, user)
+  return newProj
 }
 
-async function checkAndUpdateRepository(
-  retrievedRepo: Project,
-  incomingGithubRepo: Project
-): Promise<Project> {
-  //go through the fields of the incoming Repo, and for every non-null field, check to see if it matches the retrieved repo
-  //if it's different, then set a flag to update the repo. Be sure not to clobber fields like the Assistant field,
-  //as the incoming Repo will not have that field--just the github repo info
-  let updateRepo = false
-  for (const key in incomingGithubRepo) {
-    if (
-      incomingGithubRepo[key] &&
-      incomingGithubRepo[key] !== retrievedRepo[key]
-    ) {
-      updateRepo = true
-      retrievedRepo[key] = incomingGithubRepo[key]
-    }
-  }
-  console.log(`updateRepo: ${updateRepo}`)
-  if (updateRepo) {
-    const repoKey = buildProjectHashKey(retrievedRepo.full_name)
-    await kv.hset(repoKey, retrievedRepo)
-  }
-  return retrievedRepo
-}
-/**
- * Hashes the fields of a repository object.
- *
- * @param {Project} githubRepo Fully formed instance of Repository object.
- * @returns {Project} The presisted repository object.
+/*
+  retrieve a project from the KV store
  */
-export async function createRepositoryFromGithub(
-  githubRepo: Project
-): Promise<Project> {
+export async function getProject(projectKey: string): Promise<Project | null> {
   const session = await auth()
 
   if (!session?.user?.id) {
     throw new Error('Unauthorized')
   }
 
-  // Per our current implementation of our types we assume that the `orgId`
-  // matches the ID of the user that owns the repo
-  // if (repo.orgId !== session.user.id) {
-  //   throw new Error('Unauthorized')
-  // }
-  githubRepo.defaultTask = await createDefaultRepositoryTask(
-    githubRepo,
-    session.user.id
-  )
+  const project = await kv.hgetall<Project>(projectKey)
 
-  const repoKey = buildProjectHashKey(githubRepo.full_name)
-  await kv.hset(repoKey, githubRepo)
+  if (!project) {
+    return null
+  }
 
-  return githubRepo
+  return project
 }
 
 /**
- * Updates a the fields of an existing repository object. Note that if the repo
- * doesn't yet exist then it will create the object as well based on current
- * implementation.
  *
  * CAUTION: Only call this API with a fully formed repository object. If you
  * call this API with a partially formed repository object it will clobber the
@@ -430,24 +390,13 @@ export async function createRepositoryFromGithub(
  * update.
  * @returns {Project} The updated repository object.
  */
-export async function updateRepo(repo: Project): Promise<Project> {
+export async function updateRepo(repo: Repository): Promise<Repository> {
   const session = await auth()
 
-  if (!session?.user?.id) {
+  if (!session?.user?.id || repo.userId !== session.user.id) {
     throw new Error('Unauthorized')
   }
-
-  // TODO: Should we just ahve a createOrUpdateRepo function? Is creating same behavior
-  // as updating?
-
-  // Per our current implementation of our types we assume that the `orgId`
-  // matches the ID of the user that owns the repo
-  // if (repo.orgId !== session.user.id) {
-  //   throw new Error('Unauthorized')
-  // }
-
-  const repoKey = buildProjectHashKey(repo.full_name)
-  await kv.hset(repoKey, repo)
+  await kv.hset(repo.id, repo)
 
   return repo
 }
@@ -461,17 +410,17 @@ export async function updateRepo(repo: Project): Promise<Project> {
  * @returns {(Repositry|null)} The repository if it exists otherwise `null`.
  */
 export async function getRepository(
-  projId: string,
+  repoFullName: string,
   userId: string
-): Promise<Project | null> {
+): Promise<Repository | null> {
   const session = await auth()
 
   if (!session?.user?.id || userId !== session.user.id) {
     throw new Error('Unauthorized')
   }
 
-  const repoKey = buildProjectHashKey(projId)
-  const proj = await kv.hgetall<Project>(repoKey)
+  const repoKey = `repository:${repoFullName}:${userId}`
+  const repo = await kv.hgetall<Repository>(repoKey)
 
   // Per our current implementation of our types we assume that the `orgId`
   // matches the ID of the user that owns the repo
@@ -479,7 +428,7 @@ export async function getRepository(
   //   return null
   // }
 
-  return proj
+  return repo
 }
 
 /*

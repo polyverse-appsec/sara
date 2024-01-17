@@ -27,7 +27,7 @@ const convertChatToTask = ({ id, title, createdAt, userId }: Chat): Task => ({
   description: title,
   createdAt,
   userId,
-  repositoryId: 'temporary repository id'
+  projectId: 'temporary repository id'
 })
 
 export function TaskDataLoader({ userId }: TaskDataLoaderProps) {

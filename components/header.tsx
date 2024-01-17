@@ -2,10 +2,7 @@ import * as React from 'react'
 import Link from 'next/link'
 import { auth } from '@/auth'
 import { Button, buttonVariants } from '@/components/ui/button'
-import {
-  IconNextChat,
-  IconSeparator,
-} from '@/components/ui/icons'
+import { IconNextChat, IconSeparator } from '@/components/ui/icons'
 import { UserMenu } from '@/components/user-menu'
 import { SidebarMobile } from './sidebar-mobile'
 import { SidebarToggle } from './sidebar-toggle'
@@ -40,7 +37,7 @@ async function UserOrLogin() {
             <Link href="/sign-in?callbackUrl=/">Login</Link>
           </Button>
         )}
-        {session?.user ? <GithubPanel session={session} /> : null}
+        {session?.user ? <GithubPanel /> : null}
       </div>
     </>
   )

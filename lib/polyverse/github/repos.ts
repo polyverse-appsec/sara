@@ -5,6 +5,8 @@ export type FetchUserOrgsParams = {
   accessToken: string
 }
 
+import { kv } from '@vercel/kv'
+
 // Function to fetch user's organizations
 export async function fetchUserOrganizations({
   accessToken
@@ -89,4 +91,22 @@ export async function fetchOrganizationRepositories({
     console.error('Error fetching repositories:', error)
     throw error
   }
+}
+
+export async function getOrCreateRepoFromGithubRepo(
+  repo: Repository,
+  userId: string
+): Promise<Repository> {
+  const repoId = `repo:${repo.full_name}:${userId}`
+  const existingRepo = (await kv.get(repoId)) as Repository
+  if (existingRepo) {
+    return existingRepo
+  }
+  const newRepo = {
+    ...repo,
+    id: repoId,
+    userId: userId
+  }
+  await kv.set(repoId, newRepo)
+  return newRepo
 }

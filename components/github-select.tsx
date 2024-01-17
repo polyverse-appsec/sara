@@ -20,17 +20,10 @@ import { useState, useEffect } from 'react'
 import { Organization, Project, Repository } from '@/lib/dataModelTypes'
 
 import { useAppContext } from '@/lib/hooks/app-context'
-import { configDefaultRepositoryTask } from '@/lib/polyverse/task/task'
 
-interface GitHubSelectProps {
-  session: Session // Add the session prop
-}
-
-export function GithubSelect({ session }: GitHubSelectProps) {
-  // component implementation
-  const user = session.user
-
+export function GithubSelect() {
   const {
+    user,
     selectedOrganization,
     setSelectedOrganization,
     selectedProject,
@@ -81,6 +74,9 @@ export function GithubSelect({ session }: GitHubSelectProps) {
     fetchOrganizations()
   }, [])
 
+  if (!user) {
+    return null
+  }
   const handleOrganizationChange = (org: Organization) => {
     console.log('Organization changed:', org)
     setSelectedOrganization(org)
@@ -91,28 +87,22 @@ export function GithubSelect({ session }: GitHubSelectProps) {
 
   const handleRepositoryChange = async (repo: Repository) => {
     // Persist the repo in the KV store
-    const retrievedProject = await getOrCreateProjectFromRepository(
-      repo,
-      session.user.id
-    )
+    const retrievedProject = await getOrCreateProjectFromRepository(repo, user)
 
     // Ensure we set the relevant information in our apps context for other
     // core components to function correctly
     setSelectedProject(retrievedProject)
-    /* BUGBUG fix this
-    if (retrievedRepo?defaultTask) {
-      setSelectedActiveTask(retrievedRepo.defaultTask)
-    }
 
-    session.activeRepository = retrievedRepo
-    */
+    if (retrievedProject?.defaultTask) {
+      setSelectedActiveTask(retrievedProject.defaultTask)
+    }
   }
 
   return (
     <>
       <IconSeparator className="w-6 h-6 text-muted-foreground/50" />
       <GithubOrgSelect
-        session={session}
+        user={user}
         organizations={organizations}
         selectedOrganization={selectedOrganization}
         onOrganizationChange={handleOrganizationChange}

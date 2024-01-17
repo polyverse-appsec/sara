@@ -41,14 +41,18 @@ export const submitTaskStepsAssistantFunction: Assistant.Function = {
   }
 }
 
-const buildTaskInstance = (userId: string, repositoryId: string, { title, description }: TaskForGoalType): Task => {
+const buildTaskInstance = (
+  userId: string,
+  repositoryId: string,
+  { title, description }: TaskForGoalType
+): Task => {
   return {
     id: nanoid(),
     title,
     description,
     createdAt: new Date(),
     userId,
-    repositoryId,
+    projectId: repositoryId,
     chats: [],
     subtasks: []
   }
@@ -86,9 +90,15 @@ const getBuildTaskInstanceClosure = (userID: string, repoID: string) => {
   }
 }
 
-export const submitTaskSteps = async (userID: string, repoID: string, toolCallArgs: SubmitTasksForGoalType) => {
+export const submitTaskSteps = async (
+  userID: string,
+  repoID: string,
+  toolCallArgs: SubmitTasksForGoalType
+) => {
   if (toolCallArgs) {
-    const tasksToPersist = toolCallArgs.tasks.map(getBuildTaskInstanceClosure(userID, repoID))
+    const tasksToPersist = toolCallArgs.tasks.map(
+      getBuildTaskInstanceClosure(userID, repoID)
+    )
 
     tasksToPersist.forEach((task: Task) => createTask(task))
   }
