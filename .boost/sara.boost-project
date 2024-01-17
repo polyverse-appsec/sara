@@ -100,33 +100,6 @@
       "issueCells": 0,
       "sections": {}
     },
-    "types\\next-auth.d.ts": {
-      "sourceRelFile": "types\\next-auth.d.ts",
-      "notebookRelFile": ".boost/types/next-auth.d.ts.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "test\\add-test-build-types.sh": {
-      "sourceRelFile": "test\\add-test-build-types.sh",
-      "notebookRelFile": ".boost/test/add-test-build-types.sh.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "tailwind.config.js": {
-      "sourceRelFile": "tailwind.config.js",
-      "notebookRelFile": ".boost/tailwind.config.js.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
     "auth.ts": {
       "sourceRelFile": "auth.ts",
       "notebookRelFile": ".boost/auth.ts.boost-notebook",
@@ -427,15 +400,6 @@
     "components\\sidebar-toggle.tsx": {
       "sourceRelFile": "components\\sidebar-toggle.tsx",
       "notebookRelFile": ".boost/components/sidebar-toggle.tsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "test\\test.spec.ts": {
-      "sourceRelFile": "test\\test.spec.ts",
-      "notebookRelFile": ".boost/test/test.spec.ts.boost-notebook",
       "totalCells": 0,
       "completedCells": 0,
       "errorCells": 0,
@@ -748,15 +712,6 @@
       "issueCells": 0,
       "sections": {}
     },
-    "create_project.py": {
-      "sourceRelFile": "create_project.py",
-      "notebookRelFile": ".boost/create_project.py.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
     "components\\ui\\treeview.tsx": {
       "sourceRelFile": "components\\ui\\treeview.tsx",
       "notebookRelFile": ".boost/components/ui/treeview.tsx.boost-notebook",
@@ -913,6 +868,51 @@
     "app\\api\\auth\\[...nextauth]\\route.ts": {
       "sourceRelFile": "app\\api\\auth\\[...nextauth]\\route.ts",
       "notebookRelFile": ".boost/app/api/auth/[...nextauth]/route.ts.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "scripts\\create_project.py": {
+      "sourceRelFile": "scripts\\create_project.py",
+      "notebookRelFile": ".boost/scripts/create_project.py.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".vscode\\launch.json": {
+      "sourceRelFile": ".vscode\\launch.json",
+      "notebookRelFile": ".boost/.vscode/launch.json.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next\\chunks\\node_modules_1a2767._.js": {
+      "sourceRelFile": ".next\\chunks\\node_modules_1a2767._.js",
+      "notebookRelFile": ".boost/.next/chunks/node_modules_1a2767._.js.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next\\chunks\\node_modules_df9c3d._.js.map": {
+      "sourceRelFile": ".next\\chunks\\node_modules_df9c3d._.js.map",
+      "notebookRelFile": ".boost/.next/chunks/node_modules_df9c3d._.js.map.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next\\chunks\\node_modules_df9c3d._.js": {
+      "sourceRelFile": ".next\\chunks\\node_modules_df9c3d._.js",
+      "notebookRelFile": ".boost/.next/chunks/node_modules_df9c3d._.js.boost-notebook",
       "totalCells": 0,
       "completedCells": 0,
       "errorCells": 0,
