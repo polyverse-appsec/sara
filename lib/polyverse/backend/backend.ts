@@ -1,7 +1,17 @@
 import { Repository, ProjectDataReference } from '@/lib/dataModelTypes'
 
-const USER_PROJECT_URL_BASE =
-  'https://pt5sl5vwfjn6lsr2k6szuvfhnq0vaxhl.lambda-url.us-west-2.on.aws/api/user_project'
+// AWS Endpoints for our Boost ReST API (Backend)
+// Legacy:  'https://pt5sl5vwfjn6lsr2k6szuvfhnq0vaxhl.lambda-url.us-west-2.on.aws/api/user_project'
+
+// Local: 'http://localhost:8000'
+const URL_SERVICE_URI_DEV = 'https://3c27qu2ddje63mw2dmuqp6oa7u0ergex.lambda-url.us-west-2.on.aws'; // SARA_STAGE=dev
+const URL_SERVICE_URI_TEST = 'https://sztg3725fqtcptfts5vrvcozoe0nxcew.lambda-url.us-west-2.on.aws'; // SARA_STAGE=test
+const URL_SERVICE_URI_PROD = 'https://33pdosoitl22c42c7sf46tabi40qwlae.lambda-url.us-west-2.on.aws'; // SARA_STAGE=prod
+
+// set the URL_BASE to the appropriate value for the env variable SARA_STAGE or default to dev
+const USER_SERVICE_URI = process.env.SARA_STAGE?.toLowerCase() === 'test' ? URL_SERVICE_URI_TEST :
+                         process.env.SARA_STAGE?.toLowerCase() === 'prod' ? URL_SERVICE_URI_PROD :
+                         URL_SERVICE_URI_DEV;
 
 /**
  * Gets the files IDs associated with a user and a Git repo.
@@ -14,7 +24,7 @@ export async function getFileInfo(
   repo: Repository,
   email: string
 ): Promise<ProjectDataReference[]> {
-  const url = `${USER_PROJECT_URL_BASE}/${repo.orgId}/${repo.name}/data_references`
+  const url = `${USER_SERVICE_URI}/api/user_project/${repo.orgId}/${repo.name}/data_references`
 
   try {
     const res = await fetch(url, {
@@ -48,7 +58,7 @@ export async function tickleProject(
   repo: Repository,
   email: string
 ): Promise<string> {
-  const url = `${USER_PROJECT_URL_BASE}/${repo.orgId}/${repo.name}`
+  const url = `${USER_SERVICE_URI}/api/user_project/${repo.orgId}/${repo.name}`
 
   try {
     

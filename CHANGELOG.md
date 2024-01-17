@@ -3,6 +3,17 @@ Polyverse Sara Web UI for Boost
 
 # Release Notes
 
+## Version 0.3.0: January 16th, 2023
+
+### New Features
+- Support for access to Dev, Test and Production backend Boost Service APIs
+
+### Enhancements
+- N/A
+
+### Bug Fixes
+- N/A
+
 ## Version 0.2.0: December 30th, 2023
 
 ### New Features
