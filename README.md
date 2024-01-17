@@ -31,19 +31,7 @@ Your app template should now be running on [localhost:3000](http://localhost:300
 
 * [Sequence Diagrams](tech-docs/sequence-diagrams.md)
 
-## Committing Code
-
-![We Be 2 Fast 2 Furious](https://media3.giphy.com/media/gdwril4zFP3j8twBmP/giphy.gif?cid=ecf05e47apgxahj8kkdbey5lqu318v6txgrtj64sc2u7t8oh&ep=v1_gifs_search&rid=giphy.gif&ct=g)
-
-Currently the team is operating with less processes, procedures, and tooling that larger organizations might. Currently we are checking directly into `main` without any PRs.
-
-This works well to increase our velocity when we are a small team and tight team but requires trust. We work on the honor system here so while you are free to commit code to `main` please consider these items before you do so:
-
-* Run the tests before checking into `main`
-* If you believe the set of changes you have are high risk then quickly ask someone in [Engineering on Slack](https://polyverse.slack.com/archives/C0501S5LWNA) for a live code review
-* We typically don't do feature branches here at the moment but if you believe you have a large set of changes that are going to be very disruptive while working on them it might be worth considering (e.g. changing the whole data model)
-
-## Running For Development
+## Development
 
 ### Running Locally
 
@@ -56,6 +44,48 @@ The following steps will setup your environment with Vercel Environment Variable
 5. Run local development instance: `pnpm run dev`
 
 Your app template should now be running on [localhost:3000](http://localhost:3000/).
+
+### Debugging The Frontend
+
+We use `Chrome's Developer Tools` to debug the frontend. To start debugging the frontend start the development environment for `Sara` with the following command: `pnpm run dev`.
+
+Once the development environment is running you can open Chrome's Developer Tools (Ctrl+Shift+J on Windows/Linux, ⌥+⌘+I on macOS). Once open navigate to the `Sources` tab. You can now add debugger statements/breakpoints to stop execution and pause on the relevaant file you are trying to debug. To search for the file you wish to debug in Chrome's Developer Tools Ctrl+P on Windows and ⌘+P on macOS.
+
+### Debugging The Backend
+
+Presently we use `Chrome's Developer Tools` to debug the backend. To start debugging the backend start the development environment for `Sara` with the following command: `pnpm run dev`. Note that the `dev` recipe in `package.json` must have the option `NODE_OPTIONS='--inspect'` set for NodeJS to open up a port a debugger can be attached to. Additionally the `--turbo` option can't be used or else you won't be able to properly attach.
+
+Once running open the inspection tools within Chrome's Developer Tools by navigating to `chrome://inspect` in your browser. Once the inspection tools open click the `Devices` tab on the left and then the `Configure...` button. In the new window add the host and port for which a port was opened for on the NextJS application. The console output of the backend starting will identify for you which port to use. For example see the following console output:
+
+```
+➜ sara (main) ✗ pnpm run dev
+
+> polyverse-sara-web-ui@0.3.0 dev /Users/gine/workspace/sara
+> NODE_OPTIONS='--inspect' next dev
+
+Debugger listening on ws://127.0.0.1:9229/45e0d70d-2d6b-4a39-896d-48637dc39552
+For help, see: https://nodejs.org/en/docs/inspector
+Debugger listening on ws://127.0.0.1:9230/fd2cff6a-8c99-4429-878a-2f5904817747
+For help, see: https://nodejs.org/en/docs/inspector
+   the --inspect option was detected, the Next.js router server should be inspected at port 9230.
+   ▲ Next.js 14.0.4
+   - Local:        http://localhost:3000
+   - Environments: .env.local
+```
+
+Once you configure the host and port for which to inspect a new target for you to inspect ought to be shown under `Remote Targets`. You can start inspecting that target and a new debugging console will open for you.
+
+### Committing Code
+
+![We Be 2 Fast 2 Furious](https://media3.giphy.com/media/gdwril4zFP3j8twBmP/giphy.gif?cid=ecf05e47apgxahj8kkdbey5lqu318v6txgrtj64sc2u7t8oh&ep=v1_gifs_search&rid=giphy.gif&ct=g)
+
+Currently the team is operating with less processes, procedures, and tooling that larger organizations might. Currently we are checking directly into `main` without any PRs.
+
+This works well to increase our velocity when we are a small team and tight team but requires trust. We work on the honor system here so while you are free to commit code to `main` please consider these items before you do so:
+
+* Run the tests before checking into `main`
+* If you believe the set of changes you have are high risk then quickly ask someone in [Engineering on Slack](https://polyverse.slack.com/archives/C0501S5LWNA) for a live code review
+* We typically don't do feature branches here at the moment but if you believe you have a large set of changes that are going to be very disruptive while working on them it might be worth considering (e.g. changing the whole data model)
 
 ## Testing
 
