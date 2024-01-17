@@ -34,6 +34,8 @@ export function GithubSelect() {
   // State to store organizations
   const [organizations, setOrganizations] = useState<Organization[]>([])
   const [repositories, setRepositories] = useState<Repository[]>([])
+  const [selectedRepository, setSelectedRepository] =
+    useState<Repository | null>(null)
 
   // State to track if dropdown is open
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
@@ -87,11 +89,13 @@ export function GithubSelect() {
 
   const handleRepositoryChange = async (repo: Repository) => {
     // Persist the repo in the KV store
+
     const retrievedProject = await getOrCreateProjectFromRepository(repo, user)
 
     // Ensure we set the relevant information in our apps context for other
     // core components to function correctly
     setSelectedProject(retrievedProject)
+    setSelectedRepository(repo)
 
     if (retrievedProject?.defaultTask) {
       setSelectedActiveTask(retrievedProject.defaultTask)
@@ -109,7 +113,7 @@ export function GithubSelect() {
       />
       <IconSeparator className="w-6 h-6 text-muted-foreground/50" />
       <GithubRepoSelect
-        selectedRepository={selectedProject?.mainRepository ?? null}
+        selectedRepository={selectedRepository}
         repositories={repositories}
         onRepositoryChange={handleRepositoryChange}
       />
