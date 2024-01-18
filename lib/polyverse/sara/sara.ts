@@ -27,7 +27,7 @@ import { Project, Chat, Task } from '@/lib/dataModelTypes'
  *
  * @param {string} userID The ID of the user whom we made a request to Sara on
  * their behalf.
- * @param repo
+ * @param project
  * @param task
  * @param chat
  * @param question List of questions to ask Sara.
@@ -38,17 +38,17 @@ import { Project, Chat, Task } from '@/lib/dataModelTypes'
  */
 export const querySara = async (
   userID: string,
-  repo: Project,
+  project: Project,
   task: Task,
   chat: Chat,
   question: any,
   fullSaraResponseCallback?: any
 ) => {
-  const assistant = repo.assistant
+  const assistant = project.assistant
   const encoder = new TextEncoder()
 
   if (!assistant) {
-    console.log(`No assistant found for repo: ${repo.full_name}`)
+    console.log(`No assistant found for repo: ${project.name}`)
     return
   }
   // Configure a thread based off of what would be the first message associated with it
@@ -106,7 +106,7 @@ export const querySara = async (
         } else if (status === 'requires_action') {
           await handleRequiresActionStatus(
             userID,
-            repo.full_name,
+            project.full_name,
             thread.id,
             runID,
             runStatus
