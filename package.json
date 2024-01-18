@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "NODE_OPTIONS='--inspect' next dev",
+    "dev-docker": "KV_REST_API_URL='http://localhost:8079' KV_REST_API_TOKEN='example_token' NODE_OPTIONS='--inspect' next dev",
     "build": "next build",
     "build-test": "tsc && ./test/add-test-build-types.sh",
     "start": "next start",
@@ -17,6 +18,8 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@aws-sdk/client-secrets-manager": "^3.491.0",
+    "@aws-sdk/credential-providers": "^3.490.0",
     "@octokit/rest": "^20.0.2",
     "@radix-ui/react-alert-dialog": "^1.0.5",
     "@radix-ui/react-collapsible": "^1.0.3",
@@ -28,6 +31,7 @@
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-switch": "^1.0.3",
     "@radix-ui/react-tooltip": "^1.0.7",
+    "@types/jsonwebtoken": "^9.0.5",
     "@vercel/analytics": "^1.1.1",
     "@vercel/kv": "^1.0.1",
     "@vercel/og": "^0.5.20",
@@ -37,6 +41,7 @@
     "focus-trap-react": "^10.2.3",
     "framer-motion": "^10.16.16",
     "geist": "^1.2.0",
+    "jsonwebtoken": "^9.0.2",
     "nanoid": "^5.0.4",
     "next": "14.0.4",
     "next-auth": "5.0.0-beta.3",

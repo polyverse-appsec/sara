@@ -1,4 +1,14 @@
 import { Project, Repository, ProjectDataReference } from '@/lib/dataModelTypes'
+import { Secret, sign } from 'jsonwebtoken'
+
+import {
+  SecretsManagerClient,
+  GetSecretValueCommand,
+} from "@aws-sdk/client-secrets-manager"
+
+const SECRET_KEY_NAME_SARA_CLIENT_PRIVATE_KEY = "boost-sara/sara-client-private-key"
+
+const secretsClient = new SecretsManagerClient()
 
 // AWS Endpoints for our Boost ReST API (Backend)
 // Legacy:  'https://pt5sl5vwfjn6lsr2k6szuvfhnq0vaxhl.lambda-url.us-west-2.on.aws/api/user_project'
@@ -33,10 +43,20 @@ export async function getFileInfo(
   const url = `${USER_SERVICE_URI}/api/user_project/${repo.orgId}/${repo.name}/data_references`
 
   try {
+    const secretResponse = await secretsClient.send(
+      new GetSecretValueCommand({
+        SecretId: SECRET_KEY_NAME_SARA_CLIENT_PRIVATE_KEY,
+        VersionStage: "AWSCURRENT", // VersionStage defaults to AWSCURRENT if unspecified
+      })
+    )
+
+    const secretString = secretResponse.SecretString
+    const signedIdentityHeader = sign({ email }, secretString as Secret, { algorithm: 'RS256' })
+
     const res = await fetch(url, {
       method: 'GET',
       headers: {
-        'x-user-account': email
+        'x-signed-identity': signedIdentityHeader
       }
     })
 
@@ -67,11 +87,21 @@ export async function tickleRepository(
   const url = `${USER_SERVICE_URI}/api/user_project/${repo.orgId}/${repo.name}`
 
   try {
+    const secretResponse = await secretsClient.send(
+      new GetSecretValueCommand({
+        SecretId: SECRET_KEY_NAME_SARA_CLIENT_PRIVATE_KEY,
+        VersionStage: "AWSCURRENT", // VersionStage defaults to AWSCURRENT if unspecified
+      })
+    )
+
+    const secretString = secretResponse.SecretString
+    const signedIdentityHeader = sign({ email }, secretString as Secret, { algorithm: 'RS256' })
+
     const res = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-user-account': email
+        'x-signed-identity': signedIdentityHeader
       },
       body: JSON.stringify({ resources: [{ uri: repo.html_url }] })
     })
