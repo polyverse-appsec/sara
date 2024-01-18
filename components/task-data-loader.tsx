@@ -1,5 +1,5 @@
 'use client'
-import { clearChats, getTasksAssociatedWithRepo } from '@/app/actions'
+import { clearChats, getTasksAssociatedWithProject } from '@/app/actions'
 
 import TaskTree from './task-tree'
 
@@ -33,7 +33,8 @@ const convertChatToTask = ({ id, title, createdAt, userId }: Chat): Task => ({
 export function TaskDataLoader({ userId }: TaskDataLoaderProps) {
   const [tasks, setTasks] = useState<Task[]>([])
   const {
-    selectedProject: selectedRepository,
+    selectedProject,
+    selectedActiveTask,
     tasksLastGeneratedAt,
     selectedActiveChat
   } = useAppContext()
@@ -44,23 +45,6 @@ export function TaskDataLoader({ userId }: TaskDataLoaderProps) {
   console.log(
     `<TaskDataLoader> render - selectedActiveChat.userID: ${selectedActiveChat?.userId}`
   )
-
-  async function fetchTasks() {
-    if (!selectedRepository?.full_name) {
-      console.log(`Aborting task fetch since no repo selected`)
-      return
-    }
-
-    try {
-      const tasks = await getTasksAssociatedWithRepo(
-        selectedRepository.full_name
-      )
-      console.log(`***** Retrieved tasks: ${JSON.stringify(tasks)}`)
-      setTasks(tasks)
-    } catch (err) {
-      console.error('***** Error fetching tasks:', err)
-    }
-  }
 
   // Effects let you specify side effects that is caused by the rendering
   // itself, rather than a particular event.
@@ -74,15 +58,29 @@ export function TaskDataLoader({ userId }: TaskDataLoaderProps) {
   // function. To learn more about them see:
   // https://react.dev/learn/synchronizing-with-effects
   useEffect(() => {
+    async function fetchTasks() {
+      if (!selectedProject?.name) {
+        console.log(`Aborting task fetch since no repo selected`)
+        return
+      }
+
+      try {
+        const tasks = await getTasksAssociatedWithProject(selectedProject)
+        console.log(`***** Retrieved tasks: ${JSON.stringify(tasks)}`)
+        setTasks(tasks)
+      } catch (err) {
+        console.error('***** Error fetching tasks:', err)
+      }
+    }
     fetchTasks()
-  }, [selectedRepository, tasksLastGeneratedAt])
+  }, [selectedProject, tasksLastGeneratedAt])
 
   // If the user hasn't provided any of their tasks yet then state that
   // otherwise render the task tree.
   return (
     <div className="flex flex-col h-full">
       <h1 className="px-4 py-2 text-xl font-bold text-center text-muted-foreground">
-        Tasks for {selectedRepository?.name ?? 'Selected Repository'}
+        Tasks for {selectedProject?.name ?? 'Selected Repository'}
       </h1>
       <div className="px-2 my-4">
         <Link

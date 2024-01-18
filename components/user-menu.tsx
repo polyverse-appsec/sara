@@ -53,7 +53,7 @@ export function UserMenu({ user }: UserMenuProps) {
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
             <a
-              href="https://polyverse.com"
+              href="https://billing.stripe.com/p/login/28o9DQ0uKf7o4OkaEE"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-between w-full text-xs"

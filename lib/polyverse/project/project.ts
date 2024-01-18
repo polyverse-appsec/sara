@@ -18,7 +18,7 @@ export async function createNewProjectFromRepository(
   project.name = repo.full_name
   project.description = repo.description
   project.userId = user.id
-  project.mainRepository = repo.id
+  project.mainRepositoryId = repo.id
   project.referenceRepositories = []
   project.tasks = []
 

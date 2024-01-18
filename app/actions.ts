@@ -269,20 +269,17 @@ const createRepoTasksRepoIDKey = (repoID: string) => `repo:tasks:${repoID}`
 const createUserTasksUserIDKey = (userID: string) => `user:tasks:${userID}`
 const createTaskTaskIDKey = (taskID: string) => `task:${taskID}`
 
-export const getTasksAssociatedWithRepo = async (
-  repoID: string
+export const getTasksAssociatedWithProject = async (
+  project: Project
 ): Promise<Task[]> => {
   const session = await auth()
 
-  // BUGBUG: Ummmmm This is bad - Turning off for demo purposes but we need to
-  // be able to pass in user ID for this method from the client side when we
-  // invoke it but I don't think we figured out how to pass that info around yet
-  // if (!session?.user?.id || session.user.id !== userID) {
-  //   throw new Error('Unauthorized')
-  // }
+  if (!session?.user?.id || session.user.id !== project.userId) {
+    throw new Error('Unauthorized')
+  }
 
   // First start by getting all of tasks associated with a user...
-  const key = createRepoTasksRepoIDKey(repoID)
+  const key = createRepoTasksRepoIDKey(project.id)
   const taskKeys = (await kv.zrange(key, 0, -1)) as string[]
 
   if (taskKeys.length === 0) {
