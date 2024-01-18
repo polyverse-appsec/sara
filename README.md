@@ -109,6 +109,7 @@ The [`node-boost-api`](https://github.com/polyverse-appsec/boost-node-api) proje
 
 The [`node-boost-api`](https://github.com/polyverse-appsec/boost-node-api) also initiates file uploads of a users repo for introspection purposes. At the time of writing (1/13/24) the file upload logic isn't yet implemented but a manual path for initiating the file upload does exist:
 
+* Navigate to the `scripts` directory and install any required Python dependencies: `pip install -r requirements.txt`
 * Copy the script located at `scripts/create_project.py` into the root directory of the project/repo you wish to upload for `Sara`
 * Ensure you have `blueprint.md` in the root directory where the script is located
 * Run the following command:
