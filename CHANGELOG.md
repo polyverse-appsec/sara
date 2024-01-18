@@ -3,6 +3,17 @@ Polyverse Sara Web UI for Boost
 
 # Release Notes
 
+## Version 0.4.0: January 18th, 2023
+
+### New Features
+- Switched to Signed Headers for Sara authentication against backend
+
+### Enhancements
+- N/A
+
+### Bug Fixes
+- N/A
+
 ## Version 0.3.0: January 16th, 2023
 
 ### New Features

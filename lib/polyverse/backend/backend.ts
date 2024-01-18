@@ -1,4 +1,5 @@
 import { Repository, ProjectDataReference } from '@/lib/dataModelTypes'
+import { Secret, sign } from 'jsonwebtoken'
 
 // AWS Endpoints for our Boost ReST API (Backend)
 // Legacy:  'https://pt5sl5vwfjn6lsr2k6szuvfhnq0vaxhl.lambda-url.us-west-2.on.aws/api/user_project'
@@ -12,6 +13,20 @@ const URL_SERVICE_URI_PROD = 'https://33pdosoitl22c42c7sf46tabi40qwlae.lambda-ur
 const USER_SERVICE_URI = process.env.SARA_STAGE?.toLowerCase() === 'test' ? URL_SERVICE_URI_TEST :
                          process.env.SARA_STAGE?.toLowerCase() === 'prod' ? URL_SERVICE_URI_PROD :
                          URL_SERVICE_URI_DEV;
+
+interface SignedHeader {
+    'x-signed-identity': string
+}
+
+function createSignedHeader(email: string) : SignedHeader {
+
+    const privateSaraClientKey = process.env.SARA_CLIENT_PRIVATE_KEY;
+    const signedIdentityHeader = sign({ email }, privateSaraClientKey as Secret, { algorithm: 'RS256' })
+    const header : SignedHeader = {
+        'x-signed-identity': signedIdentityHeader
+    }
+    return header
+}
 
 /**
  * Gets the files IDs associated with a user and a Git repo.
@@ -27,10 +42,11 @@ export async function getFileInfo(
   const url = `${USER_SERVICE_URI}/api/user_project/${repo.orgId}/${repo.name}/data_references`
 
   try {
+    const signedHeader = createSignedHeader(email);
     const res = await fetch(url, {
       method: 'GET',
       headers: {
-        'x-user-account': email
+        ...signedHeader
       }
     })
 
@@ -62,11 +78,12 @@ export async function tickleProject(
 
   try {
     
+    const signedHeader = createSignedHeader(email);
     const res = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-user-account': email
+        ...signedHeader
       },
       body: JSON.stringify({ resources: [{"uri": repo.html_url}] })
     })
