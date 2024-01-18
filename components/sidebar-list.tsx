@@ -1,7 +1,6 @@
 'use client'
 import React, { useState, useEffect } from 'react'
-import { clearChats, getChats } from '@/app/actions'
-import { ClearHistory } from '@/components/clear-history'
+import { getChats } from '@/app/actions'
 import { SidebarItems } from '@/components/sidebar-items'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { Task, Chat } from '@/lib/dataModelTypes'

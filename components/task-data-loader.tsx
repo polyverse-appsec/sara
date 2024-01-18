@@ -116,7 +116,6 @@ export function TaskDataLoader({ userId }: TaskDataLoaderProps) {
         </div>
         <div className="flex items-center justify-between p-4">
           <ThemeToggle />
-          <ClearHistory clearChats={clearChats} isEnabled={tasks?.length > 0} />
         </div>
       </div>
     </div>
