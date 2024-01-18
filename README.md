@@ -4,7 +4,8 @@
   - [Quickstart](#Quickstart)
   - [Design & Technical Docs](#Design--Technical-Docs)
   - [Development](#Development)
-    - [Running Locally](#Running-Locally)
+    - [Running Locally (First Time Usage)](#Running-Locally-And-First-Time-Usage)
+    - [Running With DB Containers (Docker)](#Running-With-DB-Containers-Docker)
     - [Debugging The Frontend](#Debugging-The-Frontend)
     - [Debugging The Backend](#Debugging-The-Backend)
     - [Committing Code](#Committing-Code)
@@ -12,8 +13,6 @@
     - [How The Tests Work](#How-The-Tests-Work)
     - [Testing With `node-boost-api` Service](#Testing-With-node-boost-api-Service)
   - [Features](#Features)
-    - [Model Providers](#Model-Providers)
-  - [Resources](#Resources)
 
 ## Quickstart
 
@@ -35,9 +34,9 @@ Your app template should now be running on [localhost:3000](http://localhost:300
 
 ## Development
 
-### Running Locally
+### Running Locally (First Time Usage)
 
-The following steps will setup your environment with Vercel Environment Variables so you can run it locally,
+The following steps will setup your environment with Vercel Environment Variables so you can run it locally:
 
 1. Install Vercel CLI: `npm i -g vercel`
 2. Link local instance with Vercel and GitHub accounts (creates `.vercel` directory): `vercel link`
@@ -46,6 +45,10 @@ The following steps will setup your environment with Vercel Environment Variable
 5. Run local development instance: `pnpm run dev`
 
 Your app template should now be running on [localhost:3000](http://localhost:3000/).
+
+### Running With DB Containers (Docker)
+
+If you would like to run against a local instance of Redis for testing/development purposes you can use the Docker Compose file to do so. To do so simply run `pnpm run dev-docker`. This will start the Docker Compose deployment in the background as well as start the `Sara` development server with configuration allowing `Sara` to communicate with the local Redis containers.
 
 ### Debugging The Frontend
 
