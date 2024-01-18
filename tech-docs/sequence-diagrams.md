@@ -2,6 +2,25 @@
 
 This doc contains sequence diagrams throughout Sara. They are typically MermaidJS markdown that can be used here: https://mermaid.live/
 
+## User Login
+
+**Last Updated:** 1/18/24
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant React SignInPage
+    participant GitHub OAuth
+    participant React Chat Layout
+    
+    Note right of User: User not yet logged in
+    User -> React SignInPage: UX Click "Login with GitHub"
+    React SignInPage ->> GitHub OAuth: signIn()
+    GitHub OAuth ->> GitHub OAuth: User accepts OAuth app perms
+    GitHub OAuth ->> React SignInPage: Re-render - Session data change (SessionProvider)
+    React SignInPage ->> React Chat Layout: Re-direct to '/'
+```
+
 ## Updating OpenAI Assistant On Repository Change (Assistant Exists)
 
 **Last Updated:** 1/11/24
