@@ -2,7 +2,7 @@
 
 This doc contains sequence diagrams throughout Sara. They are typically MermaidJS markdown that can be used here: https://mermaid.live/
 
-## User Login
+## User Login With Auth Provider
 
 **Last Updated:** 1/18/24
 
@@ -19,6 +19,43 @@ sequenceDiagram
     GitHub OAuth ->> GitHub OAuth: User accepts OAuth app perms
     GitHub OAuth ->> React SignInPage: Re-render - Session data change (SessionProvider)
     React SignInPage ->> React Chat Layout: Re-direct to '/'
+```
+
+## `<AppProvider>` Monitors For User Session Changes
+
+**Last Updated:** 1/18/24
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant React AppProvider
+    participant actions.ts
+    participant Redis
+
+    User -> React AppProvider: Logs in
+    Note right of User: useSession() hook re-renders
+
+    activate React AppProvider
+
+    React AppProvider ->> React AppProvider: fetchUser()
+    React AppProvider ->> actions.ts: getOrCreateUserFromSession()
+    actions.ts ->> actions.ts: getUser()
+    actions.ts ->> Redis: hgetall(user:<userID>)
+    Redis ->> actions.ts: resolved Promise<User | null>
+    actions.ts ->> React AppProvider: resolved Promise<User>
+
+    Note right of actions.ts: Conditional - Create user if getUser() returns null
+
+    actions.ts ->> actions.ts: createUser()
+    actions.ts ->> Redis: hset(user:<userID>, user)
+    Redis ->> actions.ts: resolved Promise<User>
+    actions.ts ->> React AppProvider: resolved Promise<User>
+
+    React AppProvider ->> React AppProvider: setUser(user)
+
+    Note right of React AppProvider: setUser() is React state hook
+
+    deactivate React AppProvider
 ```
 
 ## Updating OpenAI Assistant On Repository Change (Assistant Exists)
