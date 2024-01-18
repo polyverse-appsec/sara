@@ -95,7 +95,6 @@ export function AppProvider({ children }: AppProviderProps) {
 
   useEffect(() => {
     const fetchUser = async () => {
-      console.log('AppProvider: session: ', session)
       if (session) {
         try {
           const user = await getOrCreateUserFromSession(session)
