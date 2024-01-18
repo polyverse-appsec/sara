@@ -8,8 +8,6 @@ import { nanoid } from '@/lib/utils'
 import { querySara } from '@/lib/polyverse/sara/sara'
 import { stripUndefinedObjectProperties } from '@/lib/polyverse/backend/backend'
 
-export const runtime = 'edge'
-
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 })
