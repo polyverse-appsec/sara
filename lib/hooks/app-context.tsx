@@ -7,7 +7,14 @@ import React, {
   ReactNode,
   useEffect
 } from 'react'
-import { User, Organization, Project, Task, Chat } from '@/lib/dataModelTypes'
+import {
+  User,
+  Organization,
+  Project,
+  Task,
+  Chat,
+  Repository
+} from '@/lib/dataModelTypes'
 import { useSession } from 'next-auth/react'
 import { getOrCreateUserFromSession } from '@/app/actions'
 
@@ -29,6 +36,9 @@ interface AppContextType {
 
   tasksLastGeneratedAt: number | null
   setTasksLastGeneratedAt: (generatedAt: number | null) => void
+
+  selectedProjectRepositories: Repository[] | null
+  setSelectedProjectRepositories: (repositories: Repository[] | null) => void
 }
 
 const AppContext = createContext<AppContextType | null>(null)
@@ -61,14 +71,18 @@ export function AppProvider({ children }: AppProviderProps) {
   const [tasksLastGeneratedAt, setTasksLastGeneratedAt] = useState<
     number | null
   >(null)
+  const [selectedProjectRepositories, setSelectedProjectRepositories] =
+    useState<Repository[] | null>(null)
 
   const value = {
     user,
     setUser,
     selectedOrganization,
     setSelectedOrganization,
-    selectedProject: selectedProject,
-    setSelectedProject: setSelectedProject,
+    selectedProject,
+    setSelectedProject,
+    selectedProjectRepositories,
+    setSelectedProjectRepositories,
     selectedActiveTask,
     setSelectedActiveTask,
     selectedActiveChat,

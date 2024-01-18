@@ -1,34 +1,46 @@
 import { useEffect, ReactNode } from 'react'
 import { useAppContext } from '@/lib/hooks/app-context'
 import {
-  getOrCreateAssistantForRepo,
-  tickleProjectFromRepoChange
+  getOrCreateAssistantForProject,
+  tickleProjectFromProjectChange
 } from '@/app/actions'
 
 const useDataWatcher = () => {
   const {
-    selectedProject: selectedRepository,
-    setSelectedProject: setSelectedRepository
+    selectedProjectRepositories,
+    setSelectedProjectRepositories,
+    selectedProject,
+    setSelectedProject
   } = useAppContext()
 
   useEffect(() => {
     // This effect will run whenever 'data' changes
     async function updateAIOnRepositoryChange() {
-      if (selectedRepository) {
-        tickleProjectFromRepoChange(selectedRepository)
+      if (selectedProject) {
+        tickleProjectFromProjectChange(
+          selectedProject,
+          selectedProjectRepositories ?? []
+        )
 
-        if (!selectedRepository.assistant) {
-          const assistant =
-            await getOrCreateAssistantForRepo(selectedRepository)
+        if (!selectedProject.assistant) {
+          const assistant = await getOrCreateAssistantForProject(
+            selectedProject,
+            selectedProjectRepositories ?? []
+          )
           if (assistant) {
-            selectedRepository.assistant = assistant
-            setSelectedRepository(selectedRepository)
+            selectedProject.assistant = assistant
+            setSelectedProject(selectedProject)
           }
         }
       }
     }
     updateAIOnRepositoryChange()
-  }, [selectedRepository, setSelectedRepository]) // Dependency array with 'data' to watch for its changes
+  }, [
+    selectedProject,
+    setSelectedProject,
+    selectedProjectRepositories,
+    setSelectedProjectRepositories
+  ]) // Dependency array with 'data' to watch for its changes
 }
 
 interface GlobalContextWatcherProps {

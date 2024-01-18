@@ -6,7 +6,7 @@ import { getFileInfo } from '../backend/backend'
 import { isRecord } from '../typescript/helpers'
 
 import { OPENAI_MODEL } from './constants'
-import { ProjectDataReference, Project } from '@/lib/dataModelTypes'
+import { ProjectDataReference, Project, Repository } from '@/lib/dataModelTypes'
 
 import { submitTaskStepsAssistantFunction } from './assistantTools'
 
@@ -134,19 +134,27 @@ export async function updateAssistantPromptAndFiles(
  * @returns {Promise<Assistant>} Promise with the configured OpenAI assistant
  */
 export async function configAssistant(
-  repo: Project,
+  project: Project,
+  repos: Repository[],
   email: string
 ): Promise<Assistant> {
   // Get the file IDs associated with the repo first since we will end up
   // using them whether we need to create a new OpenAI assistant or there is
   // one already existing that we have its file IDs updated.
-  const fileInfo = await getFileInfo(repo, email)
 
-  const existingAssistant = await findAssistantForRepo(repo.full_name)
-
-  if (existingAssistant) {
-    return await updateAssistantPromptAndFiles(fileInfo, existingAssistant)
+  //build the array of fileInfos by looping through the repos
+  //and getting the fileInfo for each repo
+  let fileInfos: ProjectDataReference[] = []
+  for (const repo of repos) {
+    const fileInfo = await getFileInfo(repo, email)
+    fileInfos = fileInfos.concat(fileInfo)
   }
 
-  return await createAssistantWithFileIDsFromRepo(fileInfo, repo.full_name)
+  const existingAssistant = await findAssistantForRepo(project.name)
+
+  if (existingAssistant) {
+    return await updateAssistantPromptAndFiles(fileInfos, existingAssistant)
+  }
+
+  return await createAssistantWithFileIDsFromRepo(fileInfos, project.name)
 }

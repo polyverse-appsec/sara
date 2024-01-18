@@ -28,7 +28,9 @@ export function GithubSelect() {
     setSelectedOrganization,
     selectedProject,
     setSelectedProject,
-    setSelectedActiveTask
+    setSelectedActiveTask,
+    selectedProjectRepositories,
+    setSelectedProjectRepositories
   } = useAppContext()
 
   // State to store organizations
@@ -94,8 +96,9 @@ export function GithubSelect() {
 
     // Ensure we set the relevant information in our apps context for other
     // core components to function correctly
+    setSelectedRepository(repo) //this sets the local UI state for the selected repo
     setSelectedProject(retrievedProject)
-    setSelectedRepository(repo)
+    setSelectedProjectRepositories([repo]) //this sets the global appContext state for active repositories
 
     if (retrievedProject?.defaultTask) {
       setSelectedActiveTask(retrievedProject.defaultTask)

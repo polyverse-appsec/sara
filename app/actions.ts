@@ -13,7 +13,7 @@ import {
 } from '@/lib/polyverse/github/repos'
 import { Organization, Project, Task } from '@/lib/dataModelTypes'
 import { nanoid } from '@/lib/utils'
-import { tickleProject } from '@/lib/polyverse/backend/backend'
+import { tickleRepository } from '@/lib/polyverse/backend/backend'
 import { Assistant } from 'openai/resources/beta/assistants/assistants'
 import { configAssistant } from '@/lib/polyverse/openai/assistants'
 import { stripUndefinedObjectProperties } from '@/lib/polyverse/backend/backend'
@@ -459,18 +459,27 @@ export async function getRepositoryFromId(
  *
  */
 
-export async function tickleProjectFromRepoChange(repo: Project) {
+export async function tickleProjectFromProjectChange(
+  project: Project,
+  repos: Repository[]
+) {
   const session = await auth()
 
   if (!session?.user?.id) {
     throw new Error('Unauthorized')
   }
-
-  await tickleProject(repo, session.user.email || '')
+  //for all of the repos in the project, tickle them, this can be done in parallel
+  //await all of the tickle promises
+  const ticklePromises = []
+  for (const repo of repos) {
+    ticklePromises.push(tickleRepository(repo, session.user.email || ''))
+  }
+  await Promise.all(ticklePromises)
 }
 
-export async function getOrCreateAssistantForRepo(
-  repo: Project
+export async function getOrCreateAssistantForProject(
+  project: Project,
+  repos: Repository[]
 ): Promise<Assistant | null> {
   const session = await auth()
 
@@ -478,9 +487,9 @@ export async function getOrCreateAssistantForRepo(
     throw new Error('Unauthorized')
   }
 
-  if (!repo.assistant) {
+  if (!project.assistant) {
     //we don't have an assistant, so create one
-    return await configAssistant(repo, session.user.email || '')
+    return await configAssistant(project, repos, session.user.email || '')
   }
   return null
 }
