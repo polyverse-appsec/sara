@@ -82,7 +82,8 @@ export function TaskDataLoader({ userId }: TaskDataLoaderProps) {
       <h1 className="px-4 py-2 text-xl font-bold text-center text-muted-foreground">
         Tasks for {selectedProject?.name ?? 'Selected Repository'}
       </h1>
-      <div className="px-2 my-4">
+      {
+      /*<div className="px-2 my-4">
         <Link
           href="/"
           className={cn(
@@ -93,7 +94,8 @@ export function TaskDataLoader({ userId }: TaskDataLoaderProps) {
           <IconPlus className="-translate-x-2 stroke-2" />
           New Task
         </Link>
-      </div>
+      </div>*/
+      }
       <div className="flex flex-1 flex-col overflow-hidden">
         <div className="flex-1 overflow-auto">
           <div className="flex flex-1 flex-col overflow-hidden">
