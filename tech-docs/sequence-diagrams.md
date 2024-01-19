@@ -1,8 +1,14 @@
 # Sequence Diagrams
 
+- [Sequence Diagrams](#Sequence-Diagrams)
+  - [User Login With GitHub Auth Provider](#User-Login-With-GitHub-Auth-Provider)
+  - [`<AppProvider>` Monitors For User Session Changes](#AppProvider-Monitors-For-User-Session-Changes)
+  - [User Selects Repository From Dropdown](#User-Selects-Repository-From-Dropdown)
+  - [Updating OpenAI Assistant On Repository Change (Assistant Exists)](#Updating-OpenAI-Assistant-On-Repository-Change-Assistant-Exists)
+
 This doc contains sequence diagrams throughout Sara. They are typically MermaidJS markdown that can be used here: https://mermaid.live/
 
-## User Login With Auth Provider
+## User Login With GitHub Auth Provider
 
 **Last Updated:** 1/18/24
 
@@ -56,6 +62,67 @@ sequenceDiagram
     Note right of React AppProvider: setUser() is React state hook
 
     deactivate React AppProvider
+```
+
+## User Selects Repository From Dropdown
+
+**Last Updated:** 1/18/24
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant React GithubSelect
+    participant actions.ts
+    participant project.ts
+    participant task.ts
+    participant Redis
+
+    User -> React GithubSelect: Selects a repository from dropdown
+
+    activate React GithubSelect
+
+    Note right of React GithubSelect: handleRepositoryChange is CB passed to GithubRepoSelect
+    React GithubSelect ->> React GithubSelect: handleRepositoryChange()
+    React GithubSelect ->> actions.ts: getOrCreateProjectFromRepository()
+    actions.ts ->> actions.ts: getProject()
+    actions.ts ->> Redis: hgetall(project:<repoName>:<userID>)
+    Redis ->> actions.ts: resolved Promise<Project | null>
+    actions.ts ->> React GithubSelect: resolved Promise<Project>
+
+    Note right of actions.ts: Conditional - Create project if getProject() returns null
+
+    actions.ts ->> project.ts: createNewProjectFromRepository(repo, user)
+
+    Note right of project.ts: Construct Project object from Repo and User objects
+
+    project.ts ->> task.ts: createDefaultProjectTask(project, userID)
+
+    Note right of task.ts: Construct Task object from Project and userID
+
+    task.ts ->> task.ts: createTask(task)
+    task.ts ->> Redis: hset(task:<generatedTaskID>, task)
+    Redis ->> task.ts: 
+
+    task.ts ->> Redis: zadd(user:tasks:<userID>, member = task:<generatedTaskID>)
+    Redis ->> task.ts: 
+
+    task.ts ->> Redis: zadd(repo:tasks:projectID, member = task:<generatedTaskID>)
+    Redis ->> task.ts: 
+
+    project.ts ->> Redis: hset(project:<repoName>:<userID>, project)
+    Redis ->> project.ts: 
+
+    project.ts ->> actions.ts: resolved Promise<Project>
+    actions.ts ->> React GithubSelect: resolved Promise<Project>
+
+    Note right of React GithubSelect: Below are all <AppContext> hooks
+
+    React GithubSelect ->> React GithubSelect: setSelectedRepository(repo)
+    React GithubSelect ->> React GithubSelect: setSelectedProject(project)
+    React GithubSelect ->> React GithubSelect: setSelectedProjectRepositories([repo])
+    React GithubSelect ->> React GithubSelect: setSelectedActiveTask(project.defaultTask)
+
+    deactivate React GithubSelect
 ```
 
 ## Updating OpenAI Assistant On Repository Change (Assistant Exists)
