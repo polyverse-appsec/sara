@@ -4,15 +4,18 @@
   - [Quickstart](#Quickstart)
   - [Design & Technical Docs](#Design--Technical-Docs)
   - [Development](#Development)
-    - [Running Locally (First Time Usage)](#Running-Locally-And-First-Time-Usage)
+    - [Running Locally (First Time Usage)](#Running-Locally-First-Time-Usage)
     - [Running With DB Containers (Docker)](#Running-With-DB-Containers-Docker)
     - [Debugging The Frontend](#Debugging-The-Frontend)
     - [Debugging The Backend](#Debugging-The-Backend)
     - [Committing Code](#Committing-Code)
+      - [Make It Pretty :sparkles:](#Make-It-Pretty-sparkles)
   - [Testing](#Testing)
     - [How The Tests Work](#How-The-Tests-Work)
     - [Testing With `node-boost-api` Service](#Testing-With-node-boost-api-Service)
   - [Features](#Features)
+    - [Model Providers](#Model-Providers)
+  - [Resources](#Resources)
 
 ## Quickstart
 
@@ -91,6 +94,12 @@ This works well to increase our velocity when we are a small team and tight team
 * Run the tests before checking into `main`
 * If you believe the set of changes you have are high risk then quickly ask someone in [Engineering on Slack](https://polyverse.slack.com/archives/C0501S5LWNA) for a live code review
 * We typically don't do feature branches here at the moment but if you believe you have a large set of changes that are going to be very disruptive while working on them it might be worth considering (e.g. changing the whole data model)
+
+#### Make It Pretty :sparkles:
+
+![It's Beautiful!](https://media.giphy.com/media/aiRT8aKAZXHWh78TY6/giphy.gif)
+
+Prior to checking in your code run the following command: `pnpm run format:write`. This will run `Prettier` on the code and auto-format it according to the rules defined in `prettier.config.cjs`. Note that it will format all of the code in the codebase - not just the code you touched recently.
 
 ## Testing
 
