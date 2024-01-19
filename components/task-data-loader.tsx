@@ -18,7 +18,7 @@ export function TaskDataLoader({ userId }: TaskDataLoaderProps) {
   const {
     selectedProject,
     selectedActiveTask,
-    tasksLastGeneratedAt,
+    chatStreamLastFinishedAt,
     selectedActiveChat,
   } = useAppContext()
 
@@ -47,7 +47,7 @@ export function TaskDataLoader({ userId }: TaskDataLoaderProps) {
       }
     }
     fetchTasks()
-  }, [selectedProject, tasksLastGeneratedAt])
+  }, [selectedProject, chatStreamLastFinishedAt])
 
   // If the user hasn't provided any of their tasks yet then state that
   // otherwise render the task tree.

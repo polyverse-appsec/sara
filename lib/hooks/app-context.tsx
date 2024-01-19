@@ -35,8 +35,8 @@ interface AppContextType {
   selectedActiveChat: Chat | null
   setSelectedActiveChat: (chat: Chat | null) => void
 
-  tasksLastGeneratedAt: number | null
-  setTasksLastGeneratedAt: (generatedAt: number | null) => void
+  chatStreamLastFinishedAt: number | null
+  setChatStreamLastFinishedAt: (generatedAt: number | null) => void
 
   selectedProjectRepositories: Repository[] | null
   setSelectedProjectRepositories: (repositories: Repository[] | null) => void
@@ -69,7 +69,7 @@ export function AppProvider({ children }: AppProviderProps) {
   const [selectedActiveChat, setSelectedActiveChat] = useState<Chat | null>(
     null,
   )
-  const [tasksLastGeneratedAt, setTasksLastGeneratedAt] = useState<
+  const [chatStreamLastFinishedAt, setChatStreamLastFinishedAt] = useState<
     number | null
   >(null)
   const [selectedProjectRepositories, setSelectedProjectRepositories] =
@@ -88,8 +88,8 @@ export function AppProvider({ children }: AppProviderProps) {
     setSelectedActiveTask,
     selectedActiveChat,
     setSelectedActiveChat,
-    tasksLastGeneratedAt,
-    setTasksLastGeneratedAt,
+    chatStreamLastFinishedAt,
+    setChatStreamLastFinishedAt,
   }
 
   const { data: session } = useSession()

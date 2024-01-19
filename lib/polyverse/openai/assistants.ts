@@ -83,7 +83,6 @@ export async function createAssistantWithFileIDsFromRepo(
 export async function findAssistantForRepo(
   repo: string,
 ): Promise<Assistant | undefined> {
-  console.log(`findAssistantsForRepo`)
   // API call reference: https://platform.openai.com/docs/api-reference/assistants/listAssistants
   const assistants = await oaiClient.beta.assistants.list()
 

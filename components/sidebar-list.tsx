@@ -9,13 +9,12 @@ import { ThemeToggle } from '@/components/theme-toggle'
 import { getChats } from '@/app/actions'
 
 interface SidebarListProps {
-  task: Task | null
   children?: React.ReactNode
 }
 
-export function SidebarList({ task }: SidebarListProps) {
+export function SidebarList() {
   const [chats, setChats] = useState([] as Chat[])
-  const { selectedActiveTask } = useAppContext()
+  const { selectedActiveTask, chatStreamLastFinishedAt } = useAppContext()
 
   useEffect(() => {
     const fetchChats = async () => {
@@ -24,7 +23,7 @@ export function SidebarList({ task }: SidebarListProps) {
     }
 
     fetchChats()
-  }, [selectedActiveTask])
+  }, [selectedActiveTask, chatStreamLastFinishedAt])
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">

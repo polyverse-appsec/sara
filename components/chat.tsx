@@ -33,7 +33,7 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
     selectedActiveTask,
     setSelectedActiveTask,
     setSelectedOrganization,
-    setTasksLastGeneratedAt,
+    setChatStreamLastFinishedAt,
   } = useAppContext()
 
   // 'useChat' comes from the Vercel API: https://sdk.vercel.ai/docs/api-reference/use-chat
@@ -64,8 +64,8 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
       body: {
         id: chat.id,
         project: selectedProject,
-        task: selectedActiveTask,
         chat: selectedActiveChat,
+        task: selectedActiveTask,
       },
       onResponse(response) {
         if (response.status === 401) {
@@ -75,22 +75,16 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
       onFinish() {
         // The 'onFinish()' callback gets called after the chat stream ends
         if (!path.includes('chat')) {
-          //original template code, fixing it for local deployment (there is no
-          //shallow option in next.js)
-          //router.push(`/chat/${id}`, { shallow: true, scroll: false })
-          console.log(
-            `chat.tsx: router.push and doing redirect to chat/${chat.id}`,
-          )
           router.push(`/chat/${chat.id}`, { scroll: false })
           router.refresh()
         }
 
-        // Regardless of if tasks have actually been generated as a result of
-        // this chat update the app context from when this chat finished in
-        // the event tasks were generated. If so then any React components
-        // that require knowing when new tasks have been generated will
-        // re-render and query for those tasks.
-        setTasksLastGeneratedAt(Date.now())
+        // Notify those watching the app context for when the chat stream has
+        // ended. This is useful for components that aren't showing the same
+        // chat stream but rather those that display tangential info surrounding
+        // the chats that could change from time to time (e.g. chat and task
+        // sidebars)
+        setChatStreamLastFinishedAt(Date.now())
       },
     })
 
@@ -117,7 +111,6 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
         chat.projectId !== selectedProject?.id
       ) {
         //reset the appContext to match the chat
-        console.log('chat.tsx: resetting appContext to match chat')
         const task = await getTask(chat.taskId, chat.userId)
         const project = await getProject(chat.projectId)
         //we don't store organizations, fetch the user orgs and filter by org.login to match

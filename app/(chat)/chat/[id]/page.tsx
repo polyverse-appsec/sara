@@ -32,11 +32,9 @@ export default async function ChatPage({ params }: ChatPageProps) {
   if (!session?.user) {
     redirect(`/sign-in?next=/chat/${params.id}`)
   }
-  console.log('chat.tsx: session.user.id: ', session.user.id)
 
   const chat = await getChat(params.id, session.user.id)
 
-  console.log('chat.tsx: chat: ', chat)
   if (!chat) {
     notFound()
   }
@@ -45,6 +43,5 @@ export default async function ChatPage({ params }: ChatPageProps) {
     notFound()
   }
 
-  console.log('chat.tsx: chat.messages: ', chat.messages)
   return <Chat chat={chat} initialMessages={chat.messages} />
 }
