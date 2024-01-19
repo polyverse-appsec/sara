@@ -1,35 +1,36 @@
-import { Toaster } from 'react-hot-toast'
-import { GeistSans } from 'geist/font/sans'
 import { GeistMono } from 'geist/font/mono'
+import { GeistSans } from 'geist/font/sans'
+import { Toaster } from 'react-hot-toast'
 
 // Import 'global.css' to apply styling rules to all of our components in all of
 // our routes
 import '@/app/globals.css'
+
 import { cn } from '@/lib/utils'
-import { TailwindIndicator } from '@/components/tailwind-indicator'
-import { Providers } from '@/components/providers'
 import { Header } from '@/components/header'
+import { Providers } from '@/components/providers'
+import { TailwindIndicator } from '@/components/tailwind-indicator'
 
 export const metadata = {
   metadataBase: new URL(`https://${process.env.VERCEL_URL}`),
   title: {
     default: 'Polyverse Boost: Sara AI',
-    template: `%s - Polyverse Boost: Sara AI`
+    template: `%s - Polyverse Boost: Sara AI`,
   },
   description:
     "Hi, I'm Sara, a smart architectural reasoning assistant powered by AI. I understand your entire software project and can help you build and maintain it faster.",
   icons: {
     icon: '/Sara_Cartoon_Portrait.ico',
     shortcut: '/favicon-16x16.png',
-    apple: '/apple-touch-icon.png'
-  }
+    apple: '/apple-touch-icon.png',
+  },
 }
 
 export const viewport = {
   themeColor: [
     { media: '(prefers-color-scheme: light)', color: 'white' },
-    { media: '(prefers-color-scheme: dark)', color: 'black' }
-  ]
+    { media: '(prefers-color-scheme: dark)', color: 'black' },
+  ],
 }
 
 interface RootLayoutProps {
@@ -49,7 +50,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         className={cn(
           'font-sans antialiased',
           GeistSans.variable,
-          GeistMono.variable
+          GeistMono.variable,
         )}
       >
         <Toaster />

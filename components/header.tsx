@@ -1,15 +1,17 @@
 import * as React from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { auth } from '@/auth'
+
 import { Button, buttonVariants } from '@/components/ui/button'
 import { IconNextChat, IconSeparator } from '@/components/ui/icons'
 import { UserMenu } from '@/components/user-menu'
+
+import Sara32x32 from '../public/Sara_Cartoon_Portrait-32x32.png'
+import { ChatHistory } from './chat-history'
+import { GithubPanel } from './github-panel'
 import { SidebarMobile } from './sidebar-mobile'
 import { SidebarToggle } from './sidebar-toggle'
-import { ChatHistory } from './chat-history'
-import Image from 'next/image'
-import { GithubPanel } from './github-panel'
-import Sara32x32 from '../public/Sara_Cartoon_Portrait-32x32.png'
 
 async function UserOrLogin() {
   const session = await auth()

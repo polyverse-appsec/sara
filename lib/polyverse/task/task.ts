@@ -1,5 +1,5 @@
 // Import necessary types and functions
-import { Task, User, Project, Repository } from '@/lib/dataModelTypes'
+import { Project, Repository, Task, User } from '@/lib/dataModelTypes'
 import { createTask } from '@/app/actions'
 
 // Utility to create a default task for a repository
@@ -14,7 +14,7 @@ import { createTask } from '@/app/actions'
  */
 export async function createDefaultProjectTask(
   project: Project,
-  userId: string
+  userId: string,
 ): Promise<Task> {
   const defaultTask: Task = {
     id: '', // Generate an ID or leave it for the createTask function to handle
@@ -28,7 +28,7 @@ export async function createDefaultProjectTask(
     userId,
     projectId: project.id,
     chats: [],
-    subtasks: []
+    subtasks: [],
   }
 
   return createTask(defaultTask)
@@ -44,7 +44,7 @@ export async function createDefaultUserTask(user: User): Promise<Task> {
     userId: user.id,
     projectId: '', // Set this if you have a default repository for the user
     chats: [],
-    subtasks: []
+    subtasks: [],
   }
 
   if (user.defaultTask) {

@@ -1,29 +1,30 @@
 'use client'
 
+import { useEffect, useState } from 'react'
+import { usePathname, useRouter } from 'next/navigation'
 import { useChat, type Message } from 'ai/react'
+import { toast } from 'react-hot-toast'
 
-import { cn } from '@/lib/utils'
-import { ChatList } from '@/components/chat-list'
-import { ChatPanel } from '@/components/chat-panel'
-import { EmptyScreen } from '@/components/empty-screen'
-import { ChatScrollAnchor } from '@/components/chat-scroll-anchor'
+import type { Chat, Project, Task } from '@/lib/dataModelTypes'
+import { useAppContext } from '@/lib/hooks/app-context'
 import { useLocalStorage } from '@/lib/hooks/use-local-storage'
+import { cn } from '@/lib/utils'
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle
+  DialogTitle,
 } from '@/components/ui/dialog'
-import { useState, useEffect } from 'react'
+import { ChatList } from '@/components/chat-list'
+import { ChatPanel } from '@/components/chat-panel'
+import { ChatScrollAnchor } from '@/components/chat-scroll-anchor'
+import { EmptyScreen } from '@/components/empty-screen'
+import { getOrganizations, getProject, getTask } from '@/app/actions'
+
 import { Button } from './ui/button'
 import { Input } from './ui/input'
-import { toast } from 'react-hot-toast'
-import { usePathname, useRouter } from 'next/navigation'
-import { useAppContext } from '@/lib/hooks/app-context'
-import { Chat, Project, Task } from '@/lib/dataModelTypes'
-import { getProject, getOrganizations, getTask } from '@/app/actions'
 
 const IS_PREVIEW = process.env.VERCEL_ENV === 'preview'
 export interface ChatProps extends React.ComponentProps<'div'> {
@@ -36,7 +37,7 @@ export function Chat({ chat, initialMessages, className }: ChatProps) {
   const path = usePathname()
   const [previewToken, setPreviewToken] = useLocalStorage<string | null>(
     'ai-token',
-    null
+    null,
   )
   const [previewTokenDialog, setPreviewTokenDialog] = useState(IS_PREVIEW)
   const [previewTokenInput, setPreviewTokenInput] = useState(previewToken ?? '')
@@ -49,7 +50,7 @@ export function Chat({ chat, initialMessages, className }: ChatProps) {
     selectedActiveTask,
     setSelectedActiveTask,
     setSelectedOrganization,
-    setTasksLastGeneratedAt
+    setTasksLastGeneratedAt,
   } = useAppContext()
 
   // 'useChat' comes from the Vercel API: https://sdk.vercel.ai/docs/api-reference/use-chat
@@ -80,7 +81,7 @@ export function Chat({ chat, initialMessages, className }: ChatProps) {
         previewToken,
         project: selectedProject,
         task: selectedActiveTask,
-        chat: selectedActiveChat
+        chat: selectedActiveChat,
       },
       onResponse(response) {
         if (response.status === 401) {
@@ -94,7 +95,7 @@ export function Chat({ chat, initialMessages, className }: ChatProps) {
           //shallow option in next.js)
           //router.push(`/chat/${id}`, { shallow: true, scroll: false })
           console.log(
-            `chat.tsx: router.push and doing redirect to chat/${chat.id}`
+            `chat.tsx: router.push and doing redirect to chat/${chat.id}`,
           )
           router.push(`/chat/${chat.id}`, { scroll: false })
           router.refresh()
@@ -106,7 +107,7 @@ export function Chat({ chat, initialMessages, className }: ChatProps) {
         // that require knowing when new tasks have been generated will
         // re-render and query for those tasks.
         setTasksLastGeneratedAt(Date.now())
-      }
+      },
     })
 
   useEffect(() => {
@@ -121,7 +122,7 @@ export function Chat({ chat, initialMessages, className }: ChatProps) {
         //this is an old chat made before the 1/4/24 update.  just log the error for now, it can
         //be fixed by just adding more content to the chat.
         console.log(
-          'chat.tsx: chat is missing taskId or repoId. Fix this by asking another question to the chat with the repo set, and the chat will be updated'
+          'chat.tsx: chat is missing taskId or repoId. Fix this by asking another question to the chat with the repo set, and the chat will be updated',
         )
         return
       }
@@ -138,7 +139,7 @@ export function Chat({ chat, initialMessages, className }: ChatProps) {
         //we don't store organizations, fetch the user orgs and filter by org.login to match
         //the repo.orgId
         const orgs = await getOrganizations()
-        const org = orgs.filter(org => org.login == project?.orgId)[0]
+        const org = orgs.filter((org) => org.login == project?.orgId)[0]
         setSelectedOrganization(org)
         setSelectedProject(project)
         setSelectedActiveTask(task)
@@ -154,7 +155,7 @@ export function Chat({ chat, initialMessages, className }: ChatProps) {
     setSelectedActiveTask,
     setSelectedOrganization,
     selectedProject,
-    setSelectedProject
+    setSelectedProject,
   ])
 
   return (
@@ -201,7 +202,7 @@ export function Chat({ chat, initialMessages, className }: ChatProps) {
           <Input
             value={previewTokenInput}
             placeholder="OpenAI API key"
-            onChange={e => setPreviewTokenInput(e.target.value)}
+            onChange={(e) => setPreviewTokenInput(e.target.value)}
           />
           <DialogFooter className="items-center">
             <Button

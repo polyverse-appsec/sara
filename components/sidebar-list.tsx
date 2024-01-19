@@ -1,10 +1,12 @@
 'use client'
-import React, { useState, useEffect } from 'react'
-import { getChats } from '@/app/actions'
+
+import React, { useEffect, useState } from 'react'
+
+import { Chat, Task } from '@/lib/dataModelTypes'
+import { useAppContext } from '@/lib/hooks/app-context'
 import { SidebarItems } from '@/components/sidebar-items'
 import { ThemeToggle } from '@/components/theme-toggle'
-import { Task, Chat } from '@/lib/dataModelTypes'
-import { useAppContext } from '@/lib/hooks/app-context'
+import { getChats } from '@/app/actions'
 
 interface SidebarListProps {
   task: Task | null

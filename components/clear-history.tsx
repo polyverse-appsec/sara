@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation'
 import { toast } from 'react-hot-toast'
 
 import { ServerActionResult } from '@/lib/dataModelTypes'
-import { Button } from '@/components/ui/button'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,8 +14,9 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger
+  AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
+import { Button } from '@/components/ui/button'
 import { IconSpinner } from '@/components/ui/icons'
 
 interface ClearHistoryProps {
@@ -26,7 +26,7 @@ interface ClearHistoryProps {
 
 export function ClearHistory({
   isEnabled = false,
-  clearChats
+  clearChats,
 }: ClearHistoryProps) {
   const [open, setOpen] = React.useState(false)
   const [isPending, startTransition] = React.useTransition()
@@ -52,10 +52,10 @@ export function ClearHistory({
           <AlertDialogCancel disabled={isPending}>Cancel</AlertDialogCancel>
           <AlertDialogAction
             disabled={isPending}
-            onClick={event => {
+            onClick={(event) => {
               event.preventDefault()
               startTransition(() => {
-                clearChats().then(result => {
+                clearChats().then((result) => {
                   if (result && 'error' in result) {
                     toast.error(result.error)
                     return

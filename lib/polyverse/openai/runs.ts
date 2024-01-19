@@ -1,9 +1,10 @@
 import OpenAI from 'openai'
 import { Run } from 'openai/resources/beta/threads/runs/runs'
+
 import { submitTaskSteps } from './assistantTools'
 
 const oaiClient = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
+  apiKey: process.env.OPENAI_API_KEY,
 })
 
 /**
@@ -15,7 +16,7 @@ const oaiClient = new OpenAI({
  */
 export const runAssistantOnThread = (assistantID: string, threadID: string) => {
   return oaiClient.beta.threads.runs.create(threadID, {
-    assistant_id: assistantID
+    assistant_id: assistantID,
   })
 }
 
@@ -48,9 +49,12 @@ type ToolOutput = {
  * @returns {ToolOutput} Tool output object that can be included in the
  * response.
  */
-const buildToolOutput = (toolCallID: string, output: string = ''): ToolOutput => ({
+const buildToolOutput = (
+  toolCallID: string,
+  output: string = '',
+): ToolOutput => ({
   tool_call_id: toolCallID,
-  output
+  output,
 })
 
 /**
@@ -73,11 +77,13 @@ export const handleRequiresActionStatus = async (
   repoID: string,
   threadID: string,
   runID: string,
-  runStatus: Run) =>
-{
+  runStatus: Run,
+) => {
   // Identify any tool calls to us
-  if (runStatus.required_action?.type === 'submit_tool_outputs' &&
-      runStatus.required_action?.submit_tool_outputs.tool_calls) {
+  if (
+    runStatus.required_action?.type === 'submit_tool_outputs' &&
+    runStatus.required_action?.submit_tool_outputs.tool_calls
+  ) {
     const toolCalls = runStatus.required_action?.submit_tool_outputs.tool_calls
 
     // All tool outputs need to be submitted in a single request per OpenAI
@@ -109,8 +115,8 @@ export const handleRequiresActionStatus = async (
       // can be empty per the OpenAI API docs if nothing further is
       // required.
       {
-        tool_outputs: toolOutputs
-      }
+        tool_outputs: toolOutputs,
+      },
     )
   }
 }

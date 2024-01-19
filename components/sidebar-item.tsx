@@ -1,22 +1,20 @@
 'use client'
 
 import * as React from 'react'
-
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-
 import { motion } from 'framer-motion'
 
+import { type Chat } from '@/lib/dataModelTypes'
+import { useLocalStorage } from '@/lib/hooks/use-local-storage'
+import { cn } from '@/lib/utils'
 import { buttonVariants } from '@/components/ui/button'
 import { IconMessage, IconUsers } from '@/components/ui/icons'
 import {
   Tooltip,
   TooltipContent,
-  TooltipTrigger
+  TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { useLocalStorage } from '@/lib/hooks/use-local-storage'
-import { type Chat } from '@/lib/dataModelTypes'
-import { cn } from '@/lib/utils'
 
 interface SidebarItemProps {
   index: number
@@ -39,18 +37,18 @@ export function SidebarItem({ index, chat, children }: SidebarItemProps) {
       variants={{
         initial: {
           height: 0,
-          opacity: 0
+          opacity: 0,
         },
         animate: {
           height: 'auto',
-          opacity: 1
-        }
+          opacity: 1,
+        },
       }}
       initial={shouldAnimate ? 'initial' : undefined}
       animate={shouldAnimate ? 'animate' : undefined}
       transition={{
         duration: 0.25,
-        ease: 'easeIn'
+        ease: 'easeIn',
       }}
     >
       <div className="absolute left-2 top-1 flex h-6 w-6 items-center justify-center">
@@ -73,7 +71,7 @@ export function SidebarItem({ index, chat, children }: SidebarItemProps) {
         className={cn(
           buttonVariants({ variant: 'ghost' }),
           'group w-full px-8 transition-colors hover:bg-zinc-200/40 dark:hover:bg-zinc-300/10',
-          isActive && 'bg-zinc-200 pr-16 font-semibold dark:bg-zinc-800'
+          isActive && 'bg-zinc-200 pr-16 font-semibold dark:bg-zinc-800',
         )}
       >
         <div
@@ -88,12 +86,12 @@ export function SidebarItem({ index, chat, children }: SidebarItemProps) {
                   variants={{
                     initial: {
                       opacity: 0,
-                      x: -100
+                      x: -100,
                     },
                     animate: {
                       opacity: 1,
-                      x: 0
-                    }
+                      x: 0,
+                    },
                   }}
                   initial={shouldAnimate ? 'initial' : undefined}
                   animate={shouldAnimate ? 'animate' : undefined}
@@ -101,7 +99,7 @@ export function SidebarItem({ index, chat, children }: SidebarItemProps) {
                     duration: 0.25,
                     ease: 'easeIn',
                     delay: index * 0.05,
-                    staggerChildren: 0.05
+                    staggerChildren: 0.05,
                   }}
                   onAnimationComplete={() => {
                     if (index === chat.title.length - 1) {

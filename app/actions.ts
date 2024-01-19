@@ -2,22 +2,30 @@
 
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
-import { kv } from '@vercel/kv'
-
 import { auth } from '@/auth'
-import { type Chat, Repository, User } from '@/lib/dataModelTypes'
-import {
-  fetchUserOrganizations,
-  fetchOrganizationRepositories,
-  getOrCreateRepoFromGithubRepo
-} from '@/lib/polyverse/github/repos'
-import { Organization, Project, Task } from '@/lib/dataModelTypes'
-import { nanoid } from '@/lib/utils'
-import { tickleRepository } from '@/lib/polyverse/backend/backend'
+import { kv } from '@vercel/kv'
 import { Assistant } from 'openai/resources/beta/assistants/assistants'
+
+import {
+  Organization,
+  Project,
+  Repository,
+  Task,
+  User,
+  type Chat,
+} from '@/lib/dataModelTypes'
+import {
+  stripUndefinedObjectProperties,
+  tickleRepository,
+} from '@/lib/polyverse/backend/backend'
+import {
+  fetchOrganizationRepositories,
+  fetchUserOrganizations,
+  getOrCreateRepoFromGithubRepo,
+} from '@/lib/polyverse/github/repos'
 import { configAssistant } from '@/lib/polyverse/openai/assistants'
-import { stripUndefinedObjectProperties } from '@/lib/polyverse/backend/backend'
 import { createNewProjectFromRepository } from '@/lib/polyverse/project/project'
+import { nanoid } from '@/lib/utils'
 
 const TEN_MINS_IN_MILLIS = 600000
 
@@ -83,7 +91,7 @@ export async function removeChat({ id, path }: { id: string; path: string }) {
 
   if (!session) {
     return {
-      error: 'Unauthorized'
+      error: 'Unauthorized',
     }
   }
 
@@ -103,7 +111,7 @@ export async function removeChat({ id, path }: { id: string; path: string }) {
 
   if (uid !== session?.user?.id) {
     return {
-      error: 'Unauthorized'
+      error: 'Unauthorized',
     }
   }
   /* BUGBUG come back to this
@@ -123,7 +131,7 @@ export async function clearChats() {
 
   if (!session?.user?.id) {
     return {
-      error: 'Unauthorized'
+      error: 'Unauthorized',
     }
   }
 
@@ -165,7 +173,7 @@ export async function shareChat(id: string) {
 
   if (!session?.user?.id) {
     return {
-      error: 'Unauthorized'
+      error: 'Unauthorized',
     }
   }
 
@@ -173,13 +181,13 @@ export async function shareChat(id: string) {
 
   if (!chat || chat.userId !== session.user.id) {
     return {
-      error: 'Something went wrong'
+      error: 'Something went wrong',
     }
   }
 
   const payload = {
     ...chat,
-    sharePath: `/share/${chat.id}`
+    sharePath: `/share/${chat.id}`,
   }
 
   await kv.hset(`chat:${chat.id}`, payload)
@@ -199,13 +207,13 @@ export async function getOrganizations(): Promise<Organization[]> {
   }
 
   const orgs = await fetchUserOrganizations({
-    accessToken: session.accessToken
+    accessToken: session.accessToken,
   })
   return orgs
 }
 
 export async function getRepositoriesForOrg(
-  org: string
+  org: string,
 ): Promise<Repository[]> {
   const session = await auth()
 
@@ -214,7 +222,7 @@ export async function getRepositoriesForOrg(
   }
   const repos = await fetchOrganizationRepositories({
     accessToken: session.accessToken,
-    org
+    org,
   })
 
   //IMPORTANT note:  the repo's returned from fetchOrganizationRepositories are github repos, and may be missing extra information we have
@@ -242,7 +250,7 @@ export async function createTask(task: Task): Promise<Task> {
   const taskData = {
     ...task,
     id,
-    createdAt
+    createdAt,
   }
 
   // We are being defensive here so we don't blow up the KV store when writing.
@@ -254,12 +262,12 @@ export async function createTask(task: Task): Promise<Task> {
 
   await kv.zadd(`user:tasks:${session.user.id}`, {
     score: +createdAt,
-    member: `task:${id}`
+    member: `task:${id}`,
   })
 
   await kv.zadd(`repo:tasks:${task.projectId}`, {
     score: +createdAt,
-    member: `task:${id}`
+    member: `task:${id}`,
   })
 
   return taskData
@@ -270,7 +278,7 @@ const createUserTasksUserIDKey = (userID: string) => `user:tasks:${userID}`
 const createTaskTaskIDKey = (taskID: string) => `task:${taskID}`
 
 export const getTasksAssociatedWithProject = async (
-  project: Project
+  project: Project,
 ): Promise<Task[]> => {
   const session = await auth()
 
@@ -288,7 +296,7 @@ export const getTasksAssociatedWithProject = async (
 
   // Then get all of the tasks for the user based on the retrieved IDs...
   const taskPipeline = kv.pipeline()
-  taskKeys.forEach(taskKey => taskPipeline.hgetall(taskKey))
+  taskKeys.forEach((taskKey) => taskPipeline.hgetall(taskKey))
 
   const tasks = (await taskPipeline.exec()) as Task[]
 
@@ -297,7 +305,7 @@ export const getTasksAssociatedWithProject = async (
 
 export async function getTask(
   taskId: string,
-  userId: string
+  userId: string,
 ): Promise<Task | null> {
   const session = await auth()
 
@@ -332,7 +340,7 @@ export async function getTask(
  */
 export async function getOrCreateProjectFromRepository(
   repo: Repository,
-  user: User
+  user: User,
 ): Promise<Project | null> {
   // Rather than delegate auth to functions we consume we protect ourselves and
   // do a check here before we consume each method as well in case there are any
@@ -347,7 +355,7 @@ export async function getOrCreateProjectFromRepository(
   //go through the user.projects array and see if we have a project with the same name as the repo
 
   const retrievedProject = await getProject(
-    `project:${repo.full_name}:${user.id}`
+    `project:${repo.full_name}:${user.id}`,
   )
 
   if (retrievedProject) {
@@ -408,7 +416,7 @@ export async function updateRepo(repo: Repository): Promise<Repository> {
  */
 export async function getRepository(
   repoFullName: string,
-  userId: string
+  userId: string,
 ): Promise<Repository | null> {
   const session = await auth()
 
@@ -433,7 +441,7 @@ export async function getRepository(
  */
 export async function getRepositoryFromId(
   repoId: string,
-  userId: string
+  userId: string,
 ): Promise<Project | null> {
   const session = await auth()
 
@@ -461,7 +469,7 @@ export async function getRepositoryFromId(
 
 export async function tickleProjectFromProjectChange(
   project: Project,
-  repos: Repository[]
+  repos: Repository[],
 ) {
   const session = await auth()
 
@@ -479,7 +487,7 @@ export async function tickleProjectFromProjectChange(
 
 export async function getOrCreateAssistantForProject(
   project: Project,
-  repos: Repository[]
+  repos: Repository[],
 ): Promise<Assistant | null> {
   const session = await auth()
 

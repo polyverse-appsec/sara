@@ -6,6 +6,7 @@ import { type DialogProps } from '@radix-ui/react-dialog'
 import { toast } from 'react-hot-toast'
 
 import { ServerActionResult, type Chat } from '@/lib/dataModelTypes'
+import { useCopyToClipboard } from '@/lib/hooks/use-copy-to-clipboard'
 import { cn } from '@/lib/utils'
 import { badgeVariants } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -15,10 +16,9 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle
+  DialogTitle,
 } from '@/components/ui/dialog'
 import { IconSpinner } from '@/components/ui/icons'
-import { useCopyToClipboard } from '@/lib/hooks/use-copy-to-clipboard'
 
 interface ChatShareDialogProps extends DialogProps {
   chat: Pick<Chat, 'id' | 'title' | 'messages'>
@@ -50,15 +50,15 @@ export function ChatShareDialog({
           borderRadius: '10px',
           background: '#333',
           color: '#fff',
-          fontSize: '14px'
+          fontSize: '14px',
         },
         iconTheme: {
           primary: 'white',
-          secondary: 'black'
-        }
+          secondary: 'black',
+        },
       })
     },
-    [copyToClipboard, onCopy]
+    [copyToClipboard, onCopy],
   )
 
   return (

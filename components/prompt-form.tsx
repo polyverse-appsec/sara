@@ -1,16 +1,17 @@
 import * as React from 'react'
-import Textarea from 'react-textarea-autosize'
+import { useRouter } from 'next/navigation'
 import { UseChatHelpers } from 'ai/react'
+import Textarea from 'react-textarea-autosize'
+
 import { useEnterSubmit } from '@/lib/hooks/use-enter-submit'
 import { cn } from '@/lib/utils'
 import { Button, buttonVariants } from '@/components/ui/button'
+import { IconArrowElbow, IconPlus } from '@/components/ui/icons'
 import {
   Tooltip,
   TooltipContent,
-  TooltipTrigger
+  TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { IconArrowElbow, IconPlus } from '@/components/ui/icons'
-import { useRouter } from 'next/navigation'
 
 export interface PromptProps
   extends Pick<UseChatHelpers, 'input' | 'setInput'> {
@@ -22,7 +23,7 @@ export function PromptForm({
   onSubmit,
   input,
   setInput,
-  isLoading
+  isLoading,
 }: PromptProps) {
   const { formRef, onKeyDown } = useEnterSubmit()
   const inputRef = React.useRef<HTMLTextAreaElement>(null)
@@ -35,7 +36,7 @@ export function PromptForm({
 
   return (
     <form
-      onSubmit={async e => {
+      onSubmit={async (e) => {
         e.preventDefault()
         if (!input?.trim()) {
           return
@@ -49,14 +50,14 @@ export function PromptForm({
         <Tooltip>
           <TooltipTrigger asChild>
             <button
-              onClick={e => {
+              onClick={(e) => {
                 e.preventDefault()
                 router.refresh()
                 router.push('/')
               }}
               className={cn(
                 buttonVariants({ size: 'sm', variant: 'outline' }),
-                'absolute left-0 top-4 h-8 w-8 rounded-full bg-background p-0 sm:left-4'
+                'absolute left-0 top-4 h-8 w-8 rounded-full bg-background p-0 sm:left-4',
               )}
             >
               <IconPlus />
@@ -71,7 +72,7 @@ export function PromptForm({
           onKeyDown={onKeyDown}
           rows={1}
           value={input}
-          onChange={e => setInput(e.target.value)}
+          onChange={(e) => setInput(e.target.value)}
           placeholder="Ask Sara anything about your project..."
           spellCheck={false}
           className="min-h-[60px] w-full resize-none bg-transparent px-4 py-[1.3rem] focus-within:outline-none sm:text-sm"

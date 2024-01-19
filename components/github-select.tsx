@@ -1,25 +1,30 @@
 import * as React from 'react'
+import { useEffect, useState } from 'react'
+import { type Session } from 'next-auth'
+
+import { Organization, Project, Repository } from '@/lib/dataModelTypes'
+import { useAppContext } from '@/lib/hooks/app-context'
 import { IconSeparator } from '@/components/ui/icons'
 import {
   Select,
-  SelectValue,
-  SelectTrigger,
   SelectContent,
+  SelectGroup,
   SelectItem,
-  SelectGroup
+  SelectTrigger,
+  SelectValue,
   // Other imports if necessary
-} from '@/components/ui/select' // Update the import path
+} from '@/components/ui/select'
+// Update the import path
 
-import { getOrCreateProjectFromRepository, getRepository } from '@/app/actions'
+import {
+  getOrCreateProjectFromRepository,
+  getOrganizations,
+  getRepositoriesForOrg,
+  getRepository,
+} from '@/app/actions'
 
 import { GithubOrgSelect } from './github-org-select'
 import { GithubRepoSelect } from './github-repo-select'
-import { type Session } from 'next-auth'
-import { getOrganizations, getRepositoriesForOrg } from '@/app/actions'
-import { useState, useEffect } from 'react'
-import { Organization, Project, Repository } from '@/lib/dataModelTypes'
-
-import { useAppContext } from '@/lib/hooks/app-context'
 
 export function GithubSelect() {
   const {
@@ -30,7 +35,7 @@ export function GithubSelect() {
     setSelectedProject,
     setSelectedActiveTask,
     selectedProjectRepositories,
-    setSelectedProjectRepositories
+    setSelectedProjectRepositories,
   } = useAppContext()
 
   // State to store organizations
@@ -45,14 +50,14 @@ export function GithubSelect() {
   const fetchOrganizations = () => {
     console.log('Fetching organizations')
     getOrganizations()
-      .then(data => {
+      .then((data) => {
         if (Array.isArray(data)) {
           setOrganizations(data)
         } else {
           console.error('Error fetching organizations:', data)
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.error('Error fetching organizations:', error)
       })
   }
@@ -61,14 +66,14 @@ export function GithubSelect() {
     console.log('Fetching repositories for organization:', org)
     if (org) {
       getRepositoriesForOrg(org.login)
-        .then(data => {
+        .then((data) => {
           if (Array.isArray(data)) {
             setRepositories(data)
           } else {
             console.error('Error fetching repositories:', data)
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.error('Error fetching repositories:', error)
         })
     }

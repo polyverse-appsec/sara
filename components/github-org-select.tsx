@@ -1,18 +1,17 @@
 'use client'
 
+import React from 'react'
 import Image from 'next/image'
 import { type Session } from 'next-auth'
 
-import { Button } from '@/components/ui/button'
-import React from 'react'
 import { Organization, User } from '@/lib/dataModelTypes'
-
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 
 function getUserInitials(name: string) {
@@ -32,7 +31,7 @@ export function GithubOrgSelect({
   user,
   organizations,
   selectedOrganization,
-  onOrganizationChange
+  onOrganizationChange,
 }: GithubOrgSelectProps) {
   // component implementation
 
@@ -70,7 +69,7 @@ export function GithubOrgSelect({
           {organizations.map((org, index) => (
             <DropdownMenuItem
               key={index}
-              onSelect={event => onOrganizationChange(org)}
+              onSelect={(event) => onOrganizationChange(org)}
             >
               <Image
                 className="w-6 h-6 transition-opacity duration-300 rounded-full select-none ring-1 ring-zinc-100/10 hover:opacity-80"

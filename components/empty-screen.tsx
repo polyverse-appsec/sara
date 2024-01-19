@@ -1,23 +1,23 @@
+import Image from 'next/image'
 import { UseChatHelpers } from 'ai/react'
 
 import { Button } from '@/components/ui/button'
-import { ExternalLink } from '@/components/external-link'
 import { IconArrowRight } from '@/components/ui/icons'
-import Image from 'next/image'
+import { ExternalLink } from '@/components/external-link'
 
 const exampleMessages = [
   {
     heading: 'Please explain how a feature in this project works',
-    message: `What is a "serverless function"?`
+    message: `What is a "serverless function"?`,
   },
   {
     heading: 'Write new code following a specification',
-    message: 'Write a function that returns the sum of two numbers'
+    message: 'Write a function that returns the sum of two numbers',
   },
   {
     heading: 'Keep track of multiple tasks',
-    message: `Just create a new task on the left hand side bar!`
-  }
+    message: `Just create a new task on the left hand side bar!`,
+  },
 ]
 
 export function EmptyScreen({ setInput }: Pick<UseChatHelpers, 'setInput'>) {

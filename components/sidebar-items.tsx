@@ -1,12 +1,11 @@
 'use client'
 
-import { Chat } from '@/lib/dataModelTypes'
 import { AnimatePresence, motion } from 'framer-motion'
 
-import { removeChat } from '@/app/actions'
-
+import { Chat } from '@/lib/dataModelTypes'
 import { SidebarActions } from '@/components/sidebar-actions'
 import { SidebarItem } from '@/components/sidebar-item'
+import { removeChat } from '@/app/actions'
 
 interface SidebarItemsProps {
   chats?: Chat[]
@@ -24,17 +23,14 @@ export function SidebarItems({ chats }: SidebarItemsProps) {
               key={chat?.id}
               exit={{
                 opacity: 0,
-                height: 0
+                height: 0,
               }}
             >
               <SidebarItem index={index} chat={chat}>
-                <SidebarActions
-                  chat={chat}
-                  removeChat={removeChat}
-                />
+                <SidebarActions chat={chat} removeChat={removeChat} />
               </SidebarItem>
             </motion.div>
-          )
+          ),
       )}
     </AnimatePresence>
   )

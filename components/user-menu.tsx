@@ -10,7 +10,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { IconExternalLink } from '@/components/ui/icons'
 
@@ -65,7 +65,7 @@ export function UserMenu({ user }: UserMenuProps) {
           <DropdownMenuItem
             onClick={() =>
               signOut({
-                callbackUrl: '/'
+                callbackUrl: '/',
               })
             }
             className="text-xs"

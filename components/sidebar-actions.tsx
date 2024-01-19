@@ -1,7 +1,7 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
 import * as React from 'react'
+import { useRouter } from 'next/navigation'
 import { toast } from 'react-hot-toast'
 
 import { ServerActionResult, type Chat } from '@/lib/dataModelTypes'
@@ -13,14 +13,14 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle
+  AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { IconSpinner, IconTrash } from '@/components/ui/icons'
 import {
   Tooltip,
   TooltipContent,
-  TooltipTrigger
+  TooltipTrigger,
 } from '@/components/ui/tooltip'
 
 interface SidebarActionsProps {
@@ -28,10 +28,7 @@ interface SidebarActionsProps {
   removeChat: (args: { id: string; path: string }) => ServerActionResult<void>
 }
 
-export function SidebarActions({
-  chat,
-  removeChat
-}: SidebarActionsProps) {
+export function SidebarActions({ chat, removeChat }: SidebarActionsProps) {
   const router = useRouter()
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false)
   const [isRemovePending, startRemoveTransition] = React.useTransition()
@@ -69,13 +66,13 @@ export function SidebarActions({
             </AlertDialogCancel>
             <AlertDialogAction
               disabled={isRemovePending}
-              onClick={event => {
+              onClick={(event) => {
                 event.preventDefault()
                 // @ts-ignore
                 startRemoveTransition(async () => {
                   const result = await removeChat({
                     id: chat.id,
-                    path: chat.path
+                    path: chat.path,
                   })
 
                   if (result && 'error' in result) {

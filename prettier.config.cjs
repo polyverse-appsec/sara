@@ -1,12 +1,14 @@
-/** @type {import('prettier').Config} */
+// @ts-check
+
+/** @type {import("@ianvs/prettier-plugin-sort-imports").PrettierConfig} */
 module.exports = {
-  endOfLine: 'lf',
+  "plugins": ["@ianvs/prettier-plugin-sort-imports"],
   semi: false,
-  useTabs: false,
   singleQuote: true,
-  arrowParens: 'avoid',
-  tabWidth: 2,
-  trailingComma: 'none',
+  trailingComma: 'all',
+  // Preserve the `lf` value for `endOfLine` to ensure that our code only has
+  // Linux-style line endings covered by Prettier
+  endOfLine: 'lf',
   importOrder: [
     '^(react/(.*)$)|^(react$)',
     '^(next/(.*)$)|^(next$)',
@@ -25,10 +27,5 @@ module.exports = {
     '',
     '^[./]'
   ],
-  importOrderSeparation: false,
-  importOrderSortSpecifiers: true,
-  importOrderBuiltinModulesToTop: true,
   importOrderParserPlugins: ['typescript', 'jsx', 'decorators-legacy'],
-  importOrderMergeDuplicateImports: true,
-  importOrderCombineTypeAndValueImports: true
 }

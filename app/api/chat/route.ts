@@ -1,15 +1,13 @@
+import { auth } from '@/auth'
+import { kv } from '@vercel/kv'
 import OpenAI from 'openai'
 
-import { kv } from '@vercel/kv'
-
-import { auth } from '@/auth'
+import { stripUndefinedObjectProperties } from '@/lib/polyverse/backend/backend'
+import { querySara } from '@/lib/polyverse/sara/sara'
 import { nanoid } from '@/lib/utils'
 
-import { querySara } from '@/lib/polyverse/sara/sara'
-import { stripUndefinedObjectProperties } from '@/lib/polyverse/backend/backend'
-
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
+  apiKey: process.env.OPENAI_API_KEY,
 })
 
 export async function POST(req: Request) {
@@ -24,12 +22,12 @@ export async function POST(req: Request) {
 
   if (!userId) {
     return new Response('Unauthorized', {
-      status: 401
+      status: 401,
     })
   }
 
   const persistAssistantMessagesCallback = async (
-    retrievedAssistantMessages: string
+    retrievedAssistantMessages: string,
   ) => {
     const title = json.messages[0].content.substring(0, 100)
     const id = json.id ?? nanoid()
@@ -47,9 +45,9 @@ export async function POST(req: Request) {
         ...messages,
         {
           content: retrievedAssistantMessages,
-          role: 'assistant'
-        }
-      ]
+          role: 'assistant',
+        },
+      ],
     }
 
     console.log("starting to store chat's messages for chat id: ", id)
@@ -63,7 +61,7 @@ export async function POST(req: Request) {
     console.log(`storing chat at key: ${key}`)
     await kv.zadd(key, {
       score: createdAt,
-      member: `chat:${id}`
+      member: `chat:${id}`,
     })
     console.log(`stored chat at key: ${key}`)
   }
@@ -74,14 +72,14 @@ export async function POST(req: Request) {
     task,
     chat,
     messages,
-    persistAssistantMessagesCallback
+    persistAssistantMessagesCallback,
   )
 
   // Create and return the response
   return new Response(assistantMessagesStream, {
     status: 200,
     headers: {
-      'Content-Type': 'text/plain; charset=utf-8'
-    }
+      'Content-Type': 'text/plain; charset=utf-8',
+    },
   })
 }

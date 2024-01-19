@@ -1,30 +1,31 @@
 import { Octokit } from '@octokit/rest'
+import { kv } from '@vercel/kv'
+
 import { Organization, Repository } from '@/lib/dataModelTypes'
+
 // Define a type for the function's parameters
 export type FetchUserOrgsParams = {
   accessToken: string
 }
 
-import { kv } from '@vercel/kv'
-
 // Function to fetch user's organizations
 export async function fetchUserOrganizations({
-  accessToken
+  accessToken,
 }: FetchUserOrgsParams): Promise<Organization[]> {
   const octokit = new Octokit({
-    auth: accessToken
+    auth: accessToken,
   })
 
   try {
     const response = await octokit.request('GET /user/orgs', {
       headers: {
-        'X-GitHub-Api-Version': '2022-11-28'
-      }
+        'X-GitHub-Api-Version': '2022-11-28',
+      },
     })
 
-    return response.data.map(org => ({
+    return response.data.map((org) => ({
       login: org.login,
-      avatar_url: org.avatar_url
+      avatar_url: org.avatar_url,
     }))
   } catch (error) {
     console.error('Error fetching organizations:', error)
@@ -41,10 +42,10 @@ export type FetchOrgReposParams = {
 // Function to fetch repositories for an organization
 export async function fetchOrganizationRepositories({
   accessToken,
-  org
+  org,
 }: FetchOrgReposParams): Promise<Repository[]> {
   const octokit = new Octokit({
-    auth: accessToken
+    auth: accessToken,
   })
   let page = 1
   const repos = []
@@ -59,8 +60,8 @@ export async function fetchOrganizationRepositories({
         per_page: 100,
         page: page,
         headers: {
-          'X-GitHub-Api-Version': '2022-11-28'
-        }
+          'X-GitHub-Api-Version': '2022-11-28',
+        },
       })
 
       if (response.data.length === 0) {
@@ -79,9 +80,9 @@ export async function fetchOrganizationRepositories({
             full_name: repo.full_name,
             description: repo.description,
             html_url: repo.html_url,
-            orgId: org
-          })
-        )
+            orgId: org,
+          }),
+        ),
       )
       page++
     }
@@ -95,7 +96,7 @@ export async function fetchOrganizationRepositories({
 
 export async function getOrCreateRepoFromGithubRepo(
   repo: Repository,
-  userId: string
+  userId: string,
 ): Promise<Repository> {
   const repoId = `repo:${repo.full_name}:${userId}`
   const existingRepo = (await kv.get(repoId)) as Repository
@@ -105,7 +106,7 @@ export async function getOrCreateRepoFromGithubRepo(
   const newRepo = {
     ...repo,
     id: repoId,
-    userId: userId
+    userId: userId,
   }
   await kv.set(repoId, newRepo)
   return newRepo

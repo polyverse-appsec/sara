@@ -4,16 +4,16 @@ import Image from 'next/image'
 import { type Session } from 'next-auth'
 import { signOut } from 'next-auth/react'
 
+import { Repository } from '@/lib/dataModelTypes'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { IconExternalLink } from '@/components/ui/icons'
-import { Repository } from '@/lib/dataModelTypes'
 
 function getUserInitials(name: string) {
   const [firstName, lastName] = name.split(' ')
@@ -29,7 +29,7 @@ interface GithubRepoSelectProps {
 export function GithubRepoSelect({
   selectedRepository,
   repositories,
-  onRepositoryChange
+  onRepositoryChange,
 }: GithubRepoSelectProps) {
   return (
     <div className="flex items-center justify-between">
@@ -44,10 +44,10 @@ export function GithubRepoSelect({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent sideOffset={8} align="start" className="w-[180px]">
-          {repositories.map(repo => (
+          {repositories.map((repo) => (
             <DropdownMenuItem
               key={repo.name}
-              onSelect={event => onRepositoryChange(repo)}
+              onSelect={(event) => onRepositoryChange(repo)}
             >
               <span className="ml-2">{repo.name}</span>
             </DropdownMenuItem>

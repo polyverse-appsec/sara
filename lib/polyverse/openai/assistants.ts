@@ -1,14 +1,12 @@
 import OpenAI from 'openai'
-
 import { Assistant } from 'openai/resources/beta/assistants/assistants'
+
+import { Project, ProjectDataReference, Repository } from '@/lib/dataModelTypes'
 
 import { getFileInfo } from '../backend/backend'
 import { isRecord } from '../typescript/helpers'
-
-import { OPENAI_MODEL } from './constants'
-import { ProjectDataReference, Project, Repository } from '@/lib/dataModelTypes'
-
 import { submitTaskStepsAssistantFunction } from './assistantTools'
+import { OPENAI_MODEL } from './constants'
 
 const PV_OPENAI_ASSISTANT_NAME = 'Polyverse Boost Sara'
 
@@ -35,7 +33,7 @@ function getOpenAIAssistantInstructions(fileTypes: FileTypes): string {
 }
 
 const oaiClient = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
+  apiKey: process.env.OPENAI_API_KEY,
 })
 
 function mapFileInfoToPromptAndIDs(fileInfo: ProjectDataReference[]) {
@@ -58,7 +56,7 @@ function mapFileInfoToPromptAndIDs(fileInfo: ProjectDataReference[]) {
  */
 export async function createAssistantWithFileIDsFromRepo(
   fileInfo: ProjectDataReference[],
-  repo_full_name: string
+  repo_full_name: string,
 ): Promise<Assistant> {
   const { prompt, fileIDs } = mapFileInfoToPromptAndIDs(fileInfo)
 
@@ -70,9 +68,9 @@ export async function createAssistantWithFileIDsFromRepo(
     tools: [
       { type: 'code_interpreter' },
       { type: 'retrieval' },
-      submitTaskStepsAssistantFunction
+      submitTaskStepsAssistantFunction,
     ],
-    metadata: { repo_full_name }
+    metadata: { repo_full_name },
   })
 }
 
@@ -83,7 +81,7 @@ export async function createAssistantWithFileIDsFromRepo(
  * @returns {(Promise<Assistant>|Promise<undefined>) Promise of identified assistant or Promise of undefined if no assistant found.
  */
 export async function findAssistantForRepo(
-  repo: string
+  repo: string,
 ): Promise<Assistant | undefined> {
   console.log(`findAssistantsForRepo`)
   // API call reference: https://platform.openai.com/docs/api-reference/assistants/listAssistants
@@ -91,7 +89,7 @@ export async function findAssistantForRepo(
 
   // API Assistant object reference: https://platform.openai.com/docs/api-reference/assistants/object
   return assistants?.data?.find(
-    ({ metadata }) => isRecord(metadata) && metadata.repo_full_name === repo
+    ({ metadata }) => isRecord(metadata) && metadata.repo_full_name === repo,
   )
 }
 
@@ -104,12 +102,12 @@ export async function findAssistantForRepo(
  */
 export async function updateAssistantPromptAndFiles(
   fileInfo: ProjectDataReference[],
-  { id }: { id: string }
+  { id }: { id: string },
 ): Promise<Assistant> {
   const { prompt, fileIDs } = mapFileInfoToPromptAndIDs(fileInfo)
   return await oaiClient.beta.assistants.update(id, {
     file_ids: fileIDs,
-    instructions: prompt
+    instructions: prompt,
   })
 }
 
@@ -136,7 +134,7 @@ export async function updateAssistantPromptAndFiles(
 export async function configAssistant(
   project: Project,
   repos: Repository[],
-  email: string
+  email: string,
 ): Promise<Assistant> {
   // Get the file IDs associated with the repo first since we will end up
   // using them whether we need to create a new OpenAI assistant or there is

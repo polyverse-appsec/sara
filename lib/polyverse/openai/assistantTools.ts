@@ -1,12 +1,13 @@
-import { Assistant } from 'openai/resources/beta/assistants/assistants'
-import OpenAI from 'openai'
-import { createTask } from '@/app/actions'
 import { create } from 'domain'
+import OpenAI from 'openai'
+import { Assistant } from 'openai/resources/beta/assistants/assistants'
+
 import { Task } from '@/lib/dataModelTypes'
 import { nanoid } from '@/lib/utils'
+import { createTask } from '@/app/actions'
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
+  apiKey: process.env.OPENAI_API_KEY,
 })
 
 export const submitTaskStepsAssistantFunction: Assistant.Function = {
@@ -25,26 +26,26 @@ export const submitTaskStepsAssistantFunction: Assistant.Function = {
             properties: {
               title: {
                 type: 'string',
-                description: 'The title of the task.'
+                description: 'The title of the task.',
               },
               description: {
                 type: 'string',
                 description:
-                  'The description of the task to be done in markdown format.'
-              }
-            }
-          }
-        }
+                  'The description of the task to be done in markdown format.',
+              },
+            },
+          },
+        },
       },
-      required: ['tasks']
-    }
-  }
+      required: ['tasks'],
+    },
+  },
 }
 
 const buildTaskInstance = (
   userId: string,
   repositoryId: string,
-  { title, description }: TaskForGoalType
+  { title, description }: TaskForGoalType,
 ): Task => {
   return {
     id: nanoid(),
@@ -54,7 +55,7 @@ const buildTaskInstance = (
     userId,
     projectId: repositoryId,
     chats: [],
-    subtasks: []
+    subtasks: [],
   }
 }
 
@@ -93,11 +94,11 @@ const getBuildTaskInstanceClosure = (userID: string, repoID: string) => {
 export const submitTaskSteps = async (
   userID: string,
   repoID: string,
-  toolCallArgs: SubmitTasksForGoalType
+  toolCallArgs: SubmitTasksForGoalType,
 ) => {
   if (toolCallArgs) {
     const tasksToPersist = toolCallArgs.tasks.map(
-      getBuildTaskInstanceClosure(userID, repoID)
+      getBuildTaskInstanceClosure(userID, repoID),
     )
 
     tasksToPersist.forEach((task: Task) => createTask(task))

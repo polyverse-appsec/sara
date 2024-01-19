@@ -1,7 +1,7 @@
 import OpenAI from 'openai'
 
 const oaiClient = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
+  apiKey: process.env.OPENAI_API_KEY,
 })
 
 /**
@@ -30,7 +30,7 @@ export async function appendUserMessage({ id }: { id: string }, messages: any) {
   if (role === 'user') {
     return await oaiClient.beta.threads.messages.create(id, {
       role: 'user',
-      content
+      content,
     })
   }
 }
@@ -60,7 +60,7 @@ export const getAssistantMessages = async (threadID: string) => {
   return messages
     .slice(0, userIndex)
     .reduce((concatenatedMessage, assistantMessage) => {
-      assistantMessage.content.forEach(messageContent => {
+      assistantMessage.content.forEach((messageContent) => {
         if (messageContent.type === 'text') {
           concatenatedMessage += messageContent.text.value
           concatenatedMessage += '\n'

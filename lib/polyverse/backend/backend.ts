@@ -1,5 +1,6 @@
-import { Project, Repository, ProjectDataReference } from '@/lib/dataModelTypes'
 import { Secret, sign } from 'jsonwebtoken'
+
+import { Project, ProjectDataReference, Repository } from '@/lib/dataModelTypes'
 
 // AWS Endpoints for our Boost ReST API (Backend)
 // Legacy:  'https://pt5sl5vwfjn6lsr2k6szuvfhnq0vaxhl.lambda-url.us-west-2.on.aws/api/user_project'
@@ -27,10 +28,10 @@ interface SignedHeader {
 function createSignedHeader(email: string): SignedHeader {
   const privateSaraClientKey = process.env.SARA_CLIENT_PRIVATE_KEY
   const signedIdentityHeader = sign({ email }, privateSaraClientKey as Secret, {
-    algorithm: 'RS256'
+    algorithm: 'RS256',
   })
   const header: SignedHeader = {
-    'x-signed-identity': signedIdentityHeader
+    'x-signed-identity': signedIdentityHeader,
   }
   return header
 }
@@ -44,7 +45,7 @@ function createSignedHeader(email: string): SignedHeader {
  */
 export async function getFileInfo(
   repo: Repository,
-  email: string
+  email: string,
 ): Promise<ProjectDataReference[]> {
   const url = `${USER_SERVICE_URI}/api/user_project/${repo.orgId}/${repo.name}/data_references`
 
@@ -53,13 +54,13 @@ export async function getFileInfo(
     const res = await fetch(url, {
       method: 'GET',
       headers: {
-        ...signedHeader
-      }
+        ...signedHeader,
+      },
     })
 
     if (!res.ok) {
       console.error(
-        `Got a failure response while trying to get file ids for '${repo.orgId}/${repo.name} for ${email}' - Status: ${res.status}`
+        `Got a failure response while trying to get file ids for '${repo.orgId}/${repo.name} for ${email}' - Status: ${res.status}`,
       )
       return []
     }
@@ -71,7 +72,7 @@ export async function getFileInfo(
   } catch (error) {
     console.error(
       'Error making a request or parsing a response for project ID: ',
-      error
+      error,
     )
   }
   return []
@@ -79,7 +80,7 @@ export async function getFileInfo(
 
 export async function tickleRepository(
   repo: Repository,
-  email: string
+  email: string,
 ): Promise<string> {
   const url = `${USER_SERVICE_URI}/api/user_project/${repo.orgId}/${repo.name}`
 
@@ -89,14 +90,14 @@ export async function tickleRepository(
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        ...signedHeader
+        ...signedHeader,
       },
-      body: JSON.stringify({ resources: [{ uri: repo.html_url }] })
+      body: JSON.stringify({ resources: [{ uri: repo.html_url }] }),
     })
 
     if (!res.ok) {
       console.error(
-        `Got a failure response while trying to start project for '${repo.orgId}/${repo.name} for ${email}' - Status: ${res.status}`
+        `Got a failure response while trying to start project for '${repo.orgId}/${repo.name} for ${email}' - Status: ${res.status}`,
       )
       return ''
     }
@@ -105,7 +106,7 @@ export async function tickleRepository(
   } catch (error) {
     console.error(
       'Error making a request or parsing a response for project ID: ',
-      error
+      error,
     )
   }
 
@@ -124,7 +125,7 @@ export async function tickleRepository(
  * @returns {Record<string, any>} A new object with undefined properties removed.
  */
 export function stripUndefinedObjectProperties(
-  objectToStrip: any
+  objectToStrip: any,
 ): Record<string, any> {
   // Guard against `null` as it is considered an object in JS
   if (typeof objectToStrip !== 'object' || objectToStrip === null) {
@@ -132,13 +133,13 @@ export function stripUndefinedObjectProperties(
   }
 
   const strippedObject: Record<string, any> = {}
-  Object.keys(objectToStrip).forEach(key => {
+  Object.keys(objectToStrip).forEach((key) => {
     if (objectToStrip[key] !== undefined) {
       strippedObject[key] = objectToStrip[key]
     } else {
       console.log(`Stripping key '${key}' from object`)
       console.log(
-        'BUGBUGBUBUGBUG: WE SHOULD NEVER GET HERE!! SOMETHING IS WRONG'
+        'BUGBUGBUBUGBUG: WE SHOULD NEVER GET HERE!! SOMETHING IS WRONG',
       )
     }
   })

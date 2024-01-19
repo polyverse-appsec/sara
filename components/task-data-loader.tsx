@@ -1,12 +1,13 @@
 'use client'
+
+import { useEffect, useState } from 'react'
+import { toast } from 'react-hot-toast'
+
+import { Chat, Task } from '@/lib/dataModelTypes'
+import { useAppContext } from '@/lib/hooks/app-context'
 import { getTasksAssociatedWithProject } from '@/app/actions'
 
 import TaskTree from './task-tree'
-import { useAppContext } from '@/lib/hooks/app-context'
-import { Task, Chat } from '@/lib/dataModelTypes'
-import { useState, useEffect } from 'react'
-
-import { toast } from 'react-hot-toast'
 
 type TaskDataLoaderProps = {
   userId: string
@@ -18,7 +19,7 @@ export function TaskDataLoader({ userId }: TaskDataLoaderProps) {
     selectedProject,
     selectedActiveTask,
     tasksLastGeneratedAt,
-    selectedActiveChat
+    selectedActiveChat,
   } = useAppContext()
 
   // Effects let you specify side effects that is caused by the rendering

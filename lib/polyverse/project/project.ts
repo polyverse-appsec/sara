@@ -4,13 +4,14 @@
  * helper functions for the Project class
  */
 
+import { kv } from '@vercel/kv'
+
 import { Project, Repository, User } from '@/lib/dataModelTypes'
 import { createDefaultProjectTask } from '@/lib/polyverse/task/task'
-import { kv } from '@vercel/kv'
 
 export async function createNewProjectFromRepository(
   repo: Repository,
-  user: User
+  user: User,
 ): Promise<Project> {
   let project = {} as Project
 

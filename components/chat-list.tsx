@@ -25,13 +25,17 @@ export function ChatList({ messages, isLoading }: ChatList) {
         // if we are rendering the last chat message with a role of assistant.
         // If we don't check the index we will render the spinner for every
         // other <ChatMessage>
-        const shouldRenderLoadingSpinner = isLoading &&
-          (index + 1) === messages.length &&
+        const shouldRenderLoadingSpinner =
+          isLoading &&
+          index + 1 === messages.length &&
           message.role === 'assistant'
 
         return (
           <div key={index}>
-            <ChatMessage message={message} renderLoadingSpinner={shouldRenderLoadingSpinner} />
+            <ChatMessage
+              message={message}
+              renderLoadingSpinner={shouldRenderLoadingSpinner}
+            />
             {index < messages.length - 1 && (
               <Separator className="my-4 md:my-8" />
             )}

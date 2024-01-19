@@ -1,8 +1,9 @@
-import { useEffect, ReactNode } from 'react'
+import { ReactNode, useEffect } from 'react'
+
 import { useAppContext } from '@/lib/hooks/app-context'
 import {
   getOrCreateAssistantForProject,
-  tickleProjectFromProjectChange
+  tickleProjectFromProjectChange,
 } from '@/app/actions'
 
 const useDataWatcher = () => {
@@ -10,7 +11,7 @@ const useDataWatcher = () => {
     selectedProjectRepositories,
     setSelectedProjectRepositories,
     selectedProject,
-    setSelectedProject
+    setSelectedProject,
   } = useAppContext()
 
   useEffect(() => {
@@ -19,13 +20,13 @@ const useDataWatcher = () => {
       if (selectedProject) {
         tickleProjectFromProjectChange(
           selectedProject,
-          selectedProjectRepositories ?? []
+          selectedProjectRepositories ?? [],
         )
 
         if (!selectedProject.assistant) {
           const assistant = await getOrCreateAssistantForProject(
             selectedProject,
-            selectedProjectRepositories ?? []
+            selectedProjectRepositories ?? [],
           )
           if (assistant) {
             selectedProject.assistant = assistant
@@ -39,7 +40,7 @@ const useDataWatcher = () => {
     selectedProject,
     setSelectedProject,
     selectedProjectRepositories,
-    setSelectedProjectRepositories
+    setSelectedProjectRepositories,
   ]) // Dependency array with 'data' to watch for its changes
 }
 

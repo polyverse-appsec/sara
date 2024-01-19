@@ -1,12 +1,12 @@
+import { Chat, Project, Task } from '@/lib/dataModelTypes'
+
 import { appendUserMessage, getAssistantMessages } from '../openai/messages'
 import {
   getThreadRunStatus,
   handleRequiresActionStatus,
-  runAssistantOnThread
+  runAssistantOnThread,
 } from '../openai/runs'
-
 import { configThread } from '../openai/threads'
-import { Project, Chat, Task } from '@/lib/dataModelTypes'
 
 /**
  * Callback for those interested into the response that Sara returned.
@@ -42,7 +42,7 @@ export const querySara = async (
   task: Task,
   chat: Chat,
   question: any,
-  fullSaraResponseCallback?: any
+  fullSaraResponseCallback?: any,
 ) => {
   const assistant = project.assistant
   const encoder = new TextEncoder()
@@ -54,7 +54,7 @@ export const querySara = async (
   // Configure a thread based off of what would be the first message associated with it
   const thread = await configThread(question[0].content)
   console.log(
-    `Configured a thread with an ID of '${thread.id}' - first message content: ${question[0].content}`
+    `Configured a thread with an ID of '${thread.id}' - first message content: ${question[0].content}`,
   )
 
   // Blindly append a user message to the thread. It is 'blind' in the sense
@@ -62,8 +62,8 @@ export const querySara = async (
   const threadMessage = await appendUserMessage(thread, question)
   console.log(
     `Updated message with an ID of '${threadMessage?.id}' - message content: ${JSON.stringify(
-      threadMessage?.content
-    )}`
+      threadMessage?.content,
+    )}`,
   )
 
   const { id: runID } = await runAssistantOnThread(assistant.id, thread.id)
@@ -109,7 +109,7 @@ export const querySara = async (
             project.full_name,
             thread.id,
             runID,
-            runStatus
+            runStatus,
           )
 
           return
@@ -118,6 +118,6 @@ export const querySara = async (
         // Show a little progress bar of dots if messages aren't yet ready
         controller.enqueue(encoder.encode('.'))
       }, 500)
-    }
+    },
   })
 }

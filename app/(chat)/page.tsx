@@ -11,7 +11,7 @@ export default function IndexPage() {
     userId: '1',
     messages: [],
     createdAt: new Date(),
-    path: `/chat/${id}`
+    path: `/chat/${id}`,
   }
 
   return <Chat chat={chat} />
