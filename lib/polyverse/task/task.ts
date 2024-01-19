@@ -18,8 +18,8 @@ export async function createDefaultProjectTask(
 ): Promise<Task> {
   const defaultTask: Task = {
     id: '', // Generate an ID or leave it for the createTask function to handle
-    title: `Task for ${project.name}`,
-    description: `Default task for repository ${project.name}`,
+    title: `Default task for ${project.name}`,
+    description: `Default task for project ${project.name}`,
     createdAt: new Date(),
     // TODO: Commented out for 1/4 Thursday demo - Was hitting auth error in `createTask`
     // on the following logic: if (!session?.user?.id || task.userId !== session.user.id)
