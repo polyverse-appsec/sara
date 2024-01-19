@@ -99,7 +99,6 @@ export function AppProvider({ children }: AppProviderProps) {
       if (session) {
         try {
           const user = await getOrCreateUserFromSession(session)
-          console.log('AppProvider: user: ', user)
           setUser(user) // Set the user in context
           // You can also set other states here based on the returned user data
         } catch (error) {

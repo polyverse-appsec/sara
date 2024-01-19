@@ -1,46 +1,29 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { useChat, type Message } from 'ai/react'
 import { toast } from 'react-hot-toast'
 
-import type { Chat, Project, Task } from '@/lib/dataModelTypes'
+import type { Chat } from '@/lib/dataModelTypes'
 import { useAppContext } from '@/lib/hooks/app-context'
-import { useLocalStorage } from '@/lib/hooks/use-local-storage'
 import { cn } from '@/lib/utils'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
 import { ChatList } from '@/components/chat-list'
 import { ChatPanel } from '@/components/chat-panel'
 import { ChatScrollAnchor } from '@/components/chat-scroll-anchor'
 import { EmptyScreen } from '@/components/empty-screen'
 import { getOrganizations, getProject, getTask } from '@/app/actions'
 
-import { Button } from './ui/button'
-import { Input } from './ui/input'
-
-const IS_PREVIEW = process.env.VERCEL_ENV === 'preview'
 export interface ChatProps extends React.ComponentProps<'div'> {
   initialMessages?: Message[]
   chat: Chat
 }
 
-export function Chat({ chat, initialMessages, className }: ChatProps) {
+// Default to an empty list of `initialMessages` if this prop wasn't passed.
+// This matches the specification of the `useChat` API from Vercel.
+export function Chat({ chat, initialMessages = [], className }: ChatProps) {
   const router = useRouter()
   const path = usePathname()
-  const [previewToken, setPreviewToken] = useLocalStorage<string | null>(
-    'ai-token',
-    null,
-  )
-  const [previewTokenDialog, setPreviewTokenDialog] = useState(IS_PREVIEW)
-  const [previewTokenInput, setPreviewTokenInput] = useState(previewToken ?? '')
 
   const {
     selectedActiveChat,
@@ -76,9 +59,10 @@ export function Chat({ chat, initialMessages, className }: ChatProps) {
     useChat({
       initialMessages,
       id: chat.id,
+      // `body` is an optional extra body passed to our API endpoint in
+      // additional to the `messages` array.
       body: {
         id: chat.id,
-        previewToken,
         project: selectedProject,
         task: selectedActiveTask,
         chat: selectedActiveChat,
@@ -180,42 +164,6 @@ export function Chat({ chat, initialMessages, className }: ChatProps) {
         input={input}
         setInput={setInput}
       />
-
-      <Dialog open={previewTokenDialog} onOpenChange={setPreviewTokenDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Enter your OpenAI Key</DialogTitle>
-            <DialogDescription>
-              If you have not obtained your OpenAI API key, you can do so by{' '}
-              <a
-                href="https://platform.openai.com/signup/"
-                className="underline"
-              >
-                signing up
-              </a>{' '}
-              on the OpenAI website. This is only necessary for preview
-              environments so that the open source community can test the app.
-              The token will be saved to your browser&apos;s local storage under
-              the name <code className="font-mono">ai-token</code>.
-            </DialogDescription>
-          </DialogHeader>
-          <Input
-            value={previewTokenInput}
-            placeholder="OpenAI API key"
-            onChange={(e) => setPreviewTokenInput(e.target.value)}
-          />
-          <DialogFooter className="items-center">
-            <Button
-              onClick={() => {
-                setPreviewToken(previewTokenInput)
-                setPreviewTokenDialog(false)
-              }}
-            >
-              Save Token
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </>
   )
 }
