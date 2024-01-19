@@ -114,17 +114,18 @@ The [`node-boost-api`](https://github.com/polyverse-appsec/boost-node-api) also 
 
 * Navigate to the `scripts` directory and install any required Python dependencies: `pip install -r requirements.txt`
 * Copy the script located at `scripts/create_project.py` into the root directory of the project/repo you wish to upload for `Sara`
-* Ensure you have `blueprint.md` in the root directory where the script is located
+* The script as of writing (1/18/24) creates a project using the specified parameters, starts file generators that generates and uploads projectsource, aispec, and blueprint files of the project/repo, and uploads those files to
+openAI, it prints out the file IDs that have been stored in openAI's vector store.
 * Run the following command:
 
 ```
-python create_project.py --email [YOUR_GITHUB_EMAIL] --organization [ORGANIZATION_NAME] --github_uri [URI_OF_GITHUB_PROJ] --path_to_summarizer [PATH_TO_SUMMARIZER_SCRIPT]  --project_name [PROJ_NAME]
+python create_project.py --email [YOUR_GITHUB_EMAIL] --organization [ORGANIZATION_NAME] --github_uri [URI_OF_GITHUB_PROJ] --project_name [PROJ_NAME]
 ```
 
 Example usage:
 
 ```
-python create_project.py --email aaron@polyverse.com --organization polyverse-appsec --github_uri https://github.com/polyverse-appsec/sara --path_to_summarizer ../summarizer/main.py  --project_name sara
+python create_project.py --email aaron@polyverse.com --organization polyverse-appsec --github_uri https://www.github.com/polyverse-appsec/sara --project_name sara
 ```
 
 * Overtime `Sara` ought to be able to make requests to [`node-boost-api`](https://github.com/polyverse-appsec/boost-node-api) to get the file IDs for the uploaded files
