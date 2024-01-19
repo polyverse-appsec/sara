@@ -467,8 +467,7 @@ export async function getRepositoryFromId(
  *
  */
 
-export async function tickleProjectFromProjectChange(
-  project: Project,
+export async function tickleReposForProjectChange(
   repos: Repository[],
 ) {
   const session = await auth()

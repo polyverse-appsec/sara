@@ -4,7 +4,7 @@
   - [User Login With GitHub Auth Provider](#User-Login-With-GitHub-Auth-Provider)
   - [`<AppProvider>` Monitors For User Session Changes](#AppProvider-Monitors-For-User-Session-Changes)
   - [User Selects Repository From Dropdown](#User-Selects-Repository-From-Dropdown)
-  - [Updating OpenAI Assistant On Repository Change (Assistant Exists)](#Updating-OpenAI-Assistant-On-Repository-Change-Assistant-Exists)
+  - [Tickling Projects & Updating OpenAI Assistant On Repository Change (Assistant Exists)](#Tickling-Projects--Updating-OpenAI-Assistant-On-Repository-Change-Assistant-Exists)
 
 This doc contains sequence diagrams throughout Sara. They are typically MermaidJS markdown that can be used here: https://mermaid.live/
 
@@ -125,7 +125,7 @@ sequenceDiagram
     deactivate React GithubSelect
 ```
 
-## Updating OpenAI Assistant On Repository Change (Assistant Exists)
+## Tickling Projects & Updating OpenAI Assistant On Repository Change (Assistant Exists)
 
 **Last Updated:** 1/11/24
 This diagram presumes the OpenAI Assistant already exists. A different diagram would be used for when it didn't exist.
@@ -133,45 +133,64 @@ This diagram presumes the OpenAI Assistant already exists. A different diagram w
 ```mermaid
 sequenceDiagram
     actor User
+    participant React
     participant React GlobalContextWatcher
     participant actions.ts
     participant backend.ts
     participant assistants.ts
     participant Boost REST API
     
-    User -> React GlobalContextWatcher: UX Select Repo
+    User -> React: Selects a repository from dropdown
+    Note left of React: Context updated by React GithubSelect
+
+    React -> React GlobalContextWatcher: Re-render from context change
+
     activate React GlobalContextWatcher
-    React GlobalContextWatcher -->> React GlobalContextWatcher: updateAIOnRepositoryChange()
 
-    React GlobalContextWatcher ->> actions.ts: tickleProjectFromRepoChange()
-    actions.ts ->> backend.ts: ticketProject()
-    backend.ts ->> Boost REST API: POST /api/user_project/repoOrgID/repoName
-    Boost REST API ->> backend.ts: 200 OK
-    backend.ts ->> actions.ts: resolved Promise<''>
-    actions.ts ->> React GlobalContextWatcher: resolved Promise <''>
+    React GlobalContextWatcher ->> React GlobalContextWatcher: useEffect()
 
-    React GlobalContextWatcher ->> actions.ts: getOrCreateAssistantForRepo()
-    actions.ts ->> assistants.ts: configAssistant()
+    Note left of React GlobalContextWatcher: useEffect depends on selectedProject/selectedProjectRepositories
+
+    React GlobalContextWatcher ->> React GlobalContextWatcher: updateAIOnRepositoryChange()
+    React GlobalContextWatcher ->> actions.ts: tickleProjectFromProjectChange(repos)
+
+    loop selectedProjectRepositories (React Context state)
+        actions.ts ->> backend.ts: ticketProject(repo, email)
+        backend.ts ->> Boost REST API: POST /api/user_project/repoOrgID/repoName
+        Boost REST API ->> backend.ts: 200 OK
+        backend.ts ->> actions.ts: resolved Promise<''>
+    end
+
+    actions.ts ->> React GlobalContextWatcher: resolved Promise.all([<''>])
+
+    React GlobalContextWatcher ->> actions.ts: getOrCreateAssistantForProject(selectedProject, selectedProjectRepositories)
+
+    Note right of actions.ts: Conditionally create assistant if project doesn't have one
+
+    actions.ts ->> assistants.ts: configAssistant(project, repos, email)
+
+    loop repos
+        assistants.ts ->> backend.ts: getFileInfo(repo, email)
+        backend.ts ->> Boost REST API: GET /api/user_project/repoOrgID/repoName/data_references
+        Boost REST API ->> backend.ts: 200 OK [ProjectDataReference]
+        backend.ts ->> assistants.ts: resolved Promise<ProjectDataReference[]>
+    end
 
     Note right of assistants.ts: Excluding details of findAssistantForRepo()
 
-    assistants.ts ->> backend.ts: getFileInfo()
-    backend.ts ->> Boost REST API: GET /api/user_project/repoOrgID/repoName/data_references
-    Boost REST API ->> backend.ts: 200 OK [ProjectDataReference]
-    backend.ts ->> assistants.ts: resolved Promise<ProjectDataReference[]>
-    assistants.ts ->> assistants.ts: updateAssistantPromptAndFiles()
+    assistants.ts ->> assistants.ts: updateAssistantPromptAndFiles(fileInfos, existingAssistant)
 
-    Note right of assistants.ts: updateAssistantPromptAndFiles() invoked as Assistant exists
+    Note right of assistants.ts: updateAssistantPromptAndFiles() invoked if Assistant exists
     Note right of assistants.ts: If Assistant doesn't exist we would sequence createAssistantWithFileIDsFromRepo()
+    Note right of assistants.ts: createAssistantWithFileIDsFromRepo() behaves similarly to sequence if Assistant exists
 
     assistants.ts ->> assistants.ts: mapFileInfoToPromptAndIDs()
-
-    Note right of assistants.ts: Excluding details of OpenAI REST call
-
     assistants.ts ->> assistants.ts: getOpenAIAssistantInstructions()
-    assistants ->> actions.ts: resolved Promise<Assistant>
+
+    Note right of assistants.ts: Excluding details of OpenAI REST call (assistants.update)
+
+    assistants.ts ->> actions.ts: resolved Promise<Assistant>
     actions.ts ->> React GlobalContextWatcher: resolved Promise<Assistant>
-    React GlobalContextWatcher ->> React GlobalContextWatcher: setSelectedRepository()
 
     deactivate React GlobalContextWatcher
 ```
