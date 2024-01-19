@@ -13,6 +13,8 @@
   - [Testing](#Testing)
     - [How The Tests Work](#How-The-Tests-Work)
     - [Testing With `node-boost-api` Service](#Testing-With-node-boost-api-Service)
+  - [Ops](#Ops)
+    - [Adding/Updating Deployment Environment Variables](#AddingUpdating-Deployment-Environment-Variables)
   - [Features](#Features)
     - [Model Providers](#Model-Providers)
   - [Resources](#Resources)
@@ -138,6 +140,12 @@ python create_project.py --email aaron@polyverse.com --organization polyverse-ap
 ```
 
 * Overtime `Sara` ought to be able to make requests to [`node-boost-api`](https://github.com/polyverse-appsec/boost-node-api) to get the file IDs for the uploaded files
+
+## Ops
+
+### Adding/Updating Deployment Environment Variables
+
+Vercel allows for the management of [environment variables from the cloud](https://nextjs.org/docs/pages/building-your-application/configuring/environment-variables#environment-variables-on-vercel). When you need to add or update environment variables for the Vercel deployments do so through the configuration/settings for a `Deployment.` After doing so announce to others that the environment variables have been updated and that they need to update their own local environment variables by running `vercel env pull`.
 
 ## Features
 
