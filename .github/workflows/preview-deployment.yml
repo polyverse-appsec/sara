@@ -15,6 +15,13 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      # Checkout `HEAD` to get all commits to build from. Without this we can
+      # fail to deploy to `Preview` in Vercel with all commits from previously
+      # failed builds.
+      - run: git checkout HEAD^
 
       # Note that while our Lambda backend uses Node 20 and Vercel also has
       # support for it it is currently in beta - thus use 18 for now
