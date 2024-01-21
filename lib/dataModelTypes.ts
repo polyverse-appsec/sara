@@ -29,8 +29,6 @@ Chats are stored in a KV namespace called `chat:${id}`.
 
 Each task has a set of chats, the ids of these chats is stored in a sorted set called `task:chats:${taskId}`.
 
-The user can have a sequence of chats not associated with any task. Therse are stored in a sorted set called `user:chat:${userId}`.
-
 */
 
 export interface User extends Record<string, any> {

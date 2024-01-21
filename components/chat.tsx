@@ -68,8 +68,10 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
         task: selectedActiveTask,
       },
       onResponse(response) {
-        if (response.status === 401) {
-          toast.error(response.statusText)
+        const { status, statusText } = response
+
+        if (status === 400 || 401) {
+          toast.error(statusText)
         }
       },
       onFinish() {

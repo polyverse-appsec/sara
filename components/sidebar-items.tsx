@@ -2,16 +2,16 @@
 
 import { AnimatePresence, motion } from 'framer-motion'
 
-import { Chat } from '@/lib/dataModelTypes'
+import { type Chat } from '@/lib/dataModelTypes'
 import { SidebarActions } from '@/components/sidebar-actions'
 import { SidebarItem } from '@/components/sidebar-item'
-import { removeChat } from '@/app/actions'
 
 interface SidebarItemsProps {
   chats?: Chat[]
+  chatRemovedHandler: (chatIdToRemove: string) => void
 }
 
-export function SidebarItems({ chats }: SidebarItemsProps) {
+export function SidebarItems({ chats, chatRemovedHandler }: SidebarItemsProps) {
   if (!chats?.length) return null
 
   return (
@@ -27,7 +27,7 @@ export function SidebarItems({ chats }: SidebarItemsProps) {
               }}
             >
               <SidebarItem index={index} chat={chat}>
-                <SidebarActions chat={chat} removeChat={removeChat} />
+                <SidebarActions chat={chat} chatRemovedHandler={chatRemovedHandler} />
               </SidebarItem>
             </motion.div>
           ),

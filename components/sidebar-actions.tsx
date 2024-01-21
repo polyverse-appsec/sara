@@ -4,7 +4,7 @@ import * as React from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'react-hot-toast'
 
-import { ServerActionResult, type Chat } from '@/lib/dataModelTypes'
+import { type ServerActionResult, type Chat } from '@/lib/dataModelTypes'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -22,14 +22,18 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+import { useAppContext } from '@/lib/hooks/app-context'
+import { removeChat } from '@/app/actions'
+
 
 interface SidebarActionsProps {
   chat: Chat
-  removeChat: (args: { id: string; path: string }) => ServerActionResult<void>
+  chatRemovedHandler: (chatIdToRemove: string) => void
 }
 
-export function SidebarActions({ chat, removeChat }: SidebarActionsProps) {
+export function SidebarActions({ chat, chatRemovedHandler }: SidebarActionsProps) {
   const router = useRouter()
+  const { selectedActiveTask } = useAppContext()
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false)
   const [isRemovePending, startRemoveTransition] = React.useTransition()
 
@@ -70,8 +74,14 @@ export function SidebarActions({ chat, removeChat }: SidebarActionsProps) {
                 event.preventDefault()
                 // @ts-ignore
                 startRemoveTransition(async () => {
+                  if (!selectedActiveTask || !selectedActiveTask.id) {
+                    toast.error('Unable to remove chat - no active task with an ID found')
+                    return
+                  }
+
                   const result = await removeChat({
                     id: chat.id,
+                    taskId: selectedActiveTask?.id,
                     path: chat.path,
                   })
 
@@ -84,6 +94,8 @@ export function SidebarActions({ chat, removeChat }: SidebarActionsProps) {
                   router.refresh()
                   router.push('/')
                   toast.success('Chat deleted')
+
+                  chatRemovedHandler(chat.id)
                 })
               }}
             >

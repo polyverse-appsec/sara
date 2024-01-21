@@ -5,15 +5,28 @@ import OpenAI from 'openai'
 import { stripUndefinedObjectProperties } from '@/lib/polyverse/backend/backend'
 import { querySara } from '@/lib/polyverse/sara/sara'
 import { nanoid } from '@/lib/utils'
+import { json } from 'stream/consumers'
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 })
 
-export async function POST(req: Request) {
-  console.log(`In POST of route.ts - req: ${JSON.stringify(req)}`)
+const deserializeAndValidateRequestBody = async (req: Request) => {
   const json = await req.json()
   const { messages, project, chat, task } = json
+
+  if (!task) {
+    throw new Error('No task found')
+  }
+
+  if (!task.id) {
+    throw new Error(`Task is missing the property 'id'`)
+  }
+
+  return json
+}
+
+export async function POST(req: Request) {
   const session = await auth()
   const userId = session?.user.id
 
@@ -23,15 +36,32 @@ export async function POST(req: Request) {
     })
   }
 
+  let jsonBody = null
+
+  try {
+    jsonBody = await deserializeAndValidateRequestBody(req)
+  } catch (err) {
+    if (err instanceof Error) {
+      return new Response(err.message, {
+        status: 400,
+      })
+    }
+
+    return new Response('Validation failed', {
+      status: 400,
+    })
+  }
+
+  const { id, messages, project, chat, task } = jsonBody
+
   const persistAssistantMessagesCallback = async (
     retrievedAssistantMessages: string,
   ) => {
-    const title = json.messages[0].content.substring(0, 100)
-    const id = json.id ?? nanoid()
+    const title = messages[0].content.substring(0, 100)
     const createdAt = Date.now()
     const path = `/chat/${id}`
     const payload = {
-      id,
+      id: id ?? nanoid(),
       title,
       userId,
       createdAt,
@@ -51,15 +81,15 @@ export async function POST(req: Request) {
     const cleanPayload = stripUndefinedObjectProperties(payload)
     await kv.hmset(`chat:${id}`, cleanPayload)
 
-    let key = `user:chat:${userId}`
-    if (task?.id) {
-      key = `task:chats:${task.id}`
-    }
+    const key = `task:chats:${task.id}`
+
     console.log(`storing chat at key: ${key}`)
+
     await kv.zadd(key, {
       score: createdAt,
       member: `chat:${id}`,
     })
+
     console.log(`stored chat at key: ${key}`)
   }
 

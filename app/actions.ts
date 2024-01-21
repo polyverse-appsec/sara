@@ -86,7 +86,7 @@ export async function getChat(id: string, userId: string) {
   return chat
 }
 
-export async function removeChat({ id, path }: { id: string; path: string }) {
+export async function removeChat({ id, taskId, path }: { id: string; taskId: string, path: string }) {
   const session = await auth()
 
   if (!session) {
@@ -114,14 +114,10 @@ export async function removeChat({ id, path }: { id: string; path: string }) {
       error: 'Unauthorized',
     }
   }
-  /* BUGBUG come back to this
+
   await kv.del(`chat:${id}`)
-  if (session.activeTask?.id) {
-    await kv.zrem(`task:chats:${session.activeTask?.id}`, `chat:${id}`)
-  } else {
-    await kv.zrem(`user:chat:${session.user.id}`, `chat:${id}`)
-  }
-*/
+  await kv.zrem(`task:chats:${taskId}`, `chat:${id}`)
+
   revalidatePath('/')
   return revalidatePath(path)
 }
