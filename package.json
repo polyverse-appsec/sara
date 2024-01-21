@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "cross-env NODE_OPTIONS='--inspect' next dev",
-    "dev-docker": "docker-compose up -d && KV_REST_API_URL='http://localhost:8079' KV_REST_API_TOKEN='example_token' NODE_OPTIONS='--inspect' next dev",
+    "dev-docker": "docker-compose up -d && cross-env KV_REST_API_URL='http://localhost:8079' KV_REST_API_TOKEN='example_token' NODE_OPTIONS='--inspect' next dev",
     "build": "next build",
     "build-test": "tsc && ./test/add-test-build-types.sh",
     "start": "next start",
