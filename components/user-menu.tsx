@@ -62,6 +62,17 @@ export function UserMenu({ user }: UserMenuProps) {
               <IconExternalLink className="w-3 h-3 ml-auto" />
             </a>
           </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <a
+              href="https://github.com/apps/polyverse-boost"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-between w-full text-xs"
+            >
+              Authorize Private Repositories
+              <IconExternalLink className="w-3 h-3 ml-auto" />
+            </a>
+          </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() =>
               signOut({

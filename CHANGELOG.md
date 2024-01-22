@@ -3,6 +3,17 @@ Polyverse Sara Web UI for Boost
 
 # Release Notes
 
+## Version 0.5.0: January 22nd, 2023
+
+### New Features
+- Added Private Repository Authorization link to Sara menu
+
+### Enhancements
+- N/A
+
+### Bug Fixes
+- N/A
+
 ## Version 0.4.0: January 18th, 2023
 
 ### New Features
