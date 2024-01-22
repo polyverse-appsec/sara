@@ -68,5 +68,5 @@ jobs:
       - name: Merge into preview
         run: |
           git fetch -a --prune
-          git checkout preview
-          get merge main
+          git checkout origin/preview
+          get merge origin/main
