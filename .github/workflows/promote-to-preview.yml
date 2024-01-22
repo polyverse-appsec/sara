@@ -48,5 +48,6 @@ jobs:
     steps:
       - name: Merge into preview
         run: |
+          git fetch -a --prune
           git checkout preview
           get merge main
