@@ -34,11 +34,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Build NextJS app
+        run: pnpm run build
+
       - name: Run CI tests
         run: |
-          pnpm run dev &
-          echo "Sleeping for 10 seconds to let 'dev' build"
-          sleep 10
+          pnpm run start &
+          echo "Sleeping for 10 seconds to let server start"
+          sleep 10s
           pnpm run test
 
   deploy:
