@@ -1,0 +1,51 @@
+name: Promote to Preview
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  setup:
+    name: Setup environment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      # Note that while our Lambda backend uses Node 20 and Vercel also has
+      # support for it it is currently in beta - thus use 18 for now
+      - name: Setup Node 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: pnpm
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: latest
+
+      - name: Install Vercel CLI
+        run: pnpm i --global vercel@latest
+
+      - name: Install dependencies
+        run: pnpm install
+  
+  test:
+    name: Run CI tests
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - name: Run CI tests
+        run: pnpm run test
+
+  deploy:
+    name: Deploy to Preview branch
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Merge into preview
+        run: |
+          git checkout preview
+          get merge main
