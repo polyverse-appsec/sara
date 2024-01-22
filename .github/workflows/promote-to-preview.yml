@@ -66,7 +66,8 @@ jobs:
     needs: test
     steps:
       - name: Merge into preview
+        uses: actions/checkout@v4
         run: |
           git fetch -a --prune
-          git checkout origin/preview
-          get merge origin/main
+          git checkout preview
+          get merge main
