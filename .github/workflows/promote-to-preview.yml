@@ -32,7 +32,11 @@ jobs:
         run: pnpm install
 
       - name: Run CI tests
-        run: pnpm run test
+        run: |
+          pnpm run dev &
+          echo "Sleeping for 10 seconds to let 'dev' build"
+          sleep 10
+          pnpm run test
 
   deploy:
     name: Deploy to Preview branch
