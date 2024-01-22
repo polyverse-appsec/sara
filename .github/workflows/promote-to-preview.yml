@@ -70,5 +70,6 @@ jobs:
 
       - name: Merge into preview
         run: |
+          git fetch --all
           git checkout preview
           git merge main
