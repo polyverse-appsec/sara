@@ -13,6 +13,13 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
+      # `pnpm` needs to be installed before we setup Node and use it as a cache
+      # with `pnpm`
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: latest
+
       # Note that while our Lambda backend uses Node 20 and Vercel also has
       # support for it it is currently in beta - thus use 18 for now
       - name: Setup Node 18
@@ -20,11 +27,6 @@ jobs:
         with:
           node-version: 18
           cache: pnpm
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: latest
 
       - name: Install Vercel CLI
         run: pnpm i --global vercel@latest
