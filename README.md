@@ -148,7 +148,14 @@ python create_project.py --email aaron@polyverse.com --organization polyverse-ap
 
 Vercel has deep `Git` integration for the projects they host. By default Vercel will monitor your projects branches and auto-deploy to the different environments (e.g. `Production`, `Preview`) when changes are made. We have turned this default behavior off to have tighter control over our CI/CD processes. The configuration for disabling this behavior is defined within `vercel.json` under the property [`git.deploymentEnabled = false`](https://vercel.com/docs/projects/project-configuration/git-configuration#git.deploymentenabled). Note that this configuration doesn't preclude us from deploying to Vercel when changes happen in our GitHub repo - we just need to do the work to deploying manually or automate `GitHub Actions`.
 
-A GitHub Workflow named `preview-deployment.yml` automatically deploy any code commits to the `main` branch automatically to a Vercel `Preview` deployment.
+A GitHub Workflow named `preview-deployment.yml` will automatically deploy any code commits to the `main` branch automatically to a Vercel `Preview` deployment.
+
+A GitHub Workflow named `production-deployment.yml` will allow you to manually deploy any code commits to the `main` branch to our Vercel `Production` deployment. To run the workflow:
+* Click the `Actions` tab in the GitHub repo
+* Select the `Vercel Production Deployment` in the left workflow panel
+* Select `Run workflow`
+
+![Run Vercel Production Deployment](/images-docs/run-production-workflow.png)
 
 ### Adding/Updating Deployment Environment Variables
 
