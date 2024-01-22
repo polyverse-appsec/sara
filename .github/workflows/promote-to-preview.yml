@@ -72,4 +72,4 @@ jobs:
         run: |
           git fetch --all
           git checkout preview
-          git merge main
+          git merge origin/main
