@@ -45,8 +45,12 @@ jobs:
       - name: Build Project Artifacts
         run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
 
+      # Export NEXTAUTH_URL as localhost when running in GitHub Actions to
+      # avoid UntrustedHost error: https://authjs.dev/reference/core/errors/#untrustedhost
+      # Note that this isn't a pattern to follow for any Vercel deployments
       - name: Run CI tests
         run: |
+          export NEXTAUTH_URL=localhost
           pnpm run start &
           echo "Sleeping for 5 seconds to let server start"
           sleep 5s
