@@ -65,8 +65,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: test
     steps:
-      - name: Merge into preview
+      - name: Checkout repo
         uses: actions/checkout@v4
+
+      - name: Merge into preview
         run: |
           git fetch -a --prune
           git checkout preview
