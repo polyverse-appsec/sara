@@ -70,7 +70,5 @@ jobs:
 
       - name: Merge into preview
         run: |
-          git fetch -a --prune
           git checkout preview
-          git rebase origin/main
-          git push --force-with-lease origin preview
+          git merge main
