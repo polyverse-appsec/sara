@@ -68,8 +68,16 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Merge into preview
-        run: |
-          git fetch --all
-          git checkout preview
-          git merge origin/main
+      - name: Merge main innto preview
+        uses: devmasx/merge-branch@master
+        with:
+          type: now
+          from_branch: main
+          target_branch: preview
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      # - name: Merge into preview
+      #   run: |
+      #     git fetch --all --prune
+      #     git checkout preview
+      #     git merge origin/main
