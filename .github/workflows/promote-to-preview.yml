@@ -1,7 +1,8 @@
 name: Promote to Preview
 
 env:
-  NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
 on:
   push:
