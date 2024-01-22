@@ -64,6 +64,28 @@ export function UserMenu({ user }: UserMenuProps) {
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <a
+              href="https://buy.stripe.com/8wM9AY9hAe4y5fa000"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-between w-full text-xs"
+            >
+              Upgrade to Premium Subscription
+              <IconExternalLink className="w-3 h-3 ml-auto" />
+            </a>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <a
+              href="https://github.com/apps/polyverse-boost"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-between w-full text-xs"
+            >
+              Authorize Private Repositories
+              <IconExternalLink className="w-3 h-3 ml-auto" />
+            </a>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <a
               href="https://github.com/apps/polyverse-boost"
               target="_blank"
               rel="noopener noreferrer"

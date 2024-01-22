@@ -7,6 +7,7 @@ Polyverse Sara Web UI for Boost
 
 ### New Features
 - Added Private Repository Authorization link to Sara menu
+- Added Premium Subscription payment link to Sara menu
 
 ### Enhancements
 - N/A
