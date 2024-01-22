@@ -1,5 +1,8 @@
 name: Promote to Preview
 
+env:
+  NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+
 on:
   push:
     branches:
