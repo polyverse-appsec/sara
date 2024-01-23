@@ -42,10 +42,8 @@ jobs:
       - name: Install Vercel CLI
         run: pnpm i --global vercel@latest
 
-      # Pull info for `prod` since that is what we are interested integrating
-      # into
       - name: Pull Vercel Environment Information
-        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
 
       # Build for `prod` since that is what we are interested integrating into
       # Note that running `vercel build` will result in `next build` being ran.
