@@ -70,31 +70,24 @@ jobs:
         with:
           fetch-depth: 0
 
-      # This works to create preview
-      # - name: Rebase preview off of main
-      #   run: |
-      #     git fetch origin
-      #     git checkout main
-      #     git rebase origin/main
-      #     git checkout -b preview
-      #     git push origin preview
-
       # This results in fatal: refusing to merge unrelated histories
+      - name: Merge main into preview as fast-forward
+        run: |
+          git fetch origin
+          git checkout -b preview --track origin/preview
+          git merge --ff-only origin/main
+          git push origin preview
+
+      # # Note that if we don't fetch the whole depth (i.e. the history) of all of
+      # # our branches then when we rebase we will get either showing conflicts or
+      # # a common ancestory doesn't exists (fatal: refusing to merge unrelated 
+      # # histories)
       # - name: Rebase preview off of main
       #   run: |
       #     git fetch origin
       #     git checkout -b preview --track origin/preview
-      #     git rebase origin/preview
-      #     git merge --ff-only origin/main
+      #     git rebase origin/main
       #     git push origin preview
-
-      - name: Rebase preview off of main
-        run: |
-          git fetch origin
-          git checkout -b preview --track origin/preview
-          git status
-          git rebase origin/main
-          git push origin preview
 
 
       # - name: Rebase preview off of main
