@@ -67,6 +67,8 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       # This works to create preview
       # - name: Rebase preview off of main
