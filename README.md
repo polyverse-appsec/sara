@@ -27,6 +27,8 @@
 
 ## Quickstart
 
+**Tickle**
+
 If you haven't yet installed `pnpm` you can do so by running the following: `curl -fsSL https://get.pnpm.io/install.sh | sh -`
 
 ```bash
