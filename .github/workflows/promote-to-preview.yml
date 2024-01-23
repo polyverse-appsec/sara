@@ -68,13 +68,24 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
+      # This works to create preview
+      # - name: Rebase preview off of main
+      #   run: |
+      #     git fetch origin
+      #     git checkout main
+      #     git rebase origin/main
+      #     git checkout -b preview
+      #     git push origin preview
+
       - name: Rebase preview off of main
         run: |
-          git fetch origin
-          git checkout main
-          git rebase origin/main
-          git checkout -b preview
-          git push origin preview
+          git fetch --all --prune origin main
+          git checkout preview
+          git checkout origin/preview
+          git merge --ff-only origin/main
+
+
+
 
       # - name: Rebase preview off of main
       #   run: |
