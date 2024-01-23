@@ -1,0 +1,77 @@
+name: "CI: Integrate Preview to Prod"
+
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+on:
+  workflow_run:
+    workflows:
+      - "CD: Deploy to Preview Domain"
+    types:
+      - completed
+
+jobs:
+  test:
+    name: Run CI tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+          ref: preview
+
+      # `pnpm` needs to be installed before we setup Node and use it as a cache
+      # with `pnpm`
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: latest
+
+      # Note that while our Lambda backend uses Node 20 and Vercel also has
+      # support for it it is currently in beta - thus use 18 for now
+      - name: Setup Node 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Install Vercel CLI
+        run: pnpm i --global vercel@latest
+
+      # Pull info for `prod` since that is what we are interested integrating
+      # into
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+
+      # Build for `prod` since that is what we are interested integrating into
+      # Note that running `vercel build` will result in `next build` being ran
+      - name: Build Project Artifacts
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Run CI tests
+        run: |
+          pnpm run start &
+          # You shouldn't need to sleep here to let the NextJS server come up as
+          # we need to compile our tests with `tsc` before running them which
+          # will consume some time
+          pnpm run test
+
+  integrate:
+    name: Integrate to Prod branch
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Merge preview into prod as fast-forward
+        run: |
+          git fetch origin
+          git checkout -b prod --track origin/prod
+          git merge --ff-only origin/preview
+          git push origin prod
