@@ -79,7 +79,7 @@ jobs:
 
       - name: Rebase preview off of main
         run: |
-          git fetch --all --prune origin main
+          git fetch origin main
           git checkout preview
           git checkout origin/preview
           git merge --ff-only origin/main
