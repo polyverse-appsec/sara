@@ -1,4 +1,4 @@
-name: "CD: Deploy to Preview Domain"
+name: "CD: Deploy to Prod Domain"
 
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
