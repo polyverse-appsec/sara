@@ -77,15 +77,22 @@ jobs:
       #     git checkout -b preview
       #     git push origin preview
 
+      # This results in fatal: refusing to merge unrelated histories
+      # - name: Rebase preview off of main
+      #   run: |
+      #     git fetch origin
+      #     git checkout -b preview --track origin/preview
+      #     git rebase origin/preview
+      #     git merge --ff-only origin/main
+      #     git push origin preview
+
       - name: Rebase preview off of main
         run: |
           git fetch origin
           git checkout -b preview --track origin/preview
-          git rebase origin/preview
-          git merge --ff-only origin/main
+          git status
+          git rebase origin/main
           git push origin preview
-
-
 
 
       # - name: Rebase preview off of main
