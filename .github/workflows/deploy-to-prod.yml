@@ -11,6 +11,18 @@ jobs:
   Deploy-Preview:
     runs-on: ubuntu-latest
     steps:
+      - name: Fail if not manually dispatched
+        if: github.event_name != 'workflow_dispatch'
+        run: |
+          echo "This workflow should only be triggered by a manual workflow_dispatch event"
+          exit 1
+
+      - name: Fail if branch is not prod
+        if: github.ref != 'refs/heads/prod'
+        run: |
+          echo "This workflow should only be triggered on the prod branch"
+          exit 1
+
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
