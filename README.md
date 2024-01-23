@@ -3,6 +3,7 @@
 - [Sara](#Sara)
   - [Quickstart](#Quickstart)
   - [Design & Technical Docs](#Design--Technical-Docs)
+  - [Ops Docs](#Ops-Docs)
   - [Running](#Running)
     - [Running Locally (First Time Usage)](#Running-Locally-First-Time-Usage)
     - [Running With DB Containers (Docker)](#Running-With-DB-Containers-Docker)
@@ -41,6 +42,10 @@ Your app template should now be running on [localhost:3000](http://localhost:300
 ## Design & Technical Docs
 
 * [Sequence Diagrams](tech-docs/sequence-diagrams.md)
+
+## Ops Docs
+
+* [CI/CD Workflow](ops-docs/ci-cd-workflow.md)
 
 ## Running
 
@@ -166,6 +171,27 @@ Any code committed to our trunk for development will go through this automatic C
 * Merge code from `preview` to `prod`
 
 After the relevant code is merged into `prod` one can manually start a deployment to the Vercel `boost.polyverse.com` domain. See the section [Continuous Deployment: Deploying To Vercel](#Continuous-Deployment-Deploying-To-Vercel) for more details.
+
+A diagram representing the workflow is below.
+
+```mermaid
+flowchart TD
+    A[Developer] -- Check into `main` --> B((main branch))
+    B -- Triggered on commit --> C[GH WF: Deploy To Dev]
+    C -- Push artifacts --> D((dev.boost.polyverse.com))
+    B -- Triggered on commit --> E[GH WF: Integrate To Preview]
+    E --> F{Did tests pass?}
+    F -- Tests failed --> G[Workflow fails]
+    F -- Tests passed - merge --> H((preview branch))
+    H -- Triggered on preview integration success --> I[GH WF: Deploy To Preview]
+    I -- Push artifacts --> J((preview.boost.polyverse.com))
+    J -- Triggered on preview deployment success --> K[GH WF: Integrate To Prod]
+    K --> L{Did tests pass?}
+    L -- Tests failed --> M[Workflow fails]
+    L -- Tests passed - merge --> N((prod branch))
+    N -- Manual trigger --> O[GH WF: Deploy To Prod]
+    O -- Push artifacts --> P((boost.polyverse.com))
+```
 
 ### Continuous Integration: Merging Code Changes
 
