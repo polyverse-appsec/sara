@@ -1,4 +1,4 @@
-name: Promote to Preview
+name: "CI: Integrate Main to Preview"
 
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
@@ -56,12 +56,13 @@ jobs:
           export NEXTAUTH_URL="http://localhost:3000"
           export AUTH_SECRET="8604b92966b197c12aab26f66aa8596a"
           pnpm run start &
-          echo "Sleeping for 5 seconds to let server start"
-          sleep 5s
+          # You shouldn't need to sleep here to let the NextJS server come up as
+          # we need to compile our tests with `tsc` before running them which
+          # will consume some time
           pnpm run test
 
-  deploy:
-    name: Deploy to Preview branch
+  integrate:
+    name: Integrate to Preview branch
     runs-on: ubuntu-latest
     needs: test
     steps:
@@ -70,42 +71,9 @@ jobs:
         with:
           fetch-depth: 0
 
-      # This results in fatal: refusing to merge unrelated histories
       - name: Merge main into preview as fast-forward
         run: |
           git fetch origin
           git checkout -b preview --track origin/preview
           git merge --ff-only origin/main
           git push origin preview
-
-      # # Note that if we don't fetch the whole depth (i.e. the history) of all of
-      # # our branches then when we rebase we will get either showing conflicts or
-      # # a common ancestory doesn't exists (fatal: refusing to merge unrelated 
-      # # histories)
-      # - name: Rebase preview off of main
-      #   run: |
-      #     git fetch origin
-      #     git checkout -b preview --track origin/preview
-      #     git rebase origin/main
-      #     git push origin preview
-
-
-      # - name: Rebase preview off of main
-      #   run: |
-      #     git fetch --all --prune
-      #     git checkout preview
-      #     git merge --ff-only main
-
-      # - name: Merge main innto preview
-      #   uses: devmasx/merge-branch@master
-      #   with:
-      #     type: now
-      #     from_branch: main
-      #     target_branch: preview
-      #     github_token: ${{ secrets.GITHUB_TOKEN }}
-
-      # - name: Merge into preview
-      #   run: |
-      #     git fetch --all --prune
-      #     git checkout preview
-      #     git merge origin/main

@@ -13,7 +13,7 @@ describe('Basic HTTP functionality', function() {
     //
     // Note the norm shouldn't be to increase test timeouts - only consider
     // doing so in the event of dynamic page rendering.
-    this.timeout(20000)
+    this.timeout(10000)
 
     chai.request(serverURL)
       .get('/')
