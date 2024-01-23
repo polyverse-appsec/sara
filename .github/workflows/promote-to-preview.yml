@@ -72,7 +72,7 @@ jobs:
         run: |
           git fetch --all --prune
           git checkout preview
-          git merge --ff-only main
+          git merge --ff-only --allow-unrelated-histories main
 
       # - name: Merge main innto preview
       #   uses: devmasx/merge-branch@master
