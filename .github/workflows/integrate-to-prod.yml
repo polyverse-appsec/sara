@@ -48,7 +48,9 @@ jobs:
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
 
       # Build for `prod` since that is what we are interested integrating into
-      # Note that running `vercel build` will result in `next build` being ran
+      # Note that running `vercel build` will result in `next build` being ran.
+      #
+      # Running `vercel build` will result in `next build` being ran.
       - name: Build Project Artifacts
         run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
 
