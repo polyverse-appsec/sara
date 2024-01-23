@@ -3,9 +3,11 @@
 - [Sara](#Sara)
   - [Quickstart](#Quickstart)
   - [Design & Technical Docs](#Design--Technical-Docs)
-  - [Development](#Development)
+  - [Running](#Running)
     - [Running Locally (First Time Usage)](#Running-Locally-First-Time-Usage)
     - [Running With DB Containers (Docker)](#Running-With-DB-Containers-Docker)
+  - [Development](#Development)
+    - [Trunk Based Development](#Trunk-Based-Development)
     - [Debugging The Frontend](#Debugging-The-Frontend)
     - [Debugging The Backend](#Debugging-The-Backend)
     - [Committing Code](#Committing-Code)
@@ -14,7 +16,9 @@
     - [How The Tests Work](#How-The-Tests-Work)
     - [Testing With `node-boost-api` Service](#Testing-With-node-boost-api-Service)
   - [Ops](#Ops)
-    - [Deploying To Vercel](#Deploying-To-Vercel)
+    - [Overview Of CI/CD Strategy](#Overview-Of-CICD-Strategy)
+    - [Continuous Integration: Merging Code Changes](#Continuous-Integration-Merging-Code-Changes)
+    - [Continuous Deployment: Deploying To Vercel](#Continuous-Deployment-Deploying-To-Vercel)
     - [Adding/Updating Deployment Environment Variables](#AddingUpdating-Deployment-Environment-Variables)
   - [Features](#Features)
     - [Model Providers](#Model-Providers)
@@ -38,7 +42,7 @@ Your app template should now be running on [localhost:3000](http://localhost:300
 
 * [Sequence Diagrams](tech-docs/sequence-diagrams.md)
 
-## Development
+## Running
 
 ### Running Locally (First Time Usage)
 
@@ -55,6 +59,12 @@ Your app template should now be running on [localhost:3000](http://localhost:300
 ### Running With DB Containers (Docker)
 
 If you would like to run against a local instance of Redis for testing/development purposes you can use the Docker Compose file to do so. To do so simply run `pnpm run dev-docker`. This will start the Docker Compose deployment in the background as well as start the `Sara` development server with configuration allowing `Sara` to communicate with the local Redis containers.
+
+## Development
+
+### Trunk Based Development
+
+We used trunk based development where we all work out of `main` on a daily and don't use any feature branching strategy. This strategy is supported by and reinforces good Continuous Integration practices. [Click here](https://trunkbaseddevelopment.com/) to learn more about trunk based development.
 
 ### Debugging The Frontend
 
@@ -144,16 +154,48 @@ python create_project.py --email aaron@polyverse.com --organization polyverse-ap
 
 ## Ops
 
-### Deploying To Vercel
+### Overview Of CI/CD Strategy
+
+Any code committed to our trunk for development will go through this automatic CI/CD process:
+* Commit code to `main`
+* Build and deploy artifacts from `main` to Vercel `dev.boost.polyverse.com` domain
+* Build and test code from `main`
+* Merge code from `main` to `preview`
+* Build and deploy artifacts from `preview` to Vercel `preview.boost.polyverse.com` domain
+* Build and test code from `preview`
+* Merge code from `preview` to `prod`
+
+After the relevant code is merged into `prod` one can manually start a deployment to the Vercel `boost.polyverse.com` domain. See the section [Continuous Deployment: Deploying To Vercel](#Continuous-Deployment-Deploying-To-Vercel) for more details.
+
+### Continuous Integration: Merging Code Changes
+
+Several GitHub Workflows exist to merge code from our `main` trunk used to development to a branch named `preview` and a branch named `prod`. These workflows can be found in `.github/workflows`.
+
+Each workflow runs a set of tests that are required to pass before we merge any code from `main` into any other branches. Should any of these workflows fail it is important to identify why and resolve any issues.
+
+### Continuous Deployment: Deploying To Vercel
 
 Vercel has deep `Git` integration for the projects they host. By default Vercel will monitor your projects branches and auto-deploy to the different environments (e.g. `Production`, `Preview`) when changes are made. We have turned this default behavior off to have tighter control over our CI/CD processes. The configuration for disabling this behavior is defined within `vercel.json` under the property [`git.deploymentEnabled = false`](https://vercel.com/docs/projects/project-configuration/git-configuration#git.deploymentenabled). Note that this configuration doesn't preclude us from deploying to Vercel when changes happen in our GitHub repo - we just need to do the work to deploying manually or automate `GitHub Actions`.
 
-A GitHub Workflow named `preview-deployment.yml` will automatically deploy any code commits to the `main` branch automatically to a Vercel `Preview` deployment.
+Our Vercel setup has made available the following domains where each domain specifies whether it is a Vercel `Production` or `Preview` deployment as well as what `git` branch it is associated with:
+* boost.polyverse.com
+  * Production Deployment
+  * `prod` branch
+* preview.boost.polyverse.com
+  * Preview Deployment
+  * `preview` branch
+* dev.boost.polyverse.com
+  * Preview Deployment
+  * `main` branch
 
-A GitHub Workflow named `production-deployment.yml` will allow you to manually deploy any code commits to the `main` branch to our Vercel `Production` deployment. To run the workflow:
+Several GitHub Workflows exist to do continuous deployments to Vercel either automatically or manually in the case of deploying to `boost.polyverse.com`. These workflows can be found in `.github/workflows`.
+
+A GitHub Workflow named `deploy-to-production.yml` will allow you to manually deploy any code in the `prod` branch to our Vercel `Production` deployment. To run the workflow:
 * Click the `Actions` tab in the GitHub repo
-* Select the `Vercel Production Deployment` in the left workflow panel
+* Select the `CD: Deploy to Prod Domain` in the left workflow panel
 * Select `Run workflow`
+* Select `prod` as the branch in the dropdown
+* Click `Run workflow`
 
 ![Run Vercel Production Deployment](/images-docs/run-production-workflow.png)
 
@@ -188,3 +230,4 @@ This template ships with OpenAI `gpt-3.5-turbo` as the default. However, thanks 
 * [React API Reference](https://react.dev/reference/react)
 * [Tailwind CSS Docs](https://tailwindcss.com/docs/installation)
 * [MochaJS Docs](https://mochajs.org/)
+* [Trunk Based Development](https://trunkbaseddevelopment.com/)
