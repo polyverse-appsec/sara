@@ -71,7 +71,11 @@ jobs:
       - name: Rebase preview off of main
         run: |
           git fetch --all --prune
+          echo "Git logs for Main"
+          git log -20
           git checkout preview
+          echo "Git logs for Preview"
+          git log -20
           git rebase origin/main
           git push --force-with-lease origin preview
 
