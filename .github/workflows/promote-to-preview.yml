@@ -70,9 +70,17 @@ jobs:
 
       - name: Rebase preview off of main
         run: |
-          git fetch --all --prune
-          git checkout preview
-          git merge --ff-only --allow-unrelated-histories main
+          git fetch origin
+          git checkout main
+          git rebase origin/main
+          git checkout -b preview
+          git push origin preview
+
+      # - name: Rebase preview off of main
+      #   run: |
+      #     git fetch --all --prune
+      #     git checkout preview
+      #     git merge --ff-only main
 
       # - name: Merge main innto preview
       #   uses: devmasx/merge-branch@master
