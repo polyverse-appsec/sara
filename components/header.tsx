@@ -8,6 +8,7 @@ import { IconNextChat, IconSeparator } from '@/components/ui/icons'
 import { UserMenu } from '@/components/user-menu'
 
 import Sara32x32 from '../public/Sara_Cartoon_Portrait-32x32.png'
+import BoostLogo from '../public/boostlogo.png'
 import { ChatHistory } from './chat-history'
 import { GithubPanel } from './github-panel'
 import { SidebarMobile } from './sidebar-mobile'
@@ -53,7 +54,7 @@ export function Header() {
       </div>
       <div className="flex items-center justify-end space-x-2">
         <Image
-          src="/boostlogo.png" // Adjust the path to your boost.jpg
+          src={BoostLogo} // Adjust the path to your boost.jpg
           alt="Boost"
           width={100} // Adjust the width as needed
           height={50} // Adjust the height as needed
