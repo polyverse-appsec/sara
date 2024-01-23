@@ -50,7 +50,7 @@ jobs:
       #
       # Running `vercel build` will result in `next build` being ran.
       - name: Build Project Artifacts
-        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Run CI tests
         run: |
