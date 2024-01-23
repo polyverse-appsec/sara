@@ -1,4 +1,4 @@
-name: Vercel Preview Deployment
+name: "CD: Deploy to Preview Domain"
 
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
@@ -7,17 +7,15 @@ env:
 on:
   push:
     branches:
-      - main
+      - preview
 
 jobs:
-  Deploy-Preview:
+  deploy:
+    name: Deploy to Vercel Preview Domain
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
-
-      - name: Log last 10 commits
-        run: git log -10
 
       # Note that while our Lambda backend uses Node 20 and Vercel also has
       # support for it it is currently in beta - thus use 18 for now
