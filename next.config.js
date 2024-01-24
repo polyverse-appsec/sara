@@ -1,5 +1,4 @@
-require('./load-app-env')
-
+import './load-app-env'
 
 /** @type {import('next').NextConfig} */
 module.exports = {
