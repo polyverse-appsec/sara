@@ -45,7 +45,8 @@ jobs:
         run: |
           cat .vercel/.env.development.local
           cat .vercel/project.json
-          vercel build --local-config .vercel/project.json --token=${{ secrets.VERCEL_TOKEN }}
+          cp .vercel/.env.development.local .env.local
+          vercel build --token=${{ secrets.VERCEL_TOKEN }}
 
       # By default the `vercel deploy` command will deploy to `preview`. By
       # using the `--prebuilt` option - in conjunction with the `vercel build`
