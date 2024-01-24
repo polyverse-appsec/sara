@@ -5,6 +5,7 @@
   - [`<AppProvider>` Monitors For User Session Changes](#AppProvider-Monitors-For-User-Session-Changes)
   - [User Selects Repository From Dropdown](#User-Selects-Repository-From-Dropdown)
   - [Tickling Projects & Updating OpenAI Assistant On Repository Change (Assistant Exists)](#Tickling-Projects--Updating-OpenAI-Assistant-On-Repository-Change-Assistant-Exists)
+  - [Task Generation and Display](#Task-Generation-And-Display)
 
 This doc contains sequence diagrams throughout Sara. They are typically MermaidJS markdown that can be used here: https://mermaid.live/
 
@@ -195,7 +196,7 @@ sequenceDiagram
     deactivate React GlobalContextWatcher
 ```
 
-## User Requests to Generate Tasks
+## Task Generation And Display
 
 **Last Updated:** 1/23/24
 
