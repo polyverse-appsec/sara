@@ -53,4 +53,4 @@ jobs:
       # command - this will allow us to deploy to Vercel without the need to
       # share any source code.
       - name: Deploy Project Artifacts to Vercel
-        run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }} -e AUTH_REDIRECT_PROXY_URL="https://dev.boost.polyverse.com/api/auth"
+        run: vercel deploy -f -d --prebuilt --token=${{ secrets.VERCEL_TOKEN }} -e AUTH_REDIRECT_PROXY_URL="https://dev.boost.polyverse.com/api/auth"
