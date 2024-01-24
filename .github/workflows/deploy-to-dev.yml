@@ -41,8 +41,8 @@ jobs:
           vercel pull --yes --environment=development --token=${{ secrets.VERCEL_TOKEN }}
           cat .vercel/.env.development.local
           cat .vercel/project.json
-          mkdir .config
-          cp .vercel/.env.development.local .config/.env.development
+          mkdir config
+          cp .vercel/.env.development.local config/.env.development
           #cp .vercel/.env.development.local .env.local
 
       # By default the `vercel build` command will build `preview` artifacts
