@@ -3,6 +3,8 @@ import GitHub from 'next-auth/providers/github'
 import { Organization } from '@/lib/dataModelTypes'
 import exp from 'constants'
 
+// redirectProxyUrl
+
 export const {
   handlers: { GET, POST },
   auth
@@ -15,6 +17,11 @@ export const {
     })
   ],
   callbacks: {
+    redirect({url, baseUrl}) {
+      console.log(`***** redirect call back url: ${url}`)
+      console.log(`***** redirect call back url: ${baseUrl}`)
+      return url
+    },
     jwt({ token, profile, account }) {
       if (profile) {
         token.id = profile.id
