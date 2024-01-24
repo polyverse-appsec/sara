@@ -42,7 +42,9 @@ jobs:
       #
       # Running `vercel build` will result in `next build` being ran.
       - name: Build Project Artifacts
-        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+        run: |
+          cat .vercel/.env.development.local
+          vercel build --token=${{ secrets.VERCEL_TOKEN }}
 
       # By default the `vercel deploy` command will deploy to `preview`. By
       # using the `--prebuilt` option - in conjunction with the `vercel build`
