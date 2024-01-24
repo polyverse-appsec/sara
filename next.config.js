@@ -1,5 +1,5 @@
-import { existsSync } from 'fs'
-import dotenvFlow from 'dotenv-flow'
+const fs = require('fs')
+const dotenvFlow = require('dotenv-flow')
 
 // This module loads .env files from the config/ directory based the "app
 // environment" that it is being built for or is running in (e.g. development,
@@ -30,7 +30,7 @@ function throwErrorIfConflictingFilesDetected() {
     '.env.test.local',
   ]
   fileNames.forEach((path) => {
-    if (existsSync(path)) {
+    if (fs.existsSync(path)) {
       throw new Error(
         `env file detected in project root: ${path}. This project requires all .env files to be stored in ./config`
       )
