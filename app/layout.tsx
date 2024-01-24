@@ -12,7 +12,7 @@ import { Providers } from '@/components/providers'
 import { TailwindIndicator } from '@/components/tailwind-indicator'
 
 export const metadata = {
-  metadataBase: new URL(`https://${process.env.VERCEL_URL}`),
+  metadataBase: new URL(`https://${process.env.NEXTAUTH_URL}`),
   title: {
     default: 'Polyverse Boost: Sara AI',
     template: `%s - Polyverse Boost: Sara AI`,
