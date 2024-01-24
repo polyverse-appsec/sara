@@ -19,7 +19,9 @@ export const {
   callbacks: {
     redirect({url, baseUrl}) {
       console.log(`***** redirect call back url: ${url}`)
-      console.log(`***** redirect call back url: ${baseUrl}`)
+      console.log(`***** redirect call back baseUrl: ${baseUrl}`)
+      console.log(`***** redirect call back process.env.NEXTAUTH_URL: ${process.env.NEXTAUTH_URL}`)
+      console.log(`***** redirect call back process.env.AUTH_REDIRECT_PROXY_URL: ${process.env.AUTH_REDIRECT_PROXY_URL}`)
       return url
     },
     jwt({ token, profile, account }) {
