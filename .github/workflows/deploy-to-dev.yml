@@ -3,7 +3,7 @@ name: "CD: Deploy to Dev Domain"
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-  NODE_ENV: development
+  APP_ENV: development
 
 
 on:
@@ -37,18 +37,21 @@ jobs:
         run: pnpm i --global vercel@latest
 
       - name: Pull Vercel Environment Information
-        run: vercel pull --yes --environment=development --token=${{ secrets.VERCEL_TOKEN }}
+        run: |
+          vercel pull --yes --environment=development --token=${{ secrets.VERCEL_TOKEN }}
+          cat .vercel/.env.development.local
+          cat .vercel/project.json
+          mkdir .config
+          cp .vercel/.env.development.local .config/.env.development
+          #cp .vercel/.env.development.local .env.local
 
       # By default the `vercel build` command will build `preview` artifacts
       # that can later be used to deploy to `preview` deployments.
       #
       # Running `vercel build` will result in `next build` being ran.
       - name: Build Project Artifacts
-        run: |
-          cat .vercel/.env.development.local
-          cat .vercel/project.json
-          cp .vercel/.env.development.local .env.local
-          vercel build --token=${{ secrets.VERCEL_TOKEN }}
+        run: 
+          APP_ENV=development vercel build --token=${{ secrets.VERCEL_TOKEN }}
 
       # By default the `vercel deploy` command will deploy to `preview`. By
       # using the `--prebuilt` option - in conjunction with the `vercel build`
@@ -56,5 +59,4 @@ jobs:
       # share any source code.
       - name: Deploy Project Artifacts to Vercel
         run: |
-          echo $NODE_ENV
-          vercel deploy -f -d --prebuilt --token=${{ secrets.VERCEL_TOKEN }} -e AUTH_REDIRECT_PROXY_URL="https://dev.boost.polyverse.com/api/auth"
+          APP_ENV=development vercel deploy -f -d --prebuilt --token=${{ secrets.VERCEL_TOKEN }} -e AUTH_REDIRECT_PROXY_URL="https://dev.boost.polyverse.com/api/auth"

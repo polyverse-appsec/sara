@@ -1,3 +1,6 @@
+require('./load-app-env')
+
+
 /** @type {import('next').NextConfig} */
 module.exports = {
   images: {
