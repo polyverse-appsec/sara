@@ -3,7 +3,7 @@ import GitHub from 'next-auth/providers/github'
 import { Organization } from '@/lib/dataModelTypes'
 import exp from 'constants'
 
-console.log(`***** auth.ts evaluation process.env.AUTH_REDIRECT_PROXY_URL 4:04: ${process.env.AUTH_REDIRECT_PROXY_URL}`)
+console.log(`***** auth.ts evaluation process.env.AUTH_REDIRECT_PROXY_URL 6: ${process.env.AUTH_REDIRECT_PROXY_URL}`)
 
 export const {
   handlers: { GET, POST },
@@ -22,7 +22,7 @@ export const {
       console.log(`***** redirect call back url: ${url}`)
       console.log(`***** redirect call back baseUrl: ${baseUrl}`)
       console.log(`***** redirect call back process.env.NEXTAUTH_URL: ${process.env.NEXTAUTH_URL}`)
-      console.log(`***** redirect call back process.env.AUTH_REDIRECT_PROXY_URL 4:04: ${process.env.AUTH_REDIRECT_PROXY_URL}`)
+      console.log(`***** redirect call back process.env.AUTH_REDIRECT_PROXY_URL 6: ${process.env.AUTH_REDIRECT_PROXY_URL}`)
 
       return url
     },
