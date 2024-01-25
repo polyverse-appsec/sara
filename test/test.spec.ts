@@ -19,11 +19,7 @@ describe('Basic HTTP functionality', function() {
       .get('/')
       .end((err, res) => {
         chai.assert.equal(err, null, `Ensure server is running`)
-
-        // Note that what we really get is a `307` response for a redirect to
-        // log in. Yet `chai-http` follows the returned link in the `Location`
-        // header so look for a `200`.
-        chai.assert.equal(res.status, 200)
+        chai.assert.equal(res.status, 307)
         done()
       })
   })
