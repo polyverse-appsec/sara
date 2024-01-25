@@ -57,9 +57,20 @@ export const {
       console.log(`***** redirect call back process.env.AUTH_REDIRECT_PROXY_URL 8.30: ${process.env.AUTH_REDIRECT_PROXY_URL}`)
       console.log(`***** redirect call back process.env.APP_ENV : ${process.env.APP_ENV}`)
 
-      // TODO: In the logs I see that the baseUrl for the `dev` deployment is equal to dev.boost where as url is equal to `preview.boost`
+      // Return the env var `NEXTAUTH_URL` which ought to be set to a unique
+      // value for each deployment environment if set
+      if (process.env.NEXTAUTH_URL) {
+        return process.env.NEXTAUTH_URL
+      }
+
+      // Otherwise return the `baseUrl`. During testing we found that this URL
+      // matches that of the host we are truly interested in being redirected
+      // back to where as `url` often (all the time?) had an incorrect value. It
+      // isn't known as to why this is yet but possibly researching the headers
+      // of requests made to our backend might shed some light. We see that the
+      // `next-auth.callback-url` header isn't the correct value and possibly
+      // that conincides with why `url` has an incorrect value. 
       return baseUrl
-      // return url
     },
     jwt({ token, profile, account }) {
       if (profile) {
