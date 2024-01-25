@@ -3,7 +3,18 @@ Polyverse Sara Web UI for Boost
 
 # Release Notes
 
-## Version 0.5.0: January 22nd, 2023
+## Version 0.5.1: January 25th, 2024
+
+### New Features
+- N/A
+
+### Enhancements
+- N/A
+
+### Bug Fixes
+- Auth endpoint redirects to correct host on a per environment basis
+
+## Version 0.5.0: January 22nd, 2024
 
 ### New Features
 - Added Private Repository Authorization link to Sara menu
@@ -15,7 +26,7 @@ Polyverse Sara Web UI for Boost
 ### Bug Fixes
 - N/A
 
-## Version 0.4.0: January 18th, 2023
+## Version 0.4.0: January 18th, 2024
 
 ### New Features
 - Switched to Signed Headers for Sara authentication against backend
@@ -26,7 +37,7 @@ Polyverse Sara Web UI for Boost
 ### Bug Fixes
 - N/A
 
-## Version 0.3.0: January 16th, 2023
+## Version 0.3.0: January 16th, 2024
 
 ### New Features
 - Support for access to Dev, Test and Production backend Boost Service APIs
