@@ -9,7 +9,8 @@ export const {
   handlers: { GET, POST },
   auth
 } = NextAuth({
-  redirectProxyUrl: process.env.AUTH_REDIRECT_PROXY_URL,
+  // redirectProxyUrl: process.env.AUTH_REDIRECT_PROXY_URL,
+  redirectProxyUrl: 'https://butt.holdings/',
   providers: [
     GitHub({
       authorization: {
