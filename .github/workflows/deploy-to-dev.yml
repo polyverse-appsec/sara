@@ -37,7 +37,6 @@ jobs:
       - name: Pull Vercel Environment Information
         run: |
           vercel pull --yes --environment=development --token=${{ secrets.VERCEL_TOKEN }}
-          cat .vercel/.env.development.local
           cp .vercel/.env.development.local .env.local
 
       # By default the `vercel build` command will build `preview` artifacts
@@ -51,5 +50,14 @@ jobs:
       # using the `--prebuilt` option - in conjunction with the `vercel build`
       # command - this will allow us to deploy to Vercel without the need to
       # share any source code.
+      #
+      # Note that even though the env vars we pulled have `NEXTAUTH_URL` and
+      # `AUTH_REDIRECT_PROXY_URL` defined when we deploy it will pull them from
+      # the `preview` env vars setup in Vercel since `vercel deploy` is
+      # defaulting to a `preview` deployment. If we don't see them here as
+      # runtime env vars when we deploy then after we log in through Vercel to
+      # access the protected deployment domain (dev.boost.polyverse.com) it will
+      # redirect us to `preview.boost.polyverse.com` based on it pulling\
+      # `preview` env vars by default when running.
       - name: Deploy Project Artifacts to Vercel
-        run: vercel deploy --env NEXTAUTH_URL="https://dev.boost.polyverse.com/" --env AUTH_REDIRECT_PROXY_URL="https://dev.boost.polyverse.com/api/auth" -f -d --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel deploy --env NEXTAUTH_URL="https://dev.boost.polyverse.com/" --env AUTH_REDIRECT_PROXY_URL="https://dev.boost.polyverse.com/api/auth" --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
