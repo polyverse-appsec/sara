@@ -36,7 +36,6 @@
     "ai": "^2.2.29",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
-    "dotenv-flow": "^4.1.0",
     "focus-trap-react": "^10.2.3",
     "framer-motion": "^10.16.16",
     "geist": "^1.2.0",
