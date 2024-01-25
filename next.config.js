@@ -1,6 +1,8 @@
 const fs = require('fs')
 const dotenvFlow = require('dotenv-flow')
 
+// TODO: Do I need any of this?
+
 // This module loads .env files from the config/ directory based the "app
 // environment" that it is being built for or is running in (e.g. development,
 // preview, staging, beta, canary, production, etc..). The "app environment"
@@ -48,13 +50,8 @@ function loadAppEnv() {
 
 loadAppEnv()
 
-console.log(`***** next.config.js process.env.AUTH_REDIRECT_PROXY_URL: ${process.env.AUTH_REDIRECT_PROXY_URL}`)
-
 /** @type {import('next').NextConfig} */
 module.exports = async (phase, {defaultConfig}) => {
-  console.log(`***** next.config.js phase: ${phase}`)
-  console.log(`***** next.config.js defaultConfig: ${JSON.stringify(defaultConfig)}`)
-  
   return {
     images: {
       remotePatterns: [
