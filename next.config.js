@@ -48,7 +48,7 @@ function loadAppEnv() {
 
 loadAppEnv()
 
-console.log(`***** next.config.js process.env.NEXTAUTH_URL: ${process.env.NEXTAUTH_URL}`)
+console.log(`***** next.config.js process.env.AUTH_REDIRECT_PROXY_URL: ${process.env.AUTH_REDIRECT_PROXY_URL}`)
 
 /** @type {import('next').NextConfig} */
 module.exports = async (phase, {defaultConfig}) => {
