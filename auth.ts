@@ -3,45 +3,10 @@ import GitHub from 'next-auth/providers/github'
 import { Organization } from '@/lib/dataModelTypes'
 import exp from 'constants'
 
-console.log(`***** auth.ts evaluation process.env.AUTH_REDIRECT_PROXY_URL 6: ${process.env.AUTH_REDIRECT_PROXY_URL}`)
-
-
-// TODO: Look at the NextAuth implementation and how they have
-// signIn(provider, options, authorizationParams) {
-//   return signIn(provider, options, authorizationParams, config)
-// },
-// signOut(options) {
-//   return signOut(options, config)
-// },
-// update(data) {
-//   return update(data, config)
-// },
-
-// const httpHandler = (req: NextRequest) => Auth(reqWithEnvUrl(req), config)
-
-
-// TODO: See these options for the auth config that we can pass when initializing
-//   useSecureCookies?: boolean
-// debug
-//   cookies?: Partial<CookiesOptions>
-// trustHost (seems scary)
-//   redirectProxyUrl?: string
-
-
 export const {
   handlers: { GET, POST },
   auth
 } = NextAuth({
-  debug: true,
-  cookies: {
-    callbackUrl: {
-      name: `__Secure-next-auth.callback-url`,
-      options: {
-        httpOnly: false, 
-      }
-    }
-  },
-  // redirectProxyUrl: process.env.AUTH_REDIRECT_PROXY_URL,
   providers: [
     GitHub({
       authorization: {
@@ -51,12 +16,6 @@ export const {
   ],
   callbacks: {
     redirect({url, baseUrl}) {
-      console.log(`***** redirect call back url: ${url}`)
-      console.log(`***** redirect call back baseUrl: ${baseUrl}`)
-      console.log(`***** redirect call back process.env.NEXTAUTH_URL: ${process.env.NEXTAUTH_URL}`)
-      console.log(`***** redirect call back process.env.AUTH_REDIRECT_PROXY_URL 8.30: ${process.env.AUTH_REDIRECT_PROXY_URL}`)
-      console.log(`***** redirect call back process.env.APP_ENV : ${process.env.APP_ENV}`)
-
       // Return the env var `NEXTAUTH_URL` which ought to be set to a unique
       // value for each deployment environment if set
       if (process.env.NEXTAUTH_URL) {
