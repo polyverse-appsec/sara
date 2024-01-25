@@ -3,12 +3,13 @@ import GitHub from 'next-auth/providers/github'
 import { Organization } from '@/lib/dataModelTypes'
 import exp from 'constants'
 
-// redirectProxyUrl
+console.log(`***** auth.ts evaluation process.env.AUTH_REDIRECT_PROXY_URL 4:04: ${process.env.AUTH_REDIRECT_PROXY_URL}`)
 
 export const {
   handlers: { GET, POST },
   auth
 } = NextAuth({
+  redirectProxyUrl: process.env.AUTH_REDIRECT_PROXY_URL,
   providers: [
     GitHub({
       authorization: {
