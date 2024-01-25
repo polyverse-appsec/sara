@@ -48,23 +48,49 @@ function loadAppEnv() {
 
 loadAppEnv()
 
+console.log(`***** next.config.js process.env.NEXTAUTH_URL: ${process.env.NEXTAUTH_URL}`)
+
 /** @type {import('next').NextConfig} */
-module.exports = {
-  images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'avatars.githubusercontent.com',
-        port: '',
-        pathname: '**'
+module.exports = async (phase, {defaultConfig}) => {
+  console.log(`***** next.config.js phase: ${phase}`)
+  console.log(`***** next.config.js defaultConfig: ${defaultConfig}`)
+  
+  return {
+    images: {
+      remotePatterns: [
+        {
+          protocol: 'https',
+          hostname: 'avatars.githubusercontent.com',
+          port: '',
+          pathname: '**'
+        }
+      ]
+    },
+    webpack: (config, { dev }) => {
+      // Enable source maps in development mode
+      if (dev) {
+        config.devtool = 'source-map'
       }
-    ]
-  },
-  webpack: (config, { dev }) => {
-    // Enable source maps in development mode
-    if (dev) {
-      config.devtool = 'source-map'
+      return config
     }
-    return config
   }
 }
+// module.exports = {
+//   images: {
+//     remotePatterns: [
+//       {
+//         protocol: 'https',
+//         hostname: 'avatars.githubusercontent.com',
+//         port: '',
+//         pathname: '**'
+//       }
+//     ]
+//   },
+//   webpack: (config, { dev }) => {
+//     // Enable source maps in development mode
+//     if (dev) {
+//       config.devtool = 'source-map'
+//     }
+//     return config
+//   }
+// }
