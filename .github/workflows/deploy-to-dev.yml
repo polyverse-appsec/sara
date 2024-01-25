@@ -58,5 +58,5 @@ jobs:
       # share any source code.
       - name: Deploy Project Artifacts to Vercel
         run: |
-          vercel dns ls
+          vercel dns ls --token=${{ secrets.VERCEL_TOKEN }}
           APP_ENV=development vercel deploy -f -d --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
