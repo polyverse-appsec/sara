@@ -53,7 +53,7 @@ console.log(`***** next.config.js process.env.NEXTAUTH_URL: ${process.env.NEXTAU
 /** @type {import('next').NextConfig} */
 module.exports = async (phase, {defaultConfig}) => {
   console.log(`***** next.config.js phase: ${phase}`)
-  console.log(`***** next.config.js defaultConfig: ${defaultConfig}`)
+  console.log(`***** next.config.js defaultConfig: ${JSON.stringify(defaultConfig)}`)
   
   return {
     images: {
