@@ -21,9 +21,7 @@ export const {
       console.log(`***** redirect call back url: ${url}`)
       console.log(`***** redirect call back baseUrl: ${baseUrl}`)
       console.log(`***** redirect call back process.env.NEXTAUTH_URL: ${process.env.NEXTAUTH_URL}`)
-      console.log(`***** redirect call back process.env.AUTH_REDIRECT_PROXY_URL tres: ${process.env.AUTH_REDIRECT_PROXY_URL}`)
-      console.log(`***** redirect call back process.env.NODE_ENV: ${process.env.NODE_ENV}`)
-      console.log(`***** redirect call back process.env: ${JSON.stringify(process.env)}`)
+      console.log(`***** redirect call back process.env.AUTH_REDIRECT_PROXY_URL 4:04: ${process.env.AUTH_REDIRECT_PROXY_URL}`)
 
       return url
     },
