@@ -3,8 +3,6 @@ name: "CD: Deploy to Dev Domain"
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-  APP_ENV: development
-
 
 on:
   push:
@@ -37,26 +35,18 @@ jobs:
         run: pnpm i --global vercel@latest
 
       - name: Pull Vercel Environment Information
-        run: |
-          vercel pull --yes --environment=development --token=${{ secrets.VERCEL_TOKEN }}
-          cat .vercel/.env.development.local
-          cat .vercel/project.json
-          mkdir config
-          cp .vercel/.env.development.local config/.env.development
-          #cp .vercel/.env.development.local .env.local
+        run: vercel pull --yes --environment=development --token=${{ secrets.VERCEL_TOKEN }}
 
       # By default the `vercel build` command will build `preview` artifacts
       # that can later be used to deploy to `preview` deployments.
       #
       # Running `vercel build` will result in `next build` being ran.
       - name: Build Project Artifacts
-        run: |
-          export APP_ENV=development
-          vercel build --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
 
       # By default the `vercel deploy` command will deploy to `preview`. By
       # using the `--prebuilt` option - in conjunction with the `vercel build`
       # command - this will allow us to deploy to Vercel without the need to
       # share any source code.
       - name: Deploy Project Artifacts to Vercel
-        run: vercel deploy --env NEXTAUTH_URL="https://dev.boost.polyverse.com/" --env APP_ENV=development --env AUTH_REDIRECT_PROXY_URL="https://dev.boost.polyverse.com/api/auth" -f -d --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
