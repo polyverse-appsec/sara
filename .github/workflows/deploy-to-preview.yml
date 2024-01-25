@@ -39,21 +39,18 @@ jobs:
       - name: Pull Vercel Environment Information
         run: |
           vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
-          cat .vercel/.env.preview.local
-          cat .vercel/project.json
-          mkdir config
-          cp .vercel/.env.preview.local config/.env.test
+          cp .vercel/.env.preview.local .env.local
 
       # By default the `vercel build` command will build `preview` artifacts
       # that can later be used to deploy to `preview` deployments.
       #
       # Running `vercel build` will result in `next build` being ran.
       - name: Build Project Artifacts
-        run: APP_ENV=test vercel build --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
 
       # By default the `vercel deploy` command will deploy to `preview`. By
       # using the `--prebuilt` option - in conjunction with the `vercel build`
       # command - this will allow us to deploy to Vercel without the need to
       # share any source code.
       - name: Deploy Project Artifacts to Vercel
-        run: APP_ENV=test vercel deploy -f -d --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
