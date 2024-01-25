@@ -54,10 +54,12 @@ export const {
       console.log(`***** redirect call back url: ${url}`)
       console.log(`***** redirect call back baseUrl: ${baseUrl}`)
       console.log(`***** redirect call back process.env.NEXTAUTH_URL: ${process.env.NEXTAUTH_URL}`)
-      console.log(`***** redirect call back process.env.AUTH_REDIRECT_PROXY_URL 6: ${process.env.AUTH_REDIRECT_PROXY_URL}`)
+      console.log(`***** redirect call back process.env.AUTH_REDIRECT_PROXY_URL 8.30: ${process.env.AUTH_REDIRECT_PROXY_URL}`)
       console.log(`***** redirect call back process.env.APP_ENV : ${process.env.APP_ENV}`)
 
-      return url
+      // TODO: In the logs I see that the baseUrl for the `dev` deployment is equal to dev.boost where as url is equal to `preview.boost`
+      return baseUrl
+      // return url
     },
     jwt({ token, profile, account }) {
       if (profile) {
