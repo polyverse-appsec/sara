@@ -3,6 +3,17 @@ Polyverse Sara Web UI for Boost
 
 # Release Notes
 
+## Version 0.5.2: January 26th, 2024
+
+### New Features
+- N/A
+
+### Enhancements
+- N/A
+
+### Bug Fixes
+- 404s no longer occur as a result of Sara not being fully configured yet
+
 ## Version 0.5.1: January 25th, 2024
 
 ### New Features
