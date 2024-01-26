@@ -11,7 +11,7 @@ interface ChatHistoryProps {
   task: Task | null
 }
 
-export function ChatHistory({ task }: ChatHistoryProps) {
+export function ChatHistory() {
   return (
     <div className="flex flex-col h-full">
       <h1 className="px-4 py-2 text-xl font-bold text-center text-muted-foreground">
@@ -30,7 +30,7 @@ export function ChatHistory({ task }: ChatHistoryProps) {
         </Link>
       </div>
       {/* @ts-ignore */}
-      <SidebarList task={task} />
+      <SidebarList />
     </div>
   )
 }
