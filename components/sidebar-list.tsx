@@ -15,7 +15,11 @@ interface SidebarListProps {
 
 export function SidebarList() {
   const [chats, setChats] = useState([] as Chat[])
-  const { selectedActiveTask, chatStreamLastFinishedAt } = useAppContext()
+  const {
+    selectedActiveTask,
+    chatStreamLastFinishedAt,
+    saraConfig: { projectConfig: { project } }
+  } = useAppContext()
   const router = useRouter()
   const path = usePathname()
 
@@ -38,12 +42,16 @@ export function SidebarList() {
 
   useEffect(() => {
     const fetchChats = async () => {
-      const loadedChats = await getChats(selectedActiveTask?.id || null)
+      if (!project || !(project.defaultTask?.id)) {
+        return
+      }
+
+      const loadedChats = await getChats(project.defaultTask.id)
       setChats(loadedChats)
     }
 
     fetchChats()
-  }, [selectedActiveTask, chatStreamLastFinishedAt])
+  }, [project, chatStreamLastFinishedAt])
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
