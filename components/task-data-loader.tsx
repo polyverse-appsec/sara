@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { toast } from 'react-hot-toast'
 
-import { Chat, Task } from '@/lib/dataModelTypes'
+import { Task } from '@/lib/dataModelTypes'
 import { useAppContext } from '@/lib/hooks/app-context'
 import { getTasksAssociatedWithProject } from '@/app/actions'
 
@@ -16,10 +16,8 @@ type TaskDataLoaderProps = {
 export function TaskDataLoader({ userId }: TaskDataLoaderProps) {
   const [tasks, setTasks] = useState<Task[]>([])
   const {
-    selectedProject,
-    selectedActiveTask,
     chatStreamLastFinishedAt,
-    selectedActiveChat,
+    saraConfig: { projectConfig: { project } }
   } = useAppContext()
 
   // Effects let you specify side effects that is caused by the rendering
@@ -35,26 +33,34 @@ export function TaskDataLoader({ userId }: TaskDataLoaderProps) {
   // https://react.dev/learn/synchronizing-with-effects
   useEffect(() => {
     async function fetchTasks() {
-      if (!selectedProject?.name) {
+      // `project` won't be initialized until:
+      // 1) An organization has been selected
+      // 2) A repository has been selected
+      // 3) Sara has been configured for the selected repository
+      //
+      // The `Project` type represents the culmination of that workflow and data
+      // captured from it
+      if (!project) {
         return
       }
 
       try {
-        const tasks = await getTasksAssociatedWithProject(selectedProject)
+        const tasks = await getTasksAssociatedWithProject(project)
         setTasks(tasks)
       } catch (err) {
         toast.error('Failed to fetch tasks for project')
       }
     }
+
     fetchTasks()
-  }, [selectedProject, chatStreamLastFinishedAt])
+  }, [project, chatStreamLastFinishedAt])
 
   // If the user hasn't provided any of their tasks yet then state that
   // otherwise render the task tree.
   return (
     <div className="flex flex-col h-full">
       <h1 className="px-4 py-2 text-xl font-bold text-center text-muted-foreground">
-        Tasks for {selectedProject?.name ?? 'Selected Repository'}
+        Tasks for {project?.name ?? 'Selected Repository'}
       </h1>
       <div className="flex flex-1 flex-col overflow-hidden">
         <div className="flex-1 overflow-auto">
