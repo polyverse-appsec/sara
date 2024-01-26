@@ -256,8 +256,6 @@ export function AppProvider({ children }: AppProviderProps) {
   const [saraConfig, setSaraConfig] = useState<SaraConfig>(initialSaraConfig())
   const [setOrgConfig, setProjectConfig, setRepoConfig] = buildSaraConfigStateSetters(saraConfig, setSaraConfig)
 
-  console.log(`***** AppProvider saraConfig: ${JSON.stringify(saraConfig)}`)
-
   const value = {
     user,
     setUser,
