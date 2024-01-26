@@ -6,6 +6,7 @@ import { auth } from '@/auth'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { IconNextChat, IconSeparator } from '@/components/ui/icons'
 import { UserMenu } from '@/components/user-menu'
+import { SaraStatus } from './sara-status'
 
 import Sara32x32 from '../public/Sara_Cartoon_Portrait-32x32.png'
 import BoostLogo from '../public/boostlogo.png'
@@ -39,6 +40,7 @@ async function UserOrLogin() {
           </>
         ) : null}
         {session?.user ? <GithubPanel /> : null}
+        {session?.user ? <SaraStatus /> : null}
       </div>
     </>
   )

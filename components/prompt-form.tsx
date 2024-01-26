@@ -17,17 +17,21 @@ export interface PromptProps
   extends Pick<UseChatHelpers, 'input' | 'setInput'> {
   onSubmit: (value: string) => void
   isLoading: boolean
+  saraConfigured: boolean
 }
 
+// TODO: Can I just use the isLoading prop? Where does it come from?
 export function PromptForm({
   onSubmit,
   input,
   setInput,
   isLoading,
+  saraConfigured
 }: PromptProps) {
   const { formRef, onKeyDown } = useEnterSubmit()
   const inputRef = React.useRef<HTMLTextAreaElement>(null)
   const router = useRouter()
+
   React.useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus()
@@ -41,6 +45,13 @@ export function PromptForm({
         if (!input?.trim()) {
           return
         }
+        
+        // If Sara isn't configured yet then return early to prevent
+        // submission. Failure to do so could cause 404 errors.
+        if (!saraConfigured) {
+          return
+        }
+
         setInput('')
         await onSubmit(input)
       }}
@@ -83,7 +94,7 @@ export function PromptForm({
               <Button
                 type="submit"
                 size="icon"
-                disabled={isLoading || input === ''}
+                disabled={saraConfigured || input === ''}
               >
                 <IconArrowElbow />
                 <span className="sr-only">Send message</span>

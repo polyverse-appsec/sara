@@ -34,6 +34,7 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
     setSelectedActiveTask,
     setSelectedOrganization,
     setChatStreamLastFinishedAt,
+    saraConfig: { projectConfig: { status: projectStatus, statusInfo: projectStatusInfo } }
   } = useAppContext()
 
   // 'useChat' comes from the Vercel API: https://sdk.vercel.ai/docs/api-reference/use-chat
@@ -115,6 +116,7 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
         chat.taskId !== selectedActiveTask?.id ||
         chat.projectId !== selectedProject?.id
       ) {
+        // TODO: Handle all of this stuff with the new sync app state
         //reset the appContext to match the chat
         const task = await getTask(chat.taskId, chat.userId)
         const project = await getProject(chat.projectId)
@@ -161,6 +163,7 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
         messages={messages}
         input={input}
         setInput={setInput}
+        saraConfigured={projectStatus === 'CONFIGURED' && projectStatusInfo === 'Sara Configured For Project'}
       />
     </>
   )

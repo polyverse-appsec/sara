@@ -19,6 +19,179 @@ import {
 } from '@/lib/dataModelTypes'
 import { getOrCreateUserFromSession } from '@/app/actions'
 
+/**
+ * The different states a `SaraConfigurable` can be in. At different points in
+ * a users journey the app will kick off actions that will modify the states of
+ * configurables. Other UX can monitor these states and then enable/disbale
+ * functionality depending on those states.
+ */
+export type SaraConfigStatuses = 'UNCONFIGURED' | 'CONFIGURING' | 'CONFIGURED' | 'ERROR'
+
+// TODO: Is this needed?
+/**
+ * These are the different states that our configuration can be in
+ */
+export type SaraConfigStates = 'AWAITING_CONFIG_ORG'
+
+/**
+ * Describes the shape of a specific type of configuration that Sara is reliant
+ * on. For example having an organization selected or having an OpenAI assistant
+ * configured.
+ */
+interface SaraConfigurable {
+  status: SaraConfigStatuses
+  statusInfo: string | null
+  /**
+   * For debugging purposes to understand who configured this last
+   */
+  // lastConfiguredBy: string | null
+  // lastConfiguredAt: number | null
+  errorInfo: string | null
+}
+
+export interface SaraOrganization extends Organization {
+  repositoriesById: Record<string, Repository> | null
+}
+
+// TODO: Can I make generic types of these interfaces?
+interface OrganizationConfigurable extends SaraConfigurable {
+  organization: SaraOrganization | null
+}
+
+/**
+ * We extend our data model to gain access to instances of the repositories we
+ * have queried for
+ */
+export interface SaraProject extends Project {
+  referenceRepositoriesById: Record<string, Repository> | null
+
+  // TODO: Can I make this property and the referenceRepositories private and then just provide methods to them?
+}
+
+interface ProjectConfigurable extends SaraConfigurable {
+  project: SaraProject | null
+}
+
+interface RepositoryConfigurable extends SaraConfigurable {
+  repo: Repository | null
+}
+
+interface SaraConfig {
+  /**
+   * Top-level status of the configuration of the app
+   */
+  status: SaraConfigStatuses
+
+  /**
+   * Top-level status information surrounding the configuration of the app
+   */
+  statusInfo: string | null
+
+  /**
+   * Top-level information surrounding any errors during the configuration of
+   * the app
+   */
+  errorInfo: string | null
+
+  orgConfig: OrganizationConfigurable
+  projectConfig: ProjectConfigurable
+  repoConfig: RepositoryConfigurable
+
+  // TODO: Need dispatchers for individual configurables to set their status and errors but also which sets the top-level one
+  // TODO: Need a top-level error
+  // TODO: Need a top-level status
+  // TODO: Need an awaiting action status string top-level
+  // TODO: Should the awaitin action string also exist on the configurables?
+}
+
+const createInitializedConfigurable = (): SaraConfigurable => ({
+  status: 'UNCONFIGURED',
+  statusInfo: '',
+  errorInfo: null
+})
+
+const initialSaraConfig = (): SaraConfig => ({
+  status: 'UNCONFIGURED',
+  // TODO: Initialize to the initial step/state to be selected
+  statusInfo: 'Select Organiztion',
+  errorInfo: null,
+  orgConfig: {
+    ...createInitializedConfigurable(),
+    organization: null,
+  },
+  projectConfig: {
+    ...createInitializedConfigurable(),
+    project: null,
+  },
+  repoConfig: {
+    ...createInitializedConfigurable(),
+    repo: null,
+  }
+})
+
+// TODO: Type the return value of this
+const buildSaraConfigStateSetters = (saraConfig: SaraConfig, setSaraConfig: React.Dispatch<React.SetStateAction<SaraConfig>>): [
+  (orgConfig: OrganizationConfigurable) => void,
+  (projectConfig: ProjectConfigurable) => void,
+  (repoConfig: RepositoryConfigurable) => void
+] => {
+  // TODO: Type the return value of this
+  const setOrgConfig = (orgConfig: OrganizationConfigurable) => {
+    console.log(`***** setOrgConfig orgConfig: ${JSON.stringify(orgConfig)}`)
+    const { status, errorInfo, statusInfo } = orgConfig
+
+    const newSaraConfig: SaraConfig = {
+      ...saraConfig,
+      // Copy over the new org config
+      orgConfig,
+      // Update the top-level info
+      status,
+      errorInfo,
+      statusInfo
+    }
+
+    setSaraConfig(newSaraConfig)
+  }
+
+  // TODO: Type the return value of this
+  const setProjectConfig = (projectConfig: ProjectConfigurable) => {
+    console.log(`***** setProjectConfig projectConfig: ${JSON.stringify(projectConfig)}`)
+    const { status, errorInfo, statusInfo } = projectConfig
+
+    const newSaraConfig: SaraConfig = {
+      ...saraConfig,
+      // Copy over the new project config
+      projectConfig,
+      // Update the top-level info
+      status,
+      errorInfo,
+      statusInfo
+    }
+
+    setSaraConfig(newSaraConfig)
+  }
+
+  // TODO: Type the return value of this
+  const setRepoConfig = (repoConfig: RepositoryConfigurable) => {
+    console.log(`***** repoConfig setRepoConfig: ${JSON.stringify(repoConfig)}`)
+    const { status, errorInfo, statusInfo } = repoConfig
+
+    const newSaraConfig: SaraConfig = {
+      ...saraConfig,
+      // Copy over the new project config
+      repoConfig,
+      // Update the top-level info
+      status,
+      errorInfo,
+      statusInfo
+    }
+
+    setSaraConfig(newSaraConfig)
+  }
+
+  return [setOrgConfig, setProjectConfig, setRepoConfig]
+}
+
 interface AppContextType {
   user: User | null
   setUser: (user: User | null) => void
@@ -40,6 +213,11 @@ interface AppContextType {
 
   selectedProjectRepositories: Repository[] | null
   setSelectedProjectRepositories: (repositories: Repository[] | null) => void
+
+  saraConfig: SaraConfig
+  setOrgConfig: (orgConfig: OrganizationConfigurable) => void
+  setProjectConfig: (projectConfig: ProjectConfigurable) => void
+  setRepoConfig: (repoConfig: RepositoryConfigurable) => void
 }
 
 const AppContext = createContext<AppContextType | null>(null)
@@ -75,6 +253,11 @@ export function AppProvider({ children }: AppProviderProps) {
   const [selectedProjectRepositories, setSelectedProjectRepositories] =
     useState<Repository[] | null>(null)
 
+  const [saraConfig, setSaraConfig] = useState<SaraConfig>(initialSaraConfig())
+  const [setOrgConfig, setProjectConfig, setRepoConfig] = buildSaraConfigStateSetters(saraConfig, setSaraConfig)
+
+  console.log(`***** AppProvider saraConfig: ${JSON.stringify(saraConfig)}`)
+
   const value = {
     user,
     setUser,
@@ -90,6 +273,10 @@ export function AppProvider({ children }: AppProviderProps) {
     setSelectedActiveChat,
     chatStreamLastFinishedAt,
     setChatStreamLastFinishedAt,
+    saraConfig,
+    setOrgConfig,
+    setProjectConfig,
+    setRepoConfig
   }
 
   const { data: session } = useSession()

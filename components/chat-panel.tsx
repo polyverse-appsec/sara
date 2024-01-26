@@ -20,8 +20,10 @@ export interface ChatPanelProps
   > {
   id?: string
   title?: string
+  saraConfigured: boolean
 }
 
+// TODO: Add to this the little fly overs that tell users to configure whatever akin to how it shows stop message/regenerate message
 export function ChatPanel({
   id,
   title,
@@ -32,6 +34,7 @@ export function ChatPanel({
   input,
   setInput,
   messages,
+  saraConfigured
 }: ChatPanelProps) {
   const [shareDialogOpen, setShareDialogOpen] = React.useState(false)
 
@@ -63,6 +66,10 @@ export function ChatPanel({
         <div className="px-4 py-2 space-y-4 border-t shadow-lg bg-background sm:rounded-t-xl sm:border md:py-4">
           <PromptForm
             onSubmit={async (value) => {
+              // TODO: Write to console onSubmit time
+              // TODO: Surround append in try/catch
+              // TODO: Log out any caught error
+              // TODO: Write to console onSubmit finish time or error time
               // Append a new chat message triggering an API call to our
               // endpoint passing in an ID, the content of the form for the
               // message and a role as user.
@@ -75,6 +82,7 @@ export function ChatPanel({
             input={input}
             setInput={setInput}
             isLoading={isLoading}
+            saraConfigured={saraConfigured}
           />
           <FooterText className="hidden sm:block" />
         </div>
