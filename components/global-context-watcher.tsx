@@ -23,11 +23,9 @@ const useDataWatcher = () => {
   useEffect(() => {
     // This effect will run whenever 'data' changes
     async function updateAIOnRepositoryChange() {
-      console.log(`GlobalContextWatcher#useDataWatcher#updateAIOnRepositoryChange`)
       const { status, project } = projectConfig
 
       if (status === 'CONFIGURED') {
-        console.log(`GlobalContextWatcher#useDataWatcher#updateAIOnRepositoryChange - CONFIGURED`)
           // TODO: Try catch this logic with status changes if error
           // We await this to ensure that any calls to the backend have data
           // references - whether they files have been processed or not.
@@ -41,7 +39,6 @@ const useDataWatcher = () => {
       // }
 
       if (project && !project.assistant) {
-        console.log(`GlobalContextWatcher#useDataWatcher#updateAIOnRepositoryChange - get or Create assistant`)
         // TODO: Add a state change to show we are configuring
         projectConfig.project = project
         projectConfig.status = 'CONFIGURING'
