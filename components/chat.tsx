@@ -70,7 +70,7 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
       onResponse(response) {
         const { status, statusText } = response
 
-        if (status === 400 || 401) {
+        if (status === 400 || status === 401) {
           toast.error(statusText)
         }
       },
@@ -87,6 +87,9 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
         // the chats that could change from time to time (e.g. chat and task
         // sidebars)
         setChatStreamLastFinishedAt(Date.now())
+      },
+      onError(error) {
+        console.error('Chat encountered an error:', error);
       },
     })
 
