@@ -55,15 +55,17 @@ const useDataWatcher = () => {
           project?.selectedProjectRepositories ?? [],
         )
 
-        projectConfig.project.assistant = assistant
+        if (assistant) {
+          projectConfig.project.assistant = assistant
 
-        projectConfig.project = project
-        projectConfig.status = 'CONFIGURED'
-        // TODO: This is referenced somewhere so we probably want to move all of these 'status info' to a type for typechecking
-        projectConfig.statusInfo = 'Sara Configured For Project'
-        projectConfig.errorInfo = null
+          projectConfig.project = project
+          projectConfig.status = 'CONFIGURED'
+          // TODO: This is referenced somewhere so we probably want to move all of these 'status info' to a type for typechecking
+          projectConfig.statusInfo = 'Sara Configured For Project'
+          projectConfig.errorInfo = null
 
-        setProjectConfig(projectConfig)
+          setProjectConfig(projectConfig)
+        }
 
         // TODO: Start here and hook up the new state setters with the status and make sure we save the existing code for now to get things working - or maybe not
 
