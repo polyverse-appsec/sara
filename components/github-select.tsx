@@ -196,6 +196,7 @@ export function GithubSelect() {
 
   const fetchedRepos = orgConfig.organization && orgConfig.organization.repositoriesById ? Object.values(orgConfig.organization.repositoriesById) : []
 
+  // TODO: Comment - w-204px - 180 for the drop down and 24 for IconSeparator
   return (
     <>
       <IconSeparator className="w-6 h-6 text-muted-foreground/50" />
@@ -207,15 +208,15 @@ export function GithubSelect() {
       />
       {
         orgStatus === 'CONFIGURED' ? (
-          <div>
+          <>
             <IconSeparator className="w-6 h-6 text-muted-foreground/50" />
             <GithubRepoSelect
               selectedRepository={selectedRepository}
               repositories={fetchedRepos}
               onRepositoryChange={handleRepositoryChange}
             />
-          </div>
-        ) : null
+          </>
+        ) : <div className='w-[204px]'></div>
       }
       
     </>
