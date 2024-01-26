@@ -32,12 +32,6 @@ const useDataWatcher = () => {
           await tickleReposForProjectChange(project?.selectedProjectRepositories ?? [])
       }
 
-      // if (selectedProject) {
-      //   // We await this to ensure that any calls to the backend have data
-      //   // references - whether they files have been processed or not.
-      //   await tickleReposForProjectChange(selectedProjectRepositories ?? [])
-      // }
-
       if (project && !project.assistant) {
         // TODO: Add a state change to show we are configuring
         projectConfig.project = project
@@ -63,8 +57,6 @@ const useDataWatcher = () => {
 
           setProjectConfig(projectConfig)
         }
-
-        // TODO: Start here and hook up the new state setters with the status and make sure we save the existing code for now to get things working - or maybe not
 
         // TODO: Set project
         // TODO: Set status
