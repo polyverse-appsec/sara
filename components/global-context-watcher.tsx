@@ -19,6 +19,7 @@ const useDataWatcher = () => {
   // TODO: Come back and complete this
   // TODO: Can I break up this useEffect into separate ones?
   // TODO: Can I update the dependency array with the types we are looking at
+  // TODO: Add try/catch
   useEffect(() => {
     // This effect will run whenever 'data' changes
     async function updateAIOnRepositoryChange() {
@@ -54,7 +55,7 @@ const useDataWatcher = () => {
           project?.selectedProjectRepositories ?? [],
         )
 
-        project.assistant = assistant
+        projectConfig.project.assistant = assistant
 
         projectConfig.project = project
         projectConfig.status = 'CONFIGURED'
