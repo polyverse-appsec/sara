@@ -53,19 +53,10 @@ export const querySara = async (
   }
   // Configure a thread based off of what would be the first message associated with it
   const thread = await configThread(question[0].content)
-  console.log(
-    `Configured a thread with an ID of '${thread.id}' - first message content: ${question[0].content}`,
-  )
 
   // Blindly append a user message to the thread. It is 'blind' in the sense
   // that the same user message could already exist in the thread.
   const threadMessage = await appendUserMessage(thread, question)
-  console.log(
-    `Updated message with an ID of '${threadMessage?.id}' - message content: ${JSON.stringify(
-      threadMessage?.content,
-    )}`,
-  )
-
   const { id: runID } = await runAssistantOnThread(assistant.id, thread.id)
 
   return new ReadableStream({
@@ -113,6 +104,8 @@ export const querySara = async (
           )
 
           return
+        } else {
+          console.log(`Unhandled thread run status - runID: '${runID}' - status: ${status}`)
         }
 
         // Show a little progress bar of dots if messages aren't yet ready
