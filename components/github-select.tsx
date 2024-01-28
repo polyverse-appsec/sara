@@ -2,9 +2,9 @@ import * as React from 'react'
 import { useEffect, useState } from 'react'
 import { type Session } from 'next-auth'
 
-import { Organization, Project, Repository } from '@/lib/dataModelTypes'
-import { useAppContext, type SaraOrganization, type SaraProject } from '@/lib/hooks/app-context'
-import { IconSeparator } from '@/components/ui/icons'
+import { Organization, Project, Repository } from './../lib/dataModelTypes'
+import { useAppContext, type SaraOrganization, type SaraProject } from './../lib/hooks/app-context'
+import { IconSeparator } from './ui/icons'
 import {
   Select,
   SelectContent,
@@ -13,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
   // Other imports if necessary
-} from '@/components/ui/select'
+} from './ui/select'
 // Update the import path
 
 import {
@@ -21,7 +21,7 @@ import {
   getOrganizations,
   getRepositoriesForOrg,
   getRepository,
-} from '@/app/actions'
+} from './../app/actions'
 
 import { GithubOrgSelect } from './github-org-select'
 import { GithubRepoSelect } from './github-repo-select'

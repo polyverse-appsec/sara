@@ -1,4 +1,4 @@
-import { Chat, Project, Task } from '@/lib/dataModelTypes'
+import { Chat, Project, Task } from './../../dataModelTypes'
 
 import { appendUserMessage, getAssistantMessages } from '../openai/messages'
 import {

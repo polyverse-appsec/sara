@@ -2,9 +2,9 @@ import { create } from 'domain'
 import OpenAI from 'openai'
 import { Assistant } from 'openai/resources/beta/assistants/assistants'
 
-import { Task } from '@/lib/dataModelTypes'
-import { nanoid } from '@/lib/utils'
-import { createTask } from '@/app/actions'
+import { Task } from './../../dataModelTypes'
+import { nanoid } from './../../utils'
+import { createTask } from './../../../app/actions'
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,

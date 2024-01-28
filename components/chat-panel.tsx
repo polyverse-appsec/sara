@@ -1,11 +1,11 @@
 import * as React from 'react'
 import { type UseChatHelpers } from 'ai/react'
 
-import { Button } from '@/components/ui/button'
-import { IconRefresh, IconShare, IconStop } from '@/components/ui/icons'
-import { ButtonScrollToBottom } from '@/components/button-scroll-to-bottom'
-import { FooterText } from '@/components/footer'
-import { PromptForm } from '@/components/prompt-form'
+import { Button } from './ui/button'
+import { IconRefresh, IconShare, IconStop } from './ui/icons'
+import { ButtonScrollToBottom } from './button-scroll-to-bottom'
+import { FooterText } from './footer'
+import { PromptForm } from './prompt-form'
 
 export interface ChatPanelProps
   extends Pick<

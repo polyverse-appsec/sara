@@ -1,11 +1,11 @@
 import * as React from 'react'
 import Link from 'next/link'
 
-import { Task } from '@/lib/dataModelTypes'
-import { cn } from '@/lib/utils'
-import { buttonVariants } from '@/components/ui/button'
-import { IconPlus } from '@/components/ui/icons'
-import { SidebarList } from '@/components/sidebar-list'
+import { Task } from './../lib/dataModelTypes'
+import { cn } from './../lib/utils'
+import { buttonVariants } from './ui/button'
+import { IconPlus } from './ui/icons'
+import { SidebarList } from './sidebar-list'
 
 interface ChatHistoryProps {
   task: Task | null

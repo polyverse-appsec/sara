@@ -5,11 +5,9 @@ import Link from 'next/link'
 import { type DialogProps } from '@radix-ui/react-dialog'
 import { toast } from 'react-hot-toast'
 
-import { ServerActionResult, type Chat } from '@/lib/dataModelTypes'
-import { useCopyToClipboard } from '@/lib/hooks/use-copy-to-clipboard'
-import { cn } from '@/lib/utils'
-import { badgeVariants } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+import { ServerActionResult, type Chat } from './../lib/dataModelTypes'
+import { useCopyToClipboard } from './../lib/hooks/use-copy-to-clipboard'
+import { Button } from './ui/button'
 import {
   Dialog,
   DialogContent,
@@ -17,8 +15,8 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog'
-import { IconSpinner } from '@/components/ui/icons'
+} from './ui/dialog'
+import { IconSpinner } from './ui/icons'
 
 interface ChatShareDialogProps extends DialogProps {
   chat: Pick<Chat, 'id' | 'title' | 'messages'>

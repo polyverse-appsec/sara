@@ -1,10 +1,10 @@
 import { ReactNode, useEffect } from 'react'
 
-import { useAppContext } from '@/lib/hooks/app-context'
+import { useAppContext } from './../lib/hooks/app-context'
 import {
   getOrCreateAssistantForProject,
   tickleReposForProjectChange,
-} from '@/app/actions'
+} from './../app/actions'
 
 const useDataWatcher = () => {
   const {

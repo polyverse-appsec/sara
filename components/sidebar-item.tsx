@@ -5,16 +5,16 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { motion } from 'framer-motion'
 
-import { type Chat } from '@/lib/dataModelTypes'
-import { useLocalStorage } from '@/lib/hooks/use-local-storage'
-import { cn } from '@/lib/utils'
-import { buttonVariants } from '@/components/ui/button'
-import { IconMessage, IconUsers } from '@/components/ui/icons'
+import { type Chat } from './../lib/dataModelTypes'
+import { useLocalStorage } from './../lib/hooks/use-local-storage'
+import { cn } from './../lib/utils'
+import { buttonVariants } from './ui/button'
+import { IconMessage, IconUsers } from './ui/icons'
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from '@/components/ui/tooltip'
+} from './ui/tooltip'
 
 interface SidebarItemProps {
   index: number

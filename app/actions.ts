@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
-import { auth } from '@/auth'
+import { auth } from './../auth'
 import { kv } from '@vercel/kv'
 import { Assistant } from 'openai/resources/beta/assistants/assistants'
 
@@ -13,21 +13,25 @@ import {
   Task,
   User,
   type Chat,
-} from '@/lib/dataModelTypes'
+} from './../lib/dataModelTypes'
 import {
   stripUndefinedObjectProperties,
   tickleRepository,
-} from '@/lib/polyverse/backend/backend'
+} from './../lib/polyverse/backend/backend'
 import {
   fetchOrganizationRepositories,
   fetchUserOrganizations,
   getOrCreateRepoFromGithubRepo,
-} from '@/lib/polyverse/github/repos'
-import { configAssistant } from '@/lib/polyverse/openai/assistants'
-import { createNewProjectFromRepository } from '@/lib/polyverse/project/project'
-import { nanoid } from '@/lib/utils'
+} from './../lib/polyverse/github/repos'
+import { configAssistant } from './../lib/polyverse/openai/assistants'
+import { createNewProjectFromRepository } from './../lib/polyverse/project/project'
+import { nanoid } from './../lib/utils'
 
 const TEN_MINS_IN_MILLIS = 600000
+
+export async function createChat() {
+
+}
 
 export async function getChats(taskId?: string | null) {
   if (!taskId) {

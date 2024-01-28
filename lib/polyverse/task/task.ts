@@ -1,6 +1,6 @@
 // Import necessary types and functions
-import { Project, Repository, Task, User } from '@/lib/dataModelTypes'
-import { createTask } from '@/app/actions'
+import { Project, Repository, Task, User } from './../../dataModelTypes'
+import { createTask } from './../../../app/actions'
 
 // Utility to create a default task for a repository
 

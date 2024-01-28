@@ -5,9 +5,9 @@ import { SessionProvider } from 'next-auth/react'
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
 import { ThemeProviderProps } from 'next-themes/dist/types'
 
-import { AppProvider } from '@/lib/hooks/app-context'
-import { SidebarProvider } from '@/lib/hooks/use-sidebar'
-import { TooltipProvider } from '@/components/ui/tooltip'
+import { AppProvider } from './../lib/hooks/app-context'
+import { SidebarProvider } from './..//lib/hooks/use-sidebar'
+import { TooltipProvider } from './ui/tooltip'
 
 import { GlobalContextWatcher } from './global-context-watcher'
 

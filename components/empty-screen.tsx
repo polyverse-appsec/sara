@@ -1,9 +1,8 @@
 import Image from 'next/image'
 import { UseChatHelpers } from 'ai/react'
 
-import { Button } from '@/components/ui/button'
-import { IconArrowRight } from '@/components/ui/icons'
-import { ExternalLink } from '@/components/external-link'
+import { Button } from './ui/button'
+import { IconArrowRight } from './ui/icons'
 
 const exampleMessages = [
   {

@@ -4,12 +4,12 @@ import { Toaster } from 'react-hot-toast'
 
 // Import 'global.css' to apply styling rules to all of our components in all of
 // our routes
-import '@/app/globals.css'
+import './globals.css'
 
-import { cn } from '@/lib/utils'
-import { Header } from '@/components/header'
-import { Providers } from '@/components/providers'
-import { TailwindIndicator } from '@/components/tailwind-indicator'
+import { cn } from './../lib/utils'
+import { Header } from './../components/header'
+import { Providers } from './../components/providers'
+import { TailwindIndicator } from './../components/tailwind-indicator'
 
 export const metadata = {
   metadataBase: new URL(`https://${process.env.NEXTAUTH_URL}`),

@@ -1,8 +1,8 @@
 'use client'
 
-import { useAppContext } from '@/lib/hooks/app-context'
-import { ChatHistory } from '@/components/chat-history'
-import { Sidebar } from '@/components/sidebar'
+import { useAppContext } from './../lib/hooks/app-context'
+import { ChatHistory } from './chat-history'
+import { Sidebar } from './sidebar'
 
 import { TaskDataLoader } from './task-data-loader'
 

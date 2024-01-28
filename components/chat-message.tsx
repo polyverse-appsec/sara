@@ -6,11 +6,11 @@ import { Message } from 'ai'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
 
-import { cn } from '@/lib/utils'
-import { CodeBlock } from '@/components/ui/codeblock'
-import { IconUser } from '@/components/ui/icons'
-import { ChatMessageActions } from '@/components/chat-message-actions'
-import { MemoizedReactMarkdown } from '@/components/markdown'
+import { cn } from './../lib/utils'
+import { CodeBlock } from './ui/codeblock'
+import { IconUser } from './ui/icons'
+import { ChatMessageActions } from './chat-message-actions'
+import { MemoizedReactMarkdown } from './markdown'
 
 import Sara32x32 from '../public/Sara_Cartoon_Portrait-32x32.png'
 

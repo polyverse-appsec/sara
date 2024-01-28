@@ -2,11 +2,11 @@
 
 import React, { useEffect, useState } from 'react'
 
-import { Chat, Task, type ServerActionResult } from '@/lib/dataModelTypes'
-import { useAppContext } from '@/lib/hooks/app-context'
-import { SidebarItems } from '@/components/sidebar-items'
-import { ThemeToggle } from '@/components/theme-toggle'
-import { getChats } from '@/app/actions'
+import { Chat, Task, type ServerActionResult } from './../lib/dataModelTypes'
+import { useAppContext } from './..//lib/hooks/app-context'
+import { SidebarItems } from './sidebar-items'
+import { ThemeToggle } from './theme-toggle'
+import { getChats } from './../app/actions'
 import { useRouter, usePathname } from 'next/navigation'
 
 interface SidebarListProps {

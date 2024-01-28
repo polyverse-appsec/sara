@@ -2,17 +2,16 @@
 
 import React from 'react'
 import Image from 'next/image'
-import { type Session } from 'next-auth'
 
-import { Organization, User } from '@/lib/dataModelTypes'
-import { Button } from '@/components/ui/button'
+import { Organization, User } from './../lib/dataModelTypes'
+import { Button } from './ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+} from './ui/dropdown-menu'
 
 function getUserInitials(name: string) {
   const [firstName, lastName] = name.split(' ')

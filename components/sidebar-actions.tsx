@@ -4,7 +4,7 @@ import * as React from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'react-hot-toast'
 
-import { type ServerActionResult, type Chat } from '@/lib/dataModelTypes'
+import { type ServerActionResult, type Chat } from './../lib/dataModelTypes'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -14,16 +14,16 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog'
-import { Button } from '@/components/ui/button'
-import { IconSpinner, IconTrash } from '@/components/ui/icons'
+} from './ui/alert-dialog'
+import { Button } from './ui/button'
+import { IconSpinner, IconTrash } from './ui/icons'
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from '@/components/ui/tooltip'
-import { useAppContext } from '@/lib/hooks/app-context'
-import { removeChat } from '@/app/actions'
+} from './ui/tooltip'
+import { useAppContext } from './../lib/hooks/app-context'
+import { removeChat } from './../app/actions'
 
 
 interface SidebarActionsProps {

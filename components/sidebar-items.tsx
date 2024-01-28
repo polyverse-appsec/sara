@@ -2,9 +2,9 @@
 
 import { AnimatePresence, motion } from 'framer-motion'
 
-import { type Chat } from '@/lib/dataModelTypes'
-import { SidebarActions } from '@/components/sidebar-actions'
-import { SidebarItem } from '@/components/sidebar-item'
+import { type Chat } from './../lib/dataModelTypes'
+import { SidebarActions } from './sidebar-actions'
+import { SidebarItem } from './sidebar-item'
 
 interface SidebarItemsProps {
   chats?: Chat[]

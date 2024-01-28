@@ -4,16 +4,16 @@ import Image from 'next/image'
 import { type Session } from 'next-auth'
 import { signOut } from 'next-auth/react'
 
-import { Repository } from '@/lib/dataModelTypes'
-import { Button } from '@/components/ui/button'
+import { Repository } from './../lib/dataModelTypes'
+import { Button } from './ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { IconExternalLink } from '@/components/ui/icons'
+} from './ui/dropdown-menu'
+import { IconExternalLink } from './ui/icons'
 
 function getUserInitials(name: string) {
   const [firstName, lastName] = name.split(' ')

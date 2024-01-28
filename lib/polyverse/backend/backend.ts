@@ -1,6 +1,6 @@
 import { Secret, sign } from 'jsonwebtoken'
 
-import { Project, ProjectDataReference, Repository } from '@/lib/dataModelTypes'
+import { Project, ProjectDataReference, Repository } from './../../dataModelTypes'
 
 // AWS Endpoints for our Boost ReST API (Backend)
 // Legacy:  'https://pt5sl5vwfjn6lsr2k6szuvfhnq0vaxhl.lambda-url.us-west-2.on.aws/api/user_project'

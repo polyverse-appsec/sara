@@ -1,11 +1,11 @@
 import * as React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { auth } from '@/auth'
+import { auth } from './../auth'
 
-import { Button, buttonVariants } from '@/components/ui/button'
-import { IconNextChat, IconSeparator } from '@/components/ui/icons'
-import { UserMenu } from '@/components/user-menu'
+import { Button, buttonVariants } from './ui/button'
+import { IconNextChat, IconSeparator } from './ui/icons'
+import { UserMenu } from './user-menu'
 import { SaraStatus } from './sara-status'
 
 import Sara32x32 from '../public/Sara_Cartoon_Portrait-32x32.png'

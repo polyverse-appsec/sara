@@ -4,13 +4,13 @@
 // Possibly in the future we will modify this as we learn more.
 export const maxDuration = 30
 
-import { auth } from '@/auth'
+import { auth } from './../../../auth'
 import { kv } from '@vercel/kv'
 import OpenAI from 'openai'
 
-import { stripUndefinedObjectProperties } from '@/lib/polyverse/backend/backend'
-import { querySara } from '@/lib/polyverse/sara/sara'
-import { nanoid } from '@/lib/utils'
+import { stripUndefinedObjectProperties } from './../../../lib/polyverse/backend/backend'
+import { querySara } from './../../../lib/polyverse/sara/sara'
+import { nanoid } from './../../../lib/utils'
 import { json } from 'stream/consumers'
 
 const openai = new OpenAI({
