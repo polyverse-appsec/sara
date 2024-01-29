@@ -48,8 +48,6 @@ const useDataWatcher = () => {
 
         if (assistant) {
           projectConfig.project.assistant = assistant
-
-          projectConfig.project = project
           projectConfig.status = 'CONFIGURED'
           // TODO: This is referenced somewhere so we probably want to move all of these 'status info' to a type for typechecking
           projectConfig.statusInfo = 'Sara Configured For Project'
