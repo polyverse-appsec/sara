@@ -67,6 +67,7 @@ const useDataWatcher = () => {
     setSelectedProject,
     selectedProjectRepositories,
     setSelectedProjectRepositories,
+    projectConfig
   ]) // Dependency array with 'data' to watch for its changes
 }
 
