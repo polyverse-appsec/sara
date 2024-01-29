@@ -62,21 +62,6 @@ const useDataWatcher = () => {
         // TODO: Set status
         // TODO: Try catch this logic with status changes if error
       }
-
-      if (selectedProject && !selectedProject.assistant) {
-        const assistant = await getOrCreateAssistantForProject(
-          selectedProject,
-          selectedProjectRepositories ?? [],
-        )
-
-        if (assistant) {
-          selectedProject.assistant = assistant
-
-          // We only update the selected project again in the event that the
-          // assistant was retrieved/created
-          setSelectedProject(selectedProject)
-        }
-      }
     }
     updateAIOnRepositoryChange()
   }, [
