@@ -34,8 +34,21 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
     setSelectedActiveTask,
     setSelectedOrganization,
     setChatStreamLastFinishedAt,
-    saraConfig: { projectConfig: { status: projectStatus, statusInfo: projectStatusInfo } }
+    saraConfig
   } = useAppContext()
+
+  const { status, projectConfig: { status: projectStatus, statusInfo: projectStatusInfo } } = saraConfig
+
+  // If this path was navigated it through a path that includes /chat and we
+  // haven't yet configured Sara then redirect to the home path so that the user
+  // has to configure her by selecting an organization and a repository. Failure
+  // to do so will mean that the chat functionality is non-functional and could
+  // result in errors.
+  if (path.includes('chat') && status !== 'CONFIGURED') {
+    router.push('/')
+    router.refresh()
+    return
+  }
 
   // 'useChat' comes from the Vercel API: https://sdk.vercel.ai/docs/api-reference/use-chat
   //
@@ -56,7 +69,7 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
   // 'append()' takes a message and appends it to chat, triggering an API call.
   // It returns a promise that resolves to a full response message content when
   // the API call is successfully finished or throws an error.
-  const { messages, append, reload, stop, isLoading, input, setInput, error } =
+  const { messages, append, reload, stop, isLoading, input, setInput } =
     useChat({
       initialMessages,
       id: chat.id,
@@ -82,8 +95,8 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
 
         // The 'onFinish()' callback gets called after the chat stream ends
         if (!path.includes('chat')) {
-          // router.push(`/chat/${chat.id}`, { scroll: false })
-          // router.refresh()
+          router.push(`/chat/${chat.id}`, { scroll: false })
+          router.refresh()
         }
 
         // Notify those watching the app context for when the chat stream has
@@ -98,56 +111,6 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
         console.error('Chat encountered an error:', error);
       },
     })
-
-  useEffect(() => {
-    async function checkChat() {
-      //chats can be reached by direct deep links (e.g. /chat/1234)
-      //so we need to see if our appContext has been set and matches.
-      //if it's different than the chat that has come in through props, reset the appContext to match
-      //the chat that has come in.
-      // the chatId, repoId, and taskId must all match the ids in the chat prop
-      //, otherwise we need to reset the appContext
-      if (!chat.taskId || !chat.projectId) {
-        //this is an old chat made before the 1/4/24 update.  just log the error for now, it can
-        //be fixed by just adding more content to the chat.
-        console.log(
-          'chat.tsx: chat is missing taskId or repoId. Fix this by asking another question to the chat with the repo set, and the chat will be updated',
-        )
-        return
-      }
-      //now we see if the chat matches the appContext selectedRepository and selectedActiveTask
-      //if it doesn't, we need to reset the appContext
-      if (
-        chat.taskId !== selectedActiveTask?.id ||
-        chat.projectId !== selectedProject?.id
-      ) {
-        // TODO: Handle all of this stuff with the new sync app state
-        //reset the appContext to match the chat
-        const task = await getTask(chat.taskId, chat.userId)
-        const project = await getProject(chat.projectId)
-        //we don't store organizations, fetch the user orgs and filter by org.login to match
-        //the repo.orgId
-        const orgs = await getOrganizations()
-        const org = orgs.filter((org) => org.login == project?.orgId)[0]
-        setSelectedOrganization(org)
-        setSelectedProject(project)
-        setSelectedActiveTask(task)
-        setSelectedActiveChat(chat)
-      }
-    }
-    checkChat()
-  }, [
-    chat,
-    selectedActiveChat,
-    setSelectedActiveChat,
-    selectedActiveTask,
-    setSelectedActiveTask,
-    setSelectedOrganization,
-    selectedProject,
-    setSelectedProject,
-  ])
-
-  console.log(`***** chat.tsx#useChat error: ${error}`)
 
   return (
     <>
