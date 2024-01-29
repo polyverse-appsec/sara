@@ -56,7 +56,7 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
   // 'append()' takes a message and appends it to chat, triggering an API call.
   // It returns a promise that resolves to a full response message content when
   // the API call is successfully finished or throws an error.
-  const { messages, append, reload, stop, isLoading, input, setInput } =
+  const { messages, append, reload, stop, isLoading, input, setInput, error } =
     useChat({
       initialMessages,
       id: chat.id,
@@ -71,15 +71,19 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
       onResponse(response) {
         const { status, statusText } = response
 
+        console.log(`***** onResponse status: ${status} - statusText: ${statusText}`)
+
         if (status === 400 || status === 401) {
           toast.error(statusText)
         }
       },
       onFinish() {
+        console.log(`***** onFinish path: ${path}`)
+
         // The 'onFinish()' callback gets called after the chat stream ends
         if (!path.includes('chat')) {
-          router.push(`/chat/${chat.id}`, { scroll: false })
-          router.refresh()
+          // router.push(`/chat/${chat.id}`, { scroll: false })
+          // router.refresh()
         }
 
         // Notify those watching the app context for when the chat stream has
@@ -90,6 +94,7 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
         setChatStreamLastFinishedAt(Date.now())
       },
       onError(error) {
+        console.log(`***** onError path: ${error}`)
         console.error('Chat encountered an error:', error);
       },
     })
@@ -141,6 +146,8 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
     selectedProject,
     setSelectedProject,
   ])
+
+  console.log(`***** chat.tsx#useChat error: ${error}`)
 
   return (
     <>
