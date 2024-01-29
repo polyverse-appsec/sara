@@ -141,14 +141,18 @@ export function GithubSelect() {
   }
 
   const handleRepositoryChange = async (repo: Repository) => {
+    console.debug(`Repository changed to: repo.full_name`)
+
     // Persist the repo in the KV store
     projectConfig.project = null
     projectConfig.status = 'CONFIGURING'
     projectConfig.statusInfo  = 'Configuring Project'
+    projectConfig.errorInfo = null
     setProjectConfig(projectConfig)
 
     try {
       const retrievedProject = await getOrCreateProjectFromRepository(repo, user)
+      console.debug(`Project created/retrieved for: repo.full_name`)
 
       projectConfig.project = retrievedProject as SaraProject
       // TODO: Where do I set reference repositories?
