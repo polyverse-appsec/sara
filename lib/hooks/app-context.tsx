@@ -137,7 +137,6 @@ const buildSaraConfigStateSetters = (saraConfig: SaraConfig, setSaraConfig: Reac
 ] => {
   // TODO: Type the return value of this
   const setOrgConfig = (orgConfig: OrganizationConfigurable) => {
-    console.log(`***** setOrgConfig orgConfig: ${JSON.stringify(orgConfig)}`)
     const { status, errorInfo, statusInfo } = orgConfig
 
     const newSaraConfig: SaraConfig = {
