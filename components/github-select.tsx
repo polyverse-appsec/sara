@@ -71,12 +71,16 @@ export function GithubSelect() {
 
 
   const handleOrganizationChange = (org: Organization) => {
+    console.debug(`Organization changed to: ${org.login}`)
+
+    // TODO: Probbly need a helper method to build the status, statusInfo, and errorInfo and default to errorInfo being null
     orgConfig.organization = org as SaraOrganization
-    // orgConfig.organization = 
     orgConfig.status = 'CONFIGURING'
     orgConfig.statusInfo  = 'Configuring Repositories'
-    // TODO: Probbly need a helper method to build the status, statusInfo, and errorInfo and default to errorInfo being null
+    orgConfig.errorInfo = null
     setOrgConfig(orgConfig)
+
+    // TODO: Identify where this state is still used and remove
     console.log('Organization changed:', org)
     setSelectedOrganization(org)
 
@@ -88,12 +92,15 @@ export function GithubSelect() {
     if (org) {
       try {
         const repos = await getRepositoriesForOrg(org.login)
+        console.debug(`Repositories fetched for organization: ${org.login}`)
+
         const repositoriesById = repos.reduce((accumulator, repo) => {
           accumulator[repo.id] = repo
           return accumulator
         }, {} as Record<string, Repository>)
 
         orgConfig.organization = org as SaraOrganization
+        // TODO: Originally was setRepositories(data) where data is what was returned from `getRepositoriesForOrg`
         orgConfig.organization.repositoriesById = repositoriesById
         orgConfig.status = 'CONFIGURED'
         orgConfig.statusInfo  = 'Repositories Configured'
@@ -101,7 +108,7 @@ export function GithubSelect() {
         setOrgConfig(orgConfig)
       } catch (err) {
         // TODO: Where do we log this error?
-        console.error('Error configuring repositories: ', err)
+        console.error(`Error configuring repositories for org '${org.login}': ${err}`)
 
         orgConfig.organization = org as SaraOrganization
         orgConfig.organization.repositoriesById = {}
@@ -111,22 +118,6 @@ export function GithubSelect() {
 
         setOrgConfig(orgConfig)
       }
-    }
-
-
-    console.log('Fetching repositories for organization:', org)
-    if (org) {
-      getRepositoriesForOrg(org.login)
-        .then((data) => {
-          if (Array.isArray(data)) {
-            setRepositories(data)
-          } else {
-            console.error('Error fetching repositories:', data)
-          }
-        })
-        .catch((error) => {
-          console.error('Error fetching repositories:', error)
-        })
     }
   }
 
@@ -139,9 +130,8 @@ export function GithubSelect() {
   }
 
   const handleRepositoryChange = async (repo: Repository) => {
-    console.debug(`Repository changed to: repo.full_name`)
+    console.debug(`Repository changed to: ${repo.full_name}`)
 
-    // Persist the repo in the KV store
     projectConfig.project = null
     projectConfig.status = 'CONFIGURING'
     projectConfig.statusInfo  = 'Configuring Project'
@@ -166,17 +156,20 @@ export function GithubSelect() {
     } catch (err) {
       console.error('Error configuring project: ', err)
 
-      projectConfig.project = null
-      projectConfig.status = 'ERROR'
-      projectConfig.statusInfo  = ''
-      projectConfig.errorInfo  = 'Error Configuring Project'
-      setProjectConfig(projectConfig)
-
+      // Display the repo error state first since the project error state will
+      // roll up and is the more significant of the configurations having an
+      // error
       repoConfig.repo = null
       repoConfig.status = 'ERROR'
       repoConfig.statusInfo  = ''
       repoConfig.errorInfo  = 'Error Configuring Repo'
       setRepoConfig(repoConfig)
+
+      projectConfig.project = null
+      projectConfig.status = 'ERROR'
+      projectConfig.statusInfo  = ''
+      projectConfig.errorInfo  = 'Error Configuring Project'
+      setProjectConfig(projectConfig)
     }
 
 

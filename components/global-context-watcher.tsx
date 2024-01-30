@@ -8,68 +8,85 @@ import {
 
 const useDataWatcher = () => {
   const {
-    selectedProject,
-    setSelectedProject,
     saraConfig: { projectConfig, repoConfig },
     setProjectConfig
   } = useAppContext()
 
-  // TODO: Come back and complete this
-  // TODO: Can I break up this useEffect into separate ones?
-  // TODO: Can I update the dependency array with the types we are looking at
-  // TODO: Add try/catch
   useEffect(() => {
     // This effect will run whenever 'data' changes
     async function updateAIOnRepositoryChange() {
-      const { status, project } = projectConfig
-      const { repo } = repoConfig
+      // TODO: Does this method requiring projectConfig and repoConfig dictate that we should just combine repoConfig into the projectConfig?
+      // Looking at <GitHubSelect> we see that on repo change both the project and the repo get configured. See also our call
+      // to `getOrCreateAssistantForProject` which essentially takes the project and repo together to configure the
+      // OpenAI assistant.
+      const { status: projectStatus, project } = projectConfig
+      const { status: repoStatus, repo } = repoConfig
 
-      if (status === 'CONFIGURED') {
-          // TODO: Try catch this logic with status changes if error
-          // We await this to ensure that any calls to the backend have data
-          // references - whether they files have been processed or not.
-
-          // TODO: Fairly certain Aaron sus'ed out a bug. We need to use the original app context for now
-          // until we see this on the project type
-          await tickleReposForProjectChange(repo ? [repo] : [])
+      // TODO: Get rid of magic strings
+      // Since this method is invoked within a `useEffect` whose dependency
+      // array depends on `repoConfig` we need to ensure that the project it is
+      // associated with also is in a `CONFIGURED` state.
+      if (projectStatus !== 'CONFIGURED') {
+        // TODO: Get rid of magic strings in this debug statement
+        console.debug(`Repo config for ${repo?.full_name} changed and is in a 'CONFIGURED' state but its associated project ${project?.name} isn't`)
+        return
       }
 
-      if (project && !project.assistant) {
-        // TODO: Add a state change to show we are configuring
-        projectConfig.project = project
-        projectConfig.status = 'CONFIGURING'
-        projectConfig.statusInfo = 'Configuring Sara For Project'
-        projectConfig.errorInfo = null
+      if (!project) {
+        // TODO: Get rid of magic strings in this debug statement
+        console.debug(`Repo config for ${repo?.full_name} changed and is in a 'CONFIGURED' state but its associated project doesn't have an instance`)
+        return
+      }
 
-        setProjectConfig(projectConfig)
+      // TODO: Get rid of magic strings
+      if (repoStatus !== 'CONFIGURED') {
+        // TODO: Get rid of magic strings in this debug statement
+        console.debug(`Returning early from updating the AI since the repo causing this invocation isn't yet in a 'CONFIGURED' state`)
+        return
+      }
 
-        // TODO: Fairly certain Aaron sus'ed out a bug. We need to use the original app context for now
-        // until we see this on the project type
+      projectConfig.project = project
+      projectConfig.status = 'CONFIGURING'
+      projectConfig.statusInfo = 'Configuring Sara For Project'
+      projectConfig.errorInfo = null
+
+      setProjectConfig(projectConfig)
+
+      // TODO: Do I really want this try catch here or should I make this part of another state for project configuration?
+      try {
+        // We await this to ensure that any calls to the backend have data
+        // references - whether they files have been processed or not.
+        await tickleReposForProjectChange(repo ? [repo] : [])
+      } catch (err) {
+        // TODO: Should we cause a state change here?
+        console.error(`Failed to tickle the repo ${repo?.full_name} project ${project?.name} because: ${err}`)
+      }
+
+      try {
         const assistant = await getOrCreateAssistantForProject(
           project,
           repo ? [repo] : [],
         )
 
-        if (assistant) {
-          projectConfig.project.assistant = assistant
-          projectConfig.status = 'CONFIGURED'
-          // TODO: This is referenced somewhere so we probably want to move all of these 'status info' to a type for typechecking
-          projectConfig.statusInfo = 'Sara Configured For Project'
-          projectConfig.errorInfo = null
+        projectConfig.project.assistant = assistant
+        projectConfig.status = 'CONFIGURED'
+        // TODO: This is referenced somewhere so we probably want to move all of these 'status info' to a type for typechecking
+        projectConfig.statusInfo = 'Sara Configured For Project'
+        projectConfig.errorInfo = null
 
-          setProjectConfig(projectConfig)
-        }
-
-        // TODO: Set project
-        // TODO: Set status
-        // TODO: Try catch this logic with status changes if error
+        setProjectConfig(projectConfig)
+      } catch (err) {
+        projectConfig.project = null
+        projectConfig.status = 'ERROR'
+        projectConfig.statusInfo  = ''
+        projectConfig.errorInfo  = 'Error Configuring Sara For Project'
+        setProjectConfig(projectConfig)
       }
     }
     updateAIOnRepositoryChange()
   }, [
-    projectConfig,
     repoConfig
-  ]) // Dependency array with 'data' to watch for its changes
+  ])
 }
 
 interface GlobalContextWatcherProps {

@@ -137,12 +137,17 @@ const buildSaraConfigStateSetters = (saraConfig: SaraConfig, setSaraConfig: Reac
 ] => {
   // TODO: Type the return value of this
   const setOrgConfig = (orgConfig: OrganizationConfigurable) => {
-    const { status, errorInfo, statusInfo } = orgConfig
+    // Make sure that we copy over properties to a new object so React won't see
+    // the same object reference. This is important for triggering re-renders as
+    // well as the `useEffect` method that may have a dependency array on some
+    // of these objects.
+    const newOrgConfig = { ...orgConfig }
+    const { status, errorInfo, statusInfo } = newOrgConfig
 
     const newSaraConfig: SaraConfig = {
       ...saraConfig,
       // Copy over the new org config
-      orgConfig,
+      orgConfig: newOrgConfig,
       // Update the top-level info
       status,
       errorInfo,
@@ -154,13 +159,17 @@ const buildSaraConfigStateSetters = (saraConfig: SaraConfig, setSaraConfig: Reac
 
   // TODO: Type the return value of this
   const setProjectConfig = (projectConfig: ProjectConfigurable) => {
-    console.log(`***** setProjectConfig projectConfig: ${JSON.stringify(projectConfig)}`)
-    const { status, errorInfo, statusInfo } = projectConfig
+    // Make sure that we copy over properties to a new object so React won't see
+    // the same object reference. This is important for triggering re-renders as
+    // well as the `useEffect` method that may have a dependency array on some
+    // of these objects.
+    const newProjectConfig = { ...projectConfig }
+    const { status, errorInfo, statusInfo } = newProjectConfig
 
     const newSaraConfig: SaraConfig = {
       ...saraConfig,
       // Copy over the new project config
-      projectConfig,
+      projectConfig: newProjectConfig,
       // Update the top-level info
       status,
       errorInfo,
@@ -172,13 +181,17 @@ const buildSaraConfigStateSetters = (saraConfig: SaraConfig, setSaraConfig: Reac
 
   // TODO: Type the return value of this
   const setRepoConfig = (repoConfig: RepositoryConfigurable) => {
-    console.log(`***** repoConfig setRepoConfig: ${JSON.stringify(repoConfig)}`)
-    const { status, errorInfo, statusInfo } = repoConfig
+    // Make sure that we copy over properties to a new object so React won't see
+    // the same object reference. This is important for triggering re-renders as
+    // well as the `useEffect` method that may have a dependency array on some
+    // of these objects.
+    const newRepoConfig = { ...repoConfig }
+    const { status, errorInfo, statusInfo } = newRepoConfig
 
     const newSaraConfig: SaraConfig = {
       ...saraConfig,
       // Copy over the new project config
-      repoConfig,
+      repoConfig: newRepoConfig,
       // Update the top-level info
       status,
       errorInfo,

@@ -36,15 +36,17 @@ const oaiClient = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 })
 
+// TODO: Add comments to this method
 function mapFileInfoToPromptAndIDs(fileInfos: ProjectDataReference[]) {
+  // TODO: Add comments about the significance of these file types
   let fileTypes: FileTypes = { aispec: '', blueprint: '', projectsource: '' }
   fileInfos.map(({ name, type }) => {
     fileTypes[type as keyof FileTypes] = name
   })
 
-  const fileIDs = fileInfos.map(({ id }) => id)
   const prompt = getOpenAIAssistantInstructions(fileTypes)
 
+  const fileIDs = fileInfos.map(({ id }) => id)
   return { prompt, fileIDs }
 }
 /**
@@ -55,10 +57,10 @@ function mapFileInfoToPromptAndIDs(fileInfos: ProjectDataReference[]) {
  * @returns {Promise<Assistant>} Promise with the created OpenAI assistant.
  */
 export async function createAssistantWithFileIDsFromRepo(
-  fileInfo: ProjectDataReference[],
+  fileInfos: ProjectDataReference[],
   repo_full_name: string,
 ): Promise<Assistant> {
-  const { prompt, fileIDs } = mapFileInfoToPromptAndIDs(fileInfo)
+  const { prompt, fileIDs } = mapFileInfoToPromptAndIDs(fileInfos)
 
   return await oaiClient.beta.assistants.create({
     model: OPENAI_MODEL,
@@ -104,6 +106,7 @@ export async function updateAssistantPromptAndFiles(
   { id }: { id: string },
 ): Promise<Assistant> {
   const { prompt, fileIDs } = mapFileInfoToPromptAndIDs(fileInfos)
+
   return await oaiClient.beta.assistants.update(id, {
     file_ids: fileIDs,
     instructions: prompt,

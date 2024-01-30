@@ -481,24 +481,21 @@ export async function tickleReposForProjectChange(
   for (const repo of repos) {
     ticklePromises.push(tickleRepository(repo, session.user.email || ''))
   }
+
   await Promise.all(ticklePromises)
 }
 
 export async function getOrCreateAssistantForProject(
   project: Project,
   repos: Repository[],
-): Promise<Assistant | null> {
+): Promise<Assistant> {
   const session = await auth()
 
   if (!session?.user?.id) {
     throw new Error('Unauthorized')
   }
 
-  if (!project.assistant) {
-    //we don't have an assistant, so create one
-    return await configAssistant(project, repos, session.user.email || '')
-  }
-  return null
+  return await configAssistant(project, repos, session.user.email || '')
 }
 
 /*
