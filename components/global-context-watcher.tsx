@@ -67,9 +67,8 @@ const useDataWatcher = () => {
     }
     updateAIOnRepositoryChange()
   }, [
-    selectedProject,
-    setSelectedProject,
-    projectConfig
+    projectConfig,
+    repoConfig
   ]) // Dependency array with 'data' to watch for its changes
 }
 
