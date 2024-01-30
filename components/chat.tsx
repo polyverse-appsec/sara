@@ -37,6 +37,11 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
     saraConfig
   } = useAppContext()
 
+  // TODO: Need to update the body of useChat with the info in the configured Sara object
+
+  const { status, projectConfig: { project, status: projectStatus, statusInfo: projectStatusInfo } } = saraConfig
+
+
   // 'useChat' comes from the Vercel API: https://sdk.vercel.ai/docs/api-reference/use-chat
   //
   // After a message is submitted the 'useChat' hook will automatically append a
@@ -63,9 +68,9 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
       // `body` is an optional extra body passed to our API endpoint in
       // additional to the `messages` array.
       body: {
+        // TODO: Need to update the body of useChat with the info in the configured Sara object
         id: chat.id,
-        project: selectedProject,
-        chat: selectedActiveChat,
+        project,
         task: selectedActiveTask,
       },
       onResponse(response) {
@@ -98,8 +103,6 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
         console.error('Chat encountered an error:', error);
       },
     })
-
-    const { status, projectConfig: { status: projectStatus, statusInfo: projectStatusInfo } } = saraConfig
 
     // If this path was navigated it through a path that includes /chat and we
     // haven't yet configured Sara then redirect to the home path so that the user

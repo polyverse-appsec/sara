@@ -39,8 +39,6 @@ import { configThread } from '../openai/threads'
 export const querySara = async (
   userID: string,
   project: Project,
-  task: Task,
-  chat: Chat,
   question: any,
   fullSaraResponseCallback?: any,
 ) => {

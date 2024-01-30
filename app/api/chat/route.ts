@@ -60,7 +60,7 @@ export async function POST(req: Request) {
     })
   }
 
-  const { id, messages, project, chat, task } = jsonBody
+  const { id, messages, project, task } = jsonBody
 
   // TODO: If our message stream fails then we never persist
   const persistAssistantMessagesCallback = async (
@@ -105,8 +105,6 @@ export async function POST(req: Request) {
   const assistantMessagesStream = await querySara(
     userId,
     project,
-    task,
-    chat,
     messages,
     persistAssistantMessagesCallback,
   )

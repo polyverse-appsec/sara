@@ -172,8 +172,6 @@ export function GithubSelect() {
       setProjectConfig(projectConfig)
     }
 
-
-
     // Ensure we set the relevant information in our apps context for other
     // core components to function correctly
     setSelectedRepository(repo) //this sets the local UI state for the selected repo
