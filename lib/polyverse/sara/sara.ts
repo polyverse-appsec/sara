@@ -63,7 +63,8 @@ export const querySara = async (
       // 'completed' state at which point we need to cancel the interval.
       const intervalID = setInterval(async () => {
         const runStatus = await getThreadRunStatus(runID, thread.id)
-        const status = runStatus.status
+        //const status = runStatus.status
+        const status = 'failed'
 
         // Once the run is completed check for the final message in the thread
         // that the run was performed on. It ought to be the message from the
@@ -100,6 +101,15 @@ export const querySara = async (
             runID,
             runStatus,
           )
+
+          return
+        } else if (status === 'failed') {
+          const error = JSON.stringify(runStatus.last_error);
+          console.log(`Reason for failed status: '${error}'`)
+          controller.enqueue(encoder.encode('\n'))
+          const errorMessage = `Sara failed to generate a response. Reason: ${error}`
+          controller.enqueue(encoder.encode(errorMessage))
+          controller.close()
 
           return
         } else {
