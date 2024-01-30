@@ -29,7 +29,10 @@ const useDataWatcher = () => {
           // TODO: Try catch this logic with status changes if error
           // We await this to ensure that any calls to the backend have data
           // references - whether they files have been processed or not.
-          await tickleReposForProjectChange(project?.selectedProjectRepositories ?? [])
+
+          // TODO: Fairly certain Aaron sus'ed out a bug. We need to use the original app context for now
+          // until we see this on the project type
+          await tickleReposForProjectChange(selectedProjectRepositories ?? [])
       }
 
       if (project && !project.assistant) {
@@ -41,9 +44,11 @@ const useDataWatcher = () => {
 
         setProjectConfig(projectConfig)
 
+        // TODO: Fairly certain Aaron sus'ed out a bug. We need to use the original app context for now
+        // until we see this on the project type
         const assistant = await getOrCreateAssistantForProject(
           project,
-          project?.selectedProjectRepositories ?? [],
+          selectedProjectRepositories ?? [],
         )
 
         if (assistant) {
