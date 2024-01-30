@@ -34,8 +34,6 @@ export function GithubSelect() {
     selectedProject,
     setSelectedProject,
     setSelectedActiveTask,
-    selectedProjectRepositories,
-    setSelectedProjectRepositories,
     saraConfig: { orgConfig, projectConfig, repoConfig },
     setOrgConfig,
     setProjectConfig,
@@ -152,10 +150,9 @@ export function GithubSelect() {
 
     try {
       const retrievedProject = await getOrCreateProjectFromRepository(repo, user)
-      console.debug(`Project created/retrieved for: repo.full_name`)
+      console.debug(`Project created/retrieved for: ${repo.full_name}`)
 
       projectConfig.project = retrievedProject as SaraProject
-      // TODO: Where do I set reference repositories?
       projectConfig.status = 'CONFIGURED'
       projectConfig.statusInfo  = 'Project Configured'
       projectConfig.errorInfo = null
@@ -165,22 +162,20 @@ export function GithubSelect() {
       repoConfig.status = 'CONFIGURED'
       repoConfig.statusInfo  = 'Repo Configured'
       repoConfig.errorInfo  = null
+      setRepoConfig(repoConfig)
     } catch (err) {
-      // TODO: Where do we log this error?
       console.error('Error configuring project: ', err)
 
       projectConfig.project = null
       projectConfig.status = 'ERROR'
       projectConfig.statusInfo  = ''
       projectConfig.errorInfo  = 'Error Configuring Project'
-
       setProjectConfig(projectConfig)
 
       repoConfig.repo = null
       repoConfig.status = 'ERROR'
       repoConfig.statusInfo  = ''
       repoConfig.errorInfo  = 'Error Configuring Repo'
-
       setRepoConfig(repoConfig)
     }
 
@@ -189,9 +184,7 @@ export function GithubSelect() {
     // Ensure we set the relevant information in our apps context for other
     // core components to function correctly
     setSelectedRepository(repo) //this sets the local UI state for the selected repo
-    // setSelectedProject(retrievedProject)
     setSelectedProject(projectConfig.project)
-    setSelectedProjectRepositories([repo]) //this sets the global appContext state for active repositories
 
     if (projectConfig.project?.defaultTask) {
       setSelectedActiveTask(projectConfig.project.defaultTask)

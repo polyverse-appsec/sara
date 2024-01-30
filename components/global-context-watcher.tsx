@@ -8,11 +8,9 @@ import {
 
 const useDataWatcher = () => {
   const {
-    selectedProjectRepositories,
-    setSelectedProjectRepositories,
     selectedProject,
     setSelectedProject,
-    saraConfig: { projectConfig },
+    saraConfig: { projectConfig, repoConfig },
     setProjectConfig
   } = useAppContext()
 
@@ -24,6 +22,7 @@ const useDataWatcher = () => {
     // This effect will run whenever 'data' changes
     async function updateAIOnRepositoryChange() {
       const { status, project } = projectConfig
+      const { repo } = repoConfig
 
       if (status === 'CONFIGURED') {
           // TODO: Try catch this logic with status changes if error
@@ -32,7 +31,7 @@ const useDataWatcher = () => {
 
           // TODO: Fairly certain Aaron sus'ed out a bug. We need to use the original app context for now
           // until we see this on the project type
-          await tickleReposForProjectChange(selectedProjectRepositories ?? [])
+          await tickleReposForProjectChange(repo ? [repo] : [])
       }
 
       if (project && !project.assistant) {
@@ -48,7 +47,7 @@ const useDataWatcher = () => {
         // until we see this on the project type
         const assistant = await getOrCreateAssistantForProject(
           project,
-          selectedProjectRepositories ?? [],
+          repo ? [repo] : [],
         )
 
         if (assistant) {
@@ -70,8 +69,6 @@ const useDataWatcher = () => {
   }, [
     selectedProject,
     setSelectedProject,
-    selectedProjectRepositories,
-    setSelectedProjectRepositories,
     projectConfig
   ]) // Dependency array with 'data' to watch for its changes
 }

@@ -210,9 +210,6 @@ interface AppContextType {
   chatStreamLastFinishedAt: number | null
   setChatStreamLastFinishedAt: (generatedAt: number | null) => void
 
-  selectedProjectRepositories: Repository[] | null
-  setSelectedProjectRepositories: (repositories: Repository[] | null) => void
-
   saraConfig: SaraConfig
   setOrgConfig: (orgConfig: OrganizationConfigurable) => void
   setProjectConfig: (projectConfig: ProjectConfigurable) => void
