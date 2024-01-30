@@ -2,8 +2,7 @@
 // managing the life cycle of a thread run. We believe we haven't managed all of
 // the states or possibly it is just long running for whatever question we ask.
 // Possibly in the future we will modify this as we learn more.
-// export const maxDuration = 30
-export const maxDuration = 5
+export const maxDuration = 30
 
 import { auth } from './../../../auth'
 import { kv } from '@vercel/kv'
