@@ -2,7 +2,9 @@
 // managing the life cycle of a thread run. We believe we haven't managed all of
 // the states or possibly it is just long running for whatever question we ask.
 // Possibly in the future we will modify this as we learn more.
-export const maxDuration = 30
+// export const maxDuration = 30
+// TODO: Set to 3 mins for all hands demo 1/30/24
+export const maxDuration = 180
 
 import { auth } from './../../../auth'
 import { kv } from '@vercel/kv'
@@ -60,6 +62,7 @@ export async function POST(req: Request) {
 
   const { id, messages, project, chat, task } = jsonBody
 
+  // TODO: If our message stream fails then we never persist
   const persistAssistantMessagesCallback = async (
     retrievedAssistantMessages: string,
   ) => {
