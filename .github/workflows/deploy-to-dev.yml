@@ -60,4 +60,7 @@ jobs:
       # redirect us to `preview.boost.polyverse.com` based on it pulling\
       # `preview` env vars by default when running.
       - name: Deploy Project Artifacts to Vercel
-        run: vercel deploy --env NEXTAUTH_URL="https://dev.boost.polyverse.com/" --env AUTH_REDIRECT_PROXY_URL="https://dev.boost.polyverse.com/api/auth" --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel deploy --env NEXTAUTH_URL="https://dev.boost.polyverse.com/" \
+          --env AUTH_REDIRECT_PROXY_URL="https://dev.boost.polyverse.com/api/auth" \
+          --env SARA_STAGE="dev" \
+          --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
