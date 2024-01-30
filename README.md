@@ -33,6 +33,20 @@ If you haven't yet installed `pnpm` you can do so by running the following: `cur
 $ pnpm add -g vercel
 $ vercel link
 $ vercel env pull
+```
+
+After pulling environment variables a file named `.env.local` should have been created in your root folder. Please update the following values for the following environment variables:
+
+```
+AUTH_GITHUB_ID="96c90cb569b5c8ac46c4"
+AUTH_GITHUB_SECRET="bcb8c811b4604647a1f0ede6bb6f905140546b5f"
+AUTH_REDIRECT_PROXY_URL="http://localhost:3000/api/auth"
+NEXTAUTH_URL="http://localhost:3000/"
+```
+
+After updating `.env.local` you can proceed by running the following commands:
+
+```base
 $ pnpm install
 $ pnpm dev
 ```
