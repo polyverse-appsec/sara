@@ -73,6 +73,7 @@ export const querySara = async (
           // Close it out first in the event that retrieving the list of messages
           // fails.
           clearInterval(intervalID)
+          console.log("IN COMPLETED")
 
           const assistantMessages = await getAssistantMessages(thread.id)
           console.log(`Concatenated assistant messages: ${assistantMessages}`)
@@ -103,12 +104,19 @@ export const querySara = async (
 
           return
         } else if (status === 'failed') {
+          clearInterval(intervalID);
+          console.log("IN FAILED")
           const error = JSON.stringify(runStatus.last_error);
           console.log(`Reason for failed status: '${error}'`)
           controller.enqueue(encoder.encode('\n'))
           const errorMessage = `Sara failed to generate a response. Reason: ${error}`
           controller.enqueue(encoder.encode(errorMessage))
-          //controller.close()
+          if (fullSaraResponseCallback) {
+            console.log('Calling fullSaraResponseCallback')
+            await fullSaraResponseCallback(errorMessage)
+            console.log('Called fullSaraResponseCallback')
+          }
+          controller.close()
 
           return
         } else {
