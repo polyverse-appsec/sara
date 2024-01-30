@@ -8,15 +8,15 @@ import { Project, ProjectDataReference, Repository } from './../../dataModelType
 // Local: 'http://localhost:8000'
 const URL_SERVICE_URI_DEV =
   'https://3c27qu2ddje63mw2dmuqp6oa7u0ergex.lambda-url.us-west-2.on.aws' // SARA_STAGE=dev
-const URL_SERVICE_URI_TEST =
+const URL_SERVICE_URI_PREVIEW =
   'https://sztg3725fqtcptfts5vrvcozoe0nxcew.lambda-url.us-west-2.on.aws' // SARA_STAGE=test
 const URL_SERVICE_URI_PROD =
   'https://33pdosoitl22c42c7sf46tabi40qwlae.lambda-url.us-west-2.on.aws' // SARA_STAGE=prod
 
 // set the URL_BASE to the appropriate value for the env variable SARA_STAGE or default to dev
 const USER_SERVICE_URI =
-  process.env.SARA_STAGE?.toLowerCase() === 'test'
-    ? URL_SERVICE_URI_TEST
+  process.env.SARA_STAGE?.toLowerCase() === 'preview'
+    ? URL_SERVICE_URI_PREVIEW
     : process.env.SARA_STAGE?.toLowerCase() === 'prod'
       ? URL_SERVICE_URI_PROD
       : URL_SERVICE_URI_DEV
