@@ -37,19 +37,6 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
     saraConfig
   } = useAppContext()
 
-  const { status, projectConfig: { status: projectStatus, statusInfo: projectStatusInfo } } = saraConfig
-
-  // If this path was navigated it through a path that includes /chat and we
-  // haven't yet configured Sara then redirect to the home path so that the user
-  // has to configure her by selecting an organization and a repository. Failure
-  // to do so will mean that the chat functionality is non-functional and could
-  // result in errors.
-  if (path.includes('chat') && status !== 'CONFIGURED') {
-    router.push('/')
-    router.refresh()
-    return
-  }
-
   // 'useChat' comes from the Vercel API: https://sdk.vercel.ai/docs/api-reference/use-chat
   //
   // After a message is submitted the 'useChat' hook will automatically append a
@@ -111,6 +98,19 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
         console.error('Chat encountered an error:', error);
       },
     })
+
+    const { status, projectConfig: { status: projectStatus, statusInfo: projectStatusInfo } } = saraConfig
+
+    // If this path was navigated it through a path that includes /chat and we
+    // haven't yet configured Sara then redirect to the home path so that the user
+    // has to configure her by selecting an organization and a repository. Failure
+    // to do so will mean that the chat functionality is non-functional and could
+    // result in errors.
+    if (path.includes('chat') && status !== 'CONFIGURED') {
+      router.push('/')
+      router.refresh()
+      return
+    }
 
   return (
     <>
