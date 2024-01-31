@@ -1,10 +1,8 @@
-// 01/26/24: Set for 30 seconds for debugging purposes when getting 404s while
+// 01/31/24: Set for 90 seconds for debugging purposes when getting 404s while
 // managing the life cycle of a thread run. We believe we haven't managed all of
 // the states or possibly it is just long running for whatever question we ask.
 // Possibly in the future we will modify this as we learn more.
-// export const maxDuration = 30
-// TODO: Set to 3 mins for all hands demo 1/30/24
-export const maxDuration = 180
+export const maxDuration = 90
 
 import { auth } from './../../../auth'
 import { kv } from '@vercel/kv'
