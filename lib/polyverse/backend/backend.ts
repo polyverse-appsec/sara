@@ -1,4 +1,6 @@
-import { Secret, sign } from 'jsonwebtoken'
+// import { Secret, sign } from 'jsonwebtoken'
+import jsonwebtoken from 'jsonwebtoken'
+const { sign } = jsonwebtoken
 
 import { Project, ProjectDataReference, Repository } from './../../dataModelTypes'
 
@@ -27,7 +29,7 @@ interface SignedHeader {
 
 function createSignedHeader(email: string): SignedHeader {
   const privateSaraClientKey = process.env.SARA_CLIENT_PRIVATE_KEY
-  const signedIdentityHeader = sign({ email }, privateSaraClientKey as Secret, {
+  const signedIdentityHeader = sign({ email }, privateSaraClientKey as jsonwebtoken.Secret, {
     algorithm: 'RS256',
   })
   const header: SignedHeader = {
