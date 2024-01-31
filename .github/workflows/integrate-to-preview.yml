@@ -48,12 +48,6 @@ jobs:
       - name: Run Redis test DB
         run: docker-compose up -d
 
-      - name: Run test Next server
-        run: |
-          export NEXTAUTH_URL="http://localhost:3000"
-          export AUTH_SECRET="8604b92966b197c12aab26f66aa8596a"
-          pnpm run start &
-
       # Export NEXTAUTH_URL as localhost when running in GitHub Actions to
       # avoid UntrustedHost error: https://authjs.dev/reference/core/errors/#untrustedhost
       # Note that this isn't a pattern to follow for any Vercel deployments
@@ -62,6 +56,9 @@ jobs:
       # locally
       - name: Run CI tests
         run: |
+          export NEXTAUTH_URL="http://localhost:3000"
+          export AUTH_SECRET="8604b92966b197c12aab26f66aa8596a"
+          pnpm run start &
           # You shouldn't need to sleep here to let the NextJS server come up as
           # we need to compile our tests with `tsc` before running them which
           # will consume some time
