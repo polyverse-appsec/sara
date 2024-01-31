@@ -13,7 +13,7 @@ import {
   Task,
   User,
   type Chat,
-} from './../lib/dataModelTypes'
+} from '../lib/data-model-types'
 import {
   stripUndefinedObjectProperties,
   tickleRepository,

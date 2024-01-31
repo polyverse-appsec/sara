@@ -4,7 +4,7 @@ import * as React from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'react-hot-toast'
 
-import { ServerActionResult } from './../lib/dataModelTypes'
+import { ServerActionResult } from '../lib/data-model-types'
 import {
   AlertDialog,
   AlertDialogAction,

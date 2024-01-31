@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 
-import { Chat, Task, type ServerActionResult } from './../lib/dataModelTypes'
+import { Chat, Task, type ServerActionResult } from '../lib/data-model-types'
 import { useAppContext } from './..//lib/hooks/app-context'
 import { SidebarItems } from './sidebar-items'
 import { ThemeToggle } from './theme-toggle'

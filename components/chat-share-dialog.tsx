@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { type DialogProps } from '@radix-ui/react-dialog'
 import { toast } from 'react-hot-toast'
 
-import { ServerActionResult, type Chat } from './../lib/dataModelTypes'
+import { ServerActionResult, type Chat } from '../lib/data-model-types'
 import { useCopyToClipboard } from './../lib/hooks/use-copy-to-clipboard'
 import { Button } from './ui/button'
 import {

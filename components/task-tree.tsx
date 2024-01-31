@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 
-import { Task } from './../lib/dataModelTypes'
+import { Task } from '../lib/data-model-types'
 
 import { Treeview } from './ui/treeview'
 

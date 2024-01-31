@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useChat, type Message } from 'ai/react'
 import { toast } from 'react-hot-toast'
 
-import type { Chat } from './../lib/dataModelTypes'
+import type { Chat } from '../lib/data-model-types'
 import { useAppContext } from './../lib/hooks/app-context'
 import { cn } from './../lib/utils'
 import { ChatList } from  './chat-list'
@@ -68,9 +68,10 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
       // `body` is an optional extra body passed to our API endpoint in
       // additional to the `messages` array.
       body: {
-        // TODO: Need to update the body of useChat with the info in the configured Sara object
         id: chat.id,
         project,
+        // TODO: Need to update the body of useChat with the info in the configured Sara object.
+        // See <gitHubSelect> for what selectedActiveTask is
         task: selectedActiveTask,
       },
       onResponse(response) {

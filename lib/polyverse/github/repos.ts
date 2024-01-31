@@ -1,7 +1,7 @@
 import { Octokit } from '@octokit/rest'
 import { kv } from '@vercel/kv'
 
-import { Organization, Repository } from './../../dataModelTypes'
+import { Organization, Repository } from '../../data-model-types'
 
 // Define a type for the function's parameters
 export type FetchUserOrgsParams = {

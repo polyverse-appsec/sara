@@ -3,7 +3,7 @@
 import React from 'react'
 import Image from 'next/image'
 
-import { Organization, User } from './../lib/dataModelTypes'
+import { Organization, User } from '../lib/data-model-types'
 import { Button } from './ui/button'
 import {
   DropdownMenu,

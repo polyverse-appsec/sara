@@ -6,7 +6,7 @@
 
 import { kv } from '@vercel/kv'
 
-import { Project, Repository, User } from './../../dataModelTypes'
+import { Project, Repository, User } from '../../data-model-types'
 import { createDefaultProjectTask } from './../task/task'
 
 export async function createNewProjectFromRepository(

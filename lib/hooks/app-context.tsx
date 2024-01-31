@@ -16,7 +16,7 @@ import {
   Repository,
   Task,
   User,
-} from './../dataModelTypes'
+} from '../data-model-types'
 import { getOrCreateUserFromSession } from './../../app/actions'
 
 /**

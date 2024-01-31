@@ -2,7 +2,7 @@ import { create } from 'domain'
 import OpenAI from 'openai'
 import { Assistant } from 'openai/resources/beta/assistants/assistants'
 
-import { Task } from './../../dataModelTypes'
+import { Task } from '../../data-model-types'
 import { nanoid } from './../../utils'
 import { createTask } from './../../../app/actions'
 

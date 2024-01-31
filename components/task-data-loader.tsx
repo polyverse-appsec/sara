@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { toast } from 'react-hot-toast'
 
-import { Task } from './../lib/dataModelTypes'
+import { Task } from '../lib/data-model-types'
 import { useAppContext } from './../lib/hooks/app-context'
 import { getTasksAssociatedWithProject } from './../app/actions'
 

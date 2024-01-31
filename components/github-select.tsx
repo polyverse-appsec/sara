@@ -2,7 +2,7 @@ import * as React from 'react'
 import { useEffect, useState } from 'react'
 import { type Session } from 'next-auth'
 
-import { Organization, Project, Repository } from './../lib/dataModelTypes'
+import { Organization, Project, Repository } from '../lib/data-model-types'
 import { useAppContext, type SaraOrganization, type SaraProject } from './../lib/hooks/app-context'
 import { IconSeparator } from './ui/icons'
 import {

@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from 'framer-motion'
 
-import { type Chat } from './../lib/dataModelTypes'
+import { type Chat } from '../lib/data-model-types'
 import { SidebarActions } from './sidebar-actions'
 import { SidebarItem } from './sidebar-item'
 
