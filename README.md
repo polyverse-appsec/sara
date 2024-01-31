@@ -15,6 +15,8 @@
       - [Make It Pretty :sparkles:](#Make-It-Pretty-sparkles)
   - [Testing](#Testing)
     - [How The Tests Work](#How-The-Tests-Work)
+      - [Writing Tests](#Writing-Tests)
+      - [Gotcha: Working With CommonJS Modules](#Gotcha-Working-With-CommonJS-Modules)
     - [Testing With `node-boost-api` Service](#Testing-With-node-boost-api-Service)
   - [Ops](#Ops)
     - [Overview Of CI/CD Strategy](#Overview-Of-CICD-Strategy)
@@ -146,6 +148,50 @@ While we use [MochaJS](https://mochajs.org/) as a testing framework the way we a
 `Sara` originally started as a fork of a public demonstration of NextJS interfacing with OpenAI. The forked project provided non-insignificant set of TypeScript compiler options (see `tsconfig.json`). The TypeScript compiler options compiles to support [`ECMAScript modules`](https://nodejs.org/api/esm.html) yet `package.json` excludes the `type` field and thus modules are considered [`CommonJS`](https://nodejs.org/api/modules.html#modules-commonjs-modules) by default.
 
 When we added `MochaJS` tests we wished to preserve type checking in the tests with TypeScript. This coupled with NextJS providing its own set of build tools (i.e. `next build`) as well as the differneces in module support between the `tsconfig.json` and `package.json` the current way we believe we can get `MochaJS` tests to work is to compile them first before running them and then "tricking" `Node` into treating the compiled code as [`ECMAScript modules`](https://nodejs.org/api/esm.html). For more details you can review the details of the `test` script in `package.json`.
+
+After compilation we run the tests while using the [`extensionless`](https://www.npmjs.com/package/extensionless) loader. This allows all of our compiled import statements to work without the need to include the `.js` extension.
+
+#### Writing Tests
+
+To add a test simply add a file with the extension of `.spec.ts` to the `test` folder. In general our tests match the directory structure of our application. You ought to be able to import any of the our applications code for testing purposes.
+
+#### Gotcha: Working With CommonJS Modules
+
+Some of the tests may import our application code which in turn imports a `CommonJS` module. This is problematic as mentioned in [`How The Tests Work`](#How-The-Tests-Work) we "trick" `Node` into treacting the compiled code as [`ECMAScript modules`](https://nodejs.org/api/esm.html). As a result you will see errors like this from time to time:
+
+```bash
+file:///Users/gine/workspace/sara/dist/esm/lib/polyverse/backend/backend.js:102
+import { sign } from 'jsonwebtoken';
+         ^^^^
+SyntaxError: Named export 'sign' not found. The requested module 'jsonwebtoken' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'jsonwebtoken';
+const { sign } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:131:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:213:5)
+    at async ModuleLoader.import (node:internal/modules/esm/loader:316:24)
+    at async importModuleDynamicallyWrapper (node:internal/vm/module:431:15)
+    at async formattedImport (/Users/gine/workspace/sara/node_modules/.pnpm/mocha@10.2.0/node_modules/mocha/lib/nodejs/esm-utils.js:9:14)
+    at async exports.requireOrImport (/Users/gine/workspace/sara/node_modules/.pnpm/mocha@10.2.0/node_modules/mocha/lib/nodejs/esm-utils.js:42:28)
+    at async exports.loadFilesAsync (/Users/gine/workspace/sara/node_modules/.pnpm/mocha@10.2.0/node_modules/mocha/lib/nodejs/esm-utils.js:100:20)
+    at async singleRun (/Users/gine/workspace/sara/node_modules/.pnpm/mocha@10.2.0/node_modules/mocha/lib/cli/run-helpers.js:125:3)
+    at async exports.handler (/Users/gine/workspace/sara/node_modules/.pnpm/mocha@10.2.0/node_modules/mocha/lib/cli/run.js:370:5)
+```
+
+This can be fixed by importing the whole default export and then desctructuring off of it. For example:
+
+```javascript
+// import { sign } from 'jsonwebtoken' <----- Causes an error since it is a CommonJS module
+
+import jsonwebtoken from 'jsonwebtoken'
+const { sign } = jsonwebtoken
+```
+
+While this works it could be problematic and might not be the ideal solution longterm:
+* https://stackoverflow.com/questions/70605320/named-export-types-not-found-the-requested-module-mongoose-is-a-commonjs-mo
+* https://stackoverflow.com/questions/74690087/what-is-the-problem-of-mixing-require-and-import-in-the-same-typescript-file
 
 ### Testing With `node-boost-api` Service
 

@@ -1,4 +1,3 @@
-// import { Secret, sign } from 'jsonwebtoken'
 import jsonwebtoken from 'jsonwebtoken'
 const { sign } = jsonwebtoken
 

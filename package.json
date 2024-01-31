@@ -11,7 +11,7 @@
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "preview": "next build && next start",
-    "test": "pnpm run build-test && OPENAI_API_KEY=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 node --loader ts-node/esm.mjs --loader extensionless node_modules/mocha/lib/cli/cli.js 'dist/esm/**/*.spec.js'",
+    "test": "pnpm run build-test && OPENAI_API_KEY=bananas node --loader ts-node/esm.mjs --loader extensionless node_modules/mocha/lib/cli/cli.js 'dist/esm/**/*.spec.js'",
     "type-check": "tsc --noEmit",
     "format:write": "prettier --write \"{app,lib,components}/**/*.{ts,tsx,mdx}\" --cache",
     "format:check": "prettier --check \"{app,lib,components}**/*.{ts,tsx,mdx}\" --cache",
