@@ -17,7 +17,7 @@ export function TaskDataLoader({ userId }: TaskDataLoaderProps) {
   const [tasks, setTasks] = useState<Task[]>([])
   const {
     chatStreamLastFinishedAt,
-    saraConfig: { projectConfig: { project } }
+    saraConfig: { projectConfig: { project, status } }
   } = useAppContext()
 
   // Effects let you specify side effects that is caused by the rendering
@@ -38,9 +38,10 @@ export function TaskDataLoader({ userId }: TaskDataLoaderProps) {
       // 2) A repository has been selected
       // 3) Sara has been configured for the selected repository
       //
-      // The `Project` type represents the culmination of that workflow and data
-      // captured from it
-      if (!project) {
+      // All of the aforementioned steps are represented by the `CONFIGURED`
+      // state of the project from the Sara config
+
+      if (status !== 'CONFIGURED' || !project) {
         return
       }
 
@@ -53,7 +54,7 @@ export function TaskDataLoader({ userId }: TaskDataLoaderProps) {
     }
 
     fetchTasks()
-  }, [project, chatStreamLastFinishedAt])
+  }, [project, status, chatStreamLastFinishedAt])
 
   // If the user hasn't provided any of their tasks yet then state that
   // otherwise render the task tree.

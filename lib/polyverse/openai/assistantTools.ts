@@ -44,7 +44,7 @@ export const submitTaskStepsAssistantFunction: Assistant.Function = {
 
 const buildTaskInstance = (
   userId: string,
-  repositoryId: string,
+  projectName: string,
   { title, description }: TaskForGoalType,
 ): Task => {
   return {
@@ -53,7 +53,7 @@ const buildTaskInstance = (
     description,
     createdAt: new Date(),
     userId,
-    projectId: repositoryId,
+    projectId: projectName,
     chats: [],
     subtasks: [],
   }
@@ -80,25 +80,25 @@ export type SubmitTasksForGoalType = {
   tasks: TaskForGoalType[]
 }
 
-const getBuildTaskInstanceClosure = (userID: string, repoID: string) => {
+const getBuildTaskInstanceClosure = (userID: string, projectName: string) => {
   // Return a function that can be invoked to map a `TaskForGoalType` which we
   // receive from Sara when she tries to invoke the `submitTaskSteps` function
   // to a `Task` instance from our data model.
   //
   // Commonly used for persistence purposes
   return (task: TaskForGoalType) => {
-    return buildTaskInstance(userID, repoID, task)
+    return buildTaskInstance(userID, projectName, task)
   }
 }
 
 export const submitTaskSteps = async (
   userID: string,
-  repoID: string,
+  projectName: string,
   toolCallArgs: SubmitTasksForGoalType,
 ) => {
   if (toolCallArgs) {
     const tasksToPersist = toolCallArgs.tasks.map(
-      getBuildTaskInstanceClosure(userID, repoID),
+      getBuildTaskInstanceClosure(userID, projectName),
     )
 
     tasksToPersist.forEach((task: Task) => createTask(task))

@@ -287,7 +287,7 @@ export const getTasksAssociatedWithProject = async (
   }
 
   // First start by getting all of tasks associated with a user...
-  const key = createRepoTasksRepoIDKey(project.id)
+  const key = createRepoTasksRepoIDKey(project.name)
   const taskKeys = (await kv.zrange(key, 0, -1)) as string[]
 
   if (taskKeys.length === 0) {

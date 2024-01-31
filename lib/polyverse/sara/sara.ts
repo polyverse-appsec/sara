@@ -96,7 +96,7 @@ export const querySara = async (
         } else if (status === 'requires_action') {
           await handleRequiresActionStatus(
             userID,
-            project.full_name,
+            project.name,
             thread.id,
             runID,
             runStatus,
