@@ -4,7 +4,9 @@ import * as React from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'react-hot-toast'
 
-import { type ServerActionResult, type Chat } from '../lib/data-model-types'
+import { type Chat, type ServerActionResult } from '../lib/data-model-types'
+import { removeChat } from './../app/actions'
+import { useAppContext } from './../lib/hooks/app-context'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,21 +19,17 @@ import {
 } from './ui/alert-dialog'
 import { Button } from './ui/button'
 import { IconSpinner, IconTrash } from './ui/icons'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from './ui/tooltip'
-import { useAppContext } from './../lib/hooks/app-context'
-import { removeChat } from './../app/actions'
-
+import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip'
 
 interface SidebarActionsProps {
   chat: Chat
   chatRemovedHandler: (chatIdToRemove: string) => void
 }
 
-export function SidebarActions({ chat, chatRemovedHandler }: SidebarActionsProps) {
+export function SidebarActions({
+  chat,
+  chatRemovedHandler,
+}: SidebarActionsProps) {
   const router = useRouter()
   const { selectedActiveTask } = useAppContext()
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false)
@@ -75,7 +73,9 @@ export function SidebarActions({ chat, chatRemovedHandler }: SidebarActionsProps
                 // @ts-ignore
                 startRemoveTransition(async () => {
                   if (!selectedActiveTask || !selectedActiveTask.id) {
-                    toast.error('Unable to remove chat - no active task with an ID found')
+                    toast.error(
+                      'Unable to remove chat - no active task with an ID found',
+                    )
                     return
                   }
 

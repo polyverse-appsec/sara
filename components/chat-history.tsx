@@ -3,9 +3,9 @@ import Link from 'next/link'
 
 import { Task } from '../lib/data-model-types'
 import { cn } from './../lib/utils'
+import { SidebarList } from './sidebar-list'
 import { buttonVariants } from './ui/button'
 import { IconPlus } from './ui/icons'
-import { SidebarList } from './sidebar-list'
 
 interface ChatHistoryProps {
   task: Task | null

@@ -1,7 +1,12 @@
 import jsonwebtoken from 'jsonwebtoken'
-const { sign } = jsonwebtoken
 
-import { Project, ProjectDataReference, Repository } from '../../data-model-types'
+import {
+  Project,
+  ProjectDataReference,
+  Repository,
+} from '../../data-model-types'
+
+const { sign } = jsonwebtoken
 
 // AWS Endpoints for our Boost ReST API (Backend)
 // Legacy:  'https://pt5sl5vwfjn6lsr2k6szuvfhnq0vaxhl.lambda-url.us-west-2.on.aws/api/user_project'
@@ -28,9 +33,13 @@ interface SignedHeader {
 
 function createSignedHeader(email: string): SignedHeader {
   const privateSaraClientKey = process.env.SARA_CLIENT_PRIVATE_KEY
-  const signedIdentityHeader = sign({ email }, privateSaraClientKey as jsonwebtoken.Secret, {
-    algorithm: 'RS256',
-  })
+  const signedIdentityHeader = sign(
+    { email },
+    privateSaraClientKey as jsonwebtoken.Secret,
+    {
+      algorithm: 'RS256',
+    },
+  )
   const header: SignedHeader = {
     'x-signed-identity': signedIdentityHeader,
   }

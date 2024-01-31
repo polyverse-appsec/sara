@@ -3,8 +3,8 @@ import OpenAI from 'openai'
 import { Assistant } from 'openai/resources/beta/assistants/assistants'
 
 import { Task } from '../../data-model-types'
-import { nanoid } from './../../utils'
 import { createTask } from './../../../app/actions'
+import { nanoid } from './../../utils'
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,

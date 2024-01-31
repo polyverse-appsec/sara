@@ -1,15 +1,15 @@
 import { ReactNode, useEffect } from 'react'
 
-import { useAppContext } from './../lib/hooks/app-context'
 import {
   getOrCreateAssistantForProject,
   tickleReposForProjectChange,
 } from './../app/actions'
+import { useAppContext } from './../lib/hooks/app-context'
 
 const useDataWatcher = () => {
   const {
     saraConfig: { projectConfig, repoConfig },
-    setProjectConfig
+    setProjectConfig,
   } = useAppContext()
 
   useEffect(() => {
@@ -28,20 +28,26 @@ const useDataWatcher = () => {
       // associated with also is in a `CONFIGURED` state.
       if (projectStatus !== 'CONFIGURED') {
         // TODO: Get rid of magic strings in this debug statement
-        console.debug(`Repo config for ${repo?.full_name} changed and is in a 'CONFIGURED' state but its associated project ${project?.name} isn't`)
+        console.debug(
+          `Repo config for ${repo?.full_name} changed and is in a 'CONFIGURED' state but its associated project ${project?.name} isn't`,
+        )
         return
       }
 
       if (!project) {
         // TODO: Get rid of magic strings in this debug statement
-        console.debug(`Repo config for ${repo?.full_name} changed and is in a 'CONFIGURED' state but its associated project doesn't have an instance`)
+        console.debug(
+          `Repo config for ${repo?.full_name} changed and is in a 'CONFIGURED' state but its associated project doesn't have an instance`,
+        )
         return
       }
 
       // TODO: Get rid of magic strings
       if (repoStatus !== 'CONFIGURED') {
         // TODO: Get rid of magic strings in this debug statement
-        console.debug(`Returning early from updating the AI since the repo causing this invocation isn't yet in a 'CONFIGURED' state`)
+        console.debug(
+          `Returning early from updating the AI since the repo causing this invocation isn't yet in a 'CONFIGURED' state`,
+        )
         return
       }
 
@@ -59,7 +65,9 @@ const useDataWatcher = () => {
         await tickleReposForProjectChange(repo ? [repo] : [])
       } catch (err) {
         // TODO: Should we cause a state change here?
-        console.error(`Failed to tickle the repo ${repo?.full_name} project ${project?.name} because: ${err}`)
+        console.error(
+          `Failed to tickle the repo ${repo?.full_name} project ${project?.name} because: ${err}`,
+        )
       }
 
       try {
@@ -78,15 +86,13 @@ const useDataWatcher = () => {
       } catch (err) {
         projectConfig.project = null
         projectConfig.status = 'ERROR'
-        projectConfig.statusInfo  = ''
-        projectConfig.errorInfo  = 'Error Configuring Sara For Project'
+        projectConfig.statusInfo = ''
+        projectConfig.errorInfo = 'Error Configuring Sara For Project'
         setProjectConfig(projectConfig)
       }
     }
     updateAIOnRepositoryChange()
-  }, [
-    repoConfig
-  ])
+  }, [repoConfig])
 }
 
 interface GlobalContextWatcherProps {

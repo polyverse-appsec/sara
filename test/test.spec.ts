@@ -5,8 +5,8 @@ const serverURL = 'http://localhost:3000'
 
 const chai = chaiImport.use(chaiHttp)
 
-describe('Basic HTTP functionality', function() {
-  it(`GET '/' should return a status code of '200'`, function(done) {
+describe('Basic HTTP functionality', function () {
+  it(`GET '/' should return a status code of '200'`, function (done) {
     // Increase the timeout for the initial test in the event that the server
     // was started for the first time. If this is the case then it will have to
     // dynamicaly render some pages.
@@ -15,7 +15,8 @@ describe('Basic HTTP functionality', function() {
     // doing so in the event of dynamic page rendering.
     this.timeout(10000)
 
-    chai.request(serverURL)
+    chai
+      .request(serverURL)
       .get('/')
       .end((err, res) => {
         chai.assert.equal(err, null, `Ensure server is running`)

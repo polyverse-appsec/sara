@@ -3,7 +3,21 @@ import { useEffect, useState } from 'react'
 import { type Session } from 'next-auth'
 
 import { Organization, Project, Repository } from '../lib/data-model-types'
-import { useAppContext, type SaraOrganization, type SaraProject } from './../lib/hooks/app-context'
+// Update the import path
+
+import {
+  getOrCreateProjectFromRepository,
+  getOrganizations,
+  getRepositoriesForOrg,
+  getRepository,
+} from './../app/actions'
+import {
+  useAppContext,
+  type SaraOrganization,
+  type SaraProject,
+} from './../lib/hooks/app-context'
+import { GithubOrgSelect } from './github-org-select'
+import { GithubRepoSelect } from './github-repo-select'
 import { IconSeparator } from './ui/icons'
 import {
   Select,
@@ -14,17 +28,6 @@ import {
   SelectValue,
   // Other imports if necessary
 } from './ui/select'
-// Update the import path
-
-import {
-  getOrCreateProjectFromRepository,
-  getOrganizations,
-  getRepositoriesForOrg,
-  getRepository,
-} from './../app/actions'
-
-import { GithubOrgSelect } from './github-org-select'
-import { GithubRepoSelect } from './github-repo-select'
 
 export function GithubSelect() {
   const {
@@ -37,7 +40,7 @@ export function GithubSelect() {
     saraConfig: { orgConfig, projectConfig, repoConfig },
     setOrgConfig,
     setProjectConfig,
-    setRepoConfig
+    setRepoConfig,
   } = useAppContext()
 
   // State to store organizations
@@ -69,14 +72,13 @@ export function GithubSelect() {
       })
   }
 
-
   const handleOrganizationChange = (org: Organization) => {
     console.debug(`Organization changed to: ${org.login}`)
 
     // TODO: Probbly need a helper method to build the status, statusInfo, and errorInfo and default to errorInfo being null
     orgConfig.organization = org as SaraOrganization
     orgConfig.status = 'CONFIGURING'
-    orgConfig.statusInfo  = 'Configuring Repositories'
+    orgConfig.statusInfo = 'Configuring Repositories'
     orgConfig.errorInfo = null
     setOrgConfig(orgConfig)
 
@@ -94,27 +96,32 @@ export function GithubSelect() {
         const repos = await getRepositoriesForOrg(org.login)
         console.debug(`Repositories fetched for organization: ${org.login}`)
 
-        const repositoriesById = repos.reduce((accumulator, repo) => {
-          accumulator[repo.id] = repo
-          return accumulator
-        }, {} as Record<string, Repository>)
+        const repositoriesById = repos.reduce(
+          (accumulator, repo) => {
+            accumulator[repo.id] = repo
+            return accumulator
+          },
+          {} as Record<string, Repository>,
+        )
 
         orgConfig.organization = org as SaraOrganization
         // TODO: Originally was setRepositories(data) where data is what was returned from `getRepositoriesForOrg`
         orgConfig.organization.repositoriesById = repositoriesById
         orgConfig.status = 'CONFIGURED'
-        orgConfig.statusInfo  = 'Repositories Configured'
+        orgConfig.statusInfo = 'Repositories Configured'
 
         setOrgConfig(orgConfig)
       } catch (err) {
         // TODO: Where do we log this error?
-        console.error(`Error configuring repositories for org '${org.login}': ${err}`)
+        console.error(
+          `Error configuring repositories for org '${org.login}': ${err}`,
+        )
 
         orgConfig.organization = org as SaraOrganization
         orgConfig.organization.repositoriesById = {}
         orgConfig.status = 'ERROR'
-        orgConfig.statusInfo  = ''
-        orgConfig.errorInfo  = 'Error Configuring Repositories'
+        orgConfig.statusInfo = ''
+        orgConfig.errorInfo = 'Error Configuring Repositories'
 
         setOrgConfig(orgConfig)
       }
@@ -134,24 +141,27 @@ export function GithubSelect() {
 
     projectConfig.project = null
     projectConfig.status = 'CONFIGURING'
-    projectConfig.statusInfo  = 'Configuring Project'
+    projectConfig.statusInfo = 'Configuring Project'
     projectConfig.errorInfo = null
     setProjectConfig(projectConfig)
 
     try {
-      const retrievedProject = await getOrCreateProjectFromRepository(repo, user)
+      const retrievedProject = await getOrCreateProjectFromRepository(
+        repo,
+        user,
+      )
       console.debug(`Project created/retrieved for: ${repo.full_name}`)
 
       projectConfig.project = retrievedProject as SaraProject
       projectConfig.status = 'CONFIGURED'
-      projectConfig.statusInfo  = 'Project Configured'
+      projectConfig.statusInfo = 'Project Configured'
       projectConfig.errorInfo = null
       setProjectConfig(projectConfig)
 
       repoConfig.repo = repo
       repoConfig.status = 'CONFIGURED'
-      repoConfig.statusInfo  = 'Repo Configured'
-      repoConfig.errorInfo  = null
+      repoConfig.statusInfo = 'Repo Configured'
+      repoConfig.errorInfo = null
       setRepoConfig(repoConfig)
     } catch (err) {
       console.error('Error configuring project: ', err)
@@ -161,14 +171,14 @@ export function GithubSelect() {
       // error
       repoConfig.repo = null
       repoConfig.status = 'ERROR'
-      repoConfig.statusInfo  = ''
-      repoConfig.errorInfo  = 'Error Configuring Repo'
+      repoConfig.statusInfo = ''
+      repoConfig.errorInfo = 'Error Configuring Repo'
       setRepoConfig(repoConfig)
 
       projectConfig.project = null
       projectConfig.status = 'ERROR'
-      projectConfig.statusInfo  = ''
-      projectConfig.errorInfo  = 'Error Configuring Project'
+      projectConfig.statusInfo = ''
+      projectConfig.errorInfo = 'Error Configuring Project'
       setProjectConfig(projectConfig)
     }
 
@@ -182,7 +192,10 @@ export function GithubSelect() {
     }
   }
 
-  const fetchedRepos = orgConfig.organization && orgConfig.organization.repositoriesById ? Object.values(orgConfig.organization.repositoriesById) : []
+  const fetchedRepos =
+    orgConfig.organization && orgConfig.organization.repositoriesById
+      ? Object.values(orgConfig.organization.repositoriesById)
+      : []
 
   // TODO: Comment - w-204px - 180 for the drop down and 24 for IconSeparator
   return (
@@ -194,19 +207,18 @@ export function GithubSelect() {
         selectedOrganization={orgConfig.organization}
         onOrganizationChange={handleOrganizationChange}
       />
-      {
-        orgStatus === 'CONFIGURED' ? (
-          <>
-            <IconSeparator className="w-6 h-6 text-muted-foreground/50" />
-            <GithubRepoSelect
-              selectedRepository={selectedRepository}
-              repositories={fetchedRepos}
-              onRepositoryChange={handleRepositoryChange}
-            />
-          </>
-        ) : <div className='w-[204px]'></div>
-      }
-      
+      {orgStatus === 'CONFIGURED' ? (
+        <>
+          <IconSeparator className="w-6 h-6 text-muted-foreground/50" />
+          <GithubRepoSelect
+            selectedRepository={selectedRepository}
+            repositories={fetchedRepos}
+            onRepositoryChange={handleRepositoryChange}
+          />
+        </>
+      ) : (
+        <div className="w-[204px]"></div>
+      )}
     </>
   )
 }

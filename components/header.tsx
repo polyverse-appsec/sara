@@ -1,19 +1,18 @@
 import * as React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { auth } from './../auth'
 
+import BoostLogo from '../public/boostlogo.png'
+import Sara32x32 from '../public/Sara_Cartoon_Portrait-32x32.png'
+import { auth } from './../auth'
+import { ChatHistory } from './chat-history'
+import { GithubPanel } from './github-panel'
+import { SaraStatus } from './sara-status'
+import { SidebarMobile } from './sidebar-mobile'
+import { SidebarToggle } from './sidebar-toggle'
 import { Button, buttonVariants } from './ui/button'
 import { IconNextChat, IconSeparator } from './ui/icons'
 import { UserMenu } from './user-menu'
-import { SaraStatus } from './sara-status'
-
-import Sara32x32 from '../public/Sara_Cartoon_Portrait-32x32.png'
-import BoostLogo from '../public/boostlogo.png'
-import { ChatHistory } from './chat-history'
-import { GithubPanel } from './github-panel'
-import { SidebarMobile } from './sidebar-mobile'
-import { SidebarToggle } from './sidebar-toggle'
 
 async function UserOrLogin() {
   const session = await auth()

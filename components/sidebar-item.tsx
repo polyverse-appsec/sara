@@ -10,11 +10,7 @@ import { useLocalStorage } from './../lib/hooks/use-local-storage'
 import { cn } from './../lib/utils'
 import { buttonVariants } from './ui/button'
 import { IconMessage, IconUsers } from './ui/icons'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from './ui/tooltip'
+import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip'
 
 interface SidebarItemProps {
   index: number

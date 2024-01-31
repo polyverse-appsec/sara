@@ -3,7 +3,6 @@
 import { useAppContext } from './../lib/hooks/app-context'
 import { ChatHistory } from './chat-history'
 import { Sidebar } from './sidebar'
-
 import { TaskDataLoader } from './task-data-loader'
 
 export function SidebarDesktop() {

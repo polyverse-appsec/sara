@@ -1,13 +1,13 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
+import { usePathname, useRouter } from 'next/navigation'
 
 import { Chat, Task, type ServerActionResult } from '../lib/data-model-types'
 import { useAppContext } from './..//lib/hooks/app-context'
+import { getChats } from './../app/actions'
 import { SidebarItems } from './sidebar-items'
 import { ThemeToggle } from './theme-toggle'
-import { getChats } from './../app/actions'
-import { useRouter, usePathname } from 'next/navigation'
 
 interface SidebarListProps {
   children?: React.ReactNode
@@ -18,7 +18,9 @@ export function SidebarList() {
   const {
     selectedActiveTask,
     chatStreamLastFinishedAt,
-    saraConfig: { projectConfig: { project } }
+    saraConfig: {
+      projectConfig: { project },
+    },
   } = useAppContext()
   const router = useRouter()
   const path = usePathname()
@@ -42,7 +44,7 @@ export function SidebarList() {
 
   useEffect(() => {
     const fetchChats = async () => {
-      if (!project || !(project.defaultTask?.id)) {
+      if (!project || !project.defaultTask?.id) {
         return
       }
 
@@ -58,7 +60,10 @@ export function SidebarList() {
       <div className="flex-1 overflow-auto">
         {chats?.length ? (
           <div className="space-y-2 px-2">
-            <SidebarItems chats={chats} chatRemovedHandler={chatRemovedHandler} />
+            <SidebarItems
+              chats={chats}
+              chatRemovedHandler={chatRemovedHandler}
+            />
           </div>
         ) : (
           <div className="p-8 text-center">

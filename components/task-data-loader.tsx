@@ -4,9 +4,8 @@ import { useEffect, useState } from 'react'
 import { toast } from 'react-hot-toast'
 
 import { Task } from '../lib/data-model-types'
-import { useAppContext } from './../lib/hooks/app-context'
 import { getTasksAssociatedWithProject } from './../app/actions'
-
+import { useAppContext } from './../lib/hooks/app-context'
 import TaskTree from './task-tree'
 
 type TaskDataLoaderProps = {
@@ -17,7 +16,9 @@ export function TaskDataLoader({ userId }: TaskDataLoaderProps) {
   const [tasks, setTasks] = useState<Task[]>([])
   const {
     chatStreamLastFinishedAt,
-    saraConfig: { projectConfig: { project, status } }
+    saraConfig: {
+      projectConfig: { project, status },
+    },
   } = useAppContext()
 
   // Effects let you specify side effects that is caused by the rendering

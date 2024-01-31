@@ -2,7 +2,6 @@
 
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
-import { auth } from './../auth'
 import { kv } from '@vercel/kv'
 import { Assistant } from 'openai/resources/beta/assistants/assistants'
 
@@ -14,6 +13,7 @@ import {
   User,
   type Chat,
 } from '../lib/data-model-types'
+import { auth } from './../auth'
 import {
   stripUndefinedObjectProperties,
   tickleRepository,
@@ -29,9 +29,7 @@ import { nanoid } from './../lib/utils'
 
 const TEN_MINS_IN_MILLIS = 600000
 
-export async function createChat() {
-
-}
+export async function createChat() {}
 
 export async function getChats(taskId?: string | null) {
   if (!taskId) {
@@ -90,7 +88,15 @@ export async function getChat(id: string, userId: string) {
   return chat
 }
 
-export async function removeChat({ id, taskId, path }: { id: string; taskId: string, path: string }) {
+export async function removeChat({
+  id,
+  taskId,
+  path,
+}: {
+  id: string
+  taskId: string
+  path: string
+}) {
   const session = await auth()
 
   if (!session) {
@@ -467,9 +473,7 @@ export async function getRepositoryFromId(
  *
  */
 
-export async function tickleReposForProjectChange(
-  repos: Repository[],
-) {
+export async function tickleReposForProjectChange(repos: Repository[]) {
   const session = await auth()
 
   if (!session?.user?.id) {

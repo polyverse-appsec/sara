@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
-import { auth } from './../../auth'
 
+import { auth } from './../../auth'
 import { LoginButton } from './../../components/login-button'
 
 export default async function SignInPage() {

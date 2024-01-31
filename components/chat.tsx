@@ -6,13 +6,13 @@ import { useChat, type Message } from 'ai/react'
 import { toast } from 'react-hot-toast'
 
 import type { Chat } from '../lib/data-model-types'
+import { getOrganizations, getProject, getTask } from './../app/actions'
 import { useAppContext } from './../lib/hooks/app-context'
 import { cn } from './../lib/utils'
-import { ChatList } from  './chat-list'
+import { ChatList } from './chat-list'
 import { ChatPanel } from './chat-panel'
 import { ChatScrollAnchor } from './chat-scroll-anchor'
 import { EmptyScreen } from './empty-screen'
-import { getOrganizations, getProject, getTask } from './../app/actions'
 
 export interface ChatProps extends React.ComponentProps<'div'> {
   initialMessages?: Message[]
@@ -34,13 +34,19 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
     setSelectedActiveTask,
     setSelectedOrganization,
     setChatStreamLastFinishedAt,
-    saraConfig
+    saraConfig,
   } = useAppContext()
 
   // TODO: Need to update the body of useChat with the info in the configured Sara object
 
-  const { status, projectConfig: { project, status: projectStatus, statusInfo: projectStatusInfo } } = saraConfig
-
+  const {
+    status,
+    projectConfig: {
+      project,
+      status: projectStatus,
+      statusInfo: projectStatusInfo,
+    },
+  } = saraConfig
 
   // 'useChat' comes from the Vercel API: https://sdk.vercel.ai/docs/api-reference/use-chat
   //
@@ -77,7 +83,9 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
       onResponse(response) {
         const { status, statusText } = response
 
-        console.log(`***** onResponse status: ${status} - statusText: ${statusText}`)
+        console.log(
+          `***** onResponse status: ${status} - statusText: ${statusText}`,
+        )
 
         if (status === 400 || status === 401) {
           toast.error(statusText)
@@ -101,20 +109,20 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
       },
       onError(error) {
         console.log(`***** onError path: ${error}`)
-        console.error('Chat encountered an error:', error);
+        console.error('Chat encountered an error:', error)
       },
     })
 
-    // If this path was navigated it through a path that includes /chat and we
-    // haven't yet configured Sara then redirect to the home path so that the user
-    // has to configure her by selecting an organization and a repository. Failure
-    // to do so will mean that the chat functionality is non-functional and could
-    // result in errors.
-    if (path.includes('chat') && status !== 'CONFIGURED') {
-      router.push('/')
-      router.refresh()
-      return
-    }
+  // If this path was navigated it through a path that includes /chat and we
+  // haven't yet configured Sara then redirect to the home path so that the user
+  // has to configure her by selecting an organization and a repository. Failure
+  // to do so will mean that the chat functionality is non-functional and could
+  // result in errors.
+  if (path.includes('chat') && status !== 'CONFIGURED') {
+    router.push('/')
+    router.refresh()
+    return
+  }
 
   return (
     <>
@@ -137,7 +145,10 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
         messages={messages}
         input={input}
         setInput={setInput}
-        saraConfigured={projectStatus === 'CONFIGURED' && projectStatusInfo === 'Sara Configured For Project'}
+        saraConfigured={
+          projectStatus === 'CONFIGURED' &&
+          projectStatusInfo === 'Sara Configured For Project'
+        }
       />
     </>
   )

@@ -7,11 +7,7 @@ import { useEnterSubmit } from './../lib/hooks/use-enter-submit'
 import { cn } from './../lib/utils'
 import { Button, buttonVariants } from './ui/button'
 import { IconArrowElbow, IconPlus } from './ui/icons'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from './ui/tooltip'
+import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip'
 
 export interface PromptProps
   extends Pick<UseChatHelpers, 'input' | 'setInput'> {
@@ -26,7 +22,7 @@ export function PromptForm({
   input,
   setInput,
   isLoading,
-  saraConfigured
+  saraConfigured,
 }: PromptProps) {
   const { formRef, onKeyDown } = useEnterSubmit()
   const inputRef = React.useRef<HTMLTextAreaElement>(null)
@@ -45,7 +41,7 @@ export function PromptForm({
         if (!input?.trim()) {
           return
         }
-        
+
         // If Sara isn't configured yet then return early to prevent
         // submission. Failure to do so could cause 404 errors.
         if (!saraConfigured) {

@@ -3,7 +3,6 @@
 import { useState } from 'react'
 
 import { Task } from '../lib/data-model-types'
-
 import { Treeview } from './ui/treeview'
 
 // TODO: Delete this file

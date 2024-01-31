@@ -27,7 +27,10 @@ export function SidebarItems({ chats, chatRemovedHandler }: SidebarItemsProps) {
               }}
             >
               <SidebarItem index={index} chat={chat}>
-                <SidebarActions chat={chat} chatRemovedHandler={chatRemovedHandler} />
+                <SidebarActions
+                  chat={chat}
+                  chatRemovedHandler={chatRemovedHandler}
+                />
               </SidebarItem>
             </motion.div>
           ),

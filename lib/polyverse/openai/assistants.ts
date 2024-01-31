@@ -1,8 +1,11 @@
 import OpenAI from 'openai'
 import { Assistant } from 'openai/resources/beta/assistants/assistants'
 
-import { Project, ProjectDataReference, Repository } from '../../data-model-types'
-
+import {
+  Project,
+  ProjectDataReference,
+  Repository,
+} from '../../data-model-types'
 import { getFileInfo } from '../backend/backend'
 import { isRecord } from '../typescript/helpers'
 import { submitTaskStepsAssistantFunction } from './assistantTools'

@@ -1,17 +1,17 @@
+import { json } from 'stream/consumers'
+import { kv } from '@vercel/kv'
+import OpenAI from 'openai'
+
+import { auth } from './../../../auth'
+import { stripUndefinedObjectProperties } from './../../../lib/polyverse/backend/backend'
+import { querySara } from './../../../lib/polyverse/sara/sara'
+import { nanoid } from './../../../lib/utils'
+
 // 01/31/24: Set for 90 seconds for debugging purposes when getting 404s while
 // managing the life cycle of a thread run. We believe we haven't managed all of
 // the states or possibly it is just long running for whatever question we ask.
 // Possibly in the future we will modify this as we learn more.
 export const maxDuration = 90
-
-import { auth } from './../../../auth'
-import { kv } from '@vercel/kv'
-import OpenAI from 'openai'
-
-import { stripUndefinedObjectProperties } from './../../../lib/polyverse/backend/backend'
-import { querySara } from './../../../lib/polyverse/sara/sara'
-import { nanoid } from './../../../lib/utils'
-import { json } from 'stream/consumers'
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,

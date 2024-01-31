@@ -25,7 +25,11 @@ import { getOrCreateUserFromSession } from './../../app/actions'
  * configurables. Other UX can monitor these states and then enable/disbale
  * functionality depending on those states.
  */
-export type SaraConfigStatuses = 'UNCONFIGURED' | 'CONFIGURING' | 'CONFIGURED' | 'ERROR'
+export type SaraConfigStatuses =
+  | 'UNCONFIGURED'
+  | 'CONFIGURING'
+  | 'CONFIGURED'
+  | 'ERROR'
 
 // TODO: Is this needed?
 /**
@@ -107,7 +111,7 @@ interface SaraConfig {
 const createInitializedConfigurable = (): SaraConfigurable => ({
   status: 'UNCONFIGURED',
   statusInfo: '',
-  errorInfo: null
+  errorInfo: null,
 })
 
 const initialSaraConfig = (): SaraConfig => ({
@@ -126,14 +130,17 @@ const initialSaraConfig = (): SaraConfig => ({
   repoConfig: {
     ...createInitializedConfigurable(),
     repo: null,
-  }
+  },
 })
 
 // TODO: Type the return value of this
-const buildSaraConfigStateSetters = (saraConfig: SaraConfig, setSaraConfig: React.Dispatch<React.SetStateAction<SaraConfig>>): [
+const buildSaraConfigStateSetters = (
+  saraConfig: SaraConfig,
+  setSaraConfig: React.Dispatch<React.SetStateAction<SaraConfig>>,
+): [
   (orgConfig: OrganizationConfigurable) => void,
   (projectConfig: ProjectConfigurable) => void,
-  (repoConfig: RepositoryConfigurable) => void
+  (repoConfig: RepositoryConfigurable) => void,
 ] => {
   // TODO: Type the return value of this
   const setOrgConfig = (orgConfig: OrganizationConfigurable) => {
@@ -151,7 +158,7 @@ const buildSaraConfigStateSetters = (saraConfig: SaraConfig, setSaraConfig: Reac
       // Update the top-level info
       status,
       errorInfo,
-      statusInfo
+      statusInfo,
     }
 
     setSaraConfig(newSaraConfig)
@@ -173,7 +180,7 @@ const buildSaraConfigStateSetters = (saraConfig: SaraConfig, setSaraConfig: Reac
       // Update the top-level info
       status,
       errorInfo,
-      statusInfo
+      statusInfo,
     }
 
     setSaraConfig(newSaraConfig)
@@ -195,7 +202,7 @@ const buildSaraConfigStateSetters = (saraConfig: SaraConfig, setSaraConfig: Reac
       // Update the top-level info
       status,
       errorInfo,
-      statusInfo
+      statusInfo,
     }
 
     setSaraConfig(newSaraConfig)
@@ -263,7 +270,8 @@ export function AppProvider({ children }: AppProviderProps) {
     useState<Repository[] | null>(null)
 
   const [saraConfig, setSaraConfig] = useState<SaraConfig>(initialSaraConfig())
-  const [setOrgConfig, setProjectConfig, setRepoConfig] = buildSaraConfigStateSetters(saraConfig, setSaraConfig)
+  const [setOrgConfig, setProjectConfig, setRepoConfig] =
+    buildSaraConfigStateSetters(saraConfig, setSaraConfig)
 
   const value = {
     user,
@@ -283,7 +291,7 @@ export function AppProvider({ children }: AppProviderProps) {
     saraConfig,
     setOrgConfig,
     setProjectConfig,
-    setRepoConfig
+    setRepoConfig,
   }
 
   const { data: session } = useSession()
