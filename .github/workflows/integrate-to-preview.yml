@@ -67,6 +67,10 @@ jobs:
           # will consume some time
           pnpm run test
 
+      - name: Stop Redis test DB
+        if: always()
+        run: docker-compose down  
+
   integrate:
     name: Integrate to Preview branch
     runs-on: ubuntu-latest
