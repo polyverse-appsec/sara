@@ -3,6 +3,18 @@ Polyverse Sara Web UI for Boost
 
 # Release Notes
 
+## Version 0.5.4: January 31th, 2024
+
+### New Features
+- N/A
+
+### Enhancements
+- N/A
+
+### Bug Fixes
+- Use the correct name property of a project to allow saving and rendering of tasks
+- Handle the `failed` state of an OpenAI thread run to prevent 404s on timing out
+
 ## Version 0.5.3: January 30th, 2024
 
 ### New Features
