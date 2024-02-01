@@ -28,8 +28,6 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
   const {
     selectedActiveChat,
     setSelectedActiveChat,
-    selectedProject,
-    setSelectedProject,
     selectedActiveTask,
     setSelectedActiveTask,
     setChatStreamLastFinishedAt,

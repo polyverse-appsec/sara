@@ -33,8 +33,6 @@ import toast from 'react-hot-toast'
 export function GithubSelect() {
   const {
     user,
-    selectedProject,
-    setSelectedProject,
     setSelectedActiveTask,
     saraConfig: { orgConfig, projectConfig, repoConfig },
     setOrgConfig,
@@ -171,7 +169,6 @@ export function GithubSelect() {
     // Ensure we set the relevant information in our apps context for other
     // core components to function correctly
     setSelectedRepository(repo) //this sets the local UI state for the selected repo
-    setSelectedProject(projectConfig.project)
 
     if (projectConfig.project?.defaultTask) {
       setSelectedActiveTask(projectConfig.project.defaultTask)
