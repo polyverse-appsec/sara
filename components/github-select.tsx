@@ -28,12 +28,11 @@ import {
   SelectValue,
   // Other imports if necessary
 } from './ui/select'
+import toast from 'react-hot-toast'
 
 export function GithubSelect() {
   const {
     user,
-    selectedOrganization,
-    setSelectedOrganization,
     selectedProject,
     setSelectedProject,
     setSelectedActiveTask,
@@ -54,23 +53,18 @@ export function GithubSelect() {
 
   const { status: orgStatus } = orgConfig
 
-  // console.log(`***** GithubSelect - saraConfig: ${JSON.stringify(saraConfig)}`)
-  // TODO: Turn off repo select if org not configured yet
-
-  const fetchOrganizations = () => {
-    console.log('Fetching organizations')
-    getOrganizations()
-      .then((data) => {
-        if (Array.isArray(data)) {
-          setOrganizations(data)
-        } else {
-          console.error('Error fetching organizations:', data)
-        }
-      })
-      .catch((error) => {
-        console.error('Error fetching organizations:', error)
-      })
+  const fetchOrganizations = async () => {
+    try {
+      const orgs = await getOrganizations()
+      setOrganizations(orgs)
+    } catch (err) {
+      toast.error('Unable to fetch organizations')
+    }
   }
+
+  useEffect(() => {
+    fetchOrganizations()
+  }, [])
 
   const handleOrganizationChange = (org: Organization) => {
     console.debug(`Organization changed to: ${org.login}`)
@@ -81,10 +75,6 @@ export function GithubSelect() {
     orgConfig.statusInfo = 'Configuring Repositories'
     orgConfig.errorInfo = null
     setOrgConfig(orgConfig)
-
-    // TODO: Identify where this state is still used and remove
-    console.log('Organization changed:', org)
-    setSelectedOrganization(org)
 
     // Reset repositories when organization changes
     fetchRepositories(org)
@@ -127,10 +117,6 @@ export function GithubSelect() {
       }
     }
   }
-
-  useEffect(() => {
-    fetchOrganizations()
-  }, [])
 
   if (!user) {
     return null

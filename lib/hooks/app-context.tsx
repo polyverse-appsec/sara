@@ -215,9 +215,6 @@ interface AppContextType {
   user: User | null
   setUser: (user: User | null) => void
 
-  selectedOrganization: Organization | null
-  setSelectedOrganization: (organization: Organization | null) => void
-
   selectedProject: Project | null
   setSelectedProject: (project: Project | null) => void
 
@@ -254,8 +251,6 @@ interface AppProviderProps {
 
 export function AppProvider({ children }: AppProviderProps) {
   const [user, setUser] = useState<User | null>(null)
-  const [selectedOrganization, setSelectedOrganization] =
-    useState<Organization | null>(null)
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
   const [selectedActiveTask, setSelectedActiveTask] = useState<Task | null>(
     null,
@@ -276,8 +271,6 @@ export function AppProvider({ children }: AppProviderProps) {
   const value = {
     user,
     setUser,
-    selectedOrganization,
-    setSelectedOrganization,
     selectedProject,
     setSelectedProject,
     selectedProjectRepositories,

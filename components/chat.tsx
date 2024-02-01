@@ -32,7 +32,6 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
     setSelectedProject,
     selectedActiveTask,
     setSelectedActiveTask,
-    setSelectedOrganization,
     setChatStreamLastFinishedAt,
     saraConfig,
   } = useAppContext()
@@ -83,17 +82,11 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
       onResponse(response) {
         const { status, statusText } = response
 
-        console.log(
-          `***** onResponse status: ${status} - statusText: ${statusText}`,
-        )
-
         if (status === 400 || status === 401) {
           toast.error(statusText)
         }
       },
       onFinish() {
-        console.log(`***** onFinish path: ${path}`)
-
         // The 'onFinish()' callback gets called after the chat stream ends
         if (!path.includes('chat')) {
           router.push(`/chat/${chat.id}`, { scroll: false })
@@ -108,7 +101,6 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
         setChatStreamLastFinishedAt(Date.now())
       },
       onError(error) {
-        console.log(`***** onError path: ${error}`)
         console.error('Chat encountered an error:', error)
       },
     })
