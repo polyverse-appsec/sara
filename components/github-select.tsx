@@ -1,15 +1,12 @@
 import * as React from 'react'
 import { useEffect, useState } from 'react'
-import { type Session } from 'next-auth'
 
-import { Organization, Project, Repository } from '../lib/data-model-types'
-// Update the import path
+import { Organization, Repository } from '../lib/data-model-types'
 
 import {
   getOrCreateProjectFromRepository,
   getOrganizations,
   getRepositoriesForOrg,
-  getRepository,
 } from './../app/actions'
 import {
   useAppContext,
@@ -19,37 +16,25 @@ import {
 import { GithubOrgSelect } from './github-org-select'
 import { GithubRepoSelect } from './github-repo-select'
 import { IconSeparator } from './ui/icons'
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  // Other imports if necessary
-} from './ui/select'
 import toast from 'react-hot-toast'
 
 export function GithubSelect() {
   const {
     user,
-    setSelectedActiveTask,
-    saraConfig: { orgConfig, projectConfig, repoConfig },
+    saraConfig: {
+      orgConfig,
+      projectConfig,
+      repoConfig
+    },
     setOrgConfig,
     setProjectConfig,
     setRepoConfig,
   } = useAppContext()
 
-  // State to store organizations
   const [organizations, setOrganizations] = useState<Organization[]>([])
-  const [repositories, setRepositories] = useState<Repository[]>([])
-  const [selectedRepository, setSelectedRepository] =
-    useState<Repository | null>(null)
 
   // State to track if dropdown is open
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-
-  const { status: orgStatus } = orgConfig
 
   const fetchOrganizations = async () => {
     try {
@@ -100,7 +85,6 @@ export function GithubSelect() {
 
         setOrgConfig(orgConfig)
       } catch (err) {
-        // TODO: Where do we log this error?
         console.error(
           `Error configuring repositories for org '${org.login}': ${err}`,
         )
@@ -165,15 +149,10 @@ export function GithubSelect() {
       projectConfig.errorInfo = 'Error Configuring Project'
       setProjectConfig(projectConfig)
     }
-
-    // Ensure we set the relevant information in our apps context for other
-    // core components to function correctly
-    setSelectedRepository(repo) //this sets the local UI state for the selected repo
-
-    if (projectConfig.project?.defaultTask) {
-      setSelectedActiveTask(projectConfig.project.defaultTask)
-    }
   }
+
+  const { status: orgStatus } = orgConfig
+  const { status: repoStatus } = repoConfig
 
   const fetchedRepos =
     orgConfig.organization && orgConfig.organization.repositoriesById
@@ -194,7 +173,7 @@ export function GithubSelect() {
         <>
           <IconSeparator className="w-6 h-6 text-muted-foreground/50" />
           <GithubRepoSelect
-            selectedRepository={selectedRepository}
+            selectedRepository={repoStatus === 'CONFIGURED' ? repoConfig.repo : null}
             repositories={fetchedRepos}
             onRepositoryChange={handleRepositoryChange}
           />

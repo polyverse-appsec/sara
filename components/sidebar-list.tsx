@@ -16,7 +16,6 @@ interface SidebarListProps {
 export function SidebarList() {
   const [chats, setChats] = useState([] as Chat[])
   const {
-    selectedActiveTask,
     chatStreamLastFinishedAt,
     saraConfig: {
       projectConfig: { project },

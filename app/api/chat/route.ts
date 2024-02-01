@@ -73,7 +73,7 @@ export async function POST(req: Request) {
       userId,
       createdAt,
       path,
-      taskId: task?.id,
+      taskId: task.id,
       projectId: project?.id,
       messages: [
         ...messages,

@@ -26,10 +26,6 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
   const path = usePathname()
 
   const {
-    selectedActiveChat,
-    setSelectedActiveChat,
-    selectedActiveTask,
-    setSelectedActiveTask,
     setChatStreamLastFinishedAt,
     saraConfig,
   } = useAppContext()
@@ -37,7 +33,6 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
   // TODO: Need to update the body of useChat with the info in the configured Sara object
 
   const {
-    status,
     projectConfig: {
       project,
       status: projectStatus,
@@ -73,9 +68,7 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
       body: {
         id: chat.id,
         project,
-        // TODO: Need to update the body of useChat with the info in the configured Sara object.
-        // See <gitHubSelect> for what selectedActiveTask is
-        task: selectedActiveTask,
+        task: project?.defaultTask,
       },
       onResponse(response) {
         const { status, statusText } = response
@@ -108,7 +101,7 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
   // has to configure her by selecting an organization and a repository. Failure
   // to do so will mean that the chat functionality is non-functional and could
   // result in errors.
-  if (path.includes('chat') && status !== 'CONFIGURED') {
+  if (path.includes('chat') && projectStatus !== 'CONFIGURED') {
     router.push('/')
     router.refresh()
     return

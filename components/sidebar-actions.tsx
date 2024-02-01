@@ -31,7 +31,13 @@ export function SidebarActions({
   chatRemovedHandler,
 }: SidebarActionsProps) {
   const router = useRouter()
-  const { selectedActiveTask } = useAppContext()
+  const {
+    saraConfig: {
+      projectConfig:{
+        project
+      }
+    }
+  } = useAppContext()
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false)
   const [isRemovePending, startRemoveTransition] = React.useTransition()
 
@@ -72,7 +78,7 @@ export function SidebarActions({
                 event.preventDefault()
                 // @ts-ignore
                 startRemoveTransition(async () => {
-                  if (!selectedActiveTask || !selectedActiveTask.id) {
+                  if (!project || !project.defaultTask || !project.defaultTask.id) {
                     toast.error(
                       'Unable to remove chat - no active task with an ID found',
                     )
@@ -81,7 +87,7 @@ export function SidebarActions({
 
                   const result = await removeChat({
                     id: chat.id,
-                    taskId: selectedActiveTask?.id,
+                    taskId: project.defaultTask.id,
                     path: chat.path,
                   })
 

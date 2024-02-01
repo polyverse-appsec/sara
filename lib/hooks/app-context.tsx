@@ -142,8 +142,7 @@ const buildSaraConfigStateSetters = (
   (projectConfig: ProjectConfigurable) => void,
   (repoConfig: RepositoryConfigurable) => void,
 ] => {
-  // TODO: Type the return value of this
-  const setOrgConfig = (orgConfig: OrganizationConfigurable) => {
+  const setOrgConfig = (orgConfig: OrganizationConfigurable): void => {
     // Make sure that we copy over properties to a new object so React won't see
     // the same object reference. This is important for triggering re-renders as
     // well as the `useEffect` method that may have a dependency array on some
@@ -164,8 +163,7 @@ const buildSaraConfigStateSetters = (
     setSaraConfig(newSaraConfig)
   }
 
-  // TODO: Type the return value of this
-  const setProjectConfig = (projectConfig: ProjectConfigurable) => {
+  const setProjectConfig = (projectConfig: ProjectConfigurable): void => {
     // Make sure that we copy over properties to a new object so React won't see
     // the same object reference. This is important for triggering re-renders as
     // well as the `useEffect` method that may have a dependency array on some
@@ -186,8 +184,7 @@ const buildSaraConfigStateSetters = (
     setSaraConfig(newSaraConfig)
   }
 
-  // TODO: Type the return value of this
-  const setRepoConfig = (repoConfig: RepositoryConfigurable) => {
+  const setRepoConfig = (repoConfig: RepositoryConfigurable): void => {
     // Make sure that we copy over properties to a new object so React won't see
     // the same object reference. This is important for triggering re-renders as
     // well as the `useEffect` method that may have a dependency array on some
@@ -214,9 +211,6 @@ const buildSaraConfigStateSetters = (
 interface AppContextType {
   user: User | null
   setUser: (user: User | null) => void
-
-  selectedActiveTask: Task | null
-  setSelectedActiveTask: (task: Task | null) => void
 
   selectedActiveChat: Chat | null
   setSelectedActiveChat: (chat: Chat | null) => void
@@ -248,9 +242,6 @@ interface AppProviderProps {
 
 export function AppProvider({ children }: AppProviderProps) {
   const [user, setUser] = useState<User | null>(null)
-  const [selectedActiveTask, setSelectedActiveTask] = useState<Task | null>(
-    null,
-  )
   const [selectedActiveChat, setSelectedActiveChat] = useState<Chat | null>(
     null,
   )
@@ -269,8 +260,6 @@ export function AppProvider({ children }: AppProviderProps) {
     setUser,
     selectedProjectRepositories,
     setSelectedProjectRepositories,
-    selectedActiveTask,
-    setSelectedActiveTask,
     selectedActiveChat,
     setSelectedActiveChat,
     chatStreamLastFinishedAt,
