@@ -73,7 +73,7 @@ jobs:
 
       - name: Stop Redis test DB
         if: always()
-        run: docker-compose down  
+        run: docker-compose down
 
   integrate:
     name: Integrate to Preview branch
