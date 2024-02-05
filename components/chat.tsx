@@ -71,13 +71,16 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
         task: project?.defaultTask,
       },
       onResponse(response) {
+        console.log("IN onResponse RESPONSE IS: ", response)
+
         const { status, statusText } = response
 
         if (status === 400 || status === 401) {
           toast.error(statusText)
         }
       },
-      onFinish() {
+      onFinish(message) {
+        console.log("IN onFinish MESSAGE IS: ", message)
         // The 'onFinish()' callback gets called after the chat stream ends
         if (!path.includes('chat')) {
           router.push(`/chat/${chat.id}`, { scroll: false })
@@ -92,6 +95,7 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
         setChatStreamLastFinishedAt(Date.now())
       },
       onError(error) {
+        console.log("IN onError ERROR IS: ", error)
         console.error('Chat encountered an error:', error)
       },
     })

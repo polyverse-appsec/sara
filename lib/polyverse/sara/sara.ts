@@ -4,6 +4,7 @@ import {
   getThreadRunStatus,
   handleRequiresActionStatus,
   runAssistantOnThread,
+  cancelRunOnThread,
 } from '../openai/runs'
 import { configThread } from '../openai/threads'
 
@@ -39,8 +40,10 @@ export const querySara = async (
   userID: string,
   project: Project,
   question: any,
-  fullSaraResponseCallback?: (retrievedAssistantMessages: string) => void,
+  fullSaraResponseCallback?: any,
 ) => {
+
+
   const assistant = project.assistant
   const encoder = new TextEncoder()
 
@@ -57,6 +60,10 @@ export const querySara = async (
   const { id: runID } = await runAssistantOnThread(assistant.id, thread.id)
 
   return new ReadableStream({
+    // Cancel the run on the thread when stream is aborted (client hits stops generating response)
+    async cancel(reason) {
+      await cancelRunOnThread(runID, thread.id)
+    },  
     start(controller) {
       // Periodically monitor the status of the run until it moves into the
       // 'completed' state at which point we need to cancel the interval.
@@ -115,6 +122,7 @@ export const querySara = async (
           // If there is a callback make sure to call it even if we failed
           if (fullSaraResponseCallback) {
             await fullSaraResponseCallback(errorMessage)
+            console.log('Called fullSaraResponseCallback')
           }
 
           controller.close()
@@ -127,7 +135,12 @@ export const querySara = async (
         }
 
         // Show a little progress bar of dots if messages aren't yet ready
-        controller.enqueue(encoder.encode('.'))
+        try {
+          controller.enqueue(encoder.encode('.'))
+        } catch (error) { 
+          clearInterval(intervalID)
+          console.error(`Error enqueuing a progress bar dot: ${error}`)
+        }
       }, 500)
     },
   })

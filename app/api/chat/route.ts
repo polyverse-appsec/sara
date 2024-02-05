@@ -6,6 +6,7 @@ import { auth } from './../../../auth'
 import { stripUndefinedObjectProperties } from './../../../lib/polyverse/backend/backend'
 import { querySara } from './../../../lib/polyverse/sara/sara'
 import { nanoid } from './../../../lib/utils'
+import { abort } from 'process'
 
 // 01/31/24: Set for 90 seconds for debugging purposes when getting 404s while
 // managing the life cycle of a thread run. We believe we haven't managed all of
