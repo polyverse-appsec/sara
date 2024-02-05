@@ -3,6 +3,17 @@ Polyverse Sara Web UI for Boost
 
 # Release Notes
 
+## Version 0.5.5: February 5th, 2024
+
+### New Features
+- N/A
+
+### Enhancements
+- N/A
+
+### Bug Fixes
+- Prevent user tasks from bleeding into other users spaces on a per project basis
+
 ## Version 0.5.4: January 31th, 2024
 
 ### New Features

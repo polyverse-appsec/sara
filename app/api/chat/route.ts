@@ -86,7 +86,7 @@ export async function POST(req: Request) {
 
     console.log("starting to store chat's messages for chat id: ", id)
     const cleanPayload = stripUndefinedObjectProperties(payload)
-    await kv.hmset(`chat:${id}`, cleanPayload)
+    await kv.hset(`chat:${id}`, cleanPayload)
 
     const key = `task:chats:${task.id}`
 

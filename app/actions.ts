@@ -26,6 +26,7 @@ import {
 import { configAssistant } from './../lib/polyverse/openai/assistants'
 import { createNewProjectFromRepository } from './../lib/polyverse/project/project'
 import { nanoid } from './../lib/utils'
+import setTask from './../lib/polyverse/db/set-task'
 
 const TEN_MINS_IN_MILLIS = 600000
 
@@ -128,6 +129,7 @@ export async function removeChat({
   await kv.del(`chat:${id}`)
   await kv.zrem(`task:chats:${taskId}`, `chat:${id}`)
 
+  // TODO: Why are we revalidating here?
   revalidatePath('/')
   return revalidatePath(path)
 }
@@ -259,19 +261,9 @@ export async function createTask(task: Task): Promise<Task> {
     createdAt,
   }
 
-  // We are being defensive here so we don't blow up the KV store when writing.
-  // Correct thing to do would be to identify where we are putting 'undefined'
-  // properties on the object we are writing and fix the logic.
-  stripUndefinedObjectProperties(taskData)
+  await setTask(taskData)
 
-  await kv.hset(`task:${id}`, taskData)
-
-  await kv.zadd(`user:tasks:${session.user.id}`, {
-    score: +createdAt,
-    member: `task:${id}`,
-  })
-
-  await kv.zadd(`repo:tasks:${task.projectId}`, {
+  await kv.zadd(createUserIdUserRepoTasksRepoIdKey(session.user.id, task.projectId), {
     score: +createdAt,
     member: `task:${id}`,
   })
@@ -279,9 +271,7 @@ export async function createTask(task: Task): Promise<Task> {
   return taskData
 }
 
-const createRepoTasksRepoIDKey = (repoID: string) => `repo:tasks:${repoID}`
-const createUserTasksUserIDKey = (userID: string) => `user:tasks:${userID}`
-const createTaskTaskIDKey = (taskID: string) => `task:${taskID}`
+const createUserIdUserRepoTasksRepoIdKey = (userId: string, projectName: string) => `user:${userId}:repo:tasks:${projectName}`
 
 export const getTasksAssociatedWithProject = async (
   project: Project,
@@ -293,7 +283,7 @@ export const getTasksAssociatedWithProject = async (
   }
 
   // First start by getting all of tasks associated with a user...
-  const key = createRepoTasksRepoIDKey(project.name)
+  const key = createUserIdUserRepoTasksRepoIdKey(session.user.id, project.name)
   const taskKeys = (await kv.zrange(key, 0, -1)) as string[]
 
   if (taskKeys.length === 0) {

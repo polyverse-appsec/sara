@@ -2,6 +2,8 @@ import { type Message } from 'ai'
 import { Assistant } from 'openai/resources/beta/assistants/assistants'
 import { Threads } from 'openai/resources/beta/threads/threads'
 
+import Joi from 'joi'
+
 /*
  ** Sara data model **
 
@@ -68,6 +70,20 @@ export interface Project extends Record<string, any> {
   defaultTask?: Task
   assistant?: Assistant
 }
+
+// TODO: Complete this and start on chats items
+export const TaskSchema = Joi.object({
+  // TODO: Add a format to the ID that must be matched
+  id: Joi.string().required(),
+  title: Joi.string().required(),
+  description: Joi.string().required(),
+  createdAt: Joi.date().timestamp(`javascript`).min(`12-25-2023`).max(`now`).required(),
+  userId: Joi.string().required(),
+  projectId: Joi.string().required(),
+  // TODO: Add items to chats array that is representative of a chat
+  chats: Joi.array(),
+  subtasks: Joi.array().items(Joi.link(`#task`))
+}).unknown(false).id(`task`)
 
 export interface Task extends Record<string, any> {
   id: string

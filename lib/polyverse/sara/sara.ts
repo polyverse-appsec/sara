@@ -31,7 +31,7 @@ import { configThread } from '../openai/threads'
  * @param chat
  * @param question List of questions to ask Sara.
  * @param {FullSaraResponseCallback} [fullSaraResponseCallback] Optional
- * callback with Saras full response.
+ * callback with Saras full response. Called when completed or on failure.
  * @returns {ReadableStream} A 'ReadableStream' object that can be used for
  * streaming Sara's response in realtime.
  */
@@ -39,7 +39,7 @@ export const querySara = async (
   userID: string,
   project: Project,
   question: any,
-  fullSaraResponseCallback?: any,
+  fullSaraResponseCallback?: (retrievedAssistantMessages: string) => void,
 ) => {
   const assistant = project.assistant
   const encoder = new TextEncoder()
@@ -61,38 +61,12 @@ export const querySara = async (
       // Periodically monitor the status of the run until it moves into the
       // 'completed' state at which point we need to cancel the interval.
       const intervalID = setInterval(async () => {
-        const runStatus = await getThreadRunStatus(runID, thread.id)
+        const { id: threadID } = thread
+
+        const runStatus = await getThreadRunStatus(runID, threadID)
         const status = runStatus.status
 
-        // Once the run is completed check for the final message in the thread
-        // that the run was performed on. It ought to be the message from the
-        // assistant.
-        if (status === 'completed') {
-          // Be sure to close out our interval that we have running periodically.
-          // Close it out first in the event that retrieving the list of messages
-          // fails.
-          clearInterval(intervalID)
-          console.log('IN COMPLETED')
-
-          const assistantMessages = await getAssistantMessages(thread.id)
-          console.log(`Concatenated assistant messages: ${assistantMessages}`)
-
-          // Enqueue a new line first since we have been creating a progress bar
-          // of dots while waiting for our answer
-          controller.enqueue(encoder.encode('\n'))
-          controller.enqueue(encoder.encode(assistantMessages))
-
-          // Call bck for anyone that is interested in the message that was retrieved
-          if (fullSaraResponseCallback) {
-            console.log('Calling fullSaraResponseCallback')
-            await fullSaraResponseCallback(assistantMessages)
-            console.log('Called fullSaraResponseCallback')
-          }
-          console.log('Closing controller')
-          controller.close()
-
-          return
-        } else if (status === 'requires_action') {
+        if (status === 'requires_action') {
           await handleRequiresActionStatus(
             userID,
             project.name,
@@ -102,24 +76,52 @@ export const querySara = async (
           )
 
           return
+        } else if (status === 'completed') {
+          // Be sure to close out our interval that we have running periodically.
+          // Close it out first in the event that retrieving the list of messages
+          // fails.
+          clearInterval(intervalID)
+
+          // Once the run is completed check for the final message in the thread
+          // that the run was performed on. It ought to be the message from the
+          // assistant.
+          const assistantMessages = await getAssistantMessages(threadID)
+          console.debug(`Concatenated assistant messages from run completion: ${assistantMessages}`)
+
+          // Enqueue a new line first since we have been creating a progress bar
+          // of dots while waiting for our answer
+          controller.enqueue(encoder.encode('\n'))
+          controller.enqueue(encoder.encode(assistantMessages))
+
+          // Call bck for anyone that is interested in the message that was retrieved
+          if (fullSaraResponseCallback) {
+            await fullSaraResponseCallback(assistantMessages)
+          }
+
+          controller.close()
+
+          return
         } else if (status === 'failed') {
           clearInterval(intervalID)
-          console.log('IN FAILED')
-          const error = JSON.stringify(runStatus.last_error)
-          console.log(`Reason for failed status: '${error}'`)
+
+          const threadRunError = JSON.stringify(runStatus.last_error)
+          const errorMessage = `Sara failed to generate a response. Reason: ${threadRunError}`
+
+          console.debug(`Thread with ID '${threadID}' had run with ID '${runID}' failed because: ${threadRunError}`)
+
           controller.enqueue(encoder.encode('\n'))
-          const errorMessage = `Sara failed to generate a response. Reason: ${error}`
           controller.enqueue(encoder.encode(errorMessage))
+
+          // If there is a callback make sure to call it even if we failed
           if (fullSaraResponseCallback) {
-            console.log('Calling fullSaraResponseCallback')
             await fullSaraResponseCallback(errorMessage)
-            console.log('Called fullSaraResponseCallback')
           }
+
           controller.close()
 
           return
         } else {
-          console.log(
+          console.debug(
             `Unhandled thread run status - runID: '${runID}' - status: ${status}`,
           )
         }
