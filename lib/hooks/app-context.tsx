@@ -80,7 +80,7 @@ interface RepositoryConfigurable extends SaraConfigurable {
   repo: Repository | null
 }
 
-interface SaraConfig {
+export interface SaraConfig {
   /**
    * Top-level status of the configuration of the app
    */

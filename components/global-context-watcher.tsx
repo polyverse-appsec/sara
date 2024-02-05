@@ -6,6 +6,8 @@ import {
 } from './../app/actions'
 import { useAppContext } from './../lib/hooks/app-context'
 
+const formatDateForLastSynchronized = (date: Date) => `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`
+
 const useDataWatcher = () => {
   const {
     saraConfig: { projectConfig, repoConfig },
@@ -53,7 +55,7 @@ const useDataWatcher = () => {
 
       projectConfig.project = project
       projectConfig.status = 'CONFIGURING'
-      projectConfig.statusInfo = 'Configuring Sara For Project'
+      projectConfig.statusInfo = 'Learning More About Your Project'
       projectConfig.errorInfo = null
 
       setProjectConfig(projectConfig)
@@ -77,9 +79,18 @@ const useDataWatcher = () => {
         )
 
         projectConfig.project.assistant = assistant
+
+        // TODO: Technically this is the wrong place to add the
+        // `lastSynchronizedDate`. Really it ought to be after we tickle the
+        // repos but we are going to be changing the tickle project logic with
+        // this ticket: https://polyverse.monday.com/boards/4235012224/pulses/5990405256
+        // After we do we ought to change where we put lastSynchronizedAt
+        const lastSynchronizedAt = new Date()
+
+        projectConfig.project.lastSynchronizedAt = lastSynchronizedAt
         projectConfig.status = 'CONFIGURED'
         // TODO: This is referenced somewhere so we probably want to move all of these 'status info' to a type for typechecking
-        projectConfig.statusInfo = 'Sara Configured For Project'
+        projectConfig.statusInfo = `Synchronized Last: ${formatDateForLastSynchronized(lastSynchronizedAt)}`
         projectConfig.errorInfo = null
 
         setProjectConfig(projectConfig)
@@ -87,7 +98,7 @@ const useDataWatcher = () => {
         projectConfig.project = null
         projectConfig.status = 'ERROR'
         projectConfig.statusInfo = ''
-        projectConfig.errorInfo = 'Error Configuring Sara For Project'
+        projectConfig.errorInfo = 'Error Synchronizing Sara For Project'
         setProjectConfig(projectConfig)
       }
     }

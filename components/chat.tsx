@@ -129,8 +129,7 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
         input={input}
         setInput={setInput}
         saraConfigured={
-          projectStatus === 'CONFIGURED' &&
-          projectStatusInfo === 'Sara Configured For Project'
+          projectStatus === 'CONFIGURED' && projectStatusInfo !== null && projectStatusInfo.includes('Synchronized Last')
         }
       />
     </>

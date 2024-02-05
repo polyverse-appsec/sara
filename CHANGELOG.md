@@ -3,13 +3,13 @@ Polyverse Sara Web UI for Boost
 
 # Release Notes
 
-## Version 0.5.5: February 5th, 2024
+## Version 0.6.0: February 5th, 2024
 
 ### New Features
 - N/A
 
 ### Enhancements
-- N/A
+- Sara now displays the last time a project was synchronized at
 
 ### Bug Fixes
 - Prevent user tasks from bleeding into other users spaces on a per project basis

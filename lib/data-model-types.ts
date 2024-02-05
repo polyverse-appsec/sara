@@ -69,6 +69,7 @@ export interface Project extends Record<string, any> {
   tasks?: Task[]
   defaultTask?: Task
   assistant?: Assistant
+  lastSynchronizedAt: Date
 }
 
 // TODO: Complete this and start on chats items
