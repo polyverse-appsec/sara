@@ -213,7 +213,7 @@ describe(`Redis DB - 'setTask'`, function () {
             return Promise.all([
                 expect(promise).to.be.rejectedWith(Joi.ValidationError),
                 expect(promise).to.be.rejectedWith(
-                  `"createdAt" must be greater than or equal to "2023-12-25T08:00:00.000Z"`,
+                  `"createdAt" must be greater than or equal to "2023-12-25T00:00:00.000Z"`,
                 ),
             ])
         })

@@ -77,7 +77,7 @@ export const TaskSchema = Joi.object({
   id: Joi.string().required(),
   title: Joi.string().required(),
   description: Joi.string().required(),
-  createdAt: Joi.date().timestamp(`javascript`).min(`12-25-2023`).max(`now`).required(),
+  createdAt: Joi.date().timestamp(`javascript`).min(`2023-12-25T00:00:00.000Z`).max(`now`).required(),
   userId: Joi.string().required(),
   projectId: Joi.string().required(),
   // TODO: Add items to chats array that is representative of a chat
