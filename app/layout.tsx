@@ -6,6 +6,7 @@ import { Toaster } from 'react-hot-toast'
 // our routes
 import './globals.css'
 
+import { Footer } from './../components/footer'
 import { Header } from './../components/header'
 import { Providers } from './../components/providers'
 import { TailwindIndicator } from './../components/tailwind-indicator'
@@ -65,7 +66,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
             <Header />
             <main className="flex flex-col flex-1 bg-muted/50">{children}</main>
           </div>
-          <TailwindIndicator />
+          <Footer />
         </Providers>
       </body>
     </html>

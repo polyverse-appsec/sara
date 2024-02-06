@@ -7,7 +7,6 @@ import { Chat, Task, type ServerActionResult } from '../lib/data-model-types'
 import { useAppContext } from './..//lib/hooks/app-context'
 import { getChats } from './../app/actions'
 import { SidebarItems } from './sidebar-items'
-import { ThemeToggle } from './theme-toggle'
 
 interface SidebarListProps {
   children?: React.ReactNode
@@ -69,9 +68,6 @@ export function SidebarList() {
             <p className="text-sm text-muted-foreground">No chat history</p>
           </div>
         )}
-      </div>
-      <div className="flex items-center justify-between p-4">
-        <ThemeToggle />
       </div>
     </div>
   )

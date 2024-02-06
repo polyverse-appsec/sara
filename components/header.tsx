@@ -7,7 +7,6 @@ import Sara32x32 from '../public/Sara_Cartoon_Portrait-32x32.png'
 import { auth } from './../auth'
 import { ChatHistory } from './chat-history'
 import { GithubPanel } from './github-panel'
-import { SaraStatus } from './sara-status'
 import { SidebarMobile } from './sidebar-mobile'
 import { SidebarToggle } from './sidebar-toggle'
 import { Button, buttonVariants } from './ui/button'
@@ -39,7 +38,6 @@ async function UserOrLogin() {
           </>
         ) : null}
         {session?.user ? <GithubPanel /> : null}
-        {session?.user ? <SaraStatus /> : null}
       </div>
     </>
   )
