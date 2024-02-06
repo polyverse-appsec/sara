@@ -40,7 +40,7 @@ export const querySara = async (
   userID: string,
   project: Project,
   question: any,
-  fullSaraResponseCallback?: any,
+  fullSaraResponseCallback?: (retrievedAssistantMessages: string) => void,
 ) => {
 
 
@@ -53,6 +53,7 @@ export const querySara = async (
   }
   // Configure a thread based off of what would be the first message associated with it
   const thread = await configThread(question[0].content)
+  const { id: threadID } = thread
 
   // Blindly append a user message to the thread. It is 'blind' in the sense
   // that the same user message could already exist in the thread.
@@ -60,24 +61,32 @@ export const querySara = async (
   const { id: runID } = await runAssistantOnThread(assistant.id, thread.id)
 
   return new ReadableStream({
-    // Cancel the run on the thread when stream is aborted (client hits stops generating response)
-    async cancel(reason) {
-      await cancelRunOnThread(runID, thread.id)
+    // Cancel the run on the thread when stream is aborted (client hits stops
+    // generating response)
+    cancel(reason) {
+      console.debug(
+        `Attempting to cancel run '${runID}' on thread '${threadID}' because: ${reason}`
+      )
+
+      cancelRunOnThread(threadID, runID)
     },  
     start(controller) {
+      // Render a single space for now. Based on the design of the client this
+      // will allow it to render something on the screen since it is expecting
+      // something streamed to it before it will.
+      controller.enqueue(encoder.encode(' '))
+
       // Periodically monitor the status of the run until it moves into the
       // 'completed' state at which point we need to cancel the interval.
       const intervalID = setInterval(async () => {
-        const { id: threadID } = thread
-
-        const runStatus = await getThreadRunStatus(runID, threadID)
+        const runStatus = await getThreadRunStatus(threadID, runID)
         const status = runStatus.status
 
         if (status === 'requires_action') {
           await handleRequiresActionStatus(
             userID,
             project.name,
-            thread.id,
+            threadID,
             runID,
             runStatus,
           )
@@ -122,7 +131,6 @@ export const querySara = async (
           // If there is a callback make sure to call it even if we failed
           if (fullSaraResponseCallback) {
             await fullSaraResponseCallback(errorMessage)
-            console.log('Called fullSaraResponseCallback')
           }
 
           controller.close()
@@ -133,15 +141,7 @@ export const querySara = async (
             `Unhandled thread run status - runID: '${runID}' - status: ${status}`,
           )
         }
-
-        // Show a little progress bar of dots if messages aren't yet ready
-        try {
-          controller.enqueue(encoder.encode('.'))
-        } catch (error) { 
-          clearInterval(intervalID)
-          console.error(`Error enqueuing a progress bar dot: ${error}`)
-        }
-      }, 500)
+      }, 1000)
     },
   })
 }

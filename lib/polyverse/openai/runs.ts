@@ -20,24 +20,25 @@ export const runAssistantOnThread = (assistantID: string, threadID: string) => {
   })
 }
 
-/** Cancels the run on current thread.
+/**
+ * Cancels the run on a given thread.
  * 
- * @param {string} threadID ID of the thread to run the OpenAI assistant on.
- * @param {string} runID ID of the run on the thread
+ * @param {string} threadID ID of the thread to cancel the run.
+ * @param {string} runID ID of the run on the thread.
  * @returns {Run} Object representing the run of the OpenAI assistant on the thread.
  */
-export const cancelRunOnThread = (threadID: string, runID: string) => {
-  return oaiClient.beta.threads.runs.cancel(threadID, runID)
+export const cancelRunOnThread = async (threadID: string, runID: string) => {
+  return await oaiClient.beta.threads.runs.cancel(threadID, runID)
 }
 
 /**
  * Returns the status of a thread that the OpenAI assistant has been ran on.
  *
- * @param {string} runID ID of the existing run.
  * @param {string} threadID ID of the thread that is having a run performed on it.
+ * @param {string} runID ID of the existing run.
  * @returns {string} Current status of the run on the thread.
  */
-export const getThreadRunStatus = async (runID: string, threadID: string) => {
+export const getThreadRunStatus = async (threadID: string, runID: string, ) => {
   const runStatus = await oaiClient.beta.threads.runs.retrieve(threadID, runID)
 
   return runStatus
