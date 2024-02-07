@@ -2,7 +2,7 @@ import * as React from 'react'
 import { type UseChatHelpers } from 'ai/react'
 
 import { ButtonScrollToBottom } from './button-scroll-to-bottom'
-import { ChatFooter } from './chat-footer'
+import { CraftedBy } from './crafted-by'
 import { PromptForm } from './prompt-form'
 import { Button } from './ui/button'
 import { IconRefresh, IconShare, IconStop } from './ui/icons'
@@ -63,7 +63,7 @@ export function ChatPanel({
             )
           )}
         </div>
-        <div className="px-4 py-2 space-y-4 border-t shadow-lg bg-background sm:rounded-t-xl sm:border md:py-4">
+        <div className="px-4 py-2 space-y-4 border-t shadow-lg bg-background sm:rounded-xl sm:border md:py-4">
           <PromptForm
             onSubmit={async (value) => {
               // TODO: Write to console onSubmit time
@@ -84,7 +84,6 @@ export function ChatPanel({
             isLoading={isLoading}
             saraConfigured={saraConfigured}
           />
-          <ChatFooter className="hidden sm:block" />
         </div>
       </div>
     </div>

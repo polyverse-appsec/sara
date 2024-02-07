@@ -117,7 +117,7 @@ const createInitializedConfigurable = (): SaraConfigurable => ({
 const initialSaraConfig = (): SaraConfig => ({
   status: 'UNCONFIGURED',
   // TODO: Initialize to the initial step/state to be selected
-  statusInfo: 'Select Organiztion',
+  statusInfo: 'Select Organization',
   errorInfo: null,
   orgConfig: {
     ...createInitializedConfigurable(),

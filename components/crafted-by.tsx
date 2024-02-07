@@ -3,9 +3,9 @@ import React from 'react'
 import { cn } from '../lib/utils'
 import { ExternalLink } from './external-link'
 
-export function ChatFooter({ className, ...props }: React.ComponentProps<'p'>) {
+export function CraftedBy({ className, ...props }: React.ComponentProps<'p'>) {
   return (
-    <p
+    <span
       className={cn(
         'px-2 text-center text-xs leading-normal text-muted-foreground',
         className,
@@ -18,6 +18,6 @@ export function ChatFooter({ className, ...props }: React.ComponentProps<'p'>) {
         the Polyverse team
       </ExternalLink>{' '}
       and Sara herself!
-    </p>
+    </span>
   )
 }
