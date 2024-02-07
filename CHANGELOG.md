@@ -3,6 +3,19 @@ Polyverse Sara Web UI for Boost
 
 # Release Notes
 
+## Version 0.6.1: February 7th, 2024
+
+### New Features
+- N/A
+
+### Enhancements
+- N/A
+
+### Bug Fixes
+- Fix for having loading dots (`...`) appear while Sara is working on a chat request (already have spinner)
+- Fix assistant configuration to retry on a loop until success or repo change
+- Fix placement of UI status info to the bottom of the page in a <Footer>
+
 ## Version 0.6.0: February 5th, 2024
 
 ### New Features
