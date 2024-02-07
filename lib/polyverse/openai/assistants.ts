@@ -39,9 +39,7 @@ const oaiClient = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 })
 
-// TODO: Add comments to this method
 function mapFileInfoToPromptAndIDs(fileInfos: ProjectDataReference[]) {
-  // TODO: Add comments about the significance of these file types
   let fileTypes: FileTypes = { aispec: '', blueprint: '', projectsource: '' }
   fileInfos.map(({ name, type }) => {
     fileTypes[type as keyof FileTypes] = name
@@ -153,6 +151,19 @@ export async function configAssistant(
     fileInfos = fileInfos.concat(fileInfo)
   }
 
+  const existingAssistant = await findAssistantForRepo(project.name)
+
+  if (existingAssistant) {
+    return await updateAssistantPromptAndFiles(fileInfos, existingAssistant)
+  }
+
+  return await createAssistantWithFileIDsFromRepo(fileInfos, project.name)
+}
+
+export async function configAssistantWithFileInfos(
+  project: Project,
+  fileInfos: ProjectDataReference[]
+): Promise<Assistant> {
   const existingAssistant = await findAssistantForRepo(project.name)
 
   if (existingAssistant) {

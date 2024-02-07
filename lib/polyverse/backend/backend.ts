@@ -88,7 +88,26 @@ export async function getFileInfo(
   return []
 }
 
-export async function tickleRepository(
+export async function getProject(repo: Repository, email: string) {
+  const url = `${USER_SERVICE_URI}/api/user_project/${repo.orgId}/${repo.name}`
+
+  try {
+    const signedHeader = createSignedHeader(email)
+    const res = await fetch(url, {
+      headers: {
+        ...signedHeader
+      }
+    })
+
+    if (res.status !== 200) {
+      console.debug(`Failed to get a success response when trying to retrieve `)
+    }
+  } catch (err) {
+
+  }
+}
+
+export async function createUserProjectForRepo(
   repo: Repository,
   email: string,
 ): Promise<string> {

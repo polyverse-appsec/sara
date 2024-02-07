@@ -8,6 +8,7 @@ import { Assistant } from 'openai/resources/beta/assistants/assistants'
 import {
   Organization,
   Project,
+  ProjectDataReference,
   Repository,
   Task,
   User,
@@ -16,14 +17,15 @@ import {
 import { auth } from './../auth'
 import {
   stripUndefinedObjectProperties,
-  tickleRepository,
+  createUserProjectForRepo,
+  getFileInfo,
 } from './../lib/polyverse/backend/backend'
 import {
   fetchOrganizationRepositories,
   fetchUserOrganizations,
   getOrCreateRepoFromGithubRepo,
 } from './../lib/polyverse/github/repos'
-import { configAssistant } from './../lib/polyverse/openai/assistants'
+import { configAssistant, configAssistantWithFileInfos } from './../lib/polyverse/openai/assistants'
 import { createNewProjectFromRepository } from './../lib/polyverse/project/project'
 import { nanoid } from './../lib/utils'
 import setTask from './../lib/polyverse/db/set-task'
@@ -463,7 +465,7 @@ export async function getRepositoryFromId(
  *
  */
 
-export async function tickleReposForProjectChange(repos: Repository[]) {
+export async function createUserProjectsForRepos(repos: Repository[]) {
   const session = await auth()
 
   if (!session?.user?.id) {
@@ -473,10 +475,23 @@ export async function tickleReposForProjectChange(repos: Repository[]) {
   //await all of the tickle promises
   const ticklePromises = []
   for (const repo of repos) {
-    ticklePromises.push(tickleRepository(repo, session.user.email || ''))
+    ticklePromises.push(createUserProjectForRepo(repo, session.user.email || ''))
   }
 
   await Promise.all(ticklePromises)
+}
+
+export async function getFileInfoForRepo(
+  repo: Repository,
+  user: User
+): Promise<ProjectDataReference[]> {
+  const session = await auth()
+
+  if (!session?.user?.id || user.id !== session.user.id)  {
+    throw new Error('Unauthorized')
+  }
+
+  return getFileInfo(repo, session.user.email)
 }
 
 export async function getOrCreateAssistantForProject(
@@ -490,6 +505,20 @@ export async function getOrCreateAssistantForProject(
   }
 
   return await configAssistant(project, repos, session.user.email || '')
+}
+
+export async function configAssistantForProject(
+  project: Project,
+  fileInfos: ProjectDataReference[],
+  user: User
+): Promise<Assistant> {
+  const session = await auth()
+
+  if (!session?.user?.id || user.id !== session.user.id)  {
+    throw new Error('Unauthorized')
+  }
+
+  return configAssistantWithFileInfos(project, fileInfos)
 }
 
 /*

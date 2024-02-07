@@ -2,107 +2,79 @@ import { ReactNode, useEffect } from 'react'
 
 import {
   getOrCreateAssistantForProject,
-  tickleReposForProjectChange,
+  createUserProjectsForRepos,
+  getFileInfoForRepo,
+  configAssistantForProject,
 } from './../app/actions'
 import { useAppContext } from './../lib/hooks/app-context'
+import { stat } from 'fs'
 
-const formatDateForLastSynchronized = (date: Date) => `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`
+const formatDateForLastSynchronized = (date: Date): string => `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`
 
 const useDataWatcher = () => {
   const {
+    user,
     saraConfig: { projectConfig, repoConfig },
     setProjectConfig,
   } = useAppContext()
 
   useEffect(() => {
-    // This effect will run whenever 'data' changes
-    async function updateAIOnRepositoryChange() {
-      // TODO: Does this method requiring projectConfig and repoConfig dictate that we should just combine repoConfig into the projectConfig?
-      // Looking at <GitHubSelect> we see that on repo change both the project and the repo get configured. See also our call
-      // to `getOrCreateAssistantForProject` which essentially takes the project and repo together to configure the
-      // OpenAI assistant.
-      const { status: projectStatus, project } = projectConfig
-      const { status: repoStatus, repo } = repoConfig
+    const { project } = projectConfig
+    const { repo } = repoConfig
 
-      // TODO: Get rid of magic strings
-      // Since this method is invoked within a `useEffect` whose dependency
-      // array depends on `repoConfig` we need to ensure that the project it is
-      // associated with also is in a `CONFIGURED` state.
-      if (projectStatus !== 'CONFIGURED') {
-        // TODO: Get rid of magic strings in this debug statement
-        console.debug(
-          `Repo config for ${repo?.full_name} changed and is in a 'CONFIGURED' state but its associated project ${project?.name} isn't`,
-        )
-        return
-      }
+    // Do a bunch of narrowing and don't run if all of the Sara config isn't
+    // fully prepared
+    if (!project || !repo || !user) {
+      console.debug('Skpping AI update on repo change as Sara config not fully prepared yet')
 
-      if (!project) {
-        // TODO: Get rid of magic strings in this debug statement
-        console.debug(
-          `Repo config for ${repo?.full_name} changed and is in a 'CONFIGURED' state but its associated project doesn't have an instance`,
-        )
-        return
-      }
+      return
+    }
 
-      // TODO: Get rid of magic strings
-      if (repoStatus !== 'CONFIGURED') {
-        // TODO: Get rid of magic strings in this debug statement
-        console.debug(
-          `Returning early from updating the AI since the repo causing this invocation isn't yet in a 'CONFIGURED' state`,
-        )
-        return
-      }
+    const timeoutIds: NodeJS.Timeout[] = []
 
-      projectConfig.project = project
-      projectConfig.status = 'CONFIGURING'
-      projectConfig.statusInfo = 'Learning More About Your Project'
-      projectConfig.errorInfo = null
-
-      setProjectConfig(projectConfig)
-
-      // TODO: Do I really want this try catch here or should I make this part of another state for project configuration?
+    const updateAIOnRepositoryChange = async () => {
       try {
+        projectConfig.project = project
+        projectConfig.status = 'CONFIGURING'
+        projectConfig.statusInfo = 'Learning More About Your Project'
+        projectConfig.errorInfo = null
+
+        setProjectConfig(projectConfig)
+
         // We await this to ensure that any calls to the backend have data
-        // references - whether they files have been processed or not.
-        await tickleReposForProjectChange(repo ? [repo] : [])
-      } catch (err) {
-        // TODO: Should we cause a state change here?
-        console.error(
-          `Failed to tickle the repo ${repo?.full_name} project ${project?.name} because: ${err}`,
-        )
-      }
+        // references - whether they files have been processed or not. If
+        // creation actually does happen this will take ~15 seconds. Anything
+        // more should be considered a critical bug.
+        await createUserProjectsForRepos([repo])
+        const fileInfos = await getFileInfoForRepo(repo, user)
+        const assistant = await configAssistantForProject(project, fileInfos, user)
 
-      try {
-        const assistant = await getOrCreateAssistantForProject(
-          project,
-          repo ? [repo] : [],
-        )
-
-        projectConfig.project.assistant = assistant
-
-        // TODO: Technically this is the wrong place to add the
-        // `lastSynchronizedDate`. Really it ought to be after we tickle the
-        // repos but we are going to be changing the tickle project logic with
-        // this ticket: https://polyverse.monday.com/boards/4235012224/pulses/5990405256
-        // After we do we ought to change where we put lastSynchronizedAt
         const lastSynchronizedAt = new Date()
 
         projectConfig.project.lastSynchronizedAt = lastSynchronizedAt
+        projectConfig.project.assistant = assistant
         projectConfig.status = 'CONFIGURED'
-        // TODO: This is referenced somewhere so we probably want to move all of these 'status info' to a type for typechecking
         projectConfig.statusInfo = `Synchronized Last: ${formatDateForLastSynchronized(lastSynchronizedAt)}`
         projectConfig.errorInfo = null
 
         setProjectConfig(projectConfig)
       } catch (err) {
-        projectConfig.project = null
+        // Return the `project` on `projectConfig` to maintain the reference for
+        // future iterations of this function
+        projectConfig.project = project
         projectConfig.status = 'ERROR'
         projectConfig.statusInfo = ''
-        projectConfig.errorInfo = 'Error Synchronizing Sara For Project'
+        projectConfig.errorInfo = 'Error Synchronizing Sara For Project - Trying Again'
         setProjectConfig(projectConfig)
+
+        const timeoutId = setTimeout(updateAIOnRepositoryChange, 2500)
+        timeoutIds.push(timeoutId)
       }
     }
+
     updateAIOnRepositoryChange()
+
+    return () => timeoutIds.forEach(clearTimeout)
   }, [repoConfig])
 }
 
