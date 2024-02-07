@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { toast } from 'react-hot-toast'
 
 import { Task } from '../lib/data-model-types'
-import { getTasksAssociatedWithProject } from './../app/actions'
+import { getTasksForProject } from './../app/_actions/get-tasks-for-project'
 import { useAppContext } from './../lib/hooks/app-context'
 import TaskTree from './task-tree'
 
@@ -47,7 +47,7 @@ export function TaskDataLoader({ userId }: TaskDataLoaderProps) {
       }
 
       try {
-        const tasks = await getTasksAssociatedWithProject(project)
+        const tasks = await getTasksForProject(project)
         setTasks(tasks)
       } catch (err) {
         toast.error('Failed to fetch tasks for project')

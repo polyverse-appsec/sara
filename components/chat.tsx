@@ -6,7 +6,6 @@ import { useChat, type Message } from 'ai/react'
 import { toast } from 'react-hot-toast'
 
 import type { Chat } from '../lib/data-model-types'
-import { getOrganizations, getProject, getTask } from './../app/actions'
 import { useAppContext } from './../lib/hooks/app-context'
 import { cn } from './../lib/utils'
 import { ChatList } from './chat-list'

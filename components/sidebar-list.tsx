@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation'
 
 import { Chat, Task, type ServerActionResult } from '../lib/data-model-types'
 import { useAppContext } from './..//lib/hooks/app-context'
-import { getChats } from './../app/actions'
+import { getChats } from './../app/_actions/get-chats'
 import { SidebarItems } from './sidebar-items'
 
 interface SidebarListProps {

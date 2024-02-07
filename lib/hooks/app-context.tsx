@@ -17,7 +17,7 @@ import {
   Task,
   User,
 } from '../data-model-types'
-import { getOrCreateUserFromSession } from './../../app/actions'
+import { getOrCreateUserFromSession } from './../../app/_actions/get-or-create-user-from-session'
 
 /**
  * The different states a `SaraConfigurable` can be in. At different points in

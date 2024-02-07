@@ -3,11 +3,11 @@ import { useEffect, useState } from 'react'
 
 import { Organization, Repository } from '../lib/data-model-types'
 
-import {
-  getOrCreateProjectFromRepository,
-  getOrganizations,
-  getRepositoriesForOrg,
-} from './../app/actions'
+import { getOrCreateProjectForRepo } from './../app/_actions/get-or-create-project-for-repo'
+
+import { getOrganizations } from './../app/_actions/get-organizations'
+import { getRepositoriesForOrg } from './../app/_actions/get-repositories-for-org'
+
 import {
   useAppContext,
   type SaraOrganization,
@@ -114,7 +114,7 @@ export function GithubSelect() {
     setProjectConfig(projectConfig)
 
     try {
-      const retrievedProject = await getOrCreateProjectFromRepository(
+      const retrievedProject = await getOrCreateProjectForRepo(
         repo,
         user,
       )

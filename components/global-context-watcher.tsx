@@ -1,11 +1,9 @@
 import { ReactNode, useEffect } from 'react'
 
-import {
-  getOrCreateAssistantForProject,
-  createUserProjectsForRepos,
-  getFileInfoForRepo,
-  configAssistantForProject,
-} from './../app/actions'
+import { configAssistantForProject } from './../app/_actions/config-assistant-for-project'
+import { createUserProjectsForRepos } from './../app/_actions/create-user-projects-for-repos'
+import { getFileInfoForRepo } from './../app/_actions/get-file-info-for-repo'
+
 import { useAppContext } from './../lib/hooks/app-context'
 import { stat } from 'fs'
 

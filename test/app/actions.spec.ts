@@ -1,7 +1,7 @@
 import * as chaiImport from 'chai'
 import { nanoid } from 'nanoid'
 
-import { createChat } from '../../app/actions'
+import { createChat } from '../../app/_actions/create-chat'
 
 describe('Actions - Chat', function () {
   it(`Should successfully create a Chat`, async function () {

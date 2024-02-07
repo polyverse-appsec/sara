@@ -3,7 +3,7 @@ import OpenAI from 'openai'
 import { Assistant } from 'openai/resources/beta/assistants/assistants'
 
 import { Task } from '../../data-model-types'
-import { createTask } from './../../../app/actions'
+import { createTask } from './../../../app/_actions/create-task'
 import { nanoid } from './../../utils'
 
 const openai = new OpenAI({

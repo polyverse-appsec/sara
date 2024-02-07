@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { toast } from 'react-hot-toast'
 
 import { type Chat, type ServerActionResult } from '../lib/data-model-types'
-import { removeChat } from './../app/actions'
+import { removeChat } from './../app/_actions/remove-chat'
 import { useAppContext } from './../lib/hooks/app-context'
 import {
   AlertDialog,
