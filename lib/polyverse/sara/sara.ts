@@ -1,10 +1,10 @@
 import { Chat, Project, Task } from '../../data-model-types'
 import { appendUserMessage, getAssistantMessages } from '../openai/messages'
 import {
+  cancelRunOnThread,
   getThreadRunStatus,
   handleRequiresActionStatus,
   runAssistantOnThread,
-  cancelRunOnThread,
 } from '../openai/runs'
 import { configThread } from '../openai/threads'
 
@@ -42,8 +42,6 @@ export const querySara = async (
   question: any,
   fullSaraResponseCallback?: (retrievedAssistantMessages: string) => void,
 ) => {
-
-
   const assistant = project.assistant
   const encoder = new TextEncoder()
 
@@ -65,11 +63,11 @@ export const querySara = async (
     // generating response)
     cancel(reason) {
       console.debug(
-        `Attempting to cancel run '${runID}' on thread '${threadID}' because: ${reason}`
+        `Attempting to cancel run '${runID}' on thread '${threadID}' because: ${reason}`,
       )
 
       cancelRunOnThread(threadID, runID)
-    },  
+    },
     start(controller) {
       // Render a single space for now. Based on the design of the client this
       // will allow it to render something on the screen since it is expecting
@@ -102,7 +100,9 @@ export const querySara = async (
           // that the run was performed on. It ought to be the message from the
           // assistant.
           const assistantMessages = await getAssistantMessages(threadID)
-          console.debug(`Concatenated assistant messages from run completion: ${assistantMessages}`)
+          console.debug(
+            `Concatenated assistant messages from run completion: ${assistantMessages}`,
+          )
 
           // Enqueue a new line first since we have been creating a progress bar
           // of dots while waiting for our answer
@@ -123,7 +123,9 @@ export const querySara = async (
           const threadRunError = JSON.stringify(runStatus.last_error)
           const errorMessage = `Sara failed to generate a response. Reason: ${threadRunError}`
 
-          console.debug(`Thread with ID '${threadID}' had run with ID '${runID}' failed because: ${threadRunError}`)
+          console.debug(
+            `Thread with ID '${threadID}' had run with ID '${runID}' failed because: ${threadRunError}`,
+          )
 
           controller.enqueue(encoder.encode('\n'))
           controller.enqueue(encoder.encode(errorMessage))

@@ -95,16 +95,14 @@ export async function getProject(repo: Repository, email: string) {
     const signedHeader = createSignedHeader(email)
     const res = await fetch(url, {
       headers: {
-        ...signedHeader
-      }
+        ...signedHeader,
+      },
     })
 
     if (res.status !== 200) {
       console.debug(`Failed to get a success response when trying to retrieve `)
     }
-  } catch (err) {
-
-  }
+  } catch (err) {}
 }
 
 export async function createUserProjectForRepo(

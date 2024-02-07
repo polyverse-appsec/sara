@@ -1,13 +1,13 @@
+import { stat } from 'fs'
 import { ReactNode, useEffect } from 'react'
 
 import { configAssistantForProject } from './../app/_actions/config-assistant-for-project'
 import { createUserProjectsForRepos } from './../app/_actions/create-user-projects-for-repos'
 import { getFileInfoForRepo } from './../app/_actions/get-file-info-for-repo'
-
 import { useAppContext } from './../lib/hooks/app-context'
-import { stat } from 'fs'
 
-const formatDateForLastSynchronized = (date: Date): string => `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`
+const formatDateForLastSynchronized = (date: Date): string =>
+  `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`
 
 const useDataWatcher = () => {
   const {
@@ -23,7 +23,9 @@ const useDataWatcher = () => {
     // Do a bunch of narrowing and don't run if all of the Sara config isn't
     // fully prepared
     if (!project || !repo || !user) {
-      console.debug('Skpping AI update on repo change as Sara config not fully prepared yet')
+      console.debug(
+        'Skpping AI update on repo change as Sara config not fully prepared yet',
+      )
 
       return
     }
@@ -45,14 +47,20 @@ const useDataWatcher = () => {
         // more should be considered a critical bug.
         await createUserProjectsForRepos([repo])
         const fileInfos = await getFileInfoForRepo(repo, user)
-        const assistant = await configAssistantForProject(project, fileInfos, user)
+        const assistant = await configAssistantForProject(
+          project,
+          fileInfos,
+          user,
+        )
 
         const lastSynchronizedAt = new Date()
 
         projectConfig.project.lastSynchronizedAt = lastSynchronizedAt
         projectConfig.project.assistant = assistant
         projectConfig.status = 'CONFIGURED'
-        projectConfig.statusInfo = `Synchronized Last: ${formatDateForLastSynchronized(lastSynchronizedAt)}`
+        projectConfig.statusInfo = `Synchronized Last: ${formatDateForLastSynchronized(
+          lastSynchronizedAt,
+        )}`
         projectConfig.errorInfo = null
 
         setProjectConfig(projectConfig)
@@ -62,7 +70,8 @@ const useDataWatcher = () => {
         projectConfig.project = project
         projectConfig.status = 'ERROR'
         projectConfig.statusInfo = ''
-        projectConfig.errorInfo = 'Error Synchronizing Sara For Project - Trying Again'
+        projectConfig.errorInfo =
+          'Error Synchronizing Sara For Project - Trying Again'
         setProjectConfig(projectConfig)
 
         const timeoutId = setTimeout(updateAIOnRepositoryChange, 2500)

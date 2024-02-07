@@ -162,7 +162,7 @@ export async function configAssistant(
 
 export async function configAssistantWithFileInfos(
   project: Project,
-  fileInfos: ProjectDataReference[]
+  fileInfos: ProjectDataReference[],
 ): Promise<Assistant> {
   const existingAssistant = await findAssistantForRepo(project.name)
 

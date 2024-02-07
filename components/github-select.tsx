@@ -1,13 +1,11 @@
 import * as React from 'react'
 import { useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
 
 import { Organization, Repository } from '../lib/data-model-types'
-
 import { getOrCreateProjectForRepo } from './../app/_actions/get-or-create-project-for-repo'
-
 import { getOrganizations } from './../app/_actions/get-organizations'
 import { getRepositoriesForOrg } from './../app/_actions/get-repositories-for-org'
-
 import {
   useAppContext,
   type SaraOrganization,
@@ -16,16 +14,11 @@ import {
 import { GithubOrgSelect } from './github-org-select'
 import { GithubRepoSelect } from './github-repo-select'
 import { IconSeparator } from './ui/icons'
-import toast from 'react-hot-toast'
 
 export function GithubSelect() {
   const {
     user,
-    saraConfig: {
-      orgConfig,
-      projectConfig,
-      repoConfig
-    },
+    saraConfig: { orgConfig, projectConfig, repoConfig },
     setOrgConfig,
     setProjectConfig,
     setRepoConfig,
@@ -114,10 +107,7 @@ export function GithubSelect() {
     setProjectConfig(projectConfig)
 
     try {
-      const retrievedProject = await getOrCreateProjectForRepo(
-        repo,
-        user,
-      )
+      const retrievedProject = await getOrCreateProjectForRepo(repo, user)
       console.debug(`Project created/retrieved for: ${repo.full_name}`)
 
       projectConfig.project = retrievedProject as SaraProject
@@ -173,7 +163,9 @@ export function GithubSelect() {
         <>
           <IconSeparator className="w-6 h-6 text-muted-foreground/50" />
           <GithubRepoSelect
-            selectedRepository={repoStatus === 'CONFIGURED' ? repoConfig.repo : null}
+            selectedRepository={
+              repoStatus === 'CONFIGURED' ? repoConfig.repo : null
+            }
             repositories={fetchedRepos}
             onRepositoryChange={handleRepositoryChange}
           />

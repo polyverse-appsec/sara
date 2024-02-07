@@ -24,10 +24,7 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
   const router = useRouter()
   const path = usePathname()
 
-  const {
-    setChatStreamLastFinishedAt,
-    saraConfig,
-  } = useAppContext()
+  const { setChatStreamLastFinishedAt, saraConfig } = useAppContext()
 
   // TODO: Need to update the body of useChat with the info in the configured Sara object
 
@@ -128,7 +125,9 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
         input={input}
         setInput={setInput}
         saraConfigured={
-          projectStatus === 'CONFIGURED' && projectStatusInfo !== null && projectStatusInfo.includes('Synchronized Last')
+          projectStatus === 'CONFIGURED' &&
+          projectStatusInfo !== null &&
+          projectStatusInfo.includes('Synchronized Last')
         }
       />
     </>
