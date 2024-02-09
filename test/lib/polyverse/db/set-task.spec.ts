@@ -499,7 +499,8 @@ describe(`Redis DB - 'setTask'`, function () {
 
       // For correctness start by verifying there is nothing written to
       // the DB yet for where we would expect the task to be written
-      // @ts-ignore Ignoring template strings shenanigans: https://github.com/microsoft/TypeScript/issues/33304
+      // @ts-ignore: Argument of type 'TemplateStringsArray' is not assignable to parameter of type 'string[]'.
+      // Ignoring template strings shenanigans: https://github.com/microsoft/TypeScript/issues/33304
       const expectedTaskKey = taskKey`${expectedTask.id}`
       const nonExistantTask = await kv.hgetall<Task>(expectedTaskKey)
 

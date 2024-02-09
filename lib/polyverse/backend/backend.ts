@@ -75,10 +75,32 @@ export async function getFileInfo(
       return []
     }
 
-    const fileInfo = await res.json()
-    const fileArray = JSON.parse(fileInfo.body)
-    //json should be an array of ProjectDataReference objects
-    return fileArray as ProjectDataReference[]
+    const fileInfosJson = await res.json()
+    const parsedFileInfos = JSON.parse(fileInfosJson.body)
+
+    // Convert the response format from the Boost Node backend to what we expect
+    // for consumption in Sara
+    return parsedFileInfos.map((parsedFileInfo: any) => {
+      const mappedFileInfo = {
+        ...parsedFileInfo,
+      } as any
+
+      // Map any snaked_cased data members to camelCased data members.
+      //
+      // Currently the call to
+      // `GET /api/user_project/orgId/projectName/data_references` returns
+      // `last_updated` as a Unix timestamp in seconds. Lets convert it to
+      // milliseconds.
+      delete mappedFileInfo.last_updated
+      mappedFileInfo.lastUpdatedAt = new Date(parsedFileInfo.last_updated * 1000)
+
+      // Currently the call to
+      // `GET /api/user_project/orgId/projectName/data_references` returns
+      // `last_updated` as a Unix timestamp in seconds. Lets convert it to
+      // milliseconds.
+
+      return mappedFileInfo as ProjectDataReference
+    }) as ProjectDataReference[]
   } catch (error) {
     console.error(
       'Error making a request or parsing a response for project ID: ',

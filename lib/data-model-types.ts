@@ -71,7 +71,6 @@ export interface Project extends Record<string, any> {
   lastSynchronizedAt: Date
 }
 
-// TODO: Complete this and start on chats items
 export const TaskSchema = Joi.object({
   // TODO: Add a format to the ID that must be matched
   id: Joi.string().required(),
@@ -121,9 +120,26 @@ export type ServerActionResult<Result> = Promise<
       error: string
     }
 >
+
+// TODO: Change name to ProjectFileInfoSchema
+export const ProjectDataReferenceSchema = Joi.object({
+  // TODO: Should we add a format to the name that must be matched?
+  name: Joi.string().required(),
+  // TODO: Restrict these to a specific amount of types
+  type: Joi.string().required(),
+  // TODO: Should we add a format to the name that must be matched?
+  id: Joi.string().required(),
+  lastUpdatedAt: Joi.date()
+      .timestamp(`javascript`)
+      .min(`2023-12-25T00:00:00.000Z`)
+      .max(`now`)
+      .required(),
+})
+
+// TODO: Change name to ProjectFileInfo
 export interface ProjectDataReference {
   name: string
   type: string
   id: string
-  last_updated: number
+  lastUpdatedAt: Date
 }

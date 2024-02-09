@@ -1,8 +1,76 @@
 import { expect } from 'chai'
 
-import { taskKey, userTasksKey } from './../../../../lib/polyverse/db/keys'
+import { projectUserFileInfoIdsSetKey, taskKey, userTasksKey } from './../../../../lib/polyverse/db/keys'
 
 describe(`Redis Keys`, function () {
+  describe(`projectUserFileInfoIdsSetKey tag`, function () {
+    it(`Throws an 'Error' if 'projectName' is 'undefined'`, function () {
+      // @ts-expect-error Purposely exclude arguments for testing
+      expect(() => projectUserFileInfoIdsSetKey``).to.throw(
+        Error,
+        `'projectName' not allowed to be blank (undefined, null, or the empty string)`,
+      )
+    })
+
+    it(`Throws an 'Error' if 'projectName' is 'null'`, function () {
+      // @ts-expect-error Purposely exclude arguments for testing
+      expect(() => projectUserFileInfoIdsSetKey`${null}`).to.throw(
+        Error,
+        `'projectName' not allowed to be blank (undefined, null, or the empty string)`,
+      )
+    })
+
+    it(`Throws an 'Error' if 'projectName' is the empty string`, function () {
+      // @ts-expect-error Purposely exclude arguments for testing
+      expect(() => projectUserFileInfoIdsSetKey`${''}`).to.throw(
+        Error,
+        `'projectName' not allowed to be blank (undefined, null, or the empty string)`,
+      )
+    })
+
+    it(`Throws an 'Error' if 'userId' is 'undefined'`, function () {
+      const someProjectName = `someProjectName`
+
+      // @ts-expect-error Purposely exclude arguments for testing
+      expect(() => projectUserFileInfoIdsSetKey`${someProjectName}`).to.throw(
+        Error,
+        `'userId' not allowed to be blank (undefined, null, or the empty string)`,
+      )
+    })
+
+    it(`Throws an 'Error' if 'userId' is 'null'`, function () {
+      const someProjectName = `someProjectName`
+
+      // @ts-expect-error Purposely exclude arguments for testing
+      expect(() => projectUserFileInfoIdsSetKey`${someProjectName}${null}`).to.throw(
+        Error,
+        `'userId' not allowed to be blank (undefined, null, or the empty string)`,
+      )
+    })
+
+    it(`Throws an 'Error' if 'userId' is the empty string`, function () {
+      const someProjectName = `someProjectName`
+
+      // @ts-expect-error Purposely exclude arguments for testing
+      expect(() => projectUserFileInfoIdsSetKey`${someProjectName}${''}`).to.throw(
+        Error,
+        `'userId' not allowed to be blank (undefined, null, or the empty string)`,
+      )
+    })
+
+    it(`Generates the expected key`, function () {
+      const someProjectName = `someProjectName`
+      const someUserId = `someUserId`
+
+      const expectedKey = `project:${someProjectName}:user:${someUserId}:fileInfoIds`
+
+      // @ts-expect-error We don't use the string literals
+      expect(projectUserFileInfoIdsSetKey`${someProjectName}${someUserId}`).to.be.string(
+        expectedKey,
+      )
+    })
+  })
+
   describe(`taskKey tag`, function () {
     it(`Throws an 'Error' if 'taskId' is 'undefined'`, function () {
       // @ts-expect-error Purposely exclude arguments for testing

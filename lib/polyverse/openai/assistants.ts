@@ -57,9 +57,9 @@ function mapFileInfoToPromptAndIDs(fileInfos: ProjectDataReference[]) {
  * @param {string} repo Git URL associated with a repo.
  * @returns {Promise<Assistant>} Promise with the created OpenAI assistant.
  */
-export async function createAssistantWithFileIDsFromRepo(
+export async function createAssistantWithFileInfosFromRepo(
   fileInfos: ProjectDataReference[],
-  repo_full_name: string,
+  projectName: string,
 ): Promise<Assistant> {
   const { prompt, fileIDs } = mapFileInfoToPromptAndIDs(fileInfos)
 
@@ -73,7 +73,7 @@ export async function createAssistantWithFileIDsFromRepo(
       { type: 'retrieval' },
       submitTaskStepsAssistantFunction,
     ],
-    metadata: { repo_full_name },
+    metadata: { projectName },
   })
 }
 
@@ -91,7 +91,7 @@ export async function findAssistantForRepo(
 
   // API Assistant object reference: https://platform.openai.com/docs/api-reference/assistants/object
   return assistants?.data?.find(
-    ({ metadata }) => isRecord(metadata) && metadata.repo_full_name === repo,
+    ({ metadata }) => isRecord(metadata) && metadata.projectName === repo,
   )
 }
 
@@ -157,18 +157,5 @@ export async function configAssistant(
     return await updateAssistantPromptAndFiles(fileInfos, existingAssistant)
   }
 
-  return await createAssistantWithFileIDsFromRepo(fileInfos, project.name)
-}
-
-export async function configAssistantWithFileInfos(
-  project: Project,
-  fileInfos: ProjectDataReference[],
-): Promise<Assistant> {
-  const existingAssistant = await findAssistantForRepo(project.name)
-
-  if (existingAssistant) {
-    return await updateAssistantPromptAndFiles(fileInfos, existingAssistant)
-  }
-
-  return await createAssistantWithFileIDsFromRepo(fileInfos, project.name)
+  return await createAssistantWithFileInfosFromRepo(fileInfos, project.name)
 }
