@@ -5,9 +5,7 @@ import { configAssistantForProject } from './../app/_actions/config-assistant-fo
 import { createUserProjectsForRepos } from './../app/_actions/create-user-projects-for-repos'
 import { getFileInfoForRepo } from './../app/_actions/get-file-info-for-repo'
 import { useAppContext } from './../lib/hooks/app-context'
-
-const formatDateForLastSynchronized = (date: Date): string =>
-  `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`
+import { formatDateForLastSynchronizedAt } from './../lib/utils'
 
 const useDataWatcher = () => {
   const {
@@ -58,7 +56,7 @@ const useDataWatcher = () => {
         projectConfig.project.lastSynchronizedAt = lastSynchronizedAt
         projectConfig.project.assistant = assistant
         projectConfig.status = 'CONFIGURED'
-        projectConfig.statusInfo = `Synchronized Last: ${formatDateForLastSynchronized(
+        projectConfig.statusInfo = `Synchronized Last: ${formatDateForLastSynchronizedAt(
           lastSynchronizedAt,
         )}`
         projectConfig.errorInfo = null

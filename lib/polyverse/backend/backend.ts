@@ -75,14 +75,13 @@ export async function getFileInfo(
       return []
     }
 
-    const fileInfosJson = await res.json()
-    const parsedFileInfos = JSON.parse(fileInfosJson.body)
+    const fileInfos = await res.json()
 
     // Convert the response format from the Boost Node backend to what we expect
     // for consumption in Sara
-    return parsedFileInfos.map((parsedFileInfo: any) => {
+    return fileInfos.map((fileInfo: any) => {
       const mappedFileInfo = {
-        ...parsedFileInfo,
+        ...fileInfo,
       } as any
 
       // Map any snaked_cased data members to camelCased data members.
@@ -92,12 +91,7 @@ export async function getFileInfo(
       // `last_updated` as a Unix timestamp in seconds. Lets convert it to
       // milliseconds.
       delete mappedFileInfo.last_updated
-      mappedFileInfo.lastUpdatedAt = new Date(parsedFileInfo.last_updated * 1000)
-
-      // Currently the call to
-      // `GET /api/user_project/orgId/projectName/data_references` returns
-      // `last_updated` as a Unix timestamp in seconds. Lets convert it to
-      // milliseconds.
+      mappedFileInfo.lastUpdatedAt = new Date(fileInfo.last_updated * 1000)
 
       return mappedFileInfo as ProjectDataReference
     }) as ProjectDataReference[]

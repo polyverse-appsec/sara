@@ -1,17 +1,19 @@
 'use client'
 
-import { useEffect } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
+import { CreateMessage } from 'ai'
 import { useChat, type Message } from 'ai/react'
 import { toast } from 'react-hot-toast'
 
 import type { Chat } from '../lib/data-model-types'
 import { useAppContext } from './../lib/hooks/app-context'
-import { cn } from './../lib/utils'
+import { cn, formatDateForLastSynchronizedAt } from './../lib/utils'
 import { ChatList } from './chat-list'
 import { ChatPanel } from './chat-panel'
 import { ChatScrollAnchor } from './chat-scroll-anchor'
 import { EmptyScreen } from './empty-screen'
+import { getFileInfoForRepo } from './../app/_actions/get-file-info-for-repo'
+import { configAssistantForProject } from './../app/_actions/config-assistant-for-project'
 
 export interface ChatProps extends React.ComponentProps<'div'> {
   initialMessages?: Message[]
@@ -24,17 +26,20 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
   const router = useRouter()
   const path = usePathname()
 
-  const { setChatStreamLastFinishedAt, saraConfig } = useAppContext()
-
-  // TODO: Need to update the body of useChat with the info in the configured Sara object
+  const { setChatStreamLastFinishedAt, saraConfig, setProjectConfig, user } = useAppContext()
 
   const {
-    projectConfig: {
-      project,
-      status: projectStatus,
-      statusInfo: projectStatusInfo,
-    },
+    projectConfig,
+    repoConfig: {
+      repo
+    }
   } = saraConfig
+
+  const {
+    project,
+    status: projectStatus,
+    statusInfo: projectStatusInfo,
+  } = projectConfig
 
   // 'useChat' comes from the Vercel API: https://sdk.vercel.ai/docs/api-reference/use-chat
   //
@@ -103,6 +108,38 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
     return
   }
 
+  const updateAssistantAndAppend = async (message: Message | CreateMessage): Promise<string | null | undefined> => {
+    try {
+      if (project && project.id && repo && user) {
+        const fileInfos = await getFileInfoForRepo(repo, user)
+        const assistant = await configAssistantForProject(
+          project,
+          fileInfos,
+          user,
+        )
+
+        const lastSynchronizedAt = new Date()
+
+        projectConfig.project = project
+        projectConfig.project.lastSynchronizedAt = lastSynchronizedAt
+        projectConfig.project.assistant = assistant
+        projectConfig.status = 'CONFIGURED'
+        projectConfig.statusInfo = `Synchronized Last: ${formatDateForLastSynchronizedAt(
+          lastSynchronizedAt,
+        )}`
+        projectConfig.errorInfo = null
+
+        setProjectConfig(projectConfig)
+      }
+    } catch (err) {
+      // We just log here and don't block the chat request from being processed
+      // (i.e. return)
+      console.debug(`Failed to sync the assistant when chat initiated because: ${err}`)
+    }
+
+    return append(message)
+  }
+
   return (
     <>
       <div className={cn('pb-[200px] pt-4 md:pt-10', className)}>
@@ -119,7 +156,7 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
         id={chat.id}
         isLoading={isLoading}
         stop={stop}
-        append={append}
+        append={updateAssistantAndAppend}
         reload={reload}
         messages={messages}
         input={input}
