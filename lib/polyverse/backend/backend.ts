@@ -90,8 +90,8 @@ export async function getFileInfo(
       // `GET /api/user_project/orgId/projectName/data_references` returns
       // `last_updated` as a Unix timestamp in seconds. Lets convert it to
       // milliseconds.
-      delete mappedFileInfo.last_updated
-      mappedFileInfo.lastUpdatedAt = new Date(fileInfo.last_updated * 1000)
+      delete mappedFileInfo.lastUpdated
+      mappedFileInfo.lastUpdatedAt = new Date(fileInfo.lastUpdated * 1000)
 
       return mappedFileInfo as ProjectDataReference
     }) as ProjectDataReference[]

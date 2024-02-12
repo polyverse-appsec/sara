@@ -3,6 +3,17 @@ Polyverse Sara Web UI for Boost
 
 # Release Notes
 
+## Version 0.6.2: February 12th, 2024
+
+### New Features
+- N/A
+
+### Enhancements
+- Synchronized timestamp of Project Data References with ReST Backend JSON naming (camelCase)
+
+### Bug Fixes
+- N/A
+
 ## Version 0.6.1: February 7th, 2024
 
 ### New Features
