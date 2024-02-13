@@ -48,7 +48,7 @@ export function GithubSelect() {
     // TODO: Probbly need a helper method to build the status, statusInfo, and errorInfo and default to errorInfo being null
     orgConfig.organization = org as SaraOrganization
     orgConfig.status = 'CONFIGURING'
-    orgConfig.statusInfo = 'Configuring Repositories'
+    orgConfig.statusInfo = 'Discovering Repositories'
     orgConfig.errorInfo = null
     setOrgConfig(orgConfig)
 
@@ -74,7 +74,7 @@ export function GithubSelect() {
         // TODO: Originally was setRepositories(data) where data is what was returned from `getRepositoriesForOrg`
         orgConfig.organization.repositoriesById = repositoriesById
         orgConfig.status = 'CONFIGURED'
-        orgConfig.statusInfo = 'Repositories Configured'
+        orgConfig.statusInfo = 'Repositories Discovered'
 
         setOrgConfig(orgConfig)
       } catch (err) {
@@ -86,7 +86,7 @@ export function GithubSelect() {
         orgConfig.organization.repositoriesById = {}
         orgConfig.status = 'ERROR'
         orgConfig.statusInfo = ''
-        orgConfig.errorInfo = 'Error Configuring Repositories'
+        orgConfig.errorInfo = 'Error Discovering Repositories - Please Switch Between Organizations Again'
 
         setOrgConfig(orgConfig)
       }
@@ -102,7 +102,7 @@ export function GithubSelect() {
 
     projectConfig.project = null
     projectConfig.status = 'CONFIGURING'
-    projectConfig.statusInfo = 'Configuring Project'
+    projectConfig.statusInfo = 'Discovering Project Data'
     projectConfig.errorInfo = null
     setProjectConfig(projectConfig)
 
@@ -112,13 +112,13 @@ export function GithubSelect() {
 
       projectConfig.project = retrievedProject as SaraProject
       projectConfig.status = 'CONFIGURED'
-      projectConfig.statusInfo = 'Project Configured'
+      projectConfig.statusInfo = 'Project Data Discovered'
       projectConfig.errorInfo = null
       setProjectConfig(projectConfig)
 
       repoConfig.repo = repo
       repoConfig.status = 'CONFIGURED'
-      repoConfig.statusInfo = 'Repo Configured'
+      repoConfig.statusInfo = 'Repsitory Data Discovered'
       repoConfig.errorInfo = null
       setRepoConfig(repoConfig)
     } catch (err) {
@@ -130,13 +130,13 @@ export function GithubSelect() {
       repoConfig.repo = null
       repoConfig.status = 'ERROR'
       repoConfig.statusInfo = ''
-      repoConfig.errorInfo = 'Error Configuring Repo'
+      repoConfig.errorInfo = 'Error Discovering Repository Data - Please Switch Between Repositories Again'
       setRepoConfig(repoConfig)
 
       projectConfig.project = null
       projectConfig.status = 'ERROR'
       projectConfig.statusInfo = ''
-      projectConfig.errorInfo = 'Error Configuring Project'
+      projectConfig.errorInfo = 'Error Discovering Project Data - Please Switch Between Repositories Again'
       setProjectConfig(projectConfig)
     }
   }
