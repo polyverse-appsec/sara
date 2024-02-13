@@ -130,10 +130,10 @@ export const ProjectDataReferenceSchema = Joi.object({
   // TODO: Should we add a format to the name that must be matched?
   id: Joi.string().required(),
   lastUpdatedAt: Joi.date()
-      .timestamp(`javascript`)
-      .min(`2023-12-25T00:00:00.000Z`)
-      .max(`now`)
-      .required(),
+    .timestamp(`javascript`)
+    .min(`2023-12-25T00:00:00.000Z`)
+    .max(`now`)
+    .required(),
 })
 
 // TODO: Change name to ProjectFileInfo

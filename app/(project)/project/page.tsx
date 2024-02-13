@@ -1,11 +1,7 @@
 'use client'
 
 const ProjectIndex = () => {
-    return (
-        <>
-            Some project content
-        </>
-    )
+  return <>Some project content</>
 }
 
 export default ProjectIndex

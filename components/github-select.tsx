@@ -7,23 +7,30 @@ import { getOrCreateProjectForRepo } from './../app/_actions/get-or-create-proje
 import { getOrganizations } from './../app/_actions/get-organizations'
 import { getRepositoriesForOrg } from './../app/_actions/get-repositories-for-org'
 import {
+  ProjectConfigurable,
   useAppContext,
   type SaraOrganization,
   type SaraProject,
-  ProjectConfigurable,
 } from './../lib/hooks/app-context'
 import { GithubOrgSelect } from './github-org-select'
 import { GithubRepoSelect } from './github-repo-select'
 import { ProjectConfigurationButton } from './project-configuration-button'
+import {
+  ProjectConfigurationDialog,
+  type ProjectDataReferenceState,
+} from './project-configuration-dialog'
 import { IconSeparator } from './ui/icons'
 
-import { type ProjectDataReferenceState, ProjectConfigurationDialog } from './project-configuration-dialog'
-
-const createProjectReferencesForRepoChange = (fetchedRepos: Repository[], selectedRepo: Repository) => {
-  const projectReferences = fetchedRepos.filter(fetchedRepo => fetchedRepo.id !== selectedRepo.id).map(fetchedRepo => ({
-    checked: false,
-    repo: fetchedRepo
-  }))
+const createProjectReferencesForRepoChange = (
+  fetchedRepos: Repository[],
+  selectedRepo: Repository,
+) => {
+  const projectReferences = fetchedRepos
+    .filter((fetchedRepo) => fetchedRepo.id !== selectedRepo.id)
+    .map((fetchedRepo) => ({
+      checked: false,
+      repo: fetchedRepo,
+    }))
 
   return projectReferences
 }
@@ -39,9 +46,11 @@ export function GithubSelect() {
 
   const [organizations, setOrganizations] = useState<Organization[]>([])
 
-  const [isProjectConfigModalOpen, setIsProjectConfigModalOpen] = useState(false)
+  const [isProjectConfigModalOpen, setIsProjectConfigModalOpen] =
+    useState(false)
   // TODO: When repo is changed we need to reset this to the new list of repos that were fetched sans the one selected
-  const [controlledProjectReferences, setControlledProjectReferences] = useState<ProjectDataReferenceState[]>([])
+  const [controlledProjectReferences, setControlledProjectReferences] =
+    useState<ProjectDataReferenceState[]>([])
 
   const fetchOrganizations = async () => {
     try {
@@ -100,7 +109,8 @@ export function GithubSelect() {
         orgConfig.organization.repositoriesById = {}
         orgConfig.status = 'ERROR'
         orgConfig.statusInfo = ''
-        orgConfig.errorInfo = 'Error Discovering Repositories - Please Switch Between Organizations Again'
+        orgConfig.errorInfo =
+          'Error Discovering Repositories - Please Switch Between Organizations Again'
 
         setOrgConfig(orgConfig)
       }
@@ -130,7 +140,10 @@ export function GithubSelect() {
       projectConfig.errorInfo = null
       setProjectConfig(projectConfig)
 
-      const controlledProjectReferences = createProjectReferencesForRepoChange(fetchedRepos, repo)
+      const controlledProjectReferences = createProjectReferencesForRepoChange(
+        fetchedRepos,
+        repo,
+      )
       setControlledProjectReferences(controlledProjectReferences)
 
       repoConfig.repo = repo
@@ -147,13 +160,15 @@ export function GithubSelect() {
       repoConfig.repo = null
       repoConfig.status = 'ERROR'
       repoConfig.statusInfo = ''
-      repoConfig.errorInfo = 'Error Discovering Repository Data - Please Switch Between Repositories Again'
+      repoConfig.errorInfo =
+        'Error Discovering Repository Data - Please Switch Between Repositories Again'
       setRepoConfig(repoConfig)
 
       projectConfig.project = null
       projectConfig.status = 'ERROR'
       projectConfig.statusInfo = ''
-      projectConfig.errorInfo = 'Error Discovering Project Data - Please Switch Between Repositories Again'
+      projectConfig.errorInfo =
+        'Error Discovering Project Data - Please Switch Between Repositories Again'
       setProjectConfig(projectConfig)
     }
   }
@@ -167,7 +182,9 @@ export function GithubSelect() {
       ? Object.values(orgConfig.organization.repositoriesById)
       : []
 
-  const projectDataReferences = fetchedRepos.filter(fetchedRepo => fetchedRepo.id !== repoConfig.repo?.id)
+  const projectDataReferences = fetchedRepos.filter(
+    (fetchedRepo) => fetchedRepo.id !== repoConfig.repo?.id,
+  )
 
   // TODO: Comment - w-204px - 180 for the drop down and 24 for IconSeparator
   return (
@@ -195,19 +212,23 @@ export function GithubSelect() {
       )}
       {repoStatus === 'CONFIGURED' ? (
         <>
-        <div className="mx-p12">
-          <ProjectConfigurationButton onClick={() => setIsProjectConfigModalOpen(!isProjectConfigModalOpen)} />
-        </div>
-        <ProjectConfigurationDialog
-          projectDataReferences={projectDataReferences}
-          open={isProjectConfigModalOpen}
-          onOpenChange={(open: boolean) => setIsProjectConfigModalOpen(open)}
-          onSaveConfig={(config: ProjectConfigurable | null) => {
-            // TODO: NEED TO SAVE STILL
-            console.log(`***** NEED TO SAVE STILL`)
-            setIsProjectConfigModalOpen(!isProjectConfigModalOpen)
-          }}
-        />
+          <div className="mx-p12">
+            <ProjectConfigurationButton
+              onClick={() =>
+                setIsProjectConfigModalOpen(!isProjectConfigModalOpen)
+              }
+            />
+          </div>
+          <ProjectConfigurationDialog
+            projectDataReferences={projectDataReferences}
+            open={isProjectConfigModalOpen}
+            onOpenChange={(open: boolean) => setIsProjectConfigModalOpen(open)}
+            onSaveConfig={(config: ProjectConfigurable | null) => {
+              // TODO: NEED TO SAVE STILL
+              console.log(`***** NEED TO SAVE STILL`)
+              setIsProjectConfigModalOpen(!isProjectConfigModalOpen)
+            }}
+          />
         </>
       ) : null}
     </>

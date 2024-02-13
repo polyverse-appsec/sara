@@ -6,14 +6,14 @@ import { useChat, type Message } from 'ai/react'
 import { toast } from 'react-hot-toast'
 
 import type { Chat } from '../lib/data-model-types'
+import { configAssistantForProject } from './../app/_actions/config-assistant-for-project'
+import { getFileInfoForRepo } from './../app/_actions/get-file-info-for-repo'
 import { useAppContext } from './../lib/hooks/app-context'
 import { cn, formatDateForLastSynchronizedAt } from './../lib/utils'
 import { ChatList } from './chat-list'
 import { ChatPanel } from './chat-panel'
 import { ChatScrollAnchor } from './chat-scroll-anchor'
 import { EmptyScreen } from './empty-screen'
-import { getFileInfoForRepo } from './../app/_actions/get-file-info-for-repo'
-import { configAssistantForProject } from './../app/_actions/config-assistant-for-project'
 
 export interface ChatProps extends React.ComponentProps<'div'> {
   initialMessages?: Message[]
@@ -26,13 +26,12 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
   const router = useRouter()
   const path = usePathname()
 
-  const { setChatStreamLastFinishedAt, saraConfig, setProjectConfig, user } = useAppContext()
+  const { setChatStreamLastFinishedAt, saraConfig, setProjectConfig, user } =
+    useAppContext()
 
   const {
     projectConfig,
-    repoConfig: {
-      repo
-    }
+    repoConfig: { repo },
   } = saraConfig
 
   const {
@@ -108,7 +107,9 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
     return
   }
 
-  const updateAssistantAndAppend = async (message: Message | CreateMessage): Promise<string | null | undefined> => {
+  const updateAssistantAndAppend = async (
+    message: Message | CreateMessage,
+  ): Promise<string | null | undefined> => {
     try {
       if (project && project.id && repo && user) {
         const fileInfos = await getFileInfoForRepo(repo, user)
@@ -134,7 +135,9 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
     } catch (err) {
       // We just log here and don't block the chat request from being processed
       // (i.e. return)
-      console.debug(`Failed to sync the assistant when chat initiated because: ${err}`)
+      console.debug(
+        `Failed to sync the assistant when chat initiated because: ${err}`,
+      )
     }
 
     return append(message)

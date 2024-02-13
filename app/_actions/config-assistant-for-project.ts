@@ -2,7 +2,6 @@
 
 import isEqual from 'lodash/isEqual'
 import orderBy from 'lodash/orderBy'
-
 import { type Assistant } from 'openai/resources/beta/assistants/assistants'
 
 import { auth } from './../../auth'
@@ -14,13 +13,15 @@ import {
 import {
   createAssistantWithFileInfosFromRepo,
   findAssistantForRepo,
-  updateAssistantPromptAndFiles
+  updateAssistantPromptAndFiles,
 } from './../../lib/polyverse/openai/assistants'
-
 import getCachedProjectUserFileInfos from './get-cached-project-user-file-infos'
 import setCachedProjectUserFileInfos from './set-cached-project-user-file-infos'
 
-const fileInfosEqual = (thisFileInfos: ProjectDataReference[], thatFileInfos: ProjectDataReference[]): boolean => {
+const fileInfosEqual = (
+  thisFileInfos: ProjectDataReference[],
+  thatFileInfos: ProjectDataReference[],
+): boolean => {
   if (!thisFileInfos && !thatFileInfos) {
     return true
   }
@@ -56,12 +57,21 @@ export async function configAssistantForProject(
   // If we did find an existing assistant check to see if we need to update the
   // assistant with newer file info...
   if (existingAssistant) {
-    const cachedFileInfos = await getCachedProjectUserFileInfos(project.name, user)
+    const cachedFileInfos = await getCachedProjectUserFileInfos(
+      project.name,
+      user,
+    )
 
-    const shouldUpdateAssistantPrompt = !(fileInfosEqual(fileInfos, cachedFileInfos))
+    const shouldUpdateAssistantPrompt = !fileInfosEqual(
+      fileInfos,
+      cachedFileInfos,
+    )
 
     if (shouldUpdateAssistantPrompt) {
-      const updatedAssistant = await updateAssistantPromptAndFiles(fileInfos, existingAssistant)
+      const updatedAssistant = await updateAssistantPromptAndFiles(
+        fileInfos,
+        existingAssistant,
+      )
       await setCachedProjectUserFileInfos(project.name, user, fileInfos)
 
       return updatedAssistant
@@ -72,7 +82,10 @@ export async function configAssistantForProject(
 
   // Otherwise just create a new assistant now with the file infos and cache
   // them...
-  const createdAssistant = await createAssistantWithFileInfosFromRepo(fileInfos, project.name)
+  const createdAssistant = await createAssistantWithFileInfosFromRepo(
+    fileInfos,
+    project.name,
+  )
   await setCachedProjectUserFileInfos(project.name, user, fileInfos)
 
   return createdAssistant

@@ -15,7 +15,10 @@ import Joi from 'joi'
  * @returns Redis key that can be used to persist or query for a set of file IDs
  * associated with a users project.
  */
-export const projectUserFileInfoIdsSetKey = (projectName: string, userId: string): string => {
+export const projectUserFileInfoIdsSetKey = (
+  projectName: string,
+  userId: string,
+): string => {
   if (Joi.string().required().validate(projectName).error) {
     throw new Error(
       `'projectName' not allowed to be blank (undefined, null, or the empty string)`,
@@ -47,7 +50,11 @@ export const projectUserFileInfoIdsSetKey = (projectName: string, userId: string
  * @returns Redis key that can be used to persist or query for file info\
  * associated with a users project.
  */
-export const projectUserFileInfoKey = (projectName: string, userId: string, fileInfoId: string) => {
+export const projectUserFileInfoKey = (
+  projectName: string,
+  userId: string,
+  fileInfoId: string,
+) => {
   if (Joi.string().required().validate(projectName).error) {
     throw new Error(
       `'projectName' not allowed to be blank (undefined, null, or the empty string)`,
@@ -106,10 +113,7 @@ export const taskKey = (taskId: string): string => {
  * @returns Redis key that can be used to persist or query for tasks associated
  * with a users project.
  */
-export const userTasksKey = (
-  userId: string,
-  projectName: string,
-): string => {
+export const userTasksKey = (userId: string, projectName: string): string => {
   if (Joi.string().required().validate(userId).error) {
     throw new Error(
       `'userId' not allowed to be blank (undefined, null, or the empty string)`,

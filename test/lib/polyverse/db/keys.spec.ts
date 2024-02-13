@@ -3,7 +3,7 @@ import { expect } from 'chai'
 import {
   projectUserFileInfoIdsSetKey,
   taskKey,
-  userTasksKey
+  userTasksKey,
 } from './../../../../lib/polyverse/db/keys'
 
 describe(`Redis Keys`, function () {
@@ -46,7 +46,9 @@ describe(`Redis Keys`, function () {
       const someProjectName = `someProjectName`
 
       // @ts-expect-error Purposely exclude arguments for testing
-      expect(() => projectUserFileInfoIdsSetKey(someProjectName, null)).to.throw(
+      expect(() =>
+        projectUserFileInfoIdsSetKey(someProjectName, null),
+      ).to.throw(
         Error,
         `'userId' not allowed to be blank (undefined, null, or the empty string)`,
       )
@@ -67,9 +69,9 @@ describe(`Redis Keys`, function () {
 
       const expectedKey = `project:${someProjectName}:user:${someUserId}:fileInfoIds`
 
-      expect(projectUserFileInfoIdsSetKey(someProjectName, someUserId)).to.be.string(
-        expectedKey,
-      )
+      expect(
+        projectUserFileInfoIdsSetKey(someProjectName, someUserId),
+      ).to.be.string(expectedKey)
     })
   })
 
