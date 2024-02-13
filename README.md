@@ -57,6 +57,7 @@ Your app template should now be running on [localhost:3000](http://localhost:300
 
 ## Design & Technical Docs
 
+* [Class Diagrams](tech-docs/class-diagram-data-model.md)
 * [Sequence Diagrams](tech-docs/sequence-diagrams.md)
 
 ## Ops Docs
