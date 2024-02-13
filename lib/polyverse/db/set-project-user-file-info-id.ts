@@ -10,13 +10,8 @@ const setProjectUserFileInfoId = (projectName: string, userId: string, fileInfoI
         )
     }
 
-    // @ts-ignore: Argument of type 'TemplateStringsArray' is not assignable to parameter of type 'string[]'.
-    // Ignoring template strings shenanigans: https://github.com/microsoft/TypeScript/issues/33304
-    const fileInfoIdsSetKey = projectUserFileInfoIdsSetKey`${projectName}${userId}`
-
-    // @ts-ignore: Argument of type 'TemplateStringsArray' is not assignable to parameter of type 'string[]'.
-    // Ignoring template strings shenanigans: https://github.com/microsoft/TypeScript/issues/33304
-    const fileInfoKey = projectUserFileInfoKey`${projectName}${userId}${fileInfoId}`
+    const fileInfoIdsSetKey = projectUserFileInfoIdsSetKey(projectName, userId)
+    const fileInfoKey = projectUserFileInfoKey(projectName, userId, fileInfoId)
 
     return kv.zadd(fileInfoIdsSetKey, {
         score: +(new Date()),

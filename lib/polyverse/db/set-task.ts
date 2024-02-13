@@ -20,9 +20,7 @@ const setTask = async (task: Task): Promise<number> => {
     throw validationError
   }
 
-  // @ts-ignore: Argument of type 'TemplateStringsArray' is not assignable to parameter of type 'string[]'.
-  // Ignoring template strings shenanigans: https://github.com/microsoft/TypeScript/issues/33304
-  return kv.hset(taskKey`${task.id}`, task)
+  return kv.hset(taskKey(task.id), task)
 }
 
 export default setTask

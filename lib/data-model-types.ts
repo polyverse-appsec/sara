@@ -137,7 +137,7 @@ export const ProjectDataReferenceSchema = Joi.object({
 })
 
 // TODO: Change name to ProjectFileInfo
-export interface ProjectDataReference {
+export interface ProjectDataReference extends Record<string, any> {
   name: string
   type: string
   id: string

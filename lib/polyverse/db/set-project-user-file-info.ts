@@ -11,9 +11,8 @@ const setProjectUserFileInfo = async (projectName: string, userId: string, fileI
       throw validationError
     }
 
-    // @ts-ignore: Argument of type 'TemplateStringsArray' is not assignable to parameter of type 'string[]'.
-    // Ignoring template strings shenanigans: https://github.com/microsoft/TypeScript/issues/33304
-    return kv.hset(projectUserFileInfoKey`${projectName}${userId}${fileInfo.id}`, fileInfo)
+    const key = projectUserFileInfoKey(projectName, userId, fileInfo.id)
+    return kv.hset(key, fileInfo)
 }
 
 export default setProjectUserFileInfo

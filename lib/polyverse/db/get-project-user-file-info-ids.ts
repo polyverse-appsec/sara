@@ -5,9 +5,7 @@ import { projectUserFileInfoIdsSetKey } from "./keys"
 const TEN_MINS_IN_MILLIS = 600000
 
 export const getProjectUserFileInfoIds = async (projectName: string, userId: string): Promise<string[]> => {
-    // @ts-ignore: Argument of type 'TemplateStringsArray' is not assignable to parameter of type 'string[]'.
-    // Ignoring template strings shenanigans: https://github.com/microsoft/TypeScript/issues/33304
-    const fileInfoIdsSetKey = projectUserFileInfoIdsSetKey`${projectName}${userId}`
+    const fileInfoIdsSetKey = projectUserFileInfoIdsSetKey(projectName, userId)
 
     const dateScoreInMillis = Date.now() + TEN_MINS_IN_MILLIS
     // The original implementation of this based on
