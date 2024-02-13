@@ -72,7 +72,7 @@ export interface SaraProject extends Project {
   // TODO: Can I make this property and the referenceRepositories private and then just provide methods to them?
 }
 
-interface ProjectConfigurable extends SaraConfigurable {
+export interface ProjectConfigurable extends SaraConfigurable {
   project: SaraProject | null
 }
 

@@ -10,10 +10,23 @@ import {
   useAppContext,
   type SaraOrganization,
   type SaraProject,
+  ProjectConfigurable,
 } from './../lib/hooks/app-context'
 import { GithubOrgSelect } from './github-org-select'
 import { GithubRepoSelect } from './github-repo-select'
+import { ProjectConfigurationButton } from './project-configuration-button'
 import { IconSeparator } from './ui/icons'
+
+import { type ProjectDataReferenceState, ProjectConfigurationDialog } from './project-configuration-dialog'
+
+const createProjectReferencesForRepoChange = (fetchedRepos: Repository[], selectedRepo: Repository) => {
+  const projectReferences = fetchedRepos.filter(fetchedRepo => fetchedRepo.id !== selectedRepo.id).map(fetchedRepo => ({
+    checked: false,
+    repo: fetchedRepo
+  }))
+
+  return projectReferences
+}
 
 export function GithubSelect() {
   const {
@@ -26,8 +39,9 @@ export function GithubSelect() {
 
   const [organizations, setOrganizations] = useState<Organization[]>([])
 
-  // State to track if dropdown is open
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const [isProjectConfigModalOpen, setIsProjectConfigModalOpen] = useState(false)
+  // TODO: When repo is changed we need to reset this to the new list of repos that were fetched sans the one selected
+  const [controlledProjectReferences, setControlledProjectReferences] = useState<ProjectDataReferenceState[]>([])
 
   const fetchOrganizations = async () => {
     try {
@@ -116,6 +130,9 @@ export function GithubSelect() {
       projectConfig.errorInfo = null
       setProjectConfig(projectConfig)
 
+      const controlledProjectReferences = createProjectReferencesForRepoChange(fetchedRepos, repo)
+      setControlledProjectReferences(controlledProjectReferences)
+
       repoConfig.repo = repo
       repoConfig.status = 'CONFIGURED'
       repoConfig.statusInfo = 'Repsitory Data Discovered'
@@ -142,12 +159,15 @@ export function GithubSelect() {
   }
 
   const { status: orgStatus } = orgConfig
+  const { status: projectStatus } = projectConfig
   const { status: repoStatus } = repoConfig
 
   const fetchedRepos =
     orgConfig.organization && orgConfig.organization.repositoriesById
       ? Object.values(orgConfig.organization.repositoriesById)
       : []
+
+  const projectDataReferences = fetchedRepos.filter(fetchedRepo => fetchedRepo.id !== repoConfig.repo?.id)
 
   // TODO: Comment - w-204px - 180 for the drop down and 24 for IconSeparator
   return (
@@ -173,6 +193,23 @@ export function GithubSelect() {
       ) : (
         <div className="w-[204px]"></div>
       )}
+      {repoStatus === 'CONFIGURED' ? (
+        <>
+        <div className="mx-p12">
+          <ProjectConfigurationButton onClick={() => setIsProjectConfigModalOpen(!isProjectConfigModalOpen)} />
+        </div>
+        <ProjectConfigurationDialog
+          projectDataReferences={projectDataReferences}
+          open={isProjectConfigModalOpen}
+          onOpenChange={(open: boolean) => setIsProjectConfigModalOpen(open)}
+          onSaveConfig={(config: ProjectConfigurable | null) => {
+            // TODO: NEED TO SAVE STILL
+            console.log(`***** NEED TO SAVE STILL`)
+            setIsProjectConfigModalOpen(!isProjectConfigModalOpen)
+          }}
+        />
+        </>
+      ) : null}
     </>
   )
 }
