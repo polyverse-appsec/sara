@@ -3,13 +3,15 @@ Polyverse Sara Web UI for Boost
 
 # Release Notes
 
-## Version 0.6.2: February 12th, 2024
+## Version 0.6.2: February 13th, 2024
 
 ### New Features
 - N/A
 
 ### Enhancements
-- Synchronized timestamp of Project Data References with ReST Backend JSON naming (camelCase)
+- Synchronized timestamp of Project Data References with REST Backend JSON naming (camelCase)
+- Cache file references for future use when configuring OpenAI Assistant
+- Update file references in OpenAI Assistant when chat initiated
 
 ### Bug Fixes
 - N/A
