@@ -10,7 +10,7 @@ on:
       - "CD: Deploy to Preview Domain"
     types:
       - completed
-  workflow_dispatch
+  workflow_dispatch:
 
 jobs:
   test:

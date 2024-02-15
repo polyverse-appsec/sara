@@ -10,7 +10,7 @@ on:
       - "CI: Integrate Main to Preview"
     types:
       - completed
-  workflow_dispatch
+  workflow_dispatch:
 
 jobs:
   deploy:

@@ -7,8 +7,8 @@ env:
 on:
   schedule:
     # Trigger everyday at 14:00 UTC (6 AM PST)
-    - cron: '0 14 * * *'
-  workflow_dispatch
+    - cron: '5 14 * * *'
+  workflow_dispatch:
 
 jobs:
   test:
