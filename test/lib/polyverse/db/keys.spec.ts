@@ -45,8 +45,8 @@ describe(`Redis Keys`, function () {
     it(`Throws an 'Error' if 'userId' is 'null'`, function () {
       const someProjectName = `someProjectName`
 
-      // @ts-expect-error Purposely exclude arguments for testing
       expect(() =>
+        // @ts-expect-error Purposely exclude arguments for testing
         projectUserFileInfoIdsSetKey(someProjectName, null),
       ).to.throw(
         Error,
