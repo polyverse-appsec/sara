@@ -68,6 +68,8 @@ export async function fetchOrganizationRepositories({
         break // Exit the loop if no more repos are returned
       }
 
+      // TODO: Ugh - This is bad. We are mapping the data to members that isn't defined in our data model.
+      // See orgId for example in the response data.
       repos.push(
         ...response.data.map(
           (repo: {

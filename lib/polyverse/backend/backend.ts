@@ -1,3 +1,5 @@
+// TODO: 'use server' this and replace actions with it?
+
 import jsonwebtoken from 'jsonwebtoken'
 
 import {
@@ -70,7 +72,7 @@ export async function getFileInfo(
 
     if (!res.ok) {
       console.error(
-        `Got a failure response while trying to get file ids for '${repo.orgId}/${repo.name} for ${email}' - Status: ${res.status}`,
+        `Got a failure response while trying to get file IDs for '${repo.orgId}/${repo.name} for ${email}' - Status: ${res.status}`,
       )
       return []
     }
@@ -126,6 +128,34 @@ export async function getProject(repo: Repository, email: string) {
       console.debug(`Failed to get a success response when trying to retrieve `)
     }
   } catch (err) {}
+}
+
+export async function getUserProjects(
+  orgId: string,
+  email: string,
+): Promise<Project[]> {
+  const url = `${USER_SERVICE_URI}/api/user_project/${orgId}/projects`
+
+  const signedHeader = createSignedHeader(email)
+  const res = await fetch(url, {
+    method: 'GET',
+    headers: {
+      ...signedHeader,
+    },
+  })
+
+  if (!res.ok) {
+    const errResMsg = await res.text()
+    const errLogMsg = `Got a failure response while trying to get projects for '${orgId}' for '${email}' - Status: ${res.status} - Message: ${errResMsg}`
+
+    console.error(`${errLogMsg}`)
+
+    throw new Error(errLogMsg)
+  }
+
+  const projects = await res.json()
+
+  return projects as Project[]
 }
 
 export async function createUserProjectForRepo(

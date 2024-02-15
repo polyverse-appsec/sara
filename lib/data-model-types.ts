@@ -43,7 +43,7 @@ export const BaseSaraObjectSchema = Joi.object({
     .timestamp(`javascript`)
     .min(Joi.ref('createdAt'))
     .max(`now`)
-    .required()
+    .required(),
 })
 
 export interface BaseSaraObject extends Record<string, any> {
@@ -68,7 +68,7 @@ export const GoalSchema = BaseSaraObjectSchema.keys({
   closedAt: Joi.date()
     .timestamp(`javascript`)
     .min(Joi.ref('lastUpdatedAt'))
-    .max(`now`)
+    .max(`now`),
 })
 
 export interface Goal extends BaseSaraObject {

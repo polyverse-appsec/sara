@@ -7,10 +7,10 @@ import Sara32x32 from '../public/Sara_Cartoon_Portrait-32x32.png'
 import { auth } from './../auth'
 import { ChatHistory } from './chat-history'
 import { GithubPanel } from './github-panel'
+import { ProjectManager } from './project-manager'
 import { SidebarMobile } from './sidebar-mobile'
 import { SidebarToggle } from './sidebar-toggle'
-import { Button, buttonVariants } from './ui/button'
-import { IconNextChat, IconSeparator } from './ui/icons'
+import { IconSeparator } from './ui/icons'
 import { UserMenu } from './user-menu'
 
 async function UserOrLogin() {
@@ -38,6 +38,7 @@ async function UserOrLogin() {
           </>
         ) : null}
         {session?.user ? <GithubPanel /> : null}
+        <ProjectManager />
       </div>
     </>
   )
