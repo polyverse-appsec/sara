@@ -4,13 +4,13 @@ env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
-on: workflow_dispatch
-# on:
-  # workflow_run:
-  #   workflows:
-  #     - "CI: Integrate Main to Preview"
-  #   types:
-  #     - completed
+on:
+  workflow_run:
+    workflows:
+      - "CI: Integrate Main to Preview"
+    types:
+      - completed
+  workflow_dispatch
 
 jobs:
   deploy:
