@@ -19,27 +19,54 @@
     }
   },
   "files": {
-    "dist\\esm\\middleware.js": {
-      "sourceRelFile": "dist\\esm\\middleware.js",
-      "notebookRelFile": ".boost/dist/esm/middleware.js.boost-notebook",
+    "next.config.js": {
+      "sourceRelFile": "next.config.js",
+      "notebookRelFile": ".boost/next.config.js.boost-notebook",
       "totalCells": 0,
       "completedCells": 0,
       "errorCells": 0,
       "issueCells": 0,
       "sections": {}
     },
-    "dist\\esm\\tsconfig.tsbuildinfo": {
-      "sourceRelFile": "dist\\esm\\tsconfig.tsbuildinfo",
-      "notebookRelFile": ".boost/dist/esm/tsconfig.tsbuildinfo.boost-notebook",
+    "next-env.d.ts": {
+      "sourceRelFile": "next-env.d.ts",
+      "notebookRelFile": ".boost/next-env.d.ts.boost-notebook",
       "totalCells": 0,
       "completedCells": 0,
       "errorCells": 0,
       "issueCells": 0,
       "sections": {}
     },
-    "dist\\esm\\middleware.js.map": {
-      "sourceRelFile": "dist\\esm\\middleware.js.map",
-      "notebookRelFile": ".boost/dist/esm/middleware.js.map.boost-notebook",
+    "middleware.ts": {
+      "sourceRelFile": "middleware.ts",
+      "notebookRelFile": ".boost/middleware.ts.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "git": {
+      "sourceRelFile": "git",
+      "notebookRelFile": ".boost/git.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "docker-compose.yml": {
+      "sourceRelFile": "docker-compose.yml",
+      "notebookRelFile": ".boost/docker-compose.yml.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "lib\\utils.ts": {
+      "sourceRelFile": "lib\\utils.ts",
+      "notebookRelFile": ".boost/lib/utils.ts.boost-notebook",
       "totalCells": 0,
       "completedCells": 0,
       "errorCells": 0,
@@ -64,99 +91,27 @@
       "issueCells": 0,
       "sections": {}
     },
-    "dist\\esm\\components\\chat-history.jsx": {
-      "sourceRelFile": "dist\\esm\\components\\chat-history.jsx",
-      "notebookRelFile": ".boost/dist/esm/components/chat-history.jsx.boost-notebook",
+    "lib\\polyverse\\typescript\\helpers.ts": {
+      "sourceRelFile": "lib\\polyverse\\typescript\\helpers.ts",
+      "notebookRelFile": ".boost/lib/polyverse/typescript/helpers.ts.boost-notebook",
       "totalCells": 0,
       "completedCells": 0,
       "errorCells": 0,
       "issueCells": 0,
       "sections": {}
     },
-    "dist\\esm\\components\\chat-list.jsx.map": {
-      "sourceRelFile": "dist\\esm\\components\\chat-list.jsx.map",
-      "notebookRelFile": ".boost/dist/esm/components/chat-list.jsx.map.boost-notebook",
+    "lib\\polyverse\\task\\task.ts": {
+      "sourceRelFile": "lib\\polyverse\\task\\task.ts",
+      "notebookRelFile": ".boost/lib/polyverse/task/task.ts.boost-notebook",
       "totalCells": 0,
       "completedCells": 0,
       "errorCells": 0,
       "issueCells": 0,
       "sections": {}
     },
-    "dist\\esm\\components\\chat-list.jsx": {
-      "sourceRelFile": "dist\\esm\\components\\chat-list.jsx",
-      "notebookRelFile": ".boost/dist/esm/components/chat-list.jsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "dist\\esm\\components\\chat-history.jsx.map": {
-      "sourceRelFile": "dist\\esm\\components\\chat-history.jsx.map",
-      "notebookRelFile": ".boost/dist/esm/components/chat-history.jsx.map.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "dist\\esm\\lib\\utils.js.map": {
-      "sourceRelFile": "dist\\esm\\lib\\utils.js.map",
-      "notebookRelFile": ".boost/dist/esm/lib/utils.js.map.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "dist\\esm\\lib\\utils.js": {
-      "sourceRelFile": "dist\\esm\\lib\\utils.js",
-      "notebookRelFile": ".boost/dist/esm/lib/utils.js.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "components\\chat-history.tsx": {
-      "sourceRelFile": "components\\chat-history.tsx",
-      "notebookRelFile": ".boost/components/chat-history.tsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "dist\\esm\\lib\\polyverse\\task\\task.js": {
-      "sourceRelFile": "dist\\esm\\lib\\polyverse\\task\\task.js",
-      "notebookRelFile": ".boost/dist/esm/lib/polyverse/task/task.js.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "vercel.json": {
-      "sourceRelFile": "vercel.json",
-      "notebookRelFile": ".boost/vercel.json.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "tailwind.config.js": {
-      "sourceRelFile": "tailwind.config.js",
-      "notebookRelFile": ".boost/tailwind.config.js.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "polyverse-sara-web-ui@0.1.0": {
-      "sourceRelFile": "polyverse-sara-web-ui@0.1.0",
-      "notebookRelFile": ".boost/polyverse-sara-web-ui@0.1.0.boost-notebook",
+    "lib\\polyverse\\sara\\sara.ts": {
+      "sourceRelFile": "lib\\polyverse\\sara\\sara.ts",
+      "notebookRelFile": ".boost/lib/polyverse/sara/sara.ts.boost-notebook",
       "totalCells": 0,
       "completedCells": 0,
       "errorCells": 0,
@@ -190,303 +145,6 @@
       "issueCells": 0,
       "sections": {}
     },
-    "next.config.js": {
-      "sourceRelFile": "next.config.js",
-      "notebookRelFile": ".boost/next.config.js.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "next-env.d.ts": {
-      "sourceRelFile": "next-env.d.ts",
-      "notebookRelFile": ".boost/next-env.d.ts.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "middleware.ts": {
-      "sourceRelFile": "middleware.ts",
-      "notebookRelFile": ".boost/middleware.ts.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "types\\next-auth.d.ts": {
-      "sourceRelFile": "types\\next-auth.d.ts",
-      "notebookRelFile": ".boost/types/next-auth.d.ts.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "test\\test.spec.ts": {
-      "sourceRelFile": "test\\test.spec.ts",
-      "notebookRelFile": ".boost/test/test.spec.ts.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "test\\add-test-build-types.sh": {
-      "sourceRelFile": "test\\add-test-build-types.sh",
-      "notebookRelFile": ".boost/test/add-test-build-types.sh.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "git": {
-      "sourceRelFile": "git",
-      "notebookRelFile": ".boost/git.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "docker-compose.yml": {
-      "sourceRelFile": "docker-compose.yml",
-      "notebookRelFile": ".boost/docker-compose.yml.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "scripts\\requirements.txt": {
-      "sourceRelFile": "scripts\\requirements.txt",
-      "notebookRelFile": ".boost/scripts/requirements.txt.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "auth.ts": {
-      "sourceRelFile": "auth.ts",
-      "notebookRelFile": ".boost/auth.ts.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "test\\app\\actions.spec.ts": {
-      "sourceRelFile": "test\\app\\actions.spec.ts",
-      "notebookRelFile": ".boost/test/app/actions.spec.ts.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "lib\\utils.ts": {
-      "sourceRelFile": "lib\\utils.ts",
-      "notebookRelFile": ".boost/lib/utils.ts.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "lib\\polyverse\\config.ts": {
-      "sourceRelFile": "lib\\polyverse\\config.ts",
-      "notebookRelFile": ".boost/lib/polyverse/config.ts.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "dist\\esm\\app\\actions.js": {
-      "sourceRelFile": "dist\\esm\\app\\actions.js",
-      "notebookRelFile": ".boost/dist/esm/app/actions.js.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "dist\\esm\\components\\button-scroll-to-bottom.jsx.map": {
-      "sourceRelFile": "dist\\esm\\components\\button-scroll-to-bottom.jsx.map",
-      "notebookRelFile": ".boost/dist/esm/components/button-scroll-to-bottom.jsx.map.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "dist\\esm\\app\\layout.jsx.map": {
-      "sourceRelFile": "dist\\esm\\app\\layout.jsx.map",
-      "notebookRelFile": ".boost/dist/esm/app/layout.jsx.map.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "dist\\esm\\components\\button-scroll-to-bottom.jsx": {
-      "sourceRelFile": "dist\\esm\\components\\button-scroll-to-bottom.jsx",
-      "notebookRelFile": ".boost/dist/esm/components/button-scroll-to-bottom.jsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "lib\\polyverse\\typescript\\helpers.ts": {
-      "sourceRelFile": "lib\\polyverse\\typescript\\helpers.ts",
-      "notebookRelFile": ".boost/lib/polyverse/typescript/helpers.ts.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "dist\\esm\\components\\chat-message-actions.jsx": {
-      "sourceRelFile": "dist\\esm\\components\\chat-message-actions.jsx",
-      "notebookRelFile": ".boost/dist/esm/components/chat-message-actions.jsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "dist\\esm\\app\\sign-in\\page.jsx": {
-      "sourceRelFile": "dist\\esm\\app\\sign-in\\page.jsx",
-      "notebookRelFile": ".boost/dist/esm/app/sign-in/page.jsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "dist\\esm\\components\\chat-message.jsx": {
-      "sourceRelFile": "dist\\esm\\components\\chat-message.jsx",
-      "notebookRelFile": ".boost/dist/esm/components/chat-message.jsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "dist\\esm\\components\\chat-message-actions.jsx.map": {
-      "sourceRelFile": "dist\\esm\\components\\chat-message-actions.jsx.map",
-      "notebookRelFile": ".boost/dist/esm/components/chat-message-actions.jsx.map.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "lib\\polyverse\\backend\\backend.ts": {
-      "sourceRelFile": "lib\\polyverse\\backend\\backend.ts",
-      "notebookRelFile": ".boost/lib/polyverse/backend/backend.ts.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "dist\\esm\\auth.js.map": {
-      "sourceRelFile": "dist\\esm\\auth.js.map",
-      "notebookRelFile": ".boost/dist/esm/auth.js.map.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "dist\\esm\\app\\sign-in\\page.jsx.map": {
-      "sourceRelFile": "dist\\esm\\app\\sign-in\\page.jsx.map",
-      "notebookRelFile": ".boost/dist/esm/app/sign-in/page.jsx.map.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "lib\\polyverse\\task\\task.ts": {
-      "sourceRelFile": "lib\\polyverse\\task\\task.ts",
-      "notebookRelFile": ".boost/lib/polyverse/task/task.ts.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "dist\\esm\\lib\\dataModelTypes.js": {
-      "sourceRelFile": "dist\\esm\\lib\\dataModelTypes.js",
-      "notebookRelFile": ".boost/dist/esm/lib/dataModelTypes.js.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "dist\\esm\\components\\chat-panel.jsx": {
-      "sourceRelFile": "dist\\esm\\components\\chat-panel.jsx",
-      "notebookRelFile": ".boost/dist/esm/components/chat-panel.jsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "dist\\esm\\components\\chat-message.jsx.map": {
-      "sourceRelFile": "dist\\esm\\components\\chat-message.jsx.map",
-      "notebookRelFile": ".boost/dist/esm/components/chat-message.jsx.map.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "dist\\esm\\app\\layout.jsx": {
-      "sourceRelFile": "dist\\esm\\app\\layout.jsx",
-      "notebookRelFile": ".boost/dist/esm/app/layout.jsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "dist\\esm\\lib\\dataModelTypes.js.map": {
-      "sourceRelFile": "dist\\esm\\lib\\dataModelTypes.js.map",
-      "notebookRelFile": ".boost/dist/esm/lib/dataModelTypes.js.map.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "lib\\polyverse\\sara\\sara.ts": {
-      "sourceRelFile": "lib\\polyverse\\sara\\sara.ts",
-      "notebookRelFile": ".boost/lib/polyverse/sara/sara.ts.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "lib\\polyverse\\openai\\assistants.ts": {
-      "sourceRelFile": "lib\\polyverse\\openai\\assistants.ts",
-      "notebookRelFile": ".boost/lib/polyverse/openai/assistants.ts.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
     "lib\\polyverse\\project\\project.ts": {
       "sourceRelFile": "lib\\polyverse\\project\\project.ts",
       "notebookRelFile": ".boost/lib/polyverse/project/project.ts.boost-notebook",
@@ -496,18 +154,9 @@
       "issueCells": 0,
       "sections": {}
     },
-    "lib\\polyverse\\openai\\messages.ts": {
-      "sourceRelFile": "lib\\polyverse\\openai\\messages.ts",
-      "notebookRelFile": ".boost/lib/polyverse/openai/messages.ts.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "lib\\polyverse\\openai\\runs.ts": {
-      "sourceRelFile": "lib\\polyverse\\openai\\runs.ts",
-      "notebookRelFile": ".boost/lib/polyverse/openai/runs.ts.boost-notebook",
+    "polyverse-sara-web-ui@0.1.0": {
+      "sourceRelFile": "polyverse-sara-web-ui@0.1.0",
+      "notebookRelFile": ".boost/polyverse-sara-web-ui@0.1.0.boost-notebook",
       "totalCells": 0,
       "completedCells": 0,
       "errorCells": 0,
@@ -523,45 +172,18 @@
       "issueCells": 0,
       "sections": {}
     },
-    "dist\\esm\\lib\\hooks\\use-copy-to-clipboard.jsx.map": {
-      "sourceRelFile": "dist\\esm\\lib\\hooks\\use-copy-to-clipboard.jsx.map",
-      "notebookRelFile": ".boost/dist/esm/lib/hooks/use-copy-to-clipboard.jsx.map.boost-notebook",
+    "lib\\polyverse\\openai\\runs.ts": {
+      "sourceRelFile": "lib\\polyverse\\openai\\runs.ts",
+      "notebookRelFile": ".boost/lib/polyverse/openai/runs.ts.boost-notebook",
       "totalCells": 0,
       "completedCells": 0,
       "errorCells": 0,
       "issueCells": 0,
       "sections": {}
     },
-    "dist\\esm\\lib\\polyverse\\backend\\backend.js.map": {
-      "sourceRelFile": "dist\\esm\\lib\\polyverse\\backend\\backend.js.map",
-      "notebookRelFile": ".boost/dist/esm/lib/polyverse/backend/backend.js.map.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "dist\\esm\\lib\\hooks\\use-local-storage.js": {
-      "sourceRelFile": "dist\\esm\\lib\\hooks\\use-local-storage.js",
-      "notebookRelFile": ".boost/dist/esm/lib/hooks/use-local-storage.js.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "test\\lib\\polyverse\\db\\set-task.spec.ts": {
-      "sourceRelFile": "test\\lib\\polyverse\\db\\set-task.spec.ts",
-      "notebookRelFile": ".boost/test/lib/polyverse/db/set-task.spec.ts.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "test\\lib\\polyverse\\db\\keys.spec.ts": {
-      "sourceRelFile": "test\\lib\\polyverse\\db\\keys.spec.ts",
-      "notebookRelFile": ".boost/test/lib/polyverse/db/keys.spec.ts.boost-notebook",
+    "lib\\polyverse\\openai\\messages.ts": {
+      "sourceRelFile": "lib\\polyverse\\openai\\messages.ts",
+      "notebookRelFile": ".boost/lib/polyverse/openai/messages.ts.boost-notebook",
       "totalCells": 0,
       "completedCells": 0,
       "errorCells": 0,
@@ -580,6 +202,15 @@
     "lib\\polyverse\\openai\\assistantTools.ts": {
       "sourceRelFile": "lib\\polyverse\\openai\\assistantTools.ts",
       "notebookRelFile": ".boost/lib/polyverse/openai/assistantTools.ts.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "lib\\polyverse\\openai\\assistants.ts": {
+      "sourceRelFile": "lib\\polyverse\\openai\\assistants.ts",
+      "notebookRelFile": ".boost/lib/polyverse/openai/assistants.ts.boost-notebook",
       "totalCells": 0,
       "completedCells": 0,
       "errorCells": 0,
@@ -613,6 +244,24 @@
       "issueCells": 0,
       "sections": {}
     },
+    "lib\\polyverse\\config.ts": {
+      "sourceRelFile": "lib\\polyverse\\config.ts",
+      "notebookRelFile": ".boost/lib/polyverse/config.ts.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "lib\\polyverse\\backend\\backend.ts": {
+      "sourceRelFile": "lib\\polyverse\\backend\\backend.ts",
+      "notebookRelFile": ".boost/lib/polyverse/backend/backend.ts.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
     "lib\\hooks\\use-sidebar.tsx": {
       "sourceRelFile": "lib\\hooks\\use-sidebar.tsx",
       "notebookRelFile": ".boost/lib/hooks/use-sidebar.tsx.boost-notebook",
@@ -634,6 +283,51 @@
     "lib\\hooks\\use-enter-submit.tsx": {
       "sourceRelFile": "lib\\hooks\\use-enter-submit.tsx",
       "notebookRelFile": ".boost/lib/hooks/use-enter-submit.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "vercel.json": {
+      "sourceRelFile": "vercel.json",
+      "notebookRelFile": ".boost/vercel.json.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "types\\next-auth.d.ts": {
+      "sourceRelFile": "types\\next-auth.d.ts",
+      "notebookRelFile": ".boost/types/next-auth.d.ts.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "test\\test.spec.ts": {
+      "sourceRelFile": "test\\test.spec.ts",
+      "notebookRelFile": ".boost/test/test.spec.ts.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "test\\add-test-build-types.sh": {
+      "sourceRelFile": "test\\add-test-build-types.sh",
+      "notebookRelFile": ".boost/test/add-test-build-types.sh.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "tailwind.config.js": {
+      "sourceRelFile": "tailwind.config.js",
+      "notebookRelFile": ".boost/tailwind.config.js.boost-notebook",
       "totalCells": 0,
       "completedCells": 0,
       "errorCells": 0,
@@ -667,6 +361,87 @@
       "issueCells": 0,
       "sections": {}
     },
+    "test\\lib\\polyverse\\db\\set-task.spec.ts": {
+      "sourceRelFile": "test\\lib\\polyverse\\db\\set-task.spec.ts",
+      "notebookRelFile": ".boost/test/lib/polyverse/db/set-task.spec.ts.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "test\\lib\\polyverse\\db\\keys.spec.ts": {
+      "sourceRelFile": "test\\lib\\polyverse\\db\\keys.spec.ts",
+      "notebookRelFile": ".boost/test/lib/polyverse/db/keys.spec.ts.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "scripts\\requirements.txt": {
+      "sourceRelFile": "scripts\\requirements.txt",
+      "notebookRelFile": ".boost/scripts/requirements.txt.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "test\\app\\actions.spec.ts": {
+      "sourceRelFile": "test\\app\\actions.spec.ts",
+      "notebookRelFile": ".boost/test/app/actions.spec.ts.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "lib\\polyverse\\db\\set-project-user-file-info.ts": {
+      "sourceRelFile": "lib\\polyverse\\db\\set-project-user-file-info.ts",
+      "notebookRelFile": ".boost/lib/polyverse/db/set-project-user-file-info.ts.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "lib\\polyverse\\db\\set-project-user-file-info-id.ts": {
+      "sourceRelFile": "lib\\polyverse\\db\\set-project-user-file-info-id.ts",
+      "notebookRelFile": ".boost/lib/polyverse/db/set-project-user-file-info-id.ts.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "lib\\polyverse\\db\\get-project-user-file-infos.ts": {
+      "sourceRelFile": "lib\\polyverse\\db\\get-project-user-file-infos.ts",
+      "notebookRelFile": ".boost/lib/polyverse/db/get-project-user-file-infos.ts.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "lib\\polyverse\\db\\get-project-user-file-info-ids.ts": {
+      "sourceRelFile": "lib\\polyverse\\db\\get-project-user-file-info-ids.ts",
+      "notebookRelFile": ".boost/lib/polyverse/db/get-project-user-file-info-ids.ts.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "lib\\polyverse\\db\\delete-project-user-file-info-ids.ts": {
+      "sourceRelFile": "lib\\polyverse\\db\\delete-project-user-file-info-ids.ts",
+      "notebookRelFile": ".boost/lib/polyverse/db/delete-project-user-file-info-ids.ts.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
     "lib\\data-model-types.ts": {
       "sourceRelFile": "lib\\data-model-types.ts",
       "notebookRelFile": ".boost/lib/data-model-types.ts.boost-notebook",
@@ -676,144 +451,90 @@
       "issueCells": 0,
       "sections": {}
     },
-    "dist\\esm\\lib\\polyverse\\config.js": {
-      "sourceRelFile": "dist\\esm\\lib\\polyverse\\config.js",
-      "notebookRelFile": ".boost/dist/esm/lib/polyverse/config.js.boost-notebook",
+    "auth.ts": {
+      "sourceRelFile": "auth.ts",
+      "notebookRelFile": ".boost/auth.ts.boost-notebook",
       "totalCells": 0,
       "completedCells": 0,
       "errorCells": 0,
       "issueCells": 0,
       "sections": {}
     },
-    "dist\\esm\\lib\\polyverse\\config.js.map": {
-      "sourceRelFile": "dist\\esm\\lib\\polyverse\\config.js.map",
-      "notebookRelFile": ".boost/dist/esm/lib/polyverse/config.js.map.boost-notebook",
+    ".vscode\\launch.json": {
+      "sourceRelFile": ".vscode\\launch.json",
+      "notebookRelFile": ".boost/.vscode/launch.json.boost-notebook",
       "totalCells": 0,
       "completedCells": 0,
       "errorCells": 0,
       "issueCells": 0,
       "sections": {}
     },
-    "dist\\esm\\auth.js": {
-      "sourceRelFile": "dist\\esm\\auth.js",
-      "notebookRelFile": ".boost/dist/esm/auth.js.boost-notebook",
+    "app\\layout.tsx": {
+      "sourceRelFile": "app\\layout.tsx",
+      "notebookRelFile": ".boost/app/layout.tsx.boost-notebook",
       "totalCells": 0,
       "completedCells": 0,
       "errorCells": 0,
       "issueCells": 0,
       "sections": {}
     },
-    "dist\\esm\\lib\\polyverse\\typescript\\helpers.js.map": {
-      "sourceRelFile": "dist\\esm\\lib\\polyverse\\typescript\\helpers.js.map",
-      "notebookRelFile": ".boost/dist/esm/lib/polyverse/typescript/helpers.js.map.boost-notebook",
+    "app\\(project)\\layout.tsx": {
+      "sourceRelFile": "app\\(project)\\layout.tsx",
+      "notebookRelFile": ".boost/app/(project)/layout.tsx.boost-notebook",
       "totalCells": 0,
       "completedCells": 0,
       "errorCells": 0,
       "issueCells": 0,
       "sections": {}
     },
-    "dist\\esm\\lib\\polyverse\\typescript\\helpers.js": {
-      "sourceRelFile": "dist\\esm\\lib\\polyverse\\typescript\\helpers.js",
-      "notebookRelFile": ".boost/dist/esm/lib/polyverse/typescript/helpers.js.boost-notebook",
+    "app\\globals.css": {
+      "sourceRelFile": "app\\globals.css",
+      "notebookRelFile": ".boost/app/globals.css.boost-notebook",
       "totalCells": 0,
       "completedCells": 0,
       "errorCells": 0,
       "issueCells": 0,
       "sections": {}
     },
-    "dist\\esm\\lib\\polyverse\\task\\task.js.map": {
-      "sourceRelFile": "dist\\esm\\lib\\polyverse\\task\\task.js.map",
-      "notebookRelFile": ".boost/dist/esm/lib/polyverse/task/task.js.map.boost-notebook",
+    ".vscode\\extensions.json": {
+      "sourceRelFile": ".vscode\\extensions.json",
+      "notebookRelFile": ".boost/.vscode/extensions.json.boost-notebook",
       "totalCells": 0,
       "completedCells": 0,
       "errorCells": 0,
       "issueCells": 0,
       "sections": {}
     },
-    "dist\\esm\\lib\\polyverse\\sara\\sara.js.map": {
-      "sourceRelFile": "dist\\esm\\lib\\polyverse\\sara\\sara.js.map",
-      "notebookRelFile": ".boost/dist/esm/lib/polyverse/sara/sara.js.map.boost-notebook",
+    "app\\(project)\\project\\page.tsx": {
+      "sourceRelFile": "app\\(project)\\project\\page.tsx",
+      "notebookRelFile": ".boost/app/(project)/project/page.tsx.boost-notebook",
       "totalCells": 0,
       "completedCells": 0,
       "errorCells": 0,
       "issueCells": 0,
       "sections": {}
     },
-    "dist\\esm\\lib\\polyverse\\sara\\sara.js": {
-      "sourceRelFile": "dist\\esm\\lib\\polyverse\\sara\\sara.js",
-      "notebookRelFile": ".boost/dist/esm/lib/polyverse/sara/sara.js.boost-notebook",
+    "app\\api\\chat\\route.ts": {
+      "sourceRelFile": "app\\api\\chat\\route.ts",
+      "notebookRelFile": ".boost/app/api/chat/route.ts.boost-notebook",
       "totalCells": 0,
       "completedCells": 0,
       "errorCells": 0,
       "issueCells": 0,
       "sections": {}
     },
-    "dist\\esm\\lib\\polyverse\\project\\project.js.map": {
-      "sourceRelFile": "dist\\esm\\lib\\polyverse\\project\\project.js.map",
-      "notebookRelFile": ".boost/dist/esm/lib/polyverse/project/project.js.map.boost-notebook",
+    "app\\sign-in\\page.tsx": {
+      "sourceRelFile": "app\\sign-in\\page.tsx",
+      "notebookRelFile": ".boost/app/sign-in/page.tsx.boost-notebook",
       "totalCells": 0,
       "completedCells": 0,
       "errorCells": 0,
       "issueCells": 0,
       "sections": {}
     },
-    "dist\\esm\\lib\\polyverse\\project\\project.js": {
-      "sourceRelFile": "dist\\esm\\lib\\polyverse\\project\\project.js",
-      "notebookRelFile": ".boost/dist/esm/lib/polyverse/project/project.js.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "dist\\esm\\lib\\polyverse\\backend\\backend.js": {
-      "sourceRelFile": "dist\\esm\\lib\\polyverse\\backend\\backend.js",
-      "notebookRelFile": ".boost/dist/esm/lib/polyverse/backend/backend.js.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "dist\\esm\\app\\(chat)\\layout.jsx": {
-      "sourceRelFile": "dist\\esm\\app\\(chat)\\layout.jsx",
-      "notebookRelFile": ".boost/dist/esm/app/(chat)/layout.jsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "dist\\esm\\lib\\hooks\\app-context.jsx.map": {
-      "sourceRelFile": "dist\\esm\\lib\\hooks\\app-context.jsx.map",
-      "notebookRelFile": ".boost/dist/esm/lib/hooks/app-context.jsx.map.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "dist\\esm\\lib\\hooks\\use-at-bottom.jsx.map": {
-      "sourceRelFile": "dist\\esm\\lib\\hooks\\use-at-bottom.jsx.map",
-      "notebookRelFile": ".boost/dist/esm/lib/hooks/use-at-bottom.jsx.map.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "dist\\esm\\lib\\hooks\\use-at-bottom.jsx": {
-      "sourceRelFile": "dist\\esm\\lib\\hooks\\use-at-bottom.jsx",
-      "notebookRelFile": ".boost/dist/esm/lib/hooks/use-at-bottom.jsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "dist\\esm\\app\\api\\chat\\route.js.map": {
-      "sourceRelFile": "dist\\esm\\app\\api\\chat\\route.js.map",
-      "notebookRelFile": ".boost/dist/esm/app/api/chat/route.js.map.boost-notebook",
+    "components\\chat-history.tsx": {
+      "sourceRelFile": "components\\chat-history.tsx",
+      "notebookRelFile": ".boost/components/chat-history.tsx.boost-notebook",
       "totalCells": 0,
       "completedCells": 0,
       "errorCells": 0,
@@ -829,54 +550,36 @@
       "issueCells": 0,
       "sections": {}
     },
-    "dist\\esm\\app\\api\\chat\\route.js": {
-      "sourceRelFile": "dist\\esm\\app\\api\\chat\\route.js",
-      "notebookRelFile": ".boost/dist/esm/app/api/chat/route.js.boost-notebook",
+    "app\\(chat)\\page.tsx": {
+      "sourceRelFile": "app\\(chat)\\page.tsx",
+      "notebookRelFile": ".boost/app/(chat)/page.tsx.boost-notebook",
       "totalCells": 0,
       "completedCells": 0,
       "errorCells": 0,
       "issueCells": 0,
       "sections": {}
     },
-    "dist\\esm\\lib\\hooks\\use-copy-to-clipboard.jsx": {
-      "sourceRelFile": "dist\\esm\\lib\\hooks\\use-copy-to-clipboard.jsx",
-      "notebookRelFile": ".boost/dist/esm/lib/hooks/use-copy-to-clipboard.jsx.boost-notebook",
+    "app\\api\\auth\\[...nextauth]\\route.ts": {
+      "sourceRelFile": "app\\api\\auth\\[...nextauth]\\route.ts",
+      "notebookRelFile": ".boost/app/api/auth/[...nextauth]/route.ts.boost-notebook",
       "totalCells": 0,
       "completedCells": 0,
       "errorCells": 0,
       "issueCells": 0,
       "sections": {}
     },
-    "dist\\esm\\lib\\hooks\\app-context.jsx": {
-      "sourceRelFile": "dist\\esm\\lib\\hooks\\app-context.jsx",
-      "notebookRelFile": ".boost/dist/esm/lib/hooks/app-context.jsx.boost-notebook",
+    ".next\\app-build-manifest.json": {
+      "sourceRelFile": ".next\\app-build-manifest.json",
+      "notebookRelFile": ".boost/.next/app-build-manifest.json.boost-notebook",
       "totalCells": 0,
       "completedCells": 0,
       "errorCells": 0,
       "issueCells": 0,
       "sections": {}
     },
-    "dist\\esm\\app\\(chat)\\page.jsx.map": {
-      "sourceRelFile": "dist\\esm\\app\\(chat)\\page.jsx.map",
-      "notebookRelFile": ".boost/dist/esm/app/(chat)/page.jsx.map.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "components\\chat-list.tsx": {
-      "sourceRelFile": "components\\chat-list.tsx",
-      "notebookRelFile": ".boost/components/chat-list.tsx.boost-notebook",
-      "totalCells": 0,
-      "completedCells": 0,
-      "errorCells": 0,
-      "issueCells": 0,
-      "sections": {}
-    },
-    "dist\\esm\\app\\(chat)\\page.jsx": {
-      "sourceRelFile": "dist\\esm\\app\\(chat)\\page.jsx",
-      "notebookRelFile": ".boost/dist/esm/app/(chat)/page.jsx.boost-notebook",
+    "app\\(chat)\\layout.tsx": {
+      "sourceRelFile": "app\\(chat)\\layout.tsx",
+      "notebookRelFile": ".boost/app/(chat)/layout.tsx.boost-notebook",
       "totalCells": 0,
       "completedCells": 0,
       "errorCells": 0,
@@ -892,9 +595,45 @@
       "issueCells": 0,
       "sections": {}
     },
-    "dist\\esm\\app\\(chat)\\layout.jsx.map": {
-      "sourceRelFile": "dist\\esm\\app\\(chat)\\layout.jsx.map",
-      "notebookRelFile": ".boost/dist/esm/app/(chat)/layout.jsx.map.boost-notebook",
+    "components\\chat-list.tsx": {
+      "sourceRelFile": "components\\chat-list.tsx",
+      "notebookRelFile": ".boost/components/chat-list.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "app\\(chat)\\chat\\[id]\\page.tsx": {
+      "sourceRelFile": "app\\(chat)\\chat\\[id]\\page.tsx",
+      "notebookRelFile": ".boost/app/(chat)/chat/[id]/page.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "dist\\esm\\auth.js": {
+      "sourceRelFile": "dist\\esm\\auth.js",
+      "notebookRelFile": ".boost/dist/esm/auth.js.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components\\chat-message.tsx": {
+      "sourceRelFile": "components\\chat-message.tsx",
+      "notebookRelFile": ".boost/components/chat-message.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next\\build-manifest.json": {
+      "sourceRelFile": ".next\\build-manifest.json",
+      "notebookRelFile": ".boost/.next/build-manifest.json.boost-notebook",
       "totalCells": 0,
       "completedCells": 0,
       "errorCells": 0,
@@ -910,9 +649,270 @@
       "issueCells": 0,
       "sections": {}
     },
-    "dist\\esm\\lib\\hooks\\use-local-storage.js.map": {
-      "sourceRelFile": "dist\\esm\\lib\\hooks\\use-local-storage.js.map",
-      "notebookRelFile": ".boost/dist/esm/lib/hooks/use-local-storage.js.map.boost-notebook",
+    ".github\\workflows\\deploy-to-dev.yml": {
+      "sourceRelFile": ".github\\workflows\\deploy-to-dev.yml",
+      "notebookRelFile": ".boost/.github/workflows/deploy-to-dev.yml.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".github\\workflows\\integrate-to-prod.yml": {
+      "sourceRelFile": ".github\\workflows\\integrate-to-prod.yml",
+      "notebookRelFile": ".boost/.github/workflows/integrate-to-prod.yml.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".github\\workflows\\integrate-to-preview.yml": {
+      "sourceRelFile": ".github\\workflows\\integrate-to-preview.yml",
+      "notebookRelFile": ".boost/.github/workflows/integrate-to-preview.yml.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "dist\\esm\\app\\sign-in\\page.jsx": {
+      "sourceRelFile": "dist\\esm\\app\\sign-in\\page.jsx",
+      "notebookRelFile": ".boost/dist/esm/app/sign-in/page.jsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components\\footer.tsx": {
+      "sourceRelFile": "components\\footer.tsx",
+      "notebookRelFile": ".boost/components/footer.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".github\\workflows\\deploy-to-prod.yml": {
+      "sourceRelFile": ".github\\workflows\\deploy-to-prod.yml",
+      "notebookRelFile": ".boost/.github/workflows/deploy-to-prod.yml.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components\\external-link.tsx": {
+      "sourceRelFile": "components\\external-link.tsx",
+      "notebookRelFile": ".boost/components/external-link.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".github\\workflows\\deploy-to-preview.yml": {
+      "sourceRelFile": ".github\\workflows\\deploy-to-preview.yml",
+      "notebookRelFile": ".boost/.github/workflows/deploy-to-preview.yml.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components\\empty-screen.tsx": {
+      "sourceRelFile": "components\\empty-screen.tsx",
+      "notebookRelFile": ".boost/components/empty-screen.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next\\react-loadable-manifest.json": {
+      "sourceRelFile": ".next\\react-loadable-manifest.json",
+      "notebookRelFile": ".boost/.next/react-loadable-manifest.json.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components\\crafted-by.tsx": {
+      "sourceRelFile": "components\\crafted-by.tsx",
+      "notebookRelFile": ".boost/components/crafted-by.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "dist\\esm\\app\\layout.jsx.map": {
+      "sourceRelFile": "dist\\esm\\app\\layout.jsx.map",
+      "notebookRelFile": ".boost/dist/esm/app/layout.jsx.map.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components\\clear-history.tsx": {
+      "sourceRelFile": "components\\clear-history.tsx",
+      "notebookRelFile": ".boost/components/clear-history.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "dist\\esm\\app\\layout.jsx": {
+      "sourceRelFile": "dist\\esm\\app\\layout.jsx",
+      "notebookRelFile": ".boost/dist/esm/app/layout.jsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next\\package.json": {
+      "sourceRelFile": ".next\\package.json",
+      "notebookRelFile": ".boost/.next/package.json.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components\\chat.tsx": {
+      "sourceRelFile": "components\\chat.tsx",
+      "notebookRelFile": ".boost/components/chat.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "dist\\esm\\.next\\types\\app\\layout.js": {
+      "sourceRelFile": "dist\\esm\\.next\\types\\app\\layout.js",
+      "notebookRelFile": ".boost/dist/esm/.next/types/app/layout.js.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "dist\\esm\\.next\\types\\app\\layout.js.map": {
+      "sourceRelFile": "dist\\esm\\.next\\types\\app\\layout.js.map",
+      "notebookRelFile": ".boost/dist/esm/.next/types/app/layout.js.map.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next\\trace": {
+      "sourceRelFile": ".next\\trace",
+      "notebookRelFile": ".boost/.next/trace.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components\\github-select.tsx": {
+      "sourceRelFile": "components\\github-select.tsx",
+      "notebookRelFile": ".boost/components/github-select.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next\\static\\css\\app\\layout.css": {
+      "sourceRelFile": ".next\\static\\css\\app\\layout.css",
+      "notebookRelFile": ".boost/.next/static/css/app/layout.css.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components\\github-repo-select.tsx": {
+      "sourceRelFile": "components\\github-repo-select.tsx",
+      "notebookRelFile": ".boost/components/github-repo-select.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next\\types\\package.json": {
+      "sourceRelFile": ".next\\types\\package.json",
+      "notebookRelFile": ".boost/.next/types/package.json.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components\\github-panel.tsx": {
+      "sourceRelFile": "components\\github-panel.tsx",
+      "notebookRelFile": ".boost/components/github-panel.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "components\\global-context-watcher.tsx": {
+      "sourceRelFile": "components\\global-context-watcher.tsx",
+      "notebookRelFile": ".boost/components/global-context-watcher.tsx.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next\\types\\app\\layout.ts": {
+      "sourceRelFile": ".next\\types\\app\\layout.ts",
+      "notebookRelFile": ".boost/.next/types/app/layout.ts.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "dist\\esm\\.next\\types\\app\\(chat)\\page.js.map": {
+      "sourceRelFile": "dist\\esm\\.next\\types\\app\\(chat)\\page.js.map",
+      "notebookRelFile": ".boost/dist/esm/.next/types/app/(chat)/page.js.map.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "dist\\esm\\.next\\types\\app\\(chat)\\page.js": {
+      "sourceRelFile": "dist\\esm\\.next\\types\\app\\(chat)\\page.js",
+      "notebookRelFile": ".boost/dist/esm/.next/types/app/(chat)/page.js.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    ".next\\static\\chunks\\app-pages-internals.js": {
+      "sourceRelFile": ".next\\static\\chunks\\app-pages-internals.js",
+      "notebookRelFile": ".boost/.next/static/chunks/app-pages-internals.js.boost-notebook",
+      "totalCells": 0,
+      "completedCells": 0,
+      "errorCells": 0,
+      "issueCells": 0,
+      "sections": {}
+    },
+    "dist\\esm\\.next\\types\\app\\(chat)\\layout.js.map": {
+      "sourceRelFile": "dist\\esm\\.next\\types\\app\\(chat)\\layout.js.map",
+      "notebookRelFile": ".boost/dist/esm/.next/types/app/(chat)/layout.js.map.boost-notebook",
       "totalCells": 0,
       "completedCells": 0,
       "errorCells": 0,

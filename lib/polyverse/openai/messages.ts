@@ -62,11 +62,33 @@ export const getAssistantMessages = async (threadID: string) => {
     .reduce((concatenatedMessage, assistantMessage) => {
       assistantMessage.content.forEach((messageContent) => {
         if (messageContent.type === 'text') {
-          concatenatedMessage += messageContent.text.value
+          let messageTextContent = messageContent.text
+
+          // Following logic is to handle file citations the assistant includes in the responses
+          let messageAnnotations = messageTextContent.annotations
+          let citations: string[] = []
+
+          messageAnnotations.forEach(async (annotation, index) => {
+            // Replace the text with a footnote
+            messageTextContent.value = messageTextContent.value.replace(annotation.text, ` [${index}]`);
+          
+            // Primary ones our assistants are using are file citations (from the files that we have uploaded to OpenAI)
+            if (annotation.type == "file_citation") {
+              const citedFile = await oaiClient.files.retrieve(annotation.file_citation.file_id);
+              citations.push(`[${index}] ${annotation.file_citation.quote} from ${citedFile.filename}`);
+            } else if (annotation.type == "file_path") {
+              const citedFile = await oaiClient.files.retrieve(annotation.file_path.file_id);
+              citations.push(`[${index}] Click <here> to download ${citedFile.filename}`);
+              // Note: Actual file download link or mechanism to trigger downloads not implemented
+            }
+          });
+          messageTextContent.value += '\n' + citations.join('\n');
+
+          concatenatedMessage += messageTextContent.value
           concatenatedMessage += '\n'
         }
       })
-
+      
       return concatenatedMessage
     }, '')
     .trim()
