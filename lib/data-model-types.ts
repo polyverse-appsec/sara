@@ -32,6 +32,70 @@ Each task has a set of chats, the ids of these chats is stored in a sorted set c
 
 */
 
+export const BaseSaraObjectSchema = Joi.object({
+  id: Joi.string().required(),
+  createdAt: Joi.date()
+    .timestamp(`javascript`)
+    .min(`2023-12-25T00:00:00.000Z`)
+    .max(`now`)
+    .required(),
+  lastUpdatedAt: Joi.date()
+    .timestamp(`javascript`)
+    .min(Joi.ref('createdAt'))
+    .max(`now`)
+    .required()
+})
+
+export interface BaseSaraObject extends Record<string, any> {
+  // Crucial to identity management/RBAC
+  id: string
+
+  // ISO 8601 string
+  createdAt: Date
+
+  // ISO 8601 string
+  lastUpdatedAt: Date
+}
+
+export const GoalSchema = BaseSaraObjectSchema.keys({
+  orgId: Joi.string().required(),
+  title: Joi.string().required(),
+  description: Joi.string().required(),
+  status: Joi.string(),
+  chatId: Joi.string(),
+  parentProjectId: Joi.string().required(),
+  taskIds: Joi.array().items(Joi.string()),
+  closedAt: Joi.date()
+    .timestamp(`javascript`)
+    .min(Joi.ref('lastUpdatedAt'))
+    .max(`now`)
+})
+
+export interface Goal extends BaseSaraObject {
+  // Crucial to identity management/RBAC
+  orgId: string
+
+  title: string
+  description: string
+
+  // TODO: Define some status oriented around goals
+  // e.g. 'OPEN', 'IN_PROGRESS', ...
+  status: string | null
+
+  // Chats are user initiated (except for the default one assigned to each
+  // project) and will be `null` to indicate it hasn't been initiated.
+  chatId: string | null
+
+  parentProjectId: string
+
+  // Considered to be all the top-level tasks that are associated with the
+  // goal. Empty array indicates there are no tasks yet.
+  taskIds: string[]
+
+  // ISO 8601 string
+  closedAt: Date
+}
+
 export interface User extends Record<string, any> {
   id: string
   username: string
