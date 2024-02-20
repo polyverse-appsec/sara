@@ -6,7 +6,7 @@ import {
   type Repository,
   type User,
 } from './../../lib/data-model-types'
-import { createNewProjectFromRepository } from './../../lib/polyverse/project/project'
+import { createNewProject } from './../../lib/polyverse/project/project'
 import { getProject } from './get-project'
 
 export async function getOrCreateProjectForRepo(
@@ -33,6 +33,6 @@ export async function getOrCreateProjectForRepo(
     return retrievedProject
   }
 
-  const newProject = await createNewProjectFromRepository(repo, user)
+  const newProject = await createNewProject(repo.name, repo, [], user)
   return newProject
 }
