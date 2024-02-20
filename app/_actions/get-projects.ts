@@ -2,7 +2,10 @@
 
 import { auth } from './../../auth'
 import { type Project, type User } from './../../lib/data-model-types'
-import { getUserProjects } from './../../lib/polyverse/backend/backend'
+import { getProjectsOnBoost } from './get-projects-on-boost'
+import { getProjectsOnSara } from './get-projects-on-sara'
+
+
 
 export const getProjects = async (
   orgId: string,
@@ -20,5 +23,11 @@ export const getProjects = async (
     throw new Error('Unauthorized')
   }
 
-  return await getUserProjects(orgId, user.email)
+  // Start by getting the projects from the Boost service
+  const boostProjects = await getProjectsOnBoost(orgId, user)
+
+  // Then get the projects from the Sara service
+  const saraProjects = await getProjectsOnSara(user)
+
+  return boostProjects
 }

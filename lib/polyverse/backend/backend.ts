@@ -1,5 +1,4 @@
 // TODO: 'use server' this and replace actions with it?
-
 import jsonwebtoken from 'jsonwebtoken'
 
 import {
@@ -7,6 +6,7 @@ import {
   ProjectDataReference,
   Repository,
 } from '../../data-model-types'
+import { data } from 'components/ui/treeview-data-test'
 
 const { sign } = jsonwebtoken
 
@@ -100,6 +100,9 @@ export async function getFileInfo(
       if (mappedFileInfo.last_updated) {
         delete mappedFileInfo.last_updated
         mappedFileInfo.lastUpdatedAt = new Date(fileInfo.last_updated * 1000)
+      } else if (mappedFileInfo.lastUpdated) {
+        delete mappedFileInfo.lastUpdated
+        mappedFileInfo.lastUpdatedAt = new Date(fileInfo.lastUpdated * 1000)
       }
 
       return mappedFileInfo as ProjectDataReference
@@ -111,6 +114,52 @@ export async function getFileInfo(
     )
   }
   return []
+}
+
+export async function createProject(
+  projectName: string,
+  primaryDataSource: Repository,
+  secondaryDataSources: Repository[],
+  email: string,
+): Promise<string> {
+  const url = `${USER_SERVICE_URI}/api/user_project/${primaryDataSource.orgId}/${projectName}`
+
+  try {
+    // For now the Boost backend doesn't support specifying primary data sources
+    // separately from secondary data sources so just combine them in a list for
+    // now.
+    const resources = ([primaryDataSource, ...secondaryDataSources]).map(dataSource => ({ uri: dataSource.html_url }))
+
+    const signedHeader = createSignedHeader(email)
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...signedHeader,
+      },
+      body: JSON.stringify({ resources }),
+    })
+
+    if (!res.ok) {
+      console.error(
+        `Got a failure response while trying to start project for '${primaryDataSource.orgId}/${projectName} for ${email}' - Status: ${res.status} - Error: ${await res.text()}`,
+      )
+      return ''
+    }
+
+    // TODO: Return this if we actually get something in the response
+    // TODO: Properly type the return of this
+    const createdProject = await res.json()
+
+    return ''
+  } catch (error) {
+    console.error(
+      'Error making a request or parsing a response for project ID: ',
+      error,
+    )
+  }
+
+  return ''
 }
 
 export async function getProject(repo: Repository, email: string) {
@@ -128,6 +177,43 @@ export async function getProject(repo: Repository, email: string) {
       console.debug(`Failed to get a success response when trying to retrieve `)
     }
   } catch (err) {}
+}
+
+export async function deleteProject(
+  orgId: string,
+  projectName: string,
+  email: string,
+): Promise<void> {
+  const url = `${USER_SERVICE_URI}/api/user_project/${orgId}/${projectName}`
+
+  try {
+    const signedHeader = createSignedHeader(email)
+    const res = await fetch(url, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        ...signedHeader,
+      }
+    })
+
+    if (!res.ok) {
+      console.error(
+        `Got a failure response while trying to delete project for '${orgId}/${projectName} for ${email}' - Status: ${res.status}`,
+      )
+
+      return
+    }
+
+    // // TODO: Return this if we actually get something in the response
+    // // TODO: Properly type the return of this
+    // const deletedProject = await res.json()
+  } catch (error) {
+    const errMsg = `Error while trying to delete project for '${orgId}/${projectName} for ${email}' - ${error}`
+
+    console.error(errMsg)
+
+    throw new Error(errMsg)
+  }
 }
 
 export async function getUserProjects(
@@ -156,41 +242,6 @@ export async function getUserProjects(
   const projects = await res.json()
 
   return projects as Project[]
-}
-
-export async function createUserProjectForRepo(
-  repo: Repository,
-  email: string,
-): Promise<string> {
-  const url = `${USER_SERVICE_URI}/api/user_project/${repo.orgId}/${repo.name}`
-
-  try {
-    const signedHeader = createSignedHeader(email)
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...signedHeader,
-      },
-      body: JSON.stringify({ resources: [{ uri: repo.html_url }] }),
-    })
-
-    if (!res.ok) {
-      console.error(
-        `Got a failure response while trying to start project for '${repo.orgId}/${repo.name} for ${email}' - Status: ${res.status}`,
-      )
-      return ''
-    }
-
-    return ''
-  } catch (error) {
-    console.error(
-      'Error making a request or parsing a response for project ID: ',
-      error,
-    )
-  }
-
-  return ''
 }
 
 /**

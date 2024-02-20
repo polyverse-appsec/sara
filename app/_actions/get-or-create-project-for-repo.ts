@@ -33,6 +33,6 @@ export async function getOrCreateProjectForRepo(
     return retrievedProject
   }
 
-  const newProj = await createNewProjectFromRepository(repo, user)
-  return newProj
+  const newProject = await createNewProjectFromRepository(repo, user)
+  return newProject
 }

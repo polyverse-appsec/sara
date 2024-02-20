@@ -2,8 +2,8 @@ import { stat } from 'fs'
 import { ReactNode, useEffect } from 'react'
 
 import { configAssistantForProject } from './../app/_actions/config-assistant-for-project'
-import { createUserProjectsForRepos } from './../app/_actions/create-user-projects-for-repos'
-import { getFileInfoForRepo } from './../app/_actions/get-file-info-for-repo'
+import { createProjectOnBoost } from './../app/_actions/create-project-on-boost'
+import { getFileInfoForProject } from './../app/_actions/get-file-info-for-repo'
 import { useAppContext } from './../lib/hooks/app-context'
 import { formatDateForLastSynchronizedAt } from './../lib/utils'
 
@@ -43,8 +43,8 @@ const useDataWatcher = () => {
         // references - whether they files have been processed or not. If
         // creation actually does happen this will take ~15 seconds. Anything
         // more should be considered a critical bug.
-        await createUserProjectsForRepos([repo])
-        const fileInfos = await getFileInfoForRepo(repo, user)
+        await createProjectOnBoost(repo.full_name, repo, [])
+        const fileInfos = await getFileInfoForProject(repo, user)
         const assistant = await configAssistantForProject(
           project,
           fileInfos,

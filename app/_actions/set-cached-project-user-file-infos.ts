@@ -26,6 +26,7 @@ const setCachedProjectUserFileInfos = async (
   const setFileInfoPromises = fileInfos.map((fileInfo) =>
     setProjectUserFileInfo(projectName, user.id, fileInfo),
   )
+
   await Promise.all(setFileInfoPromises)
 
   // Now make sure to set all of the new file info IDs for the newly cached
@@ -36,6 +37,7 @@ const setCachedProjectUserFileInfos = async (
   const setFileInfoIdsPromises = fileInfos.map((fileInfo) =>
     setProjectUserFileInfoId(projectName, user.id, fileInfo.id),
   )
+
   await Promise.all(setFileInfoIdsPromises)
 }
 

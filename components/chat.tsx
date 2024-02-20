@@ -7,7 +7,7 @@ import { toast } from 'react-hot-toast'
 
 import type { Chat } from '../lib/data-model-types'
 import { configAssistantForProject } from './../app/_actions/config-assistant-for-project'
-import { getFileInfoForRepo } from './../app/_actions/get-file-info-for-repo'
+import { getFileInfoForProject } from './../app/_actions/get-file-info-for-repo'
 import { useAppContext } from './../lib/hooks/app-context'
 import { cn, formatDateForLastSynchronizedAt } from './../lib/utils'
 import { ChatList } from './chat-list'
@@ -112,7 +112,7 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
   ): Promise<string | null | undefined> => {
     try {
       if (project && project.id && repo && user) {
-        const fileInfos = await getFileInfoForRepo(repo, user)
+        const fileInfos = await getFileInfoForProject(repo, user)
         const assistant = await configAssistantForProject(
           project,
           fileInfos,

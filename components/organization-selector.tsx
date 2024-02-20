@@ -21,11 +21,18 @@ const getGitHubUserInitials = (name: string) => {
 }
 
 interface OrganizationSelectorProps {
+  onOrganizationChanged: (org: Organization) => void
   user: User
 }
 
+// TODO: Work items to make functional
+// * Handle org changes so that we update our app context - should be function handler passed in
+
 // For now this is tied directly to GitHub organizations
-export const OrganizationSelector = ({ user }: OrganizationSelectorProps) => {
+export const OrganizationSelector = ({
+  onOrganizationChanged,
+  user,
+}: OrganizationSelectorProps) => {
   const [organizations, setOrganizations] = useState<Organization[]>([])
   const [selectedOrganization, setSelectedOrganization] =
     useState<Organization | null>(null)
@@ -79,7 +86,10 @@ export const OrganizationSelector = ({ user }: OrganizationSelectorProps) => {
           {organizations.map((org, index) => (
             <DropdownMenuItem
               key={index}
-              onSelect={(event) => setSelectedOrganization(org)}
+              onSelect={(event) => {
+                setSelectedOrganization(org)
+                onOrganizationChanged(org)
+              }}
             >
               <Image
                 className="w-6 h-6 transition-opacity duration-300 rounded-full select-none ring-1 ring-zinc-100/10 hover:opacity-80"

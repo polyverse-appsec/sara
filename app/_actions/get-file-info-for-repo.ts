@@ -8,7 +8,7 @@ import {
 } from './../../lib/data-model-types'
 import { getFileInfo } from './../../lib/polyverse/backend/backend'
 
-export async function getFileInfoForRepo(
+export async function getFileInfoForProject(
   repo: Repository,
   user: User,
 ): Promise<ProjectDataReference[]> {

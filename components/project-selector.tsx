@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
+import { deleteProject } from 'app/_actions/delete-project'
 import { getProjects } from 'app/_actions/get-projects'
 import toast from 'react-hot-toast'
 
@@ -21,20 +22,35 @@ import {
 interface ProjectSelectorProps {
   user: User
   org: Organization
+
+  initialProject: Project | null
+  onProjectChanged: (project: Project) => void
 }
 
-export const ProjectSelector = ({ user, org }: ProjectSelectorProps) => {
+// TODO: Work items to make functional
+// * Handle project changes so that we update our app context - should be function handler passed in
+
+export const ProjectSelector = ({
+  user,
+  org,
+  initialProject = null,
+  onProjectChanged,
+}: ProjectSelectorProps) => {
   const [projects, setProjects] = useState<Project[]>([])
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null)
+  const [selectedProject, setSelectedProject] = useState<Project | null>(
+    initialProject,
+  )
 
   const setProjectsState = async () => {
     try {
       const projects = await getProjects(org.login, user)
+
       setProjects(projects)
     } catch (err) {
       console.debug(
         `<ProjectSelector> Unable to fetch and set projects - error ${err}`,
       )
+
       toast.error(
         'Unable to fetch user projects - please switch organizations and back',
       )
@@ -43,9 +59,7 @@ export const ProjectSelector = ({ user, org }: ProjectSelectorProps) => {
 
   useEffect(() => {
     setProjectsState()
-  }, [])
-
-  console.log(`***** <ProjectSelector>`)
+  }, [org.login, user])
 
   return (
     <div className="flex items-center justify-between">
@@ -63,7 +77,10 @@ export const ProjectSelector = ({ user, org }: ProjectSelectorProps) => {
           {projects.map((project) => (
             <DropdownMenuItem
               key={project.name}
-              onSelect={(event) => setSelectedProject(project)}
+              onSelect={(event) => {
+                setSelectedProject(project)
+                onProjectChanged(project)
+              }}
             >
               <span className="ml-2">{project.name}</span>
             </DropdownMenuItem>

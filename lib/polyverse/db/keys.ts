@@ -1,5 +1,18 @@
 import Joi from 'joi'
 
+// TODO: Consider if I want the pattern of `user:${userId}:project:${projectId}`
+// or `project:${projectId}:user:${userId}` as right now I use both patterns
+
+// TODO: Test
+export const userProjectKey = (userId: string, projectId: string) => {
+  return `user:${userId}:project:${projectId}`
+}
+
+// TODO: Test
+export const userProjectIdsSetKey = (userId: string) => {
+  return `user:${userId}:projectIds`
+}
+
 /**
  * Function that can be used to craft a Redis key in the format of:
  * project:<projectName>:user:<userId>:fileInfoIds
@@ -19,6 +32,9 @@ export const projectUserFileInfoIdsSetKey = (
   projectName: string,
   userId: string,
 ): string => {
+  // TODO: This needs to have `projectName` updated to `projectId` I beleive.
+  // And all other keys that use the notion of `projectName`.
+
   if (Joi.string().required().validate(projectName).error) {
     throw new Error(
       `'projectName' not allowed to be blank (undefined, null, or the empty string)`,

@@ -86,6 +86,7 @@ export async function configAssistantForProject(
     fileInfos,
     project.name,
   )
+
   await setCachedProjectUserFileInfos(project.name, user, fileInfos)
 
   return createdAssistant
