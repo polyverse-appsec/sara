@@ -43,7 +43,7 @@ const useDataWatcher = () => {
         // references - whether they files have been processed or not. If
         // creation actually does happen this will take ~15 seconds. Anything
         // more should be considered a critical bug.
-        await createProjectOnBoost(repo.full_name, repo, [])
+        await createProjectOnBoost(repo.name, repo, [])
         const fileInfos = await getFileInfoForProject(repo, user)
         const assistant = await configAssistantForProject(
           project,
