@@ -208,6 +208,10 @@ const buildSaraConfigStateSetters = (
   return [setOrgConfig, setProjectConfig, setRepoConfig]
 }
 
+export interface PrototypeContext {
+  activeOrg: Organization | null
+}
+
 interface AppContextType {
   user: User | null
   setUser: (user: User | null) => void
@@ -222,6 +226,9 @@ interface AppContextType {
   setOrgConfig: (orgConfig: OrganizationConfigurable) => void
   setProjectConfig: (projectConfig: ProjectConfigurable) => void
   setRepoConfig: (repoConfig: RepositoryConfigurable) => void
+
+  prototypeContext: PrototypeContext
+  setPrototypeContext: (prototypeContext: PrototypeContext) => void
 }
 
 const AppContext = createContext<AppContextType | null>(null)
@@ -255,6 +262,10 @@ export function AppProvider({ children }: AppProviderProps) {
   const [setOrgConfig, setProjectConfig, setRepoConfig] =
     buildSaraConfigStateSetters(saraConfig, setSaraConfig)
 
+  const [prototypeContext, setPrototypeContext] = useState<PrototypeContext>({
+    activeOrg: null,
+  })
+
   const value = {
     user,
     setUser,
@@ -268,6 +279,8 @@ export function AppProvider({ children }: AppProviderProps) {
     setOrgConfig,
     setProjectConfig,
     setRepoConfig,
+    prototypeContext,
+    setPrototypeContext,
   }
 
   const { data: session } = useSession()

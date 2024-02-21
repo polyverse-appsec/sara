@@ -3,10 +3,15 @@
 import React from 'react'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
+import { useAppContext } from 'lib/hooks/app-context'
 
 import SaraPortrait from './../../public/Sara_Cartoon_Portrait.png'
 
 const SidebarNav = () => {
+  const {
+    prototypeContext: { activeOrg },
+  } = useAppContext()
+
   return (
     <motion.aside
       className="absolute inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition duration-200 ease-in-out"
@@ -32,7 +37,12 @@ const SidebarNav = () => {
           height={100} // Adjust the height as needed
         />
       </div>
-
+      <div className="flex justify-center px-2 py-1 text-base font-medium rounded-lg">
+        <p className="text-center">Active Organization:</p>
+      </div>
+      <div className="flex justify-center px-2 py-1 text-base font-medium rounded-lg">
+        <p>{activeOrg ? activeOrg.login : 'None'}</p>
+      </div>
       {/* Buttons section */}
       <nav className="flex flex-col space-y-1">
         {/* Organizations Button */}
