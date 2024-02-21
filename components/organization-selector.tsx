@@ -50,8 +50,6 @@ export const OrganizationSelector = ({
     setOrganizationsState()
   }, [])
 
-  console.log(`***** <OrganizationSelector>`)
-
   return (
     <div className="flex items-center justify-between">
       <DropdownMenu>
