@@ -2,14 +2,15 @@
 
 import React from 'react'
 
+import ProjectDashboard from '../../components/prototypes/project-dashboard'
 import SidebarNav from './../../components/prototypes/sidebar-nav'
 
-interface ProjectLayoutProps {
+interface OrgLayoutProps {
   children: React.ReactNode
 }
 
 // Define the RootLayout component that encapsulates the page structure
-const ProjectLayout = ({ children }: ProjectLayoutProps) => {
+const OrgLayout = ({ children }: OrgLayoutProps) => {
   return (
     <>
       <div className="flex h-screen bg-gray-200">
@@ -20,4 +21,4 @@ const ProjectLayout = ({ children }: ProjectLayoutProps) => {
   )
 }
 
-export default ProjectLayout
+export default OrgLayout
