@@ -1,8 +1,8 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import React from 'react'
 
-import { ProjectDetailsTile } from './project-details-tile'
+import { OrgDetailsTile } from './org-details-tile'
 
 const projects = [
   {
@@ -43,19 +43,16 @@ const projects = [
   },
 ]
 
-const OrgDashboard = () => {
-  useEffect(() => {})
+interface OrgDashboardProps {
+  orgs: any[]
+}
 
+const OrgDashboard = ({ orgs }: OrgDashboardProps) => {
   return (
     <div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {projects.map(({ id, name, lastUpdatedAt }) => (
-          <ProjectDetailsTile
-            key={id}
-            id={id}
-            name={name}
-            lastUpdatedAt={lastUpdatedAt}
-          />
+        {orgs.map(({ login, avatar_url }) => (
+          <OrgDetailsTile key={login} login={login} avatar_url={avatar_url} />
         ))}
       </div>
     </div>
