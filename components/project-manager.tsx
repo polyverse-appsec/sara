@@ -168,11 +168,13 @@ export const ProjectManager = () => {
   const { organization: org } = orgConfig
   const { project } = projectConfig
 
+  // TODO: We aren't rendering project configuration until the backend supports multi-tier apps
+
   return (
     <>
       {renderOrganizationSelector(user, handleOrganizationChange)}
       {renderProjectSelector(user, org, project, handleProjectChange)}
-      {renderConfigProjectButton()}
+      {/*renderConfigProjectButton()*/}
       {renderProjectCreationManager(user, org, handleProjectCreation)}
     </>
   )
