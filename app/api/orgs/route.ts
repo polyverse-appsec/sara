@@ -7,6 +7,7 @@ import { NextAuthRequest } from 'next-auth/lib'
 // TODO: If this works then just export a GET without auth on it in our lib for a sara rest service
 export const GET = auth(async (req: NextAuthRequest) => {
     const { auth } = req
+
     if (!auth || !auth.accessToken || !auth.user.username) {
         return new Response('Unauthorized', {
             status: 401
@@ -38,4 +39,4 @@ export const GET = auth(async (req: NextAuthRequest) => {
             status: 500
         })
     }
-})
+}) as any
