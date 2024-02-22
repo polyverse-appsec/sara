@@ -152,7 +152,10 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
             <ChatScrollAnchor trackVisibility={isLoading} />
           </>
         ) : (
-          <EmptyScreen setInput={setInput} />
+          <EmptyScreen 
+            id={chat.id}
+            append={updateAssistantAndAppend}
+            setInput={setInput} />
         )}
       </div>
       <ChatPanel

@@ -6,20 +6,28 @@ import { IconArrowRight } from './ui/icons'
 
 const exampleMessages = [
   {
-    heading: 'Please explain how a feature in this project works',
-    message: `What is a "serverless function"?`,
+    heading: 'Give me an overview of my project',
+    message: `What is the purpose of this project, and what are the main components?`,
   },
   {
-    heading: 'Write new code following a specification',
-    message: 'Write a function that returns the sum of two numbers',
+    heading: 'Generate tasks for testing',
+    message: 'What are some ways I can test this application in the context of my project? Generate your answers as tasks.',
   },
   {
-    heading: 'Keep track of multiple tasks',
-    message: `Just create a new task on the left hand side bar!`,
+    heading: 'Check to see if security standards are met',
+    message: `Are there any security vulnerabilities in my project code? If so, what are they?`,
   },
 ]
 
-export function EmptyScreen({ setInput }: Pick<UseChatHelpers, 'setInput'>) {
+export interface EmptyScreenProps
+  extends Pick<UseChatHelpers, 
+    | 'append' 
+    | 'setInput'
+    > {
+      id?: string
+    }
+
+export function EmptyScreen({ id, setInput, append }: EmptyScreenProps) {
   return (
     <div className="mx-auto max-w-2xl px-4">
       <div className="rounded-lg border bg-background p-8">
@@ -54,7 +62,14 @@ export function EmptyScreen({ setInput }: Pick<UseChatHelpers, 'setInput'>) {
               key={index}
               variant="link"
               className="h-auto p-0 text-base"
-              onClick={() => setInput(message.message)}
+              //onClick={() => setInput(message.message)}
+              onClick={async () => 
+                await append({
+                  id,
+                  content: message.message,
+                  role: 'user',
+                })
+              }
             >
               <IconArrowRight className="mr-2 text-muted-foreground" />
               {message.heading}
