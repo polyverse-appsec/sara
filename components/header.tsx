@@ -37,7 +37,7 @@ async function UserOrLogin() {
             <UserMenu user={session.user} />
           </>
         ) : null}
-        {session?.user ? <GithubPanel /> : null}
+        {/*session?.user ? <GithubPanel /> : null*/}
         <ProjectManager />
       </div>
     </>

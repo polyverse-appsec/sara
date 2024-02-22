@@ -9,7 +9,13 @@ import { createProjectOnBoost } from './create-project-on-boost'
 import { createProjectOnSara } from './create-project-on-sara'
 import { getFileInfoForProject } from './get-file-info-for-repo'
 
-export const createProject = async (user: User, organization: Organization, projectName: string, primaryDataSource: Repository, secondaryDataSources: Repository[]): Promise<[Project, Assistant]> => {
+export const createProject = async (
+    user: User,
+    org: Organization,
+    projectName: string,
+    primaryDataSource: Repository,
+    secondaryDataSources: Repository[]
+): Promise<[Project, Assistant]> => {
     const session = await auth()
 
     if (!session?.user?.id || user?.id !== session.user.id) {
@@ -28,7 +34,7 @@ export const createProject = async (user: User, organization: Organization, proj
     const fileInfos = await getFileInfoForProject(primaryDataSource, user)
 
     // Configure the OpenAI Assistant...
-    const assistant = await configAssistantForProject(project, fileInfos, user, organization)
+    const assistant = await configAssistantForProject(project, fileInfos, user, org)
 
     return [project, assistant]
 }

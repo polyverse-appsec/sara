@@ -13,7 +13,7 @@ import {
 } from './../../lib/data-model-types'
 import {
   createAssistantWithFileInfosFromRepo,
-  findAssistantForProject,
+  findAssistantFromMetadata,
   updateAssistantPromptAndFiles,
   AssistantMetadata,
   ASSISTANT_METADATA_CREATOR,
@@ -55,7 +55,7 @@ export async function configAssistantForProject(
     throw new Error('Unauthorized')
   }
 
-    const matchMetadata : AssistantMetadata = {
+    const existingAssistantMetadata : AssistantMetadata = {
         projectId: project.name,
         userName: user.email!,
         org: org.login,
@@ -64,7 +64,7 @@ export async function configAssistantForProject(
     }
 
   // Start by looking for an existing assistant...
-  const existingAssistant = await findAssistantForProject(matchMetadata);
+  const existingAssistant = await findAssistantFromMetadata(existingAssistantMetadata);
 
   // If we did find an existing assistant check to see if we need to update the
   // assistant with newer file info...
@@ -92,7 +92,7 @@ export async function configAssistantForProject(
     return existingAssistant
   }
 
-  const assistantMetadata : AssistantMetadata = {
+  const newAssistantMetadata : AssistantMetadata = {
     projectId: project.name,
     userName: user.email!,
     org: org.login,
@@ -103,7 +103,7 @@ export async function configAssistantForProject(
   // them...
   const createdAssistant = await createAssistantWithFileInfosFromRepo(
     fileInfos,
-    assistantMetadata
+    newAssistantMetadata
   )
 
   await setCachedProjectUserFileInfos(project.name, user, fileInfos)

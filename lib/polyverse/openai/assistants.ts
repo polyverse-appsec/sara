@@ -98,25 +98,19 @@ export async function createAssistantWithFileInfosFromRepo(
   })
 }
 
-/**
- * Identifies a previously created OpenAI assistant based on a Git URL.
- *
- * @param {string} repo Git URL associated with an assistant.
- * @returns {(Promise<Assistant>|Promise<undefined>) Promise of identified assistant or Promise of undefined if no assistant found.
- */
-export async function findAssistantForProject(
-  matchingMetadata: AssistantMetadata,
+export async function findAssistantFromMetadata(
+  metadata: AssistantMetadata,
 ): Promise<Assistant | undefined> {
   // API call reference: https://platform.openai.com/docs/api-reference/assistants/listAssistants
   const assistants = await oaiClient.beta.assistants.list()
 
   // API Assistant object reference: https://platform.openai.com/docs/api-reference/assistants/object
   return assistants?.data?.find(
-    ({ metadata }) => isRecord(metadata) &&
-        metadata.projectId === matchingMetadata.projectId &&
-        metadata.creator === ASSISTANT_METADATA_CREATOR &&
-        metadata.userName === matchingMetadata.userName &&
-        metadata.org === matchingMetadata.org
+    ({ metadata: retrievedMetadata }) => isRecord(retrievedMetadata) &&
+    retrievedMetadata.projectId === metadata.projectId &&
+    retrievedMetadata.creator === ASSISTANT_METADATA_CREATOR &&
+    retrievedMetadata.userName === metadata.userName &&
+    retrievedMetadata.org === metadata.org
         // We can do version upgrades (e.g. if a major or minor Sara version comes out
         //   we can fail the match on a version compare and then create a new assistant
         //   with the new version of Sara)
@@ -154,14 +148,6 @@ export async function updateAssistantPromptAndFiles(
 // 3. Add OpenAI Messages to the Thread as user asks questions
 // 4. Run the Assistant on Thread to trigger responses (tooling automatically invoked)
 
-/**
- * Configures an OpenAI assistant for use. Will identify relevant file IDs from a Git repo and
- * associate it with the OpenAI assistant. If the assistant doesn't yet exist it will create it
- * first.
- *
- * @param {string} repo Git URL to identify relevant file IDs for
- * @returns {Promise<Assistant>} Promise with the configured OpenAI assistant
- */
 export async function configAssistant(
   project: Project,
   repos: Repository[],
@@ -180,7 +166,7 @@ export async function configAssistant(
     fileInfos = fileInfos.concat(fileInfo)
   }
 
-  const searchMetadata: AssistantMetadata = {
+  const existingAssistantMetadata: AssistantMetadata = {
     projectId: project.name,
     userName: email,
     org: billingOrg,
@@ -188,13 +174,13 @@ export async function configAssistant(
     version: "", // ignore this match
   };
 
-  const existingAssistant = await findAssistantForProject(searchMetadata)
+  const existingAssistant = await findAssistantFromMetadata(existingAssistantMetadata)
 
   if (existingAssistant) {
     return await updateAssistantPromptAndFiles(fileInfos, existingAssistant)
   }
 
-  const assistantMetadata: AssistantMetadata = {
+  const newAssistantMetadata: AssistantMetadata = {
     projectId: project.name,
     userName: email,
     org: project.org,
@@ -202,5 +188,5 @@ export async function configAssistant(
     version: getVersion(),
   }
 
-  return await createAssistantWithFileInfosFromRepo(fileInfos, assistantMetadata)
+  return await createAssistantWithFileInfosFromRepo(fileInfos, newAssistantMetadata)
 }

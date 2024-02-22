@@ -72,6 +72,7 @@ export const ProjectCreationManager = ({
       </Button>
       <ProjectCreationDialog
         user={user}
+        org={org}
         open={renderCreationDialog}
         repos={repos}
         onDialogClosed={() => setRenderCreationDialog(false)}

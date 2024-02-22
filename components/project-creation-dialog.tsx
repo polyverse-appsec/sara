@@ -10,6 +10,7 @@ import toast from 'react-hot-toast'
 
 import { createProject } from '../app/_actions/create-project'
 import {
+  type Organization,
   type Project,
   type Repository,
   type User,
@@ -105,6 +106,7 @@ const renderSecondaryDataSources = (
 
 interface ProjectCreationDialogProps {
   user: User
+  org: Organization
   open: boolean
   repos: Repository[]
   onDialogClosed: () => void
@@ -116,6 +118,7 @@ interface ProjectCreationDialogProps {
 
 export const ProjectCreationDialog = ({
   user,
+  org,
   open,
   repos,
   onDialogClosed,
@@ -291,6 +294,7 @@ export const ProjectCreationDialog = ({
               try {
                 const [project, assistant] = await createProject(
                   user,
+                  org,
                   projectName,
                   primaryDataSource,
                   checkedSecondaryDataSources,
