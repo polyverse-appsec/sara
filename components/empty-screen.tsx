@@ -14,8 +14,8 @@ const exampleMessages = [
     message: 'What are some ways I can test this application in the context of my project? Generate your answers as tasks.',
   },
   {
-    heading: 'Check to see if security standards are met',
-    message: `Are there any security vulnerabilities in my project code? If so, what are they?`,
+    heading: 'Generate tasks for modernizing codebase',
+    message: `Generate a list of tasks that I can use to modernize my codebase using this project as context.`,
   },
 ]
 
