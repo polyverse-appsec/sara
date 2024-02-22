@@ -258,7 +258,6 @@ export const ProjectCreationDialog = ({
           <Button
             variant="ghost"
             onClick={async (e) => {
-              // TODO: Do I need to prevent default?
               e.preventDefault()
 
               setSaveButtonEnabled(false)
@@ -304,7 +303,7 @@ export const ProjectCreationDialog = ({
                 resetProjectDetails()
                 setSaveButtonEnabled(true)
 
-                toast.error(`Failed to create a project - ${err}`)
+                toast.error(`Failed to create project`)
               }
             }}
           >

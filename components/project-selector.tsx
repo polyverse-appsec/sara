@@ -37,9 +37,6 @@ export const ProjectSelector = ({
   onProjectChanged,
 }: ProjectSelectorProps) => {
   const [projects, setProjects] = useState<Project[]>([])
-  const [selectedProject, setSelectedProject] = useState<Project | null>(
-    initialProject,
-  )
 
   const setProjectsState = async () => {
     try {
@@ -59,15 +56,15 @@ export const ProjectSelector = ({
 
   useEffect(() => {
     setProjectsState()
-  }, [org.login, user])
+  }, [org.login, user, initialProject])
 
   return (
     <div className="flex items-center justify-between">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="pl-0">
-            {selectedProject ? (
-              <span className="ml-2">{selectedProject.name}</span>
+            {initialProject ? (
+              <span className="ml-2">{initialProject.name}</span>
             ) : (
               <span className="ml-2">Select Project</span>
             )}
@@ -78,7 +75,6 @@ export const ProjectSelector = ({
             <DropdownMenuItem
               key={project.name}
               onSelect={(event) => {
-                setSelectedProject(project)
                 onProjectChanged(project)
               }}
             >

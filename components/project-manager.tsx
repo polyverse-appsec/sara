@@ -16,6 +16,7 @@ import {
 import { formatDateForLastSynchronizedAt } from './../lib/utils'
 import { OrganizationSelector } from './organization-selector'
 import { ProjectCreationManager } from './project-creation-manager'
+import { ProjectDeletionManager } from './project-deletion-manager'
 import { ProjectSelector } from './project-selector'
 import { Button } from './ui/button'
 import { IconSeparator } from './ui/icons'
@@ -89,6 +90,26 @@ const renderConfigProjectButton = () => {
   )
 }
 
+const renderProjectDeletionManager = (
+  user: User | null,
+  org: Organization | null,
+  project: SaraProject | null,
+  onProjectDeleted: (projectName: string) => void,
+) => {
+  if (!user || !org || !org.login || !project) {
+    return null
+  }
+
+  return (
+    <ProjectDeletionManager
+      org={org}
+      project={project}
+      user={user}
+      onProjectDeleted={onProjectDeleted}
+    />
+  )
+}
+
 const renderProjectCreationManager = (
   user: User | null,
   org: Organization | null,
@@ -144,6 +165,17 @@ export const ProjectManager = () => {
     setProjectConfig(projectConfig)
   }
 
+  const handleProjectDeletion = (projectName: string) => {
+    console.debug(`Project deleted: ${projectName}`)
+
+    projectConfig.project = null
+    projectConfig.status = 'UNCONFIGURED'
+    projectConfig.statusInfo = ''
+    projectConfig.errorInfo = null
+
+    setProjectConfig(projectConfig)
+  }
+
   const handleProjectCreation = async (
     project: Project,
     assistant: Assistant,
@@ -175,6 +207,7 @@ export const ProjectManager = () => {
       {renderOrganizationSelector(user, handleOrganizationChange)}
       {renderProjectSelector(user, org, project, handleProjectChange)}
       {/*renderConfigProjectButton()*/}
+      {renderProjectDeletionManager(user, org, project, handleProjectDeletion)}
       {renderProjectCreationManager(user, org, handleProjectCreation)}
     </>
   )
