@@ -38,7 +38,7 @@ const SidebarNav = () => {
         />
       </div>
       <div className="flex justify-center px-2 py-1 text-base font-medium rounded-lg">
-        <p className="text-center">Active Organization:</p>
+        <p className="text-center">Active Billing Organization:</p>
       </div>
       <div className="flex justify-center px-2 py-1 text-base font-medium rounded-lg">
         <p>{activeOrg ? activeOrg.login : 'None'}</p>
