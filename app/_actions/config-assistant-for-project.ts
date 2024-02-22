@@ -6,14 +6,17 @@ import { type Assistant } from 'openai/resources/beta/assistants/assistants'
 
 import { auth } from './../../auth'
 import {
+    Organization,
   type Project,
   type ProjectDataReference,
   type User,
 } from './../../lib/data-model-types'
 import {
   createAssistantWithFileInfosFromRepo,
-  findAssistantForRepo,
+  findAssistantForProject,
   updateAssistantPromptAndFiles,
+  AssistantMetadata,
+  ASSISTANT_METADATA_CREATOR,
 } from './../../lib/polyverse/openai/assistants'
 import getCachedProjectUserFileInfos from './get-cached-project-user-file-infos'
 import setCachedProjectUserFileInfos from './set-cached-project-user-file-infos'
@@ -44,6 +47,7 @@ export async function configAssistantForProject(
   project: Project,
   fileInfos: ProjectDataReference[],
   user: User,
+  org: Organization,
 ): Promise<Assistant> {
   const session = await auth()
 
@@ -51,8 +55,16 @@ export async function configAssistantForProject(
     throw new Error('Unauthorized')
   }
 
+    const matchMetadata : AssistantMetadata = {
+        projectId: project.name,
+        userName: user.email!,
+        org: org.login,
+        creator: "", // ignore creator for search
+        version: "", // ignore version for search
+    }
+
   // Start by looking for an existing assistant...
-  const existingAssistant = await findAssistantForRepo(project.name)
+  const existingAssistant = await findAssistantForProject(matchMetadata);
 
   // If we did find an existing assistant check to see if we need to update the
   // assistant with newer file info...
@@ -80,11 +92,18 @@ export async function configAssistantForProject(
     return existingAssistant
   }
 
+  const assistantMetadata : AssistantMetadata = {
+    projectId: project.name,
+    userName: user.email!,
+    org: org.login,
+    creator: ASSISTANT_METADATA_CREATOR
+  };
+
   // Otherwise just create a new assistant now with the file infos and cache
   // them...
   const createdAssistant = await createAssistantWithFileInfosFromRepo(
     fileInfos,
-    project.name,
+    assistantMetadata
   )
 
   await setCachedProjectUserFileInfos(project.name, user, fileInfos)

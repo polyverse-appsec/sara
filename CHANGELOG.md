@@ -3,6 +3,18 @@ Polyverse Sara Web UI for Boost
 
 # Release Notes
 
+## Version 0.7.0: February 22nd, 2024
+
+### New Features
+- Project creation and management UI (search, delete)
+
+### Enhancements
+- Assistants for Sara Projects are specific to org, user and project
+    - Previously, Assistants were shared with any matching project name
+
+### Bug Fixes
+- N/A
+
 ## Version 0.6.2: February 13th, 2024
 
 ### New Features

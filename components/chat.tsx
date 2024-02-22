@@ -26,12 +26,13 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
   const router = useRouter()
   const path = usePathname()
 
-  const { setChatStreamLastFinishedAt, saraConfig, setProjectConfig, user } =
+  const { setChatStreamLastFinishedAt, saraConfig, setProjectConfig, user, setOrgConfig } =
     useAppContext()
 
   const {
     projectConfig,
     repoConfig: { repo },
+    orgConfig: { organization },
   } = saraConfig
 
   const {
@@ -111,12 +112,13 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
     message: Message | CreateMessage,
   ): Promise<string | null | undefined> => {
     try {
-      if (project && project.id && repo && user) {
+      if (project && project.id && repo && user && organization) {
         const fileInfos = await getFileInfoForProject(repo, user)
         const assistant = await configAssistantForProject(
           project,
           fileInfos,
           user,
+          organization,
         )
 
         const lastSynchronizedAt = new Date()

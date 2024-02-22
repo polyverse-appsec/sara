@@ -3,13 +3,13 @@
 import { Assistant } from 'openai/resources/beta/assistants/assistants'
 import { auth } from './../../auth'
 
-import { type Project, type Repository, type User } from './../../lib/data-model-types'
+import { type Project, type Repository, type User, type Organization } from './../../lib/data-model-types'
 import { configAssistantForProject } from './config-assistant-for-project'
 import { createProjectOnBoost } from './create-project-on-boost'
 import { createProjectOnSara } from './create-project-on-sara'
 import { getFileInfoForProject } from './get-file-info-for-repo'
 
-export const createProject = async (user: User, projectName: string, primaryDataSource: Repository, secondaryDataSources: Repository[]): Promise<[Project, Assistant]> => {
+export const createProject = async (user: User, organization: Organization, projectName: string, primaryDataSource: Repository, secondaryDataSources: Repository[]): Promise<[Project, Assistant]> => {
     const session = await auth()
 
     if (!session?.user?.id || user?.id !== session.user.id) {
@@ -28,7 +28,7 @@ export const createProject = async (user: User, projectName: string, primaryData
     const fileInfos = await getFileInfoForProject(primaryDataSource, user)
 
     // Configure the OpenAI Assistant...
-    const assistant = await configAssistantForProject(project, fileInfos, user)
+    const assistant = await configAssistantForProject(project, fileInfos, user, organization)
 
     return [project, assistant]
 }

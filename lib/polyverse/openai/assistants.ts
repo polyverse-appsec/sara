@@ -11,12 +11,33 @@ import { isRecord } from '../typescript/helpers'
 import { submitTaskStepsAssistantFunction } from './assistantTools'
 import { OPENAI_MODEL } from './constants'
 
-const PV_OPENAI_ASSISTANT_NAME = 'Polyverse Boost Sara'
+export const ASSISTANT_METADATA_CREATOR = "sara.frontend";
+
+export const getVersion = () => {
+    // this should only be env variable or something runtime - not hardcoded
+    // TBD: To fix this, update deployment code to set the version globally
+    return process.env.SARA_VERSION || '0.7.0'
+}
 
 interface FileTypes {
   blueprint: string
   aispec: string
   projectsource: string
+}
+
+export interface AssistantMetadata {
+    projectId: string;
+    version?: string;
+    userName: string;
+    creator: string;
+    org: string;
+}
+
+function createAssistantName(metadata: AssistantMetadata): string {
+    // remove spaces and special characters from project-id and create a simple underscore delimited
+    // string to use as part of the assistant name
+  const projectId = metadata.projectId.replace(/[^a-zA-Z0-9]/g, '_');
+  return `${metadata.creator}-${metadata.version}-${metadata.org}-${metadata.userName}-${projectId}`
 }
 
 function getOpenAIAssistantInstructions(fileTypes: FileTypes): string {
@@ -59,13 +80,13 @@ function mapFileInfoToPromptAndIDs(fileInfos: ProjectDataReference[]) {
  */
 export async function createAssistantWithFileInfosFromRepo(
   fileInfos: ProjectDataReference[],
-  projectName: string,
+  assistantMetadata: AssistantMetadata,
 ): Promise<Assistant> {
   const { prompt, fileIDs } = mapFileInfoToPromptAndIDs(fileInfos)
 
   return await oaiClient.beta.assistants.create({
     model: OPENAI_MODEL,
-    name: PV_OPENAI_ASSISTANT_NAME,
+    name: createAssistantName(assistantMetadata),
     file_ids: fileIDs,
     instructions: prompt,
     tools: [
@@ -73,7 +94,7 @@ export async function createAssistantWithFileInfosFromRepo(
       { type: 'retrieval' },
       submitTaskStepsAssistantFunction,
     ],
-    metadata: { projectName },
+    metadata: assistantMetadata,
   })
 }
 
@@ -83,15 +104,22 @@ export async function createAssistantWithFileInfosFromRepo(
  * @param {string} repo Git URL associated with an assistant.
  * @returns {(Promise<Assistant>|Promise<undefined>) Promise of identified assistant or Promise of undefined if no assistant found.
  */
-export async function findAssistantForRepo(
-  repo: string,
+export async function findAssistantForProject(
+  matchingMetadata: AssistantMetadata,
 ): Promise<Assistant | undefined> {
   // API call reference: https://platform.openai.com/docs/api-reference/assistants/listAssistants
   const assistants = await oaiClient.beta.assistants.list()
 
   // API Assistant object reference: https://platform.openai.com/docs/api-reference/assistants/object
   return assistants?.data?.find(
-    ({ metadata }) => isRecord(metadata) && metadata.projectName === repo,
+    ({ metadata }) => isRecord(metadata) &&
+        metadata.projectId === matchingMetadata.projectId &&
+        metadata.creator === ASSISTANT_METADATA_CREATOR &&
+        metadata.userName === matchingMetadata.userName &&
+        metadata.org === matchingMetadata.org
+        // We can do version upgrades (e.g. if a major or minor Sara version comes out
+        //   we can fail the match on a version compare and then create a new assistant
+        //   with the new version of Sara)
   )
 }
 
@@ -138,6 +166,7 @@ export async function configAssistant(
   project: Project,
   repos: Repository[],
   email: string,
+  billingOrg: string,
 ): Promise<Assistant> {
   // Get the file IDs associated with the repo first since we will end up
   // using them whether we need to create a new OpenAI assistant or there is
@@ -151,11 +180,27 @@ export async function configAssistant(
     fileInfos = fileInfos.concat(fileInfo)
   }
 
-  const existingAssistant = await findAssistantForRepo(project.name)
+  const searchMetadata: AssistantMetadata = {
+    projectId: project.name,
+    userName: email,
+    org: billingOrg,
+    creator: "", // ignore this match
+    version: "", // ignore this match
+  };
+
+  const existingAssistant = await findAssistantForProject(searchMetadata)
 
   if (existingAssistant) {
     return await updateAssistantPromptAndFiles(fileInfos, existingAssistant)
   }
 
-  return await createAssistantWithFileInfosFromRepo(fileInfos, project.name)
+  const assistantMetadata: AssistantMetadata = {
+    projectId: project.name,
+    userName: email,
+    org: project.org,
+    creator: ASSISTANT_METADATA_CREATOR,
+    version: getVersion(),
+  }
+
+  return await createAssistantWithFileInfosFromRepo(fileInfos, assistantMetadata)
 }
