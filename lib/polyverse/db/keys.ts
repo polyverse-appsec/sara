@@ -4,14 +4,16 @@ import Joi from 'joi'
 // or `project:${projectId}:user:${userId}` as right now I use both patterns
 
 // TODO: Test
-export const userProjectKey = (userId: string, projectId: string) => {
-  return `user:${userId}:project:${projectId}`
-}
+export const userKey = (email: string) => `user:${email}`
 
 // TODO: Test
-export const userProjectIdsSetKey = (userId: string) => {
-  return `user:${userId}:projectIds`
-}
+export const userEmailsSetKey = () => `user:userEmails`
+
+// TODO: Test
+export const userProjectKey = (userId: string, projectId: string) => `user:${userId}:project:${projectId}`
+
+// TODO: Test
+export const userProjectIdsSetKey = (userId: string) => `user:${userId}:projectIds`
 
 /**
  * Function that can be used to craft a Redis key in the format of:

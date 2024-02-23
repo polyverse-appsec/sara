@@ -96,6 +96,24 @@ export interface Goal extends BaseSaraObject {
   closedAt: Date
 }
 
+// TODO: Test this
+// TODO: Note we called this interface `UserPartDeux` while we iterate on
+// the data model design and the UX/UI. We preserve the original `User`
+// interface for now until we have fully implemented enough details about
+// the user to cut over in which case we will delete `User`.
+export interface UserPartDeux extends BaseSaraObject {
+  // Crucial to identity management/RBAC
+  email: string
+
+  // Identifies all the billing organizations a user belongs to
+  orgIds: string[]
+
+  // Some human readable name
+  username: string
+
+  lastSignedInAt: Date
+}
+
 export interface User extends Record<string, any> {
   id: string
   username: string

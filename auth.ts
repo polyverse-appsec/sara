@@ -1,7 +1,11 @@
 import NextAuth from 'next-auth'
 import GitHub from 'next-auth/providers/github'
-import { Organization } from './lib/data-model-types'
-import exp from 'constants'
+import { v4 as uuidv4 } from 'uuid'
+
+import { type UserPartDeux } from './lib/data-model-types'
+import { userEmailsSetKey, userKey } from './lib/polyverse/db/keys'
+
+import { kv } from '@vercel/kv'
 
 export const {
   handlers: { GET, POST },
@@ -15,6 +19,17 @@ export const {
     })
   ],
   callbacks: {
+    signIn({ profile }) {
+      // TODO: We need more stringent testing of this logic. We are assuming that
+      // our GitHub provider will also have truthy values for these which is a bad
+      // assumption we want to make
+      if (!profile || !profile.email || !profile.name) {
+        console.log(`Refusing sign-in as either the 'profile', or 'profile.email', or 'profile.name' isn't valid`)
+        return false
+      }
+
+      return true
+    },
     redirect({url, baseUrl}) {
       // Return the env var `NEXTAUTH_URL` which ought to be set to a unique
       // value for each deployment environment if set
@@ -55,6 +70,68 @@ export const {
     },
     authorized({ auth }) {
       return !!auth?.user // this ensures there is a logged in user for -every- request
+    }
+  },
+  // More info regarding events: https://authjs.dev/guides/basics/events
+  //
+  // Note that the execution of our authentication API will be blocked on awaits
+  // in our event handlers. If it starts burdensome work it should not block its
+  // own promise on that work.
+  events: {
+    signIn: async ({ user }) => {
+      // We shouldn't get here in theory as we check for the these properties
+      // in the `signIn` callback and fail if they aren't present. Lets log
+      // scary messages here and return so we don't mess with the DB if for some
+      // reason we do get here.
+      if (!user.email) {
+        console.error(`ERROR (shouldn't get here): 'user' doesn't have 'email' property from provider`)
+        return
+      }
+
+      if (!user.name) {
+        console.error(`ERROR (shouldn't get here): 'user' doesn't have 'name' property from provider`)
+        return
+      }
+
+      // Start by looking for a user in our DB...
+      const userItemKey = userKey(user.email)
+      const retrievedUser = await kv.hgetall<UserPartDeux>(userItemKey)
+
+      // If we don't have one create it...
+      if (!retrievedUser) {
+        const { email, name: username } = user
+
+        const newUserDate = new Date()
+
+        const newUser: UserPartDeux = {
+          // BaseSaraObject properties
+          id: uuidv4(),
+          createdAt: newUserDate,
+          lastUpdatedAt: newUserDate,
+
+          // User properties
+          email,
+          orgIds: [],
+          username,
+          lastSignedInAt: newUserDate,
+        }
+
+        // Create our new user...
+        await kv.hset(userItemKey, newUser)
+
+        // Track our new user globally...
+        const usersSetKey = userEmailsSetKey()
+        await kv.zadd(usersSetKey, {
+          score: +new Date(),
+          member: email
+        })
+
+        return
+      }
+
+      // If we do have one then update the last signed in at date
+      retrievedUser.lastSignedInAt = new Date()
+      await kv.hset(userItemKey, retrievedUser)
     }
   },
   pages: {
