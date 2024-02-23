@@ -28,6 +28,6 @@ export const getProjects = async (
 
   // Then get the projects from the Sara service
   const saraProjects = await getProjectsOnSara(user)
-
-  return boostProjects
+ 
+  return saraProjects
 }
