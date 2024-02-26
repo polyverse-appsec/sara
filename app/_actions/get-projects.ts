@@ -23,11 +23,27 @@ export const getProjects = async (
     throw new Error('Unauthorized')
   }
 
-  // Start by getting the projects from the Boost service
+  // Start by getting the projects from the Boost service. Based on org and user
   const boostProjects = await getProjectsOnBoost(orgId, user)
 
-  // Then get the projects from the Sara service
+  // Then get the projects from the Sara service (Returns all projects regardless of org! it's based on user)
   const saraProjects = await getProjectsOnSara(user)
+
+  // Map saraProjects properties to boostProjects based on the 'name' field
+  const mappedProjects = boostProjects.map(boostProject => {
+  // Find the corresponding saraProject
+  const correspondingSaraProject = saraProjects.find(saraProject => saraProject.name === boostProject.name);
+  
+  // If a corresponding saraProject exists, merge its properties into the boostProject
+  if (correspondingSaraProject) {
+    // This uses the spread operator to merge properties, giving precedence to saraProject properties
+    // Adjust this logic if you need to handle arrays or nested objects differently
+    return { ...boostProject, ...correspondingSaraProject };
+  }
+  
+  // If there's no corresponding saraProject, return the original boostProject
+  return boostProject;
+});
  
-  return saraProjects
+  return mappedProjects
 }
