@@ -27,14 +27,17 @@ export const createProject = async (
     await createProjectOnBoost(projectName, primaryDataSource, secondaryDataSources)
 
     // Then create the project on the Sara service...
-    const project = await createProjectOnSara(projectName, primaryDataSource, secondaryDataSources)
+    // NOTE: assistant creation logic added into this method!
+    const project = await createProjectOnSara(projectName, primaryDataSource, secondaryDataSources, org)
 
     // Prepare for OpenAI Assistant creation by gathering file information...
     // TODO: Refactor naming and method to be built around a project
-    const fileInfos = await getFileInfoForProject(primaryDataSource, user)
+    //const fileInfos = await getFileInfoForProject(primaryDataSource, user)
 
     // Configure the OpenAI Assistant...
-    const assistant = await configAssistantForProject(project, fileInfos, user, org)
+    //const assistant = await configAssistantForProject(project, fileInfos, user, org)
+
+    const assistant = project.assistant as Assistant
 
     return [project, assistant]
 }

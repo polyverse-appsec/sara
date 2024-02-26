@@ -49,7 +49,7 @@ export const ProjectDeletionManager = ({
         onDialogClosed={() => setRenderDeletionDialog(false)}
         onProjectDeleted={async () => {
           try {
-            await deleteProject(org.login, user, project.name)
+            await deleteProject(org.login, user, project.name, project.id)
             onProjectDeleted(project.name)
           } catch (err) {
             toast.error(`Failed to delete project`)
