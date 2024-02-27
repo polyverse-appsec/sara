@@ -3,7 +3,6 @@ import Joi from 'joi'
 // TODO: Consider if I want the pattern of `user:${userId}:project:${projectId}`
 // or `project:${projectId}:user:${userId}` as right now I use both patterns
 
-
 // TOOD: Test
 export const globalOrgIdsSetKey = () => `global:org:ids`
 
@@ -17,10 +16,12 @@ export const orgKey = (orgId: string) => `org:${orgId}`
 export const userKey = (email: string) => `user:${email}`
 
 // TODO: Test
-export const userProjectKey = (userId: string, projectId: string) => `user:${userId}:project:${projectId}`
+export const userProjectKey = (userId: string, projectId: string) =>
+  `user:${userId}:project:${projectId}`
 
 // TODO: Test
-export const userProjectIdsSetKey = (userId: string) => `user:${userId}:projectIds`
+export const userProjectIdsSetKey = (userId: string) =>
+  `user:${userId}:projectIds`
 
 /**
  * Function that can be used to craft a Redis key in the format of:

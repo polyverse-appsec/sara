@@ -4,15 +4,15 @@ import { type UserPartDeux } from './../../data-model-types'
 import { userKey } from './keys'
 
 const getUser = async (email: string): Promise<UserPartDeux> => {
-    const itemKey = userKey(email)
+  const itemKey = userKey(email)
 
-    const user = await kv.hgetall<UserPartDeux>(itemKey)
+  const user = await kv.hgetall<UserPartDeux>(itemKey)
 
-    if (!user) {
-        throw new Error(`User with an email of '${email}' doesn't exist`)
-    }
+  if (!user) {
+    throw new Error(`User with an email of '${email}' doesn't exist`)
+  }
 
-    return user
+  return user
 }
 
 export default getUser

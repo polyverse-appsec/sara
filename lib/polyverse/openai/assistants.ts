@@ -11,12 +11,12 @@ import { isRecord } from '../typescript/helpers'
 import { submitTaskStepsAssistantFunction } from './assistantTools'
 import { OPENAI_MODEL } from './constants'
 
-export const ASSISTANT_METADATA_CREATOR = "sara.frontend";
+export const ASSISTANT_METADATA_CREATOR = 'sara.frontend'
 
 export const getVersion = () => {
-    // this should only be env variable or something runtime - not hardcoded
-    // TBD: To fix this, update deployment code to set the version globally
-    return process.env.SARA_VERSION || '0.7.0'
+  // this should only be env variable or something runtime - not hardcoded
+  // TBD: To fix this, update deployment code to set the version globally
+  return process.env.SARA_VERSION || '0.7.0'
 }
 
 interface FileTypes {
@@ -26,17 +26,17 @@ interface FileTypes {
 }
 
 export interface AssistantMetadata {
-    projectId: string;
-    version?: string;
-    userName: string;
-    creator: string;
-    org: string;
+  projectId: string
+  version?: string
+  userName: string
+  creator: string
+  org: string
 }
 
 function createAssistantName(metadata: AssistantMetadata): string {
-    // remove spaces and special characters from project-id and create a simple underscore delimited
-    // string to use as part of the assistant name
-  const projectId = metadata.projectId.replace(/[^a-zA-Z0-9]/g, '_');
+  // remove spaces and special characters from project-id and create a simple underscore delimited
+  // string to use as part of the assistant name
+  const projectId = metadata.projectId.replace(/[^a-zA-Z0-9]/g, '_')
   return `${metadata.creator}-${metadata.version}-${metadata.org}-${metadata.userName}-${projectId}`
 }
 
@@ -106,14 +106,15 @@ export async function findAssistantFromMetadata(
 
   // API Assistant object reference: https://platform.openai.com/docs/api-reference/assistants/object
   return assistants?.data?.find(
-    ({ metadata: retrievedMetadata }) => isRecord(retrievedMetadata) &&
-    retrievedMetadata.projectId === metadata.projectId &&
-    retrievedMetadata.creator === ASSISTANT_METADATA_CREATOR &&
-    retrievedMetadata.userName === metadata.userName &&
-    retrievedMetadata.org === metadata.org
-        // We can do version upgrades (e.g. if a major or minor Sara version comes out
-        //   we can fail the match on a version compare and then create a new assistant
-        //   with the new version of Sara)
+    ({ metadata: retrievedMetadata }) =>
+      isRecord(retrievedMetadata) &&
+      retrievedMetadata.projectId === metadata.projectId &&
+      retrievedMetadata.creator === ASSISTANT_METADATA_CREATOR &&
+      retrievedMetadata.userName === metadata.userName &&
+      retrievedMetadata.org === metadata.org,
+    // We can do version upgrades (e.g. if a major or minor Sara version comes out
+    //   we can fail the match on a version compare and then create a new assistant
+    //   with the new version of Sara)
   )
 }
 
@@ -170,11 +171,13 @@ export async function configAssistant(
     projectId: project.name,
     userName: email,
     org: billingOrg,
-    creator: "", // ignore this match
-    version: "", // ignore this match
-  };
+    creator: '', // ignore this match
+    version: '', // ignore this match
+  }
 
-  const existingAssistant = await findAssistantFromMetadata(existingAssistantMetadata)
+  const existingAssistant = await findAssistantFromMetadata(
+    existingAssistantMetadata,
+  )
 
   if (existingAssistant) {
     return await updateAssistantPromptAndFiles(fileInfos, existingAssistant)
@@ -188,5 +191,8 @@ export async function configAssistant(
     version: getVersion(),
   }
 
-  return await createAssistantWithFileInfosFromRepo(fileInfos, newAssistantMetadata)
+  return await createAssistantWithFileInfosFromRepo(
+    fileInfos,
+    newAssistantMetadata,
+  )
 }

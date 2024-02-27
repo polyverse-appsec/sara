@@ -5,8 +5,6 @@ import { type Project, type User } from './../../lib/data-model-types'
 import { getProjectsOnBoost } from './get-projects-on-boost'
 import { getProjectsOnSara } from './get-projects-on-sara'
 
-
-
 export const getProjects = async (
   orgId: string,
   user: User,
@@ -30,20 +28,22 @@ export const getProjects = async (
   const saraProjects = await getProjectsOnSara(user)
 
   // Map saraProjects properties to boostProjects based on the 'name' field
-  const mappedProjects = boostProjects.map(boostProject => {
-  // Find the corresponding saraProject
-  const correspondingSaraProject = saraProjects.find(saraProject => saraProject.name === boostProject.name);
-  
-  // If a corresponding saraProject exists, merge its properties into the boostProject
-  if (correspondingSaraProject) {
-    // This uses the spread operator to merge properties, giving precedence to saraProject properties
-    // Adjust this logic if you need to handle arrays or nested objects differently
-    return { ...boostProject, ...correspondingSaraProject };
-  }
-  
-  // If there's no corresponding saraProject, return the original boostProject
-  return boostProject;
-});
- 
+  const mappedProjects = boostProjects.map((boostProject) => {
+    // Find the corresponding saraProject
+    const correspondingSaraProject = saraProjects.find(
+      (saraProject) => saraProject.name === boostProject.name,
+    )
+
+    // If a corresponding saraProject exists, merge its properties into the boostProject
+    if (correspondingSaraProject) {
+      // This uses the spread operator to merge properties, giving precedence to saraProject properties
+      // Adjust this logic if you need to handle arrays or nested objects differently
+      return { ...boostProject, ...correspondingSaraProject }
+    }
+
+    // If there's no corresponding saraProject, return the original boostProject
+    return boostProject
+  })
+
   return mappedProjects
 }

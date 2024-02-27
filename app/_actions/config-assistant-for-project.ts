@@ -6,17 +6,17 @@ import { type Assistant } from 'openai/resources/beta/assistants/assistants'
 
 import { auth } from './../../auth'
 import {
-    Organization,
+  Organization,
   type Project,
   type ProjectDataReference,
   type User,
 } from './../../lib/data-model-types'
 import {
+  ASSISTANT_METADATA_CREATOR,
+  AssistantMetadata,
   createAssistantWithFileInfosFromRepo,
   findAssistantFromMetadata,
   updateAssistantPromptAndFiles,
-  AssistantMetadata,
-  ASSISTANT_METADATA_CREATOR,
 } from './../../lib/polyverse/openai/assistants'
 import getCachedProjectUserFileInfos from './get-cached-project-user-file-infos'
 import setCachedProjectUserFileInfos from './set-cached-project-user-file-infos'
@@ -55,16 +55,18 @@ export async function configAssistantForProject(
     throw new Error('Unauthorized')
   }
 
-    const existingAssistantMetadata : AssistantMetadata = {
-        projectId: project.name,
-        userName: user.email!,
-        org: org.login,
-        creator: "", // ignore creator for search
-        version: "", // ignore version for search
-    }
+  const existingAssistantMetadata: AssistantMetadata = {
+    projectId: project.name,
+    userName: user.email!,
+    org: org.login,
+    creator: '', // ignore creator for search
+    version: '', // ignore version for search
+  }
 
   // Start by looking for an existing assistant...
-  const existingAssistant = await findAssistantFromMetadata(existingAssistantMetadata);
+  const existingAssistant = await findAssistantFromMetadata(
+    existingAssistantMetadata,
+  )
 
   // If we did find an existing assistant check to see if we need to update the
   // assistant with newer file info...
@@ -92,18 +94,18 @@ export async function configAssistantForProject(
     return existingAssistant
   }
 
-  const newAssistantMetadata : AssistantMetadata = {
+  const newAssistantMetadata: AssistantMetadata = {
     projectId: project.name,
     userName: user.email!,
     org: org.login,
-    creator: ASSISTANT_METADATA_CREATOR
-  };
+    creator: ASSISTANT_METADATA_CREATOR,
+  }
 
   // Otherwise just create a new assistant now with the file infos and cache
   // them...
   const createdAssistant = await createAssistantWithFileInfosFromRepo(
     fileInfos,
-    newAssistantMetadata
+    newAssistantMetadata,
   )
 
   await setCachedProjectUserFileInfos(project.name, user, fileInfos)

@@ -26,8 +26,13 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
   const router = useRouter()
   const path = usePathname()
 
-  const { setChatStreamLastFinishedAt, saraConfig, setProjectConfig, user, setOrgConfig } =
-    useAppContext()
+  const {
+    setChatStreamLastFinishedAt,
+    saraConfig,
+    setProjectConfig,
+    user,
+    setOrgConfig,
+  } = useAppContext()
 
   const {
     projectConfig,
@@ -154,10 +159,11 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
             <ChatScrollAnchor trackVisibility={isLoading} />
           </>
         ) : (
-          <EmptyScreen 
+          <EmptyScreen
             id={chat.id}
             append={updateAssistantAndAppend}
-            setInput={setInput} />
+            setInput={setInput}
+          />
         )}
       </div>
       <ChatPanel

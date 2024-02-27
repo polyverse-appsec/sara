@@ -1,4 +1,5 @@
 // TODO: 'use server' this and replace actions with it?
+import { data } from 'components/ui/treeview-data-test'
 import jsonwebtoken from 'jsonwebtoken'
 
 import {
@@ -6,7 +7,6 @@ import {
   ProjectDataReference,
   Repository,
 } from '../../data-model-types'
-import { data } from 'components/ui/treeview-data-test'
 
 const { sign } = jsonwebtoken
 
@@ -128,7 +128,9 @@ export async function createProject(
     // For now the Boost backend doesn't support specifying primary data sources
     // separately from secondary data sources so just combine them in a list for
     // now.
-    const resources = ([primaryDataSource, ...secondaryDataSources]).map(dataSource => ({ uri: dataSource.html_url }))
+    const resources = [primaryDataSource, ...secondaryDataSources].map(
+      (dataSource) => ({ uri: dataSource.html_url }),
+    )
 
     const signedHeader = createSignedHeader(email)
     const res = await fetch(url, {
@@ -142,7 +144,11 @@ export async function createProject(
 
     if (!res.ok) {
       console.error(
-        `Got a failure response while trying to start project for '${primaryDataSource.orgId}/${projectName} for ${email}' - Status: ${res.status} - Error: ${await res.text()}`,
+        `Got a failure response while trying to start project for '${
+          primaryDataSource.orgId
+        }/${projectName} for ${email}' - Status: ${
+          res.status
+        } - Error: ${await res.text()}`,
       )
       return ''
     }
@@ -193,7 +199,7 @@ export async function deleteProject(
       headers: {
         'Content-Type': 'application/json',
         ...signedHeader,
-      }
+      },
     })
 
     if (!res.ok) {

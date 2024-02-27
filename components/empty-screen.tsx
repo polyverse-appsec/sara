@@ -11,7 +11,8 @@ const exampleMessages = [
   },
   {
     heading: 'Generate tasks for testing',
-    message: 'What are some ways I can test this application in the context of my project? Generate your answers as tasks.',
+    message:
+      'What are some ways I can test this application in the context of my project? Generate your answers as tasks.',
   },
   {
     heading: 'Generate tasks for modernizing codebase',
@@ -20,12 +21,9 @@ const exampleMessages = [
 ]
 
 export interface EmptyScreenProps
-  extends Pick<UseChatHelpers, 
-    | 'append' 
-    | 'setInput'
-    > {
-      id?: string
-    }
+  extends Pick<UseChatHelpers, 'append' | 'setInput'> {
+  id?: string
+}
 
 export function EmptyScreen({ id, setInput, append }: EmptyScreenProps) {
   return (
@@ -63,7 +61,7 @@ export function EmptyScreen({ id, setInput, append }: EmptyScreenProps) {
               variant="link"
               className="h-auto p-0 text-base"
               //onClick={() => setInput(message.message)}
-              onClick={async () => 
+              onClick={async () =>
                 await append({
                   id,
                   content: message.message,

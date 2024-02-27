@@ -32,8 +32,6 @@ Each task has a set of chats, the ids of these chats is stored in a sorted set c
 
 */
 
-
-
 ////////////////////////////
 // Refined Data Model Start
 ////////////////////////////
@@ -107,7 +105,6 @@ export interface GitHubOrg {
 ////////////////////////////
 // Refined Data Model End
 ////////////////////////////
-
 
 export const GoalSchema = BaseSaraObjectSchema.keys({
   orgId: Joi.string().required(),
