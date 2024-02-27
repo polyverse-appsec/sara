@@ -102,32 +102,55 @@ export const {
       }
 
       // Start by looking for a user in our DB...
-      const retrievedUser = await getUser(profile.email)
+      try {
+        const retrievedUser = await getUser(profile.email)
+        // If we do have one then update the last signed in at date
+        retrievedUser.lastSignedInAt = new Date()
+        await updateUser(retrievedUser)
+      } catch (error) {
+        if ((error as Error).message == (`User with an email of ${profile.email} doesn't exist`)) {
+          const baseSaraObject = createBaseSaraObject()
 
-      // If we don't have one create it...
-      if (!retrievedUser) {
-        const { email, login: username } = retrievedUser
-        const baseSaraObject = createBaseSaraObject()
+          const newUser: UserPartDeux = {
+            // BaseSaraObject properties
+            ...baseSaraObject,
 
-        const newUser: UserPartDeux = {
-          // BaseSaraObject properties
-          ...baseSaraObject,
+            // User properties
+            email: profile.email as string,
+            orgIds: [],
+            username: (profile as any).login,
+            lastSignedInAt: baseSaraObject.createdAt,
+          }
 
-          // User properties
-          email,
-          orgIds: [],
-          username,
-          lastSignedInAt: baseSaraObject.createdAt,
+          await createUser(newUser)
+
+          return
+        } else {
+          throw error
         }
-
-        await createUser(newUser)
-
-        return
       }
 
-      // If we do have one then update the last signed in at date
-      retrievedUser.lastSignedInAt = new Date()
-      await updateUser(retrievedUser)
+      // If we don't have one create it...
+      // if (!retrievedUser) {
+      //   const { email, login: username } = retrievedUser
+      //   const baseSaraObject = createBaseSaraObject()
+
+      //   const newUser: UserPartDeux = {
+      //     // BaseSaraObject properties
+      //     ...baseSaraObject,
+
+      //     // User properties
+      //     email,
+      //     orgIds: [],
+      //     username,
+      //     lastSignedInAt: baseSaraObject.createdAt,
+      //   }
+
+      //   await createUser(newUser)
+
+      //   return
+      // }
+
     }
   },
   pages: {
