@@ -20,16 +20,12 @@ export const {
     })
   ],
   callbacks: {
-    signIn({ user, account, profile }) {
-      console.log(`***** auth - user: ${JSON.stringify(user)}`)
-      console.log(`***** auth - account: ${JSON.stringify(account)}`)
-      console.log(`***** auth - profile: ${JSON.stringify(profile)}`)
-
+    signIn({ profile }) {
       // TODO: We need more stringent testing of this logic. We are assuming that
       // our GitHub provider will also have truthy values for these which is a bad
       // assumption we want to make
-      if (!profile || !profile.email || !profile.name) {
-        console.log(`Refusing sign-in as either the 'profile', or 'profile.email', or 'profile.name' isn't valid`)
+      if (!profile || !profile.email || !profile.login) {
+        console.log(`Refusing sign-in as either the 'profile', or 'profile.email', or 'profile.login' isn't valid`)
         return false
       }
 
@@ -85,27 +81,32 @@ export const {
   // in our event handlers. If it starts burdensome work it should not block its
   // own promise on that work.
   events: {
-    signIn: async ({ user }) => {
+    signIn: async ({ profile }) => {
+      if (!profile) {
+        console.error(`ERROR (shouldn't get here): 'profile' doesn't exist from provider`)
+        return
+      }
+
       // We shouldn't get here in theory as we check for the these properties
       // in the `signIn` callback and fail if they aren't present. Lets log
       // scary messages here and return so we don't mess with the DB if for some
       // reason we do get here.
-      if (!user.email) {
-        console.error(`ERROR (shouldn't get here): 'user' doesn't have 'email' property from provider`)
+      if (!profile.email) {
+        console.error(`ERROR (shouldn't get here): 'profile' doesn't have 'email' property from provider`)
         return
       }
 
-      if (!user.name) {
-        console.error(`ERROR (shouldn't get here): 'user' doesn't have 'name' property from provider`)
+      if (!profile.login) {
+        console.error(`ERROR (shouldn't get here): 'profile' doesn't have 'login' property from provider`)
         return
       }
 
       // Start by looking for a user in our DB...
-      const retrievedUser = await getUser(user.email)
+      const retrievedUser = await getUser(profile.email)
 
       // If we don't have one create it...
       if (!retrievedUser) {
-        const { email, name: username } = user
+        const { email, login: username } = retrievedUser
         const baseSaraObject = createBaseSaraObject()
 
         const newUser: UserPartDeux = {
