@@ -3,12 +3,15 @@
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { useAppContext } from 'lib/hooks/app-context'
+import toast from 'react-hot-toast'
 
+import { useAppContext } from './../../lib/hooks/app-context'
 import SaraPortrait from './../../public/Sara_Cartoon_Portrait.png'
 
 const SidebarNav = () => {
+  const router = useRouter()
   const { activeBillingOrg } = useAppContext()
 
   return (
@@ -82,6 +85,16 @@ const SidebarNav = () => {
             borderWidth: '1px',
             borderColor: 'var(--border)',
             borderRadius: 'var(--radius)',
+          }}
+          onClick={(event) => {
+            event.preventDefault()
+
+            if (!activeBillingOrg) {
+              toast.error(`Please select billing organization`)
+              return
+            }
+
+            router.push('/projects')
           }}
         >
           <svg
