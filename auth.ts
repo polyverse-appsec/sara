@@ -20,7 +20,11 @@ export const {
     })
   ],
   callbacks: {
-    signIn({ profile }) {
+    signIn({ user, account, profile }) {
+      console.log(`***** auth - user: ${JSON.stringify(user)}`)
+      console.log(`***** auth - account: ${JSON.stringify(account)}`)
+      console.log(`***** auth - profile: ${JSON.stringify(profile)}`)
+
       // TODO: We need more stringent testing of this logic. We are assuming that
       // our GitHub provider will also have truthy values for these which is a bad
       // assumption we want to make
