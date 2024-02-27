@@ -19,7 +19,8 @@ export async function createNewProject(
   user: User,
   org: Organization
 ): Promise<Project> {
-  const projectId = `project:${primaryDataSource.full_name}:${user.id}`
+  const projectId = `project:${projectName}:${user.id}`
+  console.log(`PROJECT NAME IS ${projectName}`)
 
   let project = {} as Project
 
