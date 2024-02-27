@@ -2,7 +2,6 @@
 
 import React from 'react'
 
-import ProjectDashboard from '../../components/prototypes/project-dashboard'
 import SidebarNav from './../../components/prototypes/sidebar-nav'
 
 interface OrgLayoutProps {

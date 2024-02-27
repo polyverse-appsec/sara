@@ -3,13 +3,13 @@
 import React, { use, useState } from 'react'
 import { type GitHubOrg, type OrgPartDeux } from 'lib/data-model-types'
 
-import { Button } from '../ui/button'
+import { Button } from './../../../../components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '../ui/dropdown-menu'
+} from './../../../../components/ui/dropdown-menu'
 
 const getGitHubOrgs = async (): Promise<GitHubOrg[]> => {
   const res = await fetch('/api/integrations/github/orgs')

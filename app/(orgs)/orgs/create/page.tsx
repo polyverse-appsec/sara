@@ -4,13 +4,13 @@ import React, { Suspense, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
 
-import OrgSelector from './../../../../components/prototypes/github-org-selector'
 import { Button } from './../../../../components/ui/button'
 import {
   type GitHubOrg,
   type OrgPartDeux,
 } from './../../../../lib/data-model-types'
 import { useAppContext } from './../../../../lib/hooks/app-context'
+import OrgSelector from './github-org-selector'
 
 const loadingSpinner = () => (
   <svg

@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState } from 'react'
-import Link from 'next/link'
 
 import { ProjectCreateTile } from './project-create-tile'
 import { ProjectDetailsTile } from './project-details-tile'

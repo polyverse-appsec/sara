@@ -3,8 +3,8 @@
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
 
-import ProjectDashboard from './../../../components/prototypes/project-dashboard'
 import { useAppContext } from './../../../lib/hooks/app-context'
+import ProjectDashboard from './project-dashboard'
 
 const ProjectIndex = () => {
   const router = useRouter()

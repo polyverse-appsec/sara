@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 
-import OrgDashboard from './../../../components/prototypes/org-dashboard'
+import OrgDashboard from './org-dashboard'
 
 const OrgsIndex = () => {
   const [orgs, setOrgs] = useState([])
