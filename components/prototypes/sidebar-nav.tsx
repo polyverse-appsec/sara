@@ -2,15 +2,14 @@
 
 import React from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { useAppContext } from 'lib/hooks/app-context'
 
 import SaraPortrait from './../../public/Sara_Cartoon_Portrait.png'
 
 const SidebarNav = () => {
-  const {
-    prototypeContext: { activeOrg },
-  } = useAppContext()
+  const { activeBillingOrg } = useAppContext()
 
   return (
     <motion.aside
@@ -41,12 +40,13 @@ const SidebarNav = () => {
         <p className="text-center">Active Billing Organization:</p>
       </div>
       <div className="flex justify-center px-2 py-1 text-base font-medium rounded-lg">
-        <p>{activeOrg ? activeOrg.login : 'None'}</p>
+        <p>{activeBillingOrg ? activeBillingOrg.name : 'None'}</p>
       </div>
       {/* Buttons section */}
       <nav className="flex flex-col space-y-1">
         {/* Organizations Button */}
-        <button
+        <Link
+          href="/orgs"
           className="flex items-center px-2 py-1 text-base font-medium rounded-lg hover:bg-secondary"
           style={{
             color: 'var(--secondary-foreground)',
@@ -71,7 +71,7 @@ const SidebarNav = () => {
             />
           </svg>
           <span className="ml-3">Organizations</span>
-        </button>
+        </Link>
 
         {/* Projects Button */}
         <button

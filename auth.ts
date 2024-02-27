@@ -1,11 +1,12 @@
 import NextAuth from 'next-auth'
 import GitHub from 'next-auth/providers/github'
-import { v4 as uuidv4 } from 'uuid'
+import { kv } from '@vercel/kv'
 
 import { type UserPartDeux } from './lib/data-model-types'
-import { userEmailsSetKey, userKey } from './lib/polyverse/db/keys'
-
-import { kv } from '@vercel/kv'
+import { createBaseSaraObject } from './lib/polyverse/db/utils'
+import createUser from './lib/polyverse/db/create-user'
+import getUser from './lib/polyverse/db/get-user'
+import updateUser from 'lib/polyverse/db/update-user'
 
 export const {
   handlers: { GET, POST },
@@ -53,9 +54,11 @@ export const {
         token.image = profile.avatar_url || profile.picture
         token.email = profile.email
       }
+
       if (account) {
         token.accessToken = account.access_token
       }
+
       return token
     },
     session: ({ session, token }) => {
@@ -94,44 +97,32 @@ export const {
       }
 
       // Start by looking for a user in our DB...
-      const userItemKey = userKey(user.email)
-      const retrievedUser = await kv.hgetall<UserPartDeux>(userItemKey)
+      const retrievedUser = await getUser(user.email)
 
       // If we don't have one create it...
       if (!retrievedUser) {
         const { email, name: username } = user
-
-        const newUserDate = new Date()
+        const baseSaraObject = createBaseSaraObject()
 
         const newUser: UserPartDeux = {
           // BaseSaraObject properties
-          id: uuidv4(),
-          createdAt: newUserDate,
-          lastUpdatedAt: newUserDate,
+          ...baseSaraObject,
 
           // User properties
           email,
           orgIds: [],
           username,
-          lastSignedInAt: newUserDate,
+          lastSignedInAt: baseSaraObject.createdAt,
         }
 
-        // Create our new user...
-        await kv.hset(userItemKey, newUser)
-
-        // Track our new user globally...
-        const usersSetKey = userEmailsSetKey()
-        await kv.zadd(usersSetKey, {
-          score: +new Date(),
-          member: email
-        })
+        await createUser(newUser)
 
         return
       }
 
       // If we do have one then update the last signed in at date
       retrievedUser.lastSignedInAt = new Date()
-      await kv.hset(userItemKey, retrievedUser)
+      await updateUser(retrievedUser)
     }
   },
   pages: {

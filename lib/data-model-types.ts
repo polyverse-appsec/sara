@@ -32,6 +32,12 @@ Each task has a set of chats, the ids of these chats is stored in a sorted set c
 
 */
 
+
+
+////////////////////////////
+// Refined Data Model Start
+////////////////////////////
+
 export const BaseSaraObjectSchema = Joi.object({
   id: Joi.string().required(),
   createdAt: Joi.date()
@@ -56,6 +62,52 @@ export interface BaseSaraObject extends Record<string, any> {
   // ISO 8601 string
   lastUpdatedAt: Date
 }
+
+// TODO: Test this
+// TODO: Note we called this interface `UserPartDeux` while we iterate on
+// the data model design and the UX/UI. We preserve the original `User`
+// interface for now until we have fully implemented enough details about
+// the user to cut over in which case we will delete `User`.
+export interface UserPartDeux extends BaseSaraObject {
+  // Crucial to identity management/RBAC
+  email: string
+
+  // Identifies all the billing organizations a user belongs to
+  orgIds: string[]
+
+  // Some human readable name
+  username: string
+
+  lastSignedInAt: Date
+}
+
+// TODO: Test this
+// TODO: Note we called this interface `OrgPartDeux` while we iterate on
+// the data model design and the UX/UI. We preserve the original `Org`
+// interface for now until we have fully implemented enough details about
+// the org to cut over in which case we will delete `Org`.
+export interface OrgPartDeux extends BaseSaraObject {
+  // Crucial to identity management/RBAC
+  // Identifies all users within the organization
+  userIds: string[]
+
+  name: string
+
+  // Which projects are associated with an organization. Doesn't indicate
+  // grants to users to access those projects. That is determined on the
+  // project itself.
+  projectIds: string[]
+}
+
+export interface GitHubOrg {
+  login: string
+  avatarUrl: string
+}
+
+////////////////////////////
+// Refined Data Model End
+////////////////////////////
+
 
 export const GoalSchema = BaseSaraObjectSchema.keys({
   orgId: Joi.string().required(),
@@ -94,24 +146,6 @@ export interface Goal extends BaseSaraObject {
 
   // ISO 8601 string
   closedAt: Date
-}
-
-// TODO: Test this
-// TODO: Note we called this interface `UserPartDeux` while we iterate on
-// the data model design and the UX/UI. We preserve the original `User`
-// interface for now until we have fully implemented enough details about
-// the user to cut over in which case we will delete `User`.
-export interface UserPartDeux extends BaseSaraObject {
-  // Crucial to identity management/RBAC
-  email: string
-
-  // Identifies all the billing organizations a user belongs to
-  orgIds: string[]
-
-  // Some human readable name
-  username: string
-
-  lastSignedInAt: Date
 }
 
 export interface User extends Record<string, any> {

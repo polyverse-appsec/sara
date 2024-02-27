@@ -16,6 +16,7 @@ import {
   Repository,
   Task,
   User,
+  type OrgPartDeux,
 } from '../data-model-types'
 import { getOrCreateUserFromSession } from './../../app/_actions/get-or-create-user-from-session'
 
@@ -229,6 +230,9 @@ interface AppContextType {
 
   prototypeContext: PrototypeContext
   setPrototypeContext: (prototypeContext: PrototypeContext) => void
+
+  activeBillingOrg: OrgPartDeux | null
+  setActiveBillingOrg: (org: OrgPartDeux) => void
 }
 
 const AppContext = createContext<AppContextType | null>(null)
@@ -266,6 +270,10 @@ export function AppProvider({ children }: AppProviderProps) {
     activeOrg: null,
   })
 
+  const [activeBillingOrg, setActiveBillingOrg] = useState<OrgPartDeux | null>(
+    null,
+  )
+
   const value = {
     user,
     setUser,
@@ -281,6 +289,8 @@ export function AppProvider({ children }: AppProviderProps) {
     setRepoConfig,
     prototypeContext,
     setPrototypeContext,
+    activeBillingOrg,
+    setActiveBillingOrg,
   }
 
   const { data: session } = useSession()

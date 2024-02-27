@@ -3,11 +3,18 @@ import Joi from 'joi'
 // TODO: Consider if I want the pattern of `user:${userId}:project:${projectId}`
 // or `project:${projectId}:user:${userId}` as right now I use both patterns
 
-// TODO: Test
-export const userKey = (email: string) => `user:${email}`
+
+// TOOD: Test
+export const globalOrgIdsSetKey = () => `global:org:ids`
 
 // TODO: Test
-export const userEmailsSetKey = () => `user:userEmails`
+export const globalUserEmailsSetKey = () => `global:user:emails`
+
+// TODO: Test
+export const orgKey = (orgId: string) => `org:${orgId}`
+
+// TODO: Test
+export const userKey = (email: string) => `user:${email}`
 
 // TODO: Test
 export const userProjectKey = (userId: string, projectId: string) => `user:${userId}:project:${projectId}`
