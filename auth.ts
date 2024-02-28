@@ -101,9 +101,10 @@ export const {
         return
       }
 
-      // Start by looking for a user in our DB...
       try {
+        // Start by looking for a user in our DB...
         const retrievedUser = await getUser(profile.email)
+
         // If we do have one then update the last signed in at date
         retrievedUser.lastSignedInAt = new Date()
         await updateUser(retrievedUser)
@@ -116,41 +117,20 @@ export const {
             ...baseSaraObject,
 
             // User properties
-            email: profile.email as string,
+            email: profile.email,
             orgIds: [],
-            username: (profile as any).login,
+            username: profile.login as string,
             lastSignedInAt: baseSaraObject.createdAt,
           }
 
           await createUser(newUser)
 
           return
-        } else {
-          throw error
         }
+
+        // If we didn't find the specific user doesn't exist error then re-throw
+        throw error
       }
-
-      // If we don't have one create it...
-      // if (!retrievedUser) {
-      //   const { email, login: username } = retrievedUser
-      //   const baseSaraObject = createBaseSaraObject()
-
-      //   const newUser: UserPartDeux = {
-      //     // BaseSaraObject properties
-      //     ...baseSaraObject,
-
-      //     // User properties
-      //     email,
-      //     orgIds: [],
-      //     username,
-      //     lastSignedInAt: baseSaraObject.createdAt,
-      //   }
-
-      //   await createUser(newUser)
-
-      //   return
-      // }
-
     }
   },
   pages: {
