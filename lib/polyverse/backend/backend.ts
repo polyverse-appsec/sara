@@ -56,10 +56,11 @@ function createSignedHeader(email: string): SignedHeader {
  * @returns {Promise<string[]>} Promise of an array of strings. Array will be empty in the event of an error.
  */
 export async function getFileInfo(
-  repo: Repository,
+  projectName: string,
+  primaryDataSource: Repository,
   email: string,
 ): Promise<ProjectDataReference[]> {
-  const url = `${USER_SERVICE_URI}/api/user_project/${repo.orgId}/${repo.name}/data_references`
+  const url = `${USER_SERVICE_URI}/api/user_project/${primaryDataSource.orgId}/${projectName}/data_references`
 
   try {
     const signedHeader = createSignedHeader(email)
@@ -71,9 +72,12 @@ export async function getFileInfo(
     })
 
     if (!res.ok) {
+      const errText = await res.text()
       console.error(
-        `Got a failure response while trying to get file IDs for '${repo.orgId}/${repo.name} for ${email}' - Status: ${res.status}`,
+        `Got a failure response while trying to get file IDs for '${primaryDataSource.orgId}/${primaryDataSource.name} for ${email}' - Status: ${res.status} - Error: ${errText}`,
       )
+
+
       return []
     }
 

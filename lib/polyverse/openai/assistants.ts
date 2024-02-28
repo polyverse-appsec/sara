@@ -163,7 +163,7 @@ export async function configAssistant(
   //and getting the fileInfo for each repo
   let fileInfos: ProjectDataReference[] = []
   for (const repo of repos) {
-    const fileInfo = await getFileInfo(repo, email)
+    const fileInfo = await getFileInfo(project.name, repo, email)
     fileInfos = fileInfos.concat(fileInfo)
   }
 

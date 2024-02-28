@@ -16,8 +16,7 @@ export async function createNewProject(
   projectName: string,
   primaryDataSource: Repository,
   secondaryDataSources: Repository[],
-  user: User,
-  org: Organization,
+  user: User
 ): Promise<Project> {
   const projectId = `project:${projectName}:${user.id}`
   console.log(`PROJECT NAME IS ${projectName}`)
@@ -39,15 +38,6 @@ export async function createNewProject(
   const defaultTask = await createDefaultProjectTask(project, user.id)
 
   project.defaultTask = defaultTask
-
-  // moved assistant creation logic here so it would get added to vercel k/v
-  const fileInfos = await getFileInfoForProject(primaryDataSource, user)
-  project.assistant = await configAssistantForProject(
-    project,
-    fileInfos,
-    user,
-    org,
-  )
 
   const setKey = userProjectIdsSetKey(user.id)
   const itemKey = userProjectKey(user.id, projectId)

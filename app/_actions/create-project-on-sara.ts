@@ -11,8 +11,7 @@ import { createNewProject } from '../../lib/polyverse/project/project'
 export async function createProjectOnSara(
   projectName: string,
   primaryDataReference: Repository,
-  secondaryDataReferences: Repository[],
-  org: Organization,
+  secondaryDataReferences: Repository[]
 ): Promise<Project> {
   // Rather than delegate auth to functions we consume we protect ourselves and
   // do a check here before we consume each method as well in case there are any
@@ -28,7 +27,6 @@ export async function createProjectOnSara(
     projectName,
     primaryDataReference,
     secondaryDataReferences,
-    session.user,
-    org,
+    session.user
   )
 }

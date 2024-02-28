@@ -9,6 +9,7 @@ import {
 import { getFileInfo } from './../../lib/polyverse/backend/backend'
 
 export async function getFileInfoForProject(
+  projectName: string,
   repo: Repository,
   user: User,
 ): Promise<ProjectDataReference[]> {
@@ -18,5 +19,5 @@ export async function getFileInfoForProject(
     throw new Error('Unauthorized')
   }
 
-  return getFileInfo(repo, session.user.email)
+  return getFileInfo(projectName, repo, session.user.email)
 }
