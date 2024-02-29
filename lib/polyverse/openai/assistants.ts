@@ -84,6 +84,9 @@ export async function createAssistantWithFileInfosFromRepo(
 ): Promise<Assistant> {
   const { prompt, fileIDs } = mapFileInfoToPromptAndIDs(fileInfos)
 
+  console.log(`***** createAssistantWithFileInfosFromRepo - about to create assistant with this metadata: ${JSON.stringify(assistantMetadata)}`)
+  console.log(`***** createAssistantWithFileInfosFromRepo - about to create assistant with this name: ${createAssistantName(assistantMetadata)}`)
+
   return await oaiClient.beta.assistants.create({
     model: OPENAI_MODEL,
     name: createAssistantName(assistantMetadata),
