@@ -13,7 +13,7 @@ const createUserIdUserRepoTasksRepoIdKey = (
   projectName: string,
 ) => `user:${userId}:repo:tasks:${projectName}`
 
-export async function createTask(task: Task): Promise<Task> {
+export async function createTask(projectName: string, task: Task): Promise<Task> {
   const session = await auth()
 
   if (!session?.user?.id || task.userId !== session.user.id) {
@@ -31,7 +31,7 @@ export async function createTask(task: Task): Promise<Task> {
   await setTask(taskData)
 
   await kv.zadd(
-    createUserIdUserRepoTasksRepoIdKey(session.user.id, task.projectId),
+    createUserIdUserRepoTasksRepoIdKey(session.user.id, projectName),
     {
       score: +createdAt,
       member: `task:${id}`,

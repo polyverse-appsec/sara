@@ -31,25 +31,5 @@ export async function createDefaultProjectTask(
     subtasks: [],
   }
 
-  return createTask(defaultTask)
-}
-
-// Utility to create a default task for a user
-export async function createDefaultUserTask(user: User): Promise<Task> {
-  const defaultTask: Task = {
-    id: '', // Generate an ID or leave it for the createTask function to handle
-    title: `Task for ${user.username}`,
-    description: `Default task for user ${user.username}`,
-    createdAt: new Date(),
-    userId: user.id,
-    projectId: '', // Set this if you have a default repository for the user
-    chats: [],
-    subtasks: [],
-  }
-
-  if (user.defaultTask) {
-    return user.defaultTask // Return the existing default task if it exists
-  }
-
-  return createTask(defaultTask)
+  return createTask(project.name, defaultTask)
 }

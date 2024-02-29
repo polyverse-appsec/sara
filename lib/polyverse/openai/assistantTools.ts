@@ -101,6 +101,6 @@ export const submitTaskSteps = async (
       getBuildTaskInstanceClosure(userID, projectName),
     )
 
-    tasksToPersist.forEach((task: Task) => createTask(task))
+    tasksToPersist.forEach((task: Task) => createTask(projectName, task))
   }
 }
