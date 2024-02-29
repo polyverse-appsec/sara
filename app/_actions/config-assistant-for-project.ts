@@ -6,6 +6,7 @@ import { type Assistant } from 'openai/resources/beta/assistants/assistants'
 
 import { auth } from './../../auth'
 import {
+  OrgPartDeux,
   Organization,
   type Project,
   type ProjectDataReference,
@@ -47,7 +48,7 @@ export async function configAssistantForProject(
   project: Project,
   fileInfos: ProjectDataReference[],
   user: User,
-  org: Organization,
+  org: Organization | OrgPartDeux,
 ): Promise<Assistant> {
   const session = await auth()
 

@@ -97,9 +97,69 @@ export interface OrgPartDeux extends BaseSaraObject {
   projectIds: string[]
 }
 
+// TODO: Test this
+// TODO: Note we called this interface `ProjectPartDeux` while we iterate on
+// the data model design and the UX/UI. We preserve the original `Project`
+// interface for now until we have fully implemented enough details about
+// the project to cut over in which case we will delete `Project`.
+export interface ProjectPartDeux extends BaseSaraObject {
+  // Crucial to identity management/RBAC.
+  // Pertains to a billing organization (i.e. not a GitHub organization)
+  orgId: string
+
+  // Identifies which users have access to read/write this project
+  // and all goals/tasks that fall under it
+  userIds: string[]
+
+  name: string
+  description: string
+
+  primaryDataSourceId: string
+
+  // Will be empty if there are no secondary data sources
+  secondaryDataSourceIds: string[]
+
+  // Will always be populated with at least one goal which is
+  // the default "Learn More About Project" goal
+  goalIds: string[]
+}
+
+export interface ProjectDataSource extends BaseSaraObject {
+  // What project the source is associated with. Projects
+  // themselves maintain what are primary/secondary data sources.
+  parentProjectId: string
+
+  // Represents where the source may be fetched from. May not
+  // be fetchable immediately due to access controls put in place
+  // by those that maintain/house the source.
+  sourceUrl: string
+}
+
+export interface GoalPartDeux extends BaseSaraObject {
+  // Crucial to identity management/RBAC
+  // Pertains to a billing organization (i.e. not a GitHub organization)
+  orgId: string
+
+  name: string
+  description: string
+
+  // Chat may not exist - only if user initiates (sans default goal).
+  chatId: string
+
+  parentProjectId: string
+
+  // Considered to be all the top-level tasks that are associated with the goal
+  taskIds: string[]
+}
+
 export interface GitHubOrg {
   login: string
   avatarUrl: string
+}
+
+export interface GitHubRepo {
+  name: string,
+  htmlUrl: string
 }
 
 ////////////////////////////
@@ -133,7 +193,7 @@ export interface Goal extends BaseSaraObject {
 
   // Chats are user initiated (except for the default one assigned to each
   // project) and will be `null` to indicate it hasn't been initiated.
-  chatId: string | null
+  chatId: string
 
   parentProjectId: string
 

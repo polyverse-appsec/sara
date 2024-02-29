@@ -12,9 +12,9 @@ export const GET = auth(async (req: NextAuthRequest) => {
     })
   }
 
-  const octokit = new Octokit({ auth: auth.accessToken })
-
   try {
+    const octokit = new Octokit({ auth: auth.accessToken })
+
     const res = await octokit.request('GET /user/orgs', {
       headers: {
         'X-GitHub-Api-Version': '2022-11-28',

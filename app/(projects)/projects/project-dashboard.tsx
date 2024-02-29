@@ -1,58 +1,20 @@
 'use client'
 
 import React, { useState } from 'react'
+import { ProjectPartDeux } from 'lib/data-model-types'
 
 import { ProjectCreateTile } from './project-create-tile'
 import { ProjectDetailsTile } from './project-details-tile'
 
-const projects = [
-  {
-    id: '1',
-    name: 'Project One',
-    lastUpdatedAt: new Date('2023-04-01'),
-    status: 'active',
-  },
-  {
-    id: '2',
-    name: 'Project Two',
-    lastUpdatedAt: new Date('2023-04-01'),
-    status: 'active',
-  },
-  {
-    id: '3',
-    name: 'Project Three',
-    lastUpdatedAt: new Date('2023-04-01'),
-    status: 'active',
-  },
-  {
-    id: '4',
-    name: 'Project Four',
-    lastUpdatedAt: new Date('2023-04-01'),
-    status: 'active',
-  },
-  {
-    id: '5',
-    name: 'Project Five',
-    lastUpdatedAt: new Date('2023-04-01'),
-    status: 'active',
-  },
-  {
-    id: '6',
-    name: 'Project Six',
-    lastUpdatedAt: new Date('2023-04-01'),
-    status: 'active',
-  },
-]
+interface ProjectDashboardProps {
+  projects: ProjectPartDeux[]
+}
 
-const ProjectDashboard = () => {
-  // TODO: Or do I want to render a new page? Such as have a Link for ProjectCreateTile. Yes... See the notes from the ProjectCreation component
-  const [renderProjectCreation, setRenderProjectCreation] =
-    useState<boolean>(false)
-
+const ProjectDashboard = ({ projects }: ProjectDashboardProps) => {
   return (
     <div>
       <div className="mb-10">
-        <ProjectCreateTile onClick={() => setRenderProjectCreation(true)} />
+        <ProjectCreateTile />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {projects.map(({ id, name, lastUpdatedAt }) => (
@@ -60,7 +22,11 @@ const ProjectDashboard = () => {
             key={id}
             id={id}
             name={name}
-            lastUpdatedAt={lastUpdatedAt}
+            lastUpdatedAt={
+              typeof lastUpdatedAt === 'string'
+                ? lastUpdatedAt
+                : lastUpdatedAt.toDateString()
+            }
           />
         ))}
       </div>

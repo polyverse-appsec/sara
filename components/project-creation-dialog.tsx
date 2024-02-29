@@ -293,7 +293,6 @@ export const ProjectCreationDialog = ({
 
               try {
                 const [project, assistant] = await createProject(
-                  user,
                   org,
                   projectName,
                   primaryDataSource,

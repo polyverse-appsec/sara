@@ -6,7 +6,7 @@ import Link from 'next/link'
 interface ProjectTileProps {
   id: string
   name: string
-  lastUpdatedAt: Date
+  lastUpdatedAt: string
 }
 
 export const ProjectDetailsTile = ({
@@ -21,7 +21,7 @@ export const ProjectDetailsTile = ({
     >
       <div className="bg-white shadow-md rounded-lg p-6">
         <h3 className="text-lg font-semibold">{name}</h3>
-        <p className="text-sm text-gray-600">{lastUpdatedAt.toDateString()}</p>
+        <p className="text-sm text-gray-600">{lastUpdatedAt}</p>
       </div>
     </Link>
   )
