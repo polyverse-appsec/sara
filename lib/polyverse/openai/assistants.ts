@@ -16,7 +16,7 @@ export const ASSISTANT_METADATA_CREATOR = 'sara.frontend'
 export const getVersion = () => {
   // this should only be env variable or something runtime - not hardcoded
   // TBD: To fix this, update deployment code to set the version globally
-  return process.env.SARA_VERSION || '0.7.0'
+  return '0.7.0'
 }
 
 interface FileTypes {
@@ -195,4 +195,20 @@ export async function configAssistant(
     fileInfos,
     newAssistantMetadata,
   )
+}
+
+export async function deleteAssistant(assistantId: string) {
+  await oaiClient.beta.assistants.del(assistantId)
+}
+
+export async function deleteAssistantFiles(assistant: Assistant) {
+  if (!assistant.file_ids) {
+    return
+  }
+
+  const fileDeletePromises = assistant.file_ids.map((id) => oaiClient.beta.assistants.files.del(
+    assistant.id, id
+  ))
+
+  await Promise.all(fileDeletePromises)
 }

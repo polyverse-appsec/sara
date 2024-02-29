@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { deleteProject } from 'app/_actions/delete-project'
 import { getProjects } from 'app/_actions/get-projects'
 import toast from 'react-hot-toast'
 

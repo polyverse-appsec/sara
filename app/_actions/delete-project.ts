@@ -6,6 +6,9 @@ import { userProjectIdsSetKey, userProjectKey } from 'lib/polyverse/db/keys'
 import { auth } from './../../auth'
 import { type User } from './../../lib/data-model-types'
 import { deleteProject as deleteProjectBackend } from './../../lib/polyverse/backend/backend'
+import getCachedProjectUserFileInfos from './get-cached-project-user-file-infos'
+import { deleteCachedProjectUserFileInfos } from './delete-cached-project-user-file-infos'
+import { type AssistantMetadata, findAssistantFromMetadata, deleteAssistantFiles, deleteAssistant } from './../../lib/polyverse/openai/assistants'
 
 async function deleteProjectVercel(
   userId: string,
@@ -33,6 +36,26 @@ export const deleteProject = async (
 
   if (!session?.user?.id || user?.id !== session.user.id || !user.email) {
     throw new Error('Unauthorized')
+  }
+
+  // First clean up ancillary resources...
+  const cachedFileInfos = await getCachedProjectUserFileInfos(projectName, user)
+  await deleteCachedProjectUserFileInfos(user, projectName, cachedFileInfos)
+
+  // Secondaly delete any OpenAI resources...
+  const existingAssistantMetadata: AssistantMetadata = {
+    projectId: projectName,
+    userName: user.email!,
+    org: orgId,
+    creator: '', // ignore creator for search
+    version: '', // ignore version for search
+  }
+
+  const existingAssistant = await findAssistantFromMetadata(existingAssistantMetadata)
+
+  if (existingAssistant) {
+    await deleteAssistantFiles(existingAssistant)
+    await deleteAssistant(existingAssistant.id)
   }
 
   await deleteProjectBackend(orgId, projectName, user.email)
