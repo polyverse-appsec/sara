@@ -50,6 +50,7 @@ export function TaskDataLoader({ userId }: TaskDataLoaderProps) {
         const tasks = await getTasksForProject(project)
         setTasks(tasks)
       } catch (err) {
+        console.debug(`***** TaskDataLoader - fetchTasks error: ${err}`)
         toast.error('Failed to fetch tasks for project')
       }
     }

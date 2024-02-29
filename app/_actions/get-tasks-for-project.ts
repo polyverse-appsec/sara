@@ -12,7 +12,10 @@ const createUserIdUserRepoTasksRepoIdKey = (
 ) => `user:${userId}:repo:tasks:${projectName}`
 
 export const getTasksForProject = async (project: Project): Promise<Task[]> => {
+  console.debug(`***** getTasksForProject - project: ${JSON.stringify(project)}`)
   const session = await auth()
+
+  console.debug(`***** getTasksForProject - session: ${JSON.stringify(session)}`)
 
   if (!session?.user?.id || session.user.id !== project.userId) {
     throw new Error('Unauthorized')
