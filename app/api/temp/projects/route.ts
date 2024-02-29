@@ -12,6 +12,11 @@ import { createProjectOnSara } from './../../../../app/_actions/create-project-o
 import { getFileInfoForProject } from './../../../../app/_actions/get-file-info-for-repo'
 import { configAssistantForProject } from './../../../../app/_actions/config-assistant-for-project'
 
+// 02/29/24: Set for 90 seconds for debugging purposes when timing out on using
+// the `createProject` server action (which is 15 seconds by default). Possibly
+// in the future we will modify this as we learn more.
+export const maxDuration = 90
+
 export const POST = auth(async (req: NextAuthRequest) => {
   const { auth } = req
 
