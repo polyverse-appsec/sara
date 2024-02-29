@@ -30,9 +30,9 @@ export const GET = auth(async (req: NextAuthRequest) => {
     const project = await getProjectDb(requestedProjectId)
 
     if (!project) {
-        return new Response('Not Found', {
-            status: 404,
-        })
+      return new Response('Not Found', {
+        status: 404,
+      })
     }
 
     const foundUserId = project.userIds.find((userId) => userId === user.id)

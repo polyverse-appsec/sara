@@ -40,7 +40,7 @@ export const createProject = async (
   const project = await createProjectOnSara(
     projectName,
     primaryDataSource,
-    secondaryDataSources
+    secondaryDataSources,
   )
 
   // Prepare for OpenAI Assistant creation by gathering file information. Note
@@ -49,10 +49,19 @@ export const createProject = async (
   //
   // Getting file IDs back isn't an indication that the files have been fully
   // processed yet.
-  const fileInfos = await getFileInfoForProject(projectName, primaryDataSource, session.user)
+  const fileInfos = await getFileInfoForProject(
+    projectName,
+    primaryDataSource,
+    session.user,
+  )
 
   // Configure the OpenAI Assistant...
-  const assistant = await configAssistantForProject(project, fileInfos, session.user, org)
+  const assistant = await configAssistantForProject(
+    project,
+    fileInfos,
+    session.user,
+    org,
+  )
 
   return [project, assistant]
 }

@@ -77,7 +77,6 @@ export async function getFileInfo(
         `Got a failure response while trying to get file IDs for '${primaryDataSource.orgId}/${primaryDataSource.name} for ${email}' - Status: ${res.status} - Error: ${errText}`,
       )
 
-
       return []
     }
 

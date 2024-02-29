@@ -16,7 +16,7 @@ export async function createNewProject(
   projectName: string,
   primaryDataSource: Repository,
   secondaryDataSources: Repository[],
-  user: User
+  user: User,
 ): Promise<Project> {
   const projectId = `project:${projectName}:${user.id}`
   console.log(`PROJECT NAME IS ${projectName}`)

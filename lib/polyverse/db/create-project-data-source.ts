@@ -3,7 +3,9 @@ import { kv } from '@vercel/kv'
 import { type ProjectDataSource } from './../../data-model-types'
 import { globalProjectDataSourceIdsSetKey, projectDataSourceKey } from './keys'
 
-const createProjectDataSource = async (projectDataSource: ProjectDataSource): Promise<void> => {
+const createProjectDataSource = async (
+  projectDataSource: ProjectDataSource,
+): Promise<void> => {
   // Create the new project data source...
   const itemKey = projectDataSourceKey(projectDataSource.id)
 

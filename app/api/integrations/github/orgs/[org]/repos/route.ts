@@ -24,19 +24,19 @@ export const GET = auth(async (req: NextAuthRequest) => {
     const requestedOrgName = reqUrlSlices[reqUrlSlices.length - 2]
 
     const octokit = new Octokit({ auth: auth.accessToken })
-    
+
     // GitHub docs on how to paginate: https://docs.github.com/en/rest/using-the-rest-api/using-pagination-in-the-rest-api?apiVersion=2022-11-28
     const repos = await octokit.paginate(octokit.rest.repos.listForOrg, {
       org: requestedOrgName,
       per_page: 100,
-      headers: { 'X-GitHub-Api-Version': '2022-11-28' }
+      headers: { 'X-GitHub-Api-Version': '2022-11-28' },
     })
 
     // Map the data members returned by GitHub to a format more consistent
     // to what we use in our code (snake_case -> camelCase)
     const mappedRepos = repos.map((repo) => ({
       name: repo.name,
-      htmlUrl: repo.html_url
+      htmlUrl: repo.html_url,
     }))
 
     return new Response(JSON.stringify(mappedRepos), {

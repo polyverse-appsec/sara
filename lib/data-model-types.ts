@@ -158,7 +158,7 @@ export interface GitHubOrg {
 }
 
 export interface GitHubRepo {
-  name: string,
+  name: string
   htmlUrl: string
 }
 

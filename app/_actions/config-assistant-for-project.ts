@@ -6,8 +6,8 @@ import { type Assistant } from 'openai/resources/beta/assistants/assistants'
 
 import { auth } from './../../auth'
 import {
-  OrgPartDeux,
   Organization,
+  OrgPartDeux,
   type Project,
   type ProjectDataReference,
   type User,
