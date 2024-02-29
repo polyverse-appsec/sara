@@ -5,7 +5,7 @@ import { kv } from '@vercel/kv'
 import { type UserPartDeux } from './lib/data-model-types'
 import { createBaseSaraObject } from './lib/polyverse/db/utils'
 import createUser from './lib/polyverse/db/create-user'
-import getUser from './lib/polyverse/db/get-user'
+import getUser, { createUserNotFoundErrorString } from './lib/polyverse/db/get-user'
 import updateUser from 'lib/polyverse/db/update-user'
 
 export const {
@@ -104,12 +104,14 @@ export const {
       try {
         // Start by looking for a user in our DB...
         const retrievedUser = await getUser(profile.email)
+        console.debug(`Found existing user for ${profile.email} on sign in`)
 
         // If we do have one then update the last signed in at date
         retrievedUser.lastSignedInAt = new Date()
         await updateUser(retrievedUser)
       } catch (error) {
-        if ((error as Error).message == (`User with an email of ${profile.email} doesn't exist`)) {
+        if (error instanceof Error && error.message.includes(createUserNotFoundErrorString(profile.email))) {
+          console.debug(`Caught user not found error for ${profile.email} on sign in - attempting to create now`)
           const baseSaraObject = createBaseSaraObject()
 
           const newUser: UserPartDeux = {
