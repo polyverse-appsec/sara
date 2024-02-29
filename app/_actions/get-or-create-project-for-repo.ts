@@ -34,6 +34,6 @@ export async function getOrCreateProjectForRepo(
     return retrievedProject
   }
 
-  const newProject = await createNewProject(repo.name, repo, [], user, repo.org)
+  const newProject = await createNewProject(repo.name, repo, [], user)
   return newProject
 }
