@@ -5,5 +5,10 @@
             "preview": false,
             "prod": false
         }
+    },
+    "functions": {
+        "app/_actions/**/*": {
+            "maxDuration": 60
+        }
     }
 }
