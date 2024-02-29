@@ -292,11 +292,19 @@ export const ProjectCreationDialog = ({
                 .map((secondaryDataSource) => secondaryDataSource.repo)
 
               try {
+                console.debug(
+                  `***** ProjectCreateDialog - about to invoke createProject ${new Date()}`,
+                )
+
                 const [project, assistant] = await createProject(
                   org,
                   projectName,
                   primaryDataSource,
                   checkedSecondaryDataSources,
+                )
+
+                console.debug(
+                  `***** ProjectCreateDialog - finished invoking createProject ${new Date()}`,
                 )
 
                 resetProjectDetails()

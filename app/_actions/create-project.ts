@@ -22,6 +22,10 @@ export const createProject = async (
   primaryDataSource: Repository,
   secondaryDataSources: Repository[],
 ): Promise<[Project, Assistant]> => {
+  console.debug(
+    `***** server action createProject - started at ${new Date()}`,
+  )
+
   const session = await auth()
 
   if (!session?.user?.id || !session?.user?.email) {
@@ -36,11 +40,19 @@ export const createProject = async (
     secondaryDataSources,
   )
 
+  console.debug(
+    `***** server action createProject - finished invoking createProjectOnBoost at ${new Date()}`,
+  )
+
   // Then create the project on the Sara service...
   const project = await createProjectOnSara(
     projectName,
     primaryDataSource,
     secondaryDataSources,
+  )
+
+  console.debug(
+    `***** server action createProject - finished invoking createProjectOnSara at ${new Date()}`,
   )
 
   // Prepare for OpenAI Assistant creation by gathering file information. Note
@@ -55,12 +67,24 @@ export const createProject = async (
     session.user,
   )
 
+  console.debug(
+    `***** server action createProject - finished invoking getFileInfoForProject at ${new Date()}`,
+  )
+
   // Configure the OpenAI Assistant...
   const assistant = await configAssistantForProject(
     project,
     fileInfos,
     session.user,
     org,
+  )
+
+  console.debug(
+    `***** server action createProject - finished invoking configAssistantForProject at ${new Date()}`,
+  )
+
+  console.debug(
+    `***** server action createProject - returning at ${new Date()}`,
   )
 
   return [project, assistant]
