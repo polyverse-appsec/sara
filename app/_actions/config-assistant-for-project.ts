@@ -17,6 +17,7 @@ import {
   AssistantMetadata,
   createAssistantWithFileInfosFromRepo,
   findAssistantFromMetadata,
+  getVersion,
   updateAssistantPromptAndFiles,
 } from './../../lib/polyverse/openai/assistants'
 import getCachedProjectUserFileInfos from './get-cached-project-user-file-infos'
@@ -100,6 +101,7 @@ export async function configAssistantForProject(
     userName: user.email!,
     org: org.login,
     creator: ASSISTANT_METADATA_CREATOR,
+    version: getVersion()
   }
 
   // Otherwise just create a new assistant now with the file infos and cache
