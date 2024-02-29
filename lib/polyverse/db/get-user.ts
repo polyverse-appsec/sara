@@ -11,11 +11,7 @@ const getUser = async (email: string): Promise<UserPartDeux> => {
   const user = await kv.hgetall<UserPartDeux>(itemKey)
 
   if (!user) {
-    const error = new Error(createUserNotFoundErrorString(email))
-
-    console.log(`getUser error stack track: ${error.stack}`)
-
-    throw error
+    throw new Error(createUserNotFoundErrorString(email))
   }
 
   return user
