@@ -296,15 +296,47 @@ export const ProjectCreationDialog = ({
                   `***** ProjectCreateDialog - about to invoke createProject ${new Date()}`,
                 )
 
-                const [project, assistant] = await createProject(
+                const createBody = {
+                  name: projectName,
+                  primaryDataSource: primaryDataSource,
+                  secondaryDataSources: checkedSecondaryDataSources,
                   org,
-                  projectName,
-                  primaryDataSource,
-                  checkedSecondaryDataSources,
-                )
+                }
+
+                const res = await fetch('/api/temp/projects', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify(createBody),
+                })
+
+                if (!res.ok) {
+                  const errText = await res.text()
+
+                  throw new Error(
+                    `Failed to get a success response when creating project '${projectName}' because: ${errText}`,
+                  )
+                }
+
+                const { project, assistant } = (await res.json()) as {
+                  project: Project
+                  assistant: Assistant
+                }
 
                 console.debug(
                   `***** ProjectCreateDialog - finished invoking createProject ${new Date()}`,
+                )
+
+                console.debug(
+                  `***** ProjectCreateDialog - created project: ${JSON.stringify(
+                    project,
+                  )}`,
+                )
+                console.debug(
+                  `***** ProjectCreateDialog - created assistant: ${JSON.stringify(
+                    assistant,
+                  )}`,
                 )
 
                 resetProjectDetails()
