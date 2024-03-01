@@ -6,7 +6,7 @@ import {
   } from './../../../../lib/data-model-types'
 
 import { auth } from './../../../../auth'
-import { createProject as createProjectOnBoost } from './../../../../lib/polyverse/backend/backend'
+import { createProject as createProjectOnBoost, postFileInfoToGetFileInfo } from './../../../../lib/polyverse/backend/backend'
 import { createProjectOnSara } from './../../../../app/_actions/create-project-on-sara'
 import { getFileInfoForProject } from './../../../../app/_actions/get-file-info-for-repo'
 import { configAssistantForProject } from './../../../../app/_actions/config-assistant-for-project'
@@ -60,6 +60,12 @@ export const POST = auth(async (req: NextAuthRequest) => {
         `***** REST POST /temp/projects - finished invoking createProjectOnSara at ${new Date()}`,
     )
 
+    const tickledFileInfos = await postFileInfoToGetFileInfo(name, primaryDataSource, auth.user)
+
+    console.debug(
+      `***** REST POST /temp/projects - tickledFileInfos ${JSON.stringify(tickledFileInfos)}`,
+  )
+
     // Prepare for OpenAI Assistant creation by gathering file information. Note
     // this call needs to happen after we create the project on the Boost backend
     // in order to get file IDs back.
@@ -71,6 +77,10 @@ export const POST = auth(async (req: NextAuthRequest) => {
         primaryDataSource,
         auth.user,
     )
+
+    console.debug(
+      `***** REST POST /temp/projects - fileInfos ${JSON.stringify(fileInfos)}`,
+  )
 
     console.debug(
         `***** REST POST /temp/projects - finished invoking getFileInfoForProject at ${new Date()}`,

@@ -48,13 +48,6 @@ function createSignedHeader(email: string): SignedHeader {
   return header
 }
 
-/**
- * Gets the files IDs associated with a user and a Git repo.
- *
- * @param repo {string} Git URL for a repo.
- * @param email {string} Email associated with user.
- * @returns {Promise<string[]>} Promise of an array of strings. Array will be empty in the event of an error.
- */
 export async function getFileInfo(
   projectName: string,
   primaryDataSource: Repository,
@@ -93,6 +86,70 @@ export async function getFileInfo(
       //
       // Currently the call to
       // `GET /api/user_project/orgId/projectName/data_references` returns
+      // `last_updated` as a Unix timestamp in seconds. Lets convert it to
+      // milliseconds.
+      //
+      // Note we conditionally delete `last_updated` now as we made changes
+      // in the Boost Node backend service in commit `80ba0a` to move to
+      // camelCase. Now we are just protecting some backwards functionality in
+      // the event any day does come snake_cased.
+      if (mappedFileInfo.last_updated) {
+        delete mappedFileInfo.last_updated
+        mappedFileInfo.lastUpdatedAt = new Date(fileInfo.last_updated * 1000)
+      } else if (mappedFileInfo.lastUpdated) {
+        delete mappedFileInfo.lastUpdated
+        mappedFileInfo.lastUpdatedAt = new Date(fileInfo.lastUpdated * 1000)
+      }
+
+      return mappedFileInfo as ProjectDataReference
+    }) as ProjectDataReference[]
+  } catch (error) {
+    console.error(
+      'Error making a request or parsing a response for project ID: ',
+      error,
+    )
+  }
+  return []
+}
+
+export async function postFileInfoToGetFileInfo(
+  projectName: string,
+  primaryDataSource: Repository,
+  email: string,
+): Promise<ProjectDataReference[]> {
+  const url = `${USER_SERVICE_URI}/api/user_project/${primaryDataSource.orgId}/${projectName}/data_references`
+
+  try {
+    const signedHeader = createSignedHeader(email)
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        ...signedHeader,
+      },
+    })
+
+    if (!res.ok) {
+      const errText = await res.text()
+      console.error(
+        `${primaryDataSource.orgId}/${primaryDataSource.name} for ${email}' - Status: ${res.status} - Error: ${errText}`,
+      )
+
+      return []
+    }
+
+    const fileInfos = await res.json()
+
+    // Convert the response format from the Boost Node backend to what we expect
+    // for consumption in Sara
+    return fileInfos.map((fileInfo: any) => {
+      const mappedFileInfo = {
+        ...fileInfo,
+      } as any
+
+      // Map any snaked_cased data members to camelCased data members.
+      //
+      // Currently the call to
+      // `POST /api/user_project/orgId/projectName/data_references` returns
       // `last_updated` as a Unix timestamp in seconds. Lets convert it to
       // milliseconds.
       //

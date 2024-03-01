@@ -6,7 +6,6 @@
 
 import { kv } from '@vercel/kv'
 import { configAssistantForProject } from 'app/_actions/config-assistant-for-project'
-import { getFileInfoForProject } from 'app/_actions/get-file-info-for-repo'
 
 import { Organization, Project, Repository, User } from '../../data-model-types'
 import { userProjectIdsSetKey, userProjectKey } from '../db/keys'
