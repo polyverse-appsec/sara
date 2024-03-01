@@ -3,6 +3,9 @@
 import React from 'react'
 import { Assistant } from 'openai/resources/beta/assistants/assistants'
 
+import { configAssistantForProject } from './../app/_actions/config-assistant-for-project'
+import { createProjectOnBoost } from './../app/_actions/create-project-on-boost'
+import { getFileInfoForProject } from './../app/_actions/get-file-info-for-repo'
 import {
   type Organization,
   type Project,
@@ -44,7 +47,11 @@ const renderProjectSelector = (
   user: User | null,
   org: Organization | null,
   initialProject: Project | null,
-  handleProjectChange: (project: Project) => void,
+  handleProjectChange: (
+    user: User,
+    org: Organization,
+    project: Project,
+  ) => void,
 ) => {
   if (!user || !org || !org.login) {
     return null
@@ -154,15 +161,57 @@ export const ProjectManager = () => {
     setOrgConfig(orgConfig)
   }
 
-  const handleProjectChange = async (project: Project) => {
-    console.debug(`Project changed to: ${project.name}`)
+  const handleProjectChange = async (
+    user: User,
+    org: Organization,
+    project: Project,
+  ) => {
+    try {
+      console.debug(`Project changed to: ${project.name}`)
 
-    // TODO: Probbly need a helper method to build the status, statusInfo, and errorInfo and default to errorInfo being null
-    projectConfig.project = project as SaraProject
-    projectConfig.status = 'CONFIGURED'
-    projectConfig.statusInfo = 'Project Data Discovered'
-    projectConfig.errorInfo = null
-    setProjectConfig(projectConfig)
+      projectConfig.project = project as SaraProject
+      projectConfig.status = 'CONFIGURING'
+      projectConfig.statusInfo = 'Learning More About Your Project'
+      projectConfig.errorInfo = null
+      setProjectConfig(projectConfig)
+
+      // We await this to ensure that any calls to the backend have data
+      // references - whether they files have been processed or not. If
+      // creation actually does happen this will take ~15 seconds. Anything
+      // more should be considered a critical bug.
+      await createProjectOnBoost(project.name, project.mainRepository, [])
+      const fileInfos = await getFileInfoForProject(
+        project.name,
+        project.mainRepository,
+        user,
+      )
+      const assistant = await configAssistantForProject(
+        project,
+        fileInfos,
+        user,
+        org,
+      )
+
+      const lastSynchronizedAt = new Date()
+
+      projectConfig.project.lastSynchronizedAt = lastSynchronizedAt
+      projectConfig.project.assistant = assistant
+      projectConfig.status = 'CONFIGURED'
+      projectConfig.statusInfo = `Synchronized Last: ${formatDateForLastSynchronizedAt(
+        lastSynchronizedAt,
+      )}`
+      projectConfig.errorInfo = null
+
+      setProjectConfig(projectConfig)
+    } catch (err) {
+      // Return the `project` on `projectConfig` to maintain the reference for
+      // future iterations of this function
+      projectConfig.project = project as SaraProject
+      projectConfig.status = 'ERROR'
+      projectConfig.statusInfo = ''
+      projectConfig.errorInfo = 'Error Synchronizing Sara For Project'
+      setProjectConfig(projectConfig)
+    }
   }
 
   const handleProjectDeletion = (projectName: string) => {

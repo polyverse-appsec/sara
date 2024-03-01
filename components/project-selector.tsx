@@ -23,7 +23,7 @@ interface ProjectSelectorProps {
   org: Organization
 
   initialProject: Project | null
-  onProjectChanged: (project: Project) => void
+  onProjectChanged: (user: User, org: Organization, project: Project) => void
 }
 
 // TODO: Work items to make functional
@@ -74,7 +74,7 @@ export const ProjectSelector = ({
             <DropdownMenuItem
               key={project.name}
               onSelect={(event) => {
-                onProjectChanged(project)
+                onProjectChanged(user, org, project)
               }}
             >
               <span className="ml-2">{project.name}</span>

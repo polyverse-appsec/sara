@@ -53,6 +53,9 @@ export const POST = auth(async (req: NextAuthRequest) => {
         secondaryDataSources,
     )
 
+    console.log(
+      `***** REST POST /temp/projects - finished invoking createProjectOnSara - project: ${JSON.stringify(project)}`,
+  )
     console.debug(
         `***** REST POST /temp/projects - finished invoking createProjectOnSara at ${new Date()}`,
     )
@@ -64,7 +67,8 @@ export const POST = auth(async (req: NextAuthRequest) => {
     // Getting file IDs back isn't an indication that the files have been fully
     // processed yet.
     const fileInfos = await getFileInfoForProject(
-        project,
+        name,
+        primaryDataSource,
         auth.user,
     )
 

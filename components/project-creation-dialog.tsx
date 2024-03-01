@@ -8,7 +8,6 @@ import Joi from 'joi'
 import { Assistant } from 'openai/resources/beta/assistants/assistants'
 import toast from 'react-hot-toast'
 
-import { createProject } from '../app/_actions/create-project'
 import {
   type Organization,
   type Project,
