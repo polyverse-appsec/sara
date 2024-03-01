@@ -16,7 +16,7 @@ export const ASSISTANT_METADATA_CREATOR = 'sara.frontend'
 export const getVersion = () => {
   // this should only be env variable or something runtime - not hardcoded
   // TBD: To fix this, update deployment code to set the version globally
-  return '0.7.0'
+  return '0.7.1'
 }
 
 interface FileTypes {
