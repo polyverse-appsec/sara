@@ -16,11 +16,12 @@ const useDataWatcher = () => {
 
   useEffect(() => {
     const { project } = projectConfig
+    const { repo } = repoConfig
     const { organization } = orgConfig
 
     // Do a bunch of narrowing and don't run if all of the Sara config isn't
     // fully prepared
-    if (!project || !user || !organization) {
+    if (!project || !repo || !user || !organization) {
       console.debug(
         'Skpping AI update on repo change as Sara config not fully prepared yet',
       )
