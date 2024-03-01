@@ -139,7 +139,7 @@ const ProjectCreate = () => {
               router.push(`/projects/${project.id}`)
             } catch (err) {
               console.debug(
-                `Caught error when trying to create a billing: ${err}`,
+                `Caught error when trying to create a billing organization: ${err}`,
               )
 
               setSaveButtonEnabled(true)
