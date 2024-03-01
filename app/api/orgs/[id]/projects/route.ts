@@ -9,9 +9,9 @@ import { createBaseSaraObject } from 'lib/polyverse/db/utils'
 import { NextAuthRequest } from 'next-auth/lib'
 
 import { auth } from '../../../../../auth'
-import { createProject } from './../../../../../lib/polyverse/backend/backend'
+import { createProject as createProjectOnBoost } from './../../../../../lib/polyverse/backend/backend'
 import createGoal from './../../../../../lib/polyverse/db/create-goal'
-import createProjectDb from './../../../../../lib/polyverse/db/create-project'
+import createProject from './../../../../../lib/polyverse/db/create-project'
 import createProjectDataSource from './../../../../../lib/polyverse/db/create-project-data-source'
 import getOrg from './../../../../../lib/polyverse/db/get-org'
 import getProject from './../../../../../lib/polyverse/db/get-project'
@@ -79,7 +79,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
       primaryDataSource: GitHubRepo[]
     }
 
-    // TODO: Add validation of the data that we receive
+    // TODO: Add more rigourous validation of the data that we receive
 
     const projectPromises = org.projectIds.map((projectId) =>
       getProject(projectId),
@@ -93,6 +93,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
         status: 400,
       })
     }
+
     // TODO: Remnove this temporary instance of the old Repository data
     // model object we use
     const oldTypedPrimaryDataSource: Repository = {
@@ -115,7 +116,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
       },
     }
 
-    await createProject(name, oldTypedPrimaryDataSource, [], user.email)
+    await createProjectOnBoost(name, oldTypedPrimaryDataSource, [], user.email)
 
     // Start by building up the objects we will create in the DB.
     // Make sure to cross-reference the Project and the Project Data Source
@@ -171,7 +172,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
     // Write the new objects to the DB. Start with the child objects first.
     await createProjectDataSource(projectDataSource)
     await createGoal(goal)
-    await createProjectDb(project)
+    await createProject(project)
 
     // Update other objects with references to these newly created objects...
     org.projectIds = [...org.projectIds, project.id]
