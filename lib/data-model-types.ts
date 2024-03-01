@@ -236,8 +236,8 @@ export interface Project extends Record<string, any> {
   name: string
   description: string
   userId: string
-  mainRepositoryId: string
-  referenceRepositoriesIds?: string[]
+  mainRepository: Repository
+  referenceRepositories?: Repository[]
   tasks?: Task[]
   defaultTask?: Task
   assistant?: Assistant

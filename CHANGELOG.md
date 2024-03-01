@@ -20,6 +20,7 @@
 - Fix issue where OpenAI resources not cleaned up on project deletion
 - Fix issue where version wasn't being used in the naming/metadata of OpenAI assistants
 - Fix issue where file IDs weren't present on created OpenAI assistants
+- Fix issue where tasks weren't getting deleted when a project was deleted
 
 ## Version 0.7.0: February 22nd, 2024
 

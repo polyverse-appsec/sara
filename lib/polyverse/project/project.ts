@@ -28,11 +28,9 @@ export async function createNewProject(
   project.description = primaryDataSource.description
   project.userId = user.id
   // TODO: Change `mainRepositoryId` -> `primaryDataSourceId` per data model design
-  project.mainRepositoryId = primaryDataSource.id
+  project.mainRepository = primaryDataSource
   // TODO: Change `referenceRepositories` -> `secondaryDataSourceIds` per data model design
-  project.referenceRepositoriesIds = secondaryDataSources.map(
-    (secondaryDataSource) => secondaryDataSource.id,
-  )
+  project.referenceRepositories = secondaryDataSources
   project.tasks = []
 
   const defaultTask = await createDefaultProjectTask(project, user.id)

@@ -90,7 +90,7 @@ const OrgCreate = () => {
                   router.push(`/orgs/${org.id}`)
                 } catch (err) {
                   console.debug(
-                    `Caught error when trying to create a billing: ${err}`,
+                    `Caught error when trying to create a billing organization: ${err}`,
                   )
 
                   setSaveButtonEnabled(true)

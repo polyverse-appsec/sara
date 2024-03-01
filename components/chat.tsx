@@ -119,7 +119,11 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
   ): Promise<string | null | undefined> => {
     try {
       if (project && user && organization) {
-        const fileInfos = await getFileInfoForProject(project, user)
+        const fileInfos = await getFileInfoForProject(
+          project.name,
+          project.mainRepository,
+          user,
+        )
         const assistant = await configAssistantForProject(
           project,
           fileInfos,

@@ -7,7 +7,6 @@ import { ThemeProviderProps } from 'next-themes/dist/types'
 
 import { SidebarProvider } from './..//lib/hooks/use-sidebar'
 import { AppProvider } from './../lib/hooks/app-context'
-import { GlobalContextWatcher } from './global-context-watcher'
 import { TooltipProvider } from './ui/tooltip'
 
 export function Providers({ children, ...props }: ThemeProviderProps) {
@@ -18,11 +17,9 @@ export function Providers({ children, ...props }: ThemeProviderProps) {
         <AppProvider>
           {' '}
           {/* New AppProvider added here */}
-          <GlobalContextWatcher>
-            <SidebarProvider>
-              <TooltipProvider>{children}</TooltipProvider>
-            </SidebarProvider>
-          </GlobalContextWatcher>
+          <SidebarProvider>
+            <TooltipProvider>{children}</TooltipProvider>
+          </SidebarProvider>
         </AppProvider>
       </SessionProvider>
     </NextThemesProvider>

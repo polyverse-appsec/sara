@@ -629,6 +629,8 @@ describe(`Data Model Schema Validation`, function () {
     it(`Fails if 'chatId' is 'null'`, function () {
       const createdAt = new Date()
 
+      // @ts-expect-error Purposely exclude properties or set to
+      // disallowed TypeScript values for testing schema validation
       const goal = {
         id: 'someValidId',
         createdAt,
