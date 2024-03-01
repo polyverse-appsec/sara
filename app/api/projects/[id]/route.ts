@@ -122,8 +122,7 @@ export const DELETE = auth(async (req: NextAuthRequest) => {
     const deleteGoalPromises = project.goalIds.map((goalId) => deleteGoal(goalId))
     await Promise.all(deleteGoalPromises)
 
-    const deleteProjectDataSourcePromises = project.secondaryDataSourceIds.map((dataSourceId) => deleteProjectDataSource(dataSourceId))
-    deleteProjectDataSourcePromises.push(deleteProjectDataSource(project.primaryDataSourceId))
+    const deleteProjectDataSourcePromises = project.projectDataSourceIds.map((projectDataSourceId) => deleteProjectDataSource(projectDataSourceId))
     await Promise.all(deleteProjectDataSourcePromises)
 
     // Finally delete the project on the Boost backend

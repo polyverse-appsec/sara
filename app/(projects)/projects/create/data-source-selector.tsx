@@ -15,7 +15,7 @@ interface DataSourceCheckboxState {
 
 interface DataSourceSelectorProps {
   orgName: string
-  setControlledPrimaryDataSources: (gitHubRepos: GitHubRepo[]) => void
+  setControlledProjectDataSources: (gitHubRepos: GitHubRepo[]) => void
 }
 
 const createDataSourceCheckboxStates = (
@@ -34,7 +34,7 @@ const createDataSourceCheckboxStates = (
 
 const DataSourceSelector = ({
   orgName,
-  setControlledPrimaryDataSources,
+  setControlledProjectDataSources,
 }: DataSourceSelectorProps) => {
   const [dataSourceCheckboxStates, setDataSourceCheckboxStates] = useState<
     Record<string, DataSourceCheckboxState>
@@ -96,10 +96,16 @@ const DataSourceSelector = ({
 
                   const selectedDataSources = Object.values(
                     dataSourceCheckboxStates,
-                  ).map(
-                    (dataSourceCheckboxState) => dataSourceCheckboxState.repo,
                   )
-                  setControlledPrimaryDataSources(selectedDataSources)
+                    .filter(
+                      (dataSourceCheckboxState) =>
+                        dataSourceCheckboxState.checked === true,
+                    )
+                    .map(
+                      (dataSourceCheckboxState) => dataSourceCheckboxState.repo,
+                    )
+
+                  setControlledProjectDataSources(selectedDataSources)
                 }}
               >
                 <Checkbox.Indicator>

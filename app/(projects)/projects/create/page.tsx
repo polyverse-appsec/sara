@@ -19,7 +19,7 @@ const ProjectCreate = () => {
   const router = useRouter()
   const { activeBillingOrg } = useAppContext()
 
-  const [controlledPrimaryDataSources, setControlledPrimaryDataSources] =
+  const [controlledProjectDataSources, setControlledProjectDataSources] =
     useState<GitHubRepo[]>([])
   const [projectName, setProjectName] = useState<string>('')
   const [projectDescription, setProjectDescription] = useState<string>('')
@@ -68,8 +68,8 @@ const ProjectCreate = () => {
             </h3>
             <DataSourceSelector
               orgName={activeBillingOrg.name}
-              setControlledPrimaryDataSources={(gitHubRepos) =>
-                setControlledPrimaryDataSources(gitHubRepos)
+              setControlledProjectDataSources={(gitHubRepos) =>
+                setControlledProjectDataSources(gitHubRepos)
               }
             />
           </div>
@@ -97,8 +97,8 @@ const ProjectCreate = () => {
             }
 
             if (
-              !controlledPrimaryDataSources ||
-              controlledPrimaryDataSources.length === 0
+              !controlledProjectDataSources ||
+              controlledProjectDataSources.length === 0
             ) {
               toast.error(`Please select a primary data source`)
               setSaveButtonEnabled(true)
@@ -109,7 +109,7 @@ const ProjectCreate = () => {
               const projectBody = {
                 name: projectName,
                 description: projectDescription,
-                primaryDataSource: controlledPrimaryDataSources,
+                projectDataSources: controlledProjectDataSources,
               }
 
               const res = await fetch(

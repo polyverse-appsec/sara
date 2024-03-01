@@ -73,10 +73,10 @@ export const POST = auth(async (req: NextAuthRequest) => {
 
     // Validate that the name of the project doesn't already exist as
     // another project within the organization
-    const { name, description, primaryDataSource } = (await req.json()) as {
+    const reqBody = (await req.json()) as {
       name: string
       description: string
-      primaryDataSource: GitHubRepo[]
+      projectDataSources: GitHubRepo[]
     }
 
     // TODO: Add more rigourous validation of the data that we receive
@@ -86,7 +86,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
     )
     const projects = await Promise.all(projectPromises)
 
-    const duplicateProject = projects.find((project) => project.name === name)
+    const duplicateProject = projects.find((project) => project.name === reqBody.name)
 
     if (duplicateProject) {
       return new Response(`Project with a name of '${name}' already exists`, {
@@ -94,14 +94,14 @@ export const POST = auth(async (req: NextAuthRequest) => {
       })
     }
 
-    // TODO: Remnove this temporary instance of the old Repository data
-    // model object we use
-    const oldTypedPrimaryDataSource: Repository = {
+    // TODO: Remnove these temporary instances of the old Repository data
+    // model object once we fully transfer over to the new UI and data model
+    const oldTypedProjectDataSources = reqBody.projectDataSources.map((projectDataSource) => ({
       // These are data members that are actually consumed by
       // `createProject`
       orgId: org.name,
       // TODO: Simply take the first primary data source for now since we don't have the support for multiple
-      html_url: primaryDataSource[0].htmlUrl,
+      html_url: projectDataSource.htmlUrl,
 
       // These aren't data members that are used by `createProject` so
       // just bullshit the values for now since this will be removed
@@ -114,16 +114,23 @@ export const POST = auth(async (req: NextAuthRequest) => {
         login: 'someLoginName',
         avatar_url: 'someAvatarUrl',
       },
-    }
+    } as Repository))
 
-    await createProjectOnBoost(name, oldTypedPrimaryDataSource, [], user.email)
+    // TODO: Since we still rely on the old data model for the usage of this API
+    // just pass the first project data source as the primary one and all the
+    // others as secondary ones. Once we switch over to the new UI and data
+    // model we will need to fix this.
+    const secondaryDataSources = oldTypedProjectDataSources.length > 1 ? oldTypedProjectDataSources.slice(1) : []
+    await createProjectOnBoost(reqBody.name, oldTypedProjectDataSources[0], secondaryDataSources, user.email)
 
     // Start by building up the objects we will create in the DB.
     // Make sure to cross-reference the Project and the Project Data Source
     // IDs that we will be persisting to the DB.
     const projectBaseSaraObject = createBaseSaraObject()
-    const projectDataSourceBaseSaraObject = createBaseSaraObject()
+    const projectDataSourceBaseSaraObjects = oldTypedProjectDataSources.map(() => createBaseSaraObject())
     const goalBaseSaraObject = createBaseSaraObject()
+
+    const projectDataSourceIds = projectDataSourceBaseSaraObjects.map((projectDataSourceBaseSaraObject) => projectDataSourceBaseSaraObject.id)
 
     const project: ProjectPartDeux = {
       // BaseSaraObject properties
@@ -132,23 +139,21 @@ export const POST = auth(async (req: NextAuthRequest) => {
       // Project properties
       orgId: org.id,
       userIds: [user.id],
-      name,
-      description,
-      primaryDataSourceId: projectDataSourceBaseSaraObject.id,
-      secondaryDataSourceIds: [],
+      name: reqBody.name,
+      description: reqBody.description,
+      projectDataSourceIds,
       goalIds: [goalBaseSaraObject.id],
       closedAt: null,
     }
 
-    // TODO: Create projectDataSources for eact project we get in the request
-    const projectDataSource: ProjectDataSource = {
+    const projectDataSources = reqBody.projectDataSources.map((projectDataSource, projectDataSourceIndex) => ({
       // BaseSaraObject properties
-      ...projectDataSourceBaseSaraObject,
+      ...projectDataSourceBaseSaraObjects[projectDataSourceIndex],
 
       // Project Data Source properties
       parentProjectId: projectBaseSaraObject.id,
-      sourceUrl: primaryDataSource[0].htmlUrl,
-    }
+      sourceUrl: projectDataSource.htmlUrl,
+    } as ProjectDataSource))
 
     // Build up a default project goal to be added to our project when we
     // create it
@@ -170,7 +175,8 @@ export const POST = auth(async (req: NextAuthRequest) => {
     }
 
     // Write the new objects to the DB. Start with the child objects first.
-    await createProjectDataSource(projectDataSource)
+    const createProjectDataSourcePromises = projectDataSources.map((projectDataSource) => createProjectDataSource(projectDataSource))
+    await Promise.all(createProjectDataSourcePromises)
     await createGoal(goal)
     await createProject(project)
 

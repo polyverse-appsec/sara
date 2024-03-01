@@ -114,10 +114,7 @@ export interface ProjectPartDeux extends BaseSaraObject {
   name: string
   description: string
 
-  primaryDataSourceId: string
-
-  // Will be empty if there are no secondary data sources
-  secondaryDataSourceIds: string[]
+  projectDataSourceIds: string[]
 
   // Will always be populated with at least one goal which is
   // the default "Learn More About Project" goal
