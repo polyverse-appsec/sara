@@ -62,8 +62,7 @@ export const createProject = async (
   // Getting file IDs back isn't an indication that the files have been fully
   // processed yet.
   const fileInfos = await getFileInfoForProject(
-    projectName,
-    primaryDataSource,
+    project,
     session.user,
   )
 

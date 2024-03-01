@@ -36,6 +36,7 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
 
   const {
     projectConfig,
+    // we are not using this anymore i don't think
     repoConfig: { repo },
     orgConfig: { organization },
   } = saraConfig
@@ -117,8 +118,8 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
     message: Message | CreateMessage,
   ): Promise<string | null | undefined> => {
     try {
-      if (project && project.id && repo && user && organization) {
-        const fileInfos = await getFileInfoForProject(project.name, repo, user)
+      if (project && user && organization) {
+        const fileInfos = await getFileInfoForProject(project, user)
         const assistant = await configAssistantForProject(
           project,
           fileInfos,
@@ -138,6 +139,8 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
         projectConfig.errorInfo = null
 
         setProjectConfig(projectConfig)
+      } else {
+        console.error(`No project, user, and/or organization found`)
       }
     } catch (err) {
       // We just log here and don't block the chat request from being processed

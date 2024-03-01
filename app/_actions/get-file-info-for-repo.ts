@@ -2,6 +2,7 @@
 
 import { auth } from './../../auth'
 import {
+  Project,
   type ProjectDataReference,
   type Repository,
   type User,
@@ -9,8 +10,7 @@ import {
 import { getFileInfo } from './../../lib/polyverse/backend/backend'
 
 export async function getFileInfoForProject(
-  projectName: string,
-  repo: Repository,
+  project: Project,
   user: User,
 ): Promise<ProjectDataReference[]> {
   const session = await auth()
@@ -19,5 +19,5 @@ export async function getFileInfoForProject(
     throw new Error('Unauthorized')
   }
 
-  return getFileInfo(projectName, repo, session.user.email)
+  return getFileInfo(project, session.user.email)
 }

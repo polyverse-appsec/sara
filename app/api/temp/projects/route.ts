@@ -65,8 +65,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
     // Getting file IDs back isn't an indication that the files have been fully
     // processed yet.
     const fileInfos = await getFileInfoForProject(
-        name,
-        primaryDataSource,
+        project,
         auth.user,
     )
 

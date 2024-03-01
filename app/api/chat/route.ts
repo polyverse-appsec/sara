@@ -58,6 +58,7 @@ export async function POST(req: Request) {
     })
   }
 
+  console.log(`JSON BODY IS: ${JSON.stringify(jsonBody)}`)
   const { id, messages, project, task } = jsonBody
 
   // TODO: If our message stream fails then we never persist

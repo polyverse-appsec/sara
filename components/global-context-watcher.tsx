@@ -45,7 +45,7 @@ const useDataWatcher = () => {
         // creation actually does happen this will take ~15 seconds. Anything
         // more should be considered a critical bug.
         await createProjectOnBoost(repo.name, repo, [])
-        const fileInfos = await getFileInfoForProject(project.name, repo, user)
+        const fileInfos = await getFileInfoForProject(project, user)
         const assistant = await configAssistantForProject(
           project,
           fileInfos,
