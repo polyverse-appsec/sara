@@ -6,7 +6,6 @@ import {
   } from './../../../../lib/data-model-types'
 
 import { auth } from './../../../../auth'
-// import { createProjectOnBoost } from './../../../../app/_actions/create-project-on-boost'
 import { createProject as createProjectOnBoost } from './../../../../lib/polyverse/backend/backend'
 import { createProjectOnSara } from './../../../../app/_actions/create-project-on-sara'
 import { getFileInfoForProject } from './../../../../app/_actions/get-file-info-for-repo'

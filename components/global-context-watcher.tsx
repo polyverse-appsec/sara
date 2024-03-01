@@ -44,7 +44,7 @@ const useDataWatcher = () => {
         // references - whether they files have been processed or not. If
         // creation actually does happen this will take ~15 seconds. Anything
         // more should be considered a critical bug.
-        await createProjectOnBoost(repo.name, repo, [])
+        await createProjectOnBoost(project.name, project.mainRepository, [])
         const fileInfos = await getFileInfoForProject(project, user)
         const assistant = await configAssistantForProject(
           project,
@@ -82,7 +82,7 @@ const useDataWatcher = () => {
     updateAIOnRepositoryChange()
 
     return () => timeoutIds.forEach(clearTimeout)
-  }, [repoConfig])
+  }, [projectConfig])
 }
 
 interface GlobalContextWatcherProps {
