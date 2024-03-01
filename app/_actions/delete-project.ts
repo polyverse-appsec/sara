@@ -10,9 +10,39 @@ import getCachedProjectUserFileInfos from './get-cached-project-user-file-infos'
 import { deleteCachedProjectUserFileInfos } from './delete-cached-project-user-file-infos'
 import { type AssistantMetadata, findAssistantFromMetadata, deleteAssistantFiles, deleteAssistant } from './../../lib/polyverse/openai/assistants'
 
+const createUserIdUserRepoTasksRepoIdKey = (
+    userId: string,
+    projectName: string,
+  ) => `user:${userId}:repo:tasks:${projectName}`
+
+async function deleteAllTasksForProject (userId: string, projectName: string): Promise<void> {
+  // Start by getting all task keys associated with the user and project...
+  const key = createUserIdUserRepoTasksRepoIdKey(userId, projectName);
+  const taskKeys = (await kv.zrange(key, 0, -1)) as string[];
+ 
+  if (taskKeys.length === 0) {
+    console.log('No tasks to delete for the project');
+    return;
+  }
+
+  // Then delete all of the tasks for the user based on the retrieved keys...
+  const deletePipeline = kv.pipeline();
+  taskKeys.forEach((taskKey) => {
+    // Assuming tasks are stored as hashes, we use del to remove them
+    deletePipeline.del(taskKey);
+    // Additionally, remove the task key from the sorted set of task keys
+    deletePipeline.zrem(key, taskKey);
+  });
+  
+  await deletePipeline.exec();
+  
+  console.log(`***** deleteAllTasksForProject - All tasks deleted for project: ${projectName}`);
+};
+
 async function deleteProjectVercel(
   userId: string,
   projectId: string,
+  projectName: string
 ): Promise<void> {
   // Generate the keys needed to locate the project in the k/v store
   const setKey = userProjectIdsSetKey(userId)
@@ -24,6 +54,9 @@ async function deleteProjectVercel(
   // Remove the project ID from the user's set of project IDs
   await kv.zrem(setKey, itemKey)
   console.log(`Deleted project ${projectId} for user ${userId}`)
+
+  // tasks are not deleted by just deleting the project, so need to delete the tasks associated w/ projectname separately
+  await deleteAllTasksForProject(userId, projectName)
 }
 
 export const deleteProject = async (
@@ -59,5 +92,5 @@ export const deleteProject = async (
   }
 
   await deleteProjectBackend(orgId, projectName, user.email)
-  await deleteProjectVercel(user.id, projectId)
+  await deleteProjectVercel(user.id, projectId, projectName)
 }

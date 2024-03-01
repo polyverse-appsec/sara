@@ -35,5 +35,6 @@ export const getTasksForProject = async (project: Project): Promise<Task[]> => {
 
   const tasks = (await taskPipeline.exec()) as Task[]
 
+  console.log(`***** getTasksForProject - tasks: ${JSON.stringify(tasks)}`)
   return tasks
 }
