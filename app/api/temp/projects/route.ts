@@ -60,11 +60,11 @@ export const POST = auth(async (req: NextAuthRequest) => {
         `***** REST POST /temp/projects - finished invoking createProjectOnSara at ${new Date()}`,
     )
 
-    const tickledFileInfos = await postFileInfoToGetFileInfo(name, primaryDataSource, auth.user)
+  //   const tickledFileInfos = await postFileInfoToGetFileInfo(name, primaryDataSource, auth.user)
 
-    console.debug(
-      `***** REST POST /temp/projects - tickledFileInfos ${JSON.stringify(tickledFileInfos)}`,
-  )
+  //   console.debug(
+  //     `***** REST POST /temp/projects - tickledFileInfos ${JSON.stringify(tickledFileInfos)}`,
+  // )
 
     // Prepare for OpenAI Assistant creation by gathering file information. Note
     // this call needs to happen after we create the project on the Boost backend
