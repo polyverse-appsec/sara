@@ -223,10 +223,10 @@ export const POST = auth(async (req: NextAuthRequest) => {
   } catch (error) {
     // TODO: Update down here
     console.error(
-      `Failed creating org for '${auth.user.username}' because: ${error}`,
+      `Failed creating project for '${auth.user.username}' because: ${error}`,
     )
 
-    return new Response('Failed to fetch organizations', {
+    return new Response('Failed to create project', {
       status: 500,
     })
   }
