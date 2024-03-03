@@ -221,7 +221,6 @@ export const POST = auth(async (req: NextAuthRequest) => {
       status: 201,
     })
   } catch (error) {
-    // TODO: Update down here
     console.error(
       `Failed creating project for '${auth.user.username}' because: ${error}`,
     )
