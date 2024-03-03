@@ -1,15 +1,22 @@
 import {
   type GitHubRepo,
   type GoalPartDeux,
-  type ProjectDataSource,
+  type ProjectDataSourcePartDeux,
   type ProjectPartDeux,
   type Repository,
 } from 'lib/data-model-types'
 import { createBaseSaraObject } from 'lib/polyverse/db/utils'
 import { NextAuthRequest } from 'next-auth/lib'
 
+import {
+  ASSISTANT_METADATA_CREATOR,
+  type AssistantMetadata,
+  createAssistant,
+  getVersion,
+} from './../../../../../lib/polyverse/openai/assistants'
+
 import { auth } from '../../../../../auth'
-import { createProject as createProjectOnBoost } from './../../../../../lib/polyverse/backend/backend'
+import { createProject as createProjectOnBoost, getFileInfoPartDeux } from './../../../../../lib/polyverse/backend/backend'
 import createGoal from './../../../../../lib/polyverse/db/create-goal'
 import createProject from './../../../../../lib/polyverse/db/create-project'
 import createProjectDataSource from './../../../../../lib/polyverse/db/create-project-data-source'
@@ -127,7 +134,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
     // Make sure to cross-reference the Project and the Project Data Source
     // IDs that we will be persisting to the DB.
     const projectBaseSaraObject = createBaseSaraObject()
-    const projectDataSourceBaseSaraObjects = oldTypedProjectDataSources.map(() => createBaseSaraObject())
+    const projectDataSourceBaseSaraObjects = reqBody.projectDataSources.map(() => createBaseSaraObject())
     const goalBaseSaraObject = createBaseSaraObject()
 
     const projectDataSourceIds = projectDataSourceBaseSaraObjects.map((projectDataSourceBaseSaraObject) => projectDataSourceBaseSaraObject.id)
@@ -143,6 +150,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
       description: reqBody.description,
       projectDataSourceIds,
       goalIds: [goalBaseSaraObject.id],
+      // TODO: Will this break the Redis write with a null value?
       closedAt: null,
     }
 
@@ -153,7 +161,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
       // Project Data Source properties
       parentProjectId: projectBaseSaraObject.id,
       sourceUrl: projectDataSource.htmlUrl,
-    } as ProjectDataSource))
+    } as ProjectDataSourcePartDeux))
 
     // Build up a default project goal to be added to our project when we
     // create it
@@ -184,6 +192,29 @@ export const POST = auth(async (req: NextAuthRequest) => {
     org.projectIds = [...org.projectIds, project.id]
     org.lastUpdatedAt = new Date()
     await updateOrg(org)
+
+    // Prepare to build the OpenAI Assistant for the project by getting the file
+    // info from the Boost backend for the project we just created
+    // TODO: We really ought to be passing in the `ID` of the `project` instance
+    // but need to build more support out for using generic IDs in the backend
+    const fileInfos = await getFileInfoPartDeux(org.name, project.name, user.email)
+
+    // Build up OpenAI Assistant metadata that will be used to help identify it
+    // in the future
+    const assistantMetadata: AssistantMetadata = {
+      projectId: project.id,
+      userName: user.username,
+      orgName: org.name,
+      creator: ASSISTANT_METADATA_CREATOR,
+      version: getVersion()
+    }
+
+    await createAssistant(fileInfos, assistantMetadata)
+
+    // TODO: Cache files
+
+    // Finally cache the file info we associated with the OpenAI Assistant so
+    // that in the future we can update it if need be.
 
     // Return the project we created to the user...
     return new Response(JSON.stringify(project), {

@@ -35,8 +35,6 @@ async function deleteAllTasksForProject (userId: string, projectName: string): P
   });
   
   await deletePipeline.exec();
-  
-  console.log(`***** deleteAllTasksForProject - All tasks deleted for project: ${projectName}`);
 };
 
 async function deleteProjectVercel(
@@ -79,7 +77,7 @@ export const deleteProject = async (
   const existingAssistantMetadata: AssistantMetadata = {
     projectId: projectName,
     userName: user.email!,
-    org: orgId,
+    orgName: orgId,
     creator: '', // ignore creator for search
     version: '', // ignore version for search
   }

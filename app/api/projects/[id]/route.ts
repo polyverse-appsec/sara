@@ -10,6 +10,13 @@ import deleteGoal from './../../../../lib/polyverse/db/delete-goal'
 import deleteProjectDataSource from './../../../../lib/polyverse/db/delete-project-data-source'
 import { deleteProject as deleteProjectOnBoost } from './../../../../lib/polyverse/backend/backend'
 
+import {
+  type AssistantMetadata,
+  findAssistantFromMetadata,
+  deleteAssistantFiles,
+  deleteAssistant
+} from './../../../../lib/polyverse/openai/assistants'
+
 export const GET = auth(async (req: NextAuthRequest) => {
   const { auth } = req
 
@@ -109,9 +116,28 @@ export const DELETE = auth(async (req: NextAuthRequest) => {
       })
     }
 
-    // Take the reverse order approach to project creation when deleting. Start
-    // by removing the project from the org.
     const org = await getOrg(project.orgId)
+
+    // Take the reverse order approach to project creation when deleting. Start
+    // by deleting the OpenAI resources that are associated with the project.
+    const assistantMetadata: AssistantMetadata = {
+      projectId: project.id,
+      userName: user.username,
+      orgName: org.name,
+      creator: '', // ignore creator for search
+      version: '', // ignore version for search
+    }
+
+    const assistant = await findAssistantFromMetadata(assistantMetadata)
+
+    // In the case that maybe the assistant never got created in the first
+    // place conditionally do deletes on it
+    if (assistant) {
+      await deleteAssistantFiles(assistant)
+      await deleteAssistant(assistant.id)
+    }
+
+    // Now move onto grooming and deleting resources in our data stores.
     org.projectIds = org.projectIds.filter((projectId) => projectId !== project.id)
     org.lastUpdatedAt = new Date()
     await updateOrg(org)

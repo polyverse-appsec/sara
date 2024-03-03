@@ -121,7 +121,11 @@ export interface ProjectPartDeux extends BaseSaraObject {
   goalIds: string[]
 }
 
-export interface ProjectDataSource extends BaseSaraObject {
+// TODO: This type differs from `ProjectDataReference` right now as
+// `ProjectDataReference` represents the return values from
+// `GET /user_project/billingOrgId/projectName/data_references`. They should
+// probably be collapsed into each other in the future though.
+export interface ProjectDataSourcePartDeux extends BaseSaraObject {
   // What project the source is associated with. Projects
   // themselves maintain what are primary/secondary data sources.
   parentProjectId: string

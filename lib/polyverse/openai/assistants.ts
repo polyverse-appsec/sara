@@ -30,14 +30,14 @@ export interface AssistantMetadata {
   version?: string
   userName: string
   creator: string
-  org: string
+  orgName: string
 }
 
 function createAssistantName(metadata: AssistantMetadata): string {
   // remove spaces and special characters from project-id and create a simple underscore delimited
   // string to use as part of the assistant name
   const projectId = metadata.projectId.replace(/[^a-zA-Z0-9]/g, '_')
-  return `${metadata.creator}-${metadata.version}-${metadata.org}-${metadata.userName}-${projectId}`
+  return `${metadata.creator}-${metadata.version}-${metadata.orgName}-${metadata.userName}-${projectId}`
 }
 
 function getOpenAIAssistantInstructions(fileTypes: FileTypes): string {
@@ -71,25 +71,17 @@ function mapFileInfoToPromptAndIDs(fileInfos: ProjectDataReference[]) {
   const fileIDs = fileInfos.map(({ id }) => id)
   return { prompt, fileIDs }
 }
-/**
- * Creates an OpenAI assistant with files attached to it (by ID) from the repo provided.
- *
- * @param {string[]} fileIDs Array of file IDs.
- * @param {string} repo Git URL associated with a repo.
- * @returns {Promise<Assistant>} Promise with the created OpenAI assistant.
- */
-export async function createAssistantWithFileInfosFromRepo(
+
+export async function createAssistant(
   fileInfos: ProjectDataReference[],
   assistantMetadata: AssistantMetadata,
 ): Promise<Assistant> {
   const { prompt, fileIDs } = mapFileInfoToPromptAndIDs(fileInfos)
-
-  console.log(`***** createAssistantWithFileInfosFromRepo - about to create assistant with this metadata: ${JSON.stringify(assistantMetadata)}`)
-  console.log(`***** createAssistantWithFileInfosFromRepo - about to create assistant with this name: ${createAssistantName(assistantMetadata)}`)
+  const assistantName = createAssistantName(assistantMetadata)
 
   return await oaiClient.beta.assistants.create({
     model: OPENAI_MODEL,
-    name: createAssistantName(assistantMetadata),
+    name: assistantName,
     file_ids: fileIDs,
     instructions: prompt,
     tools: [
@@ -114,7 +106,7 @@ export async function findAssistantFromMetadata(
       retrievedMetadata.projectId === metadata.projectId &&
       retrievedMetadata.creator === ASSISTANT_METADATA_CREATOR &&
       retrievedMetadata.userName === metadata.userName &&
-      retrievedMetadata.org === metadata.org,
+      retrievedMetadata.org === metadata.orgName,
     // We can do version upgrades (e.g. if a major or minor Sara version comes out
     //   we can fail the match on a version compare and then create a new assistant
     //   with the new version of Sara)
@@ -156,7 +148,7 @@ export async function configAssistant(
   project: Project,
   repos: Repository[],
   email: string,
-  billingOrg: string,
+  billingOrgId: string,
 ): Promise<Assistant> {
   // Get the file IDs associated with the repo first since we will end up
   // using them whether we need to create a new OpenAI assistant or there is
@@ -173,7 +165,7 @@ export async function configAssistant(
   const existingAssistantMetadata: AssistantMetadata = {
     projectId: project.name,
     userName: email,
-    org: billingOrg,
+    orgName: billingOrgId,
     creator: '', // ignore this match
     version: '', // ignore this match
   }
@@ -189,12 +181,12 @@ export async function configAssistant(
   const newAssistantMetadata: AssistantMetadata = {
     projectId: project.name,
     userName: email,
-    org: project.org,
+    orgName: project.org,
     creator: ASSISTANT_METADATA_CREATOR,
     version: getVersion(),
   }
 
-  return await createAssistantWithFileInfosFromRepo(
+  return await createAssistant(
     fileInfos,
     newAssistantMetadata,
   )

@@ -15,7 +15,7 @@ import {
 import {
   ASSISTANT_METADATA_CREATOR,
   AssistantMetadata,
-  createAssistantWithFileInfosFromRepo,
+  createAssistant,
   findAssistantFromMetadata,
   getVersion,
   updateAssistantPromptAndFiles,
@@ -60,7 +60,7 @@ export async function configAssistantForProject(
   const existingAssistantMetadata: AssistantMetadata = {
     projectId: project.name,
     userName: user.email!,
-    org: org.login,
+    orgName: org.login,
     creator: '', // ignore creator for search
     version: '', // ignore version for search
   }
@@ -99,14 +99,14 @@ export async function configAssistantForProject(
   const newAssistantMetadata: AssistantMetadata = {
     projectId: project.name,
     userName: user.email!,
-    org: org.login,
+    orgName: org.login,
     creator: ASSISTANT_METADATA_CREATOR,
     version: getVersion()
   }
 
   // Otherwise just create a new assistant now with the file infos and cache
   // them...
-  const createdAssistant = await createAssistantWithFileInfosFromRepo(
+  const createdAssistant = await createAssistant(
     fileInfos,
     newAssistantMetadata,
   )
