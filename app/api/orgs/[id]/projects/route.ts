@@ -39,6 +39,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
   try {
     const url = `${VERCEL_SERVICE_URI}/api/goals/someGoalId/chats`
 
+    console.debug(`***** JSON of the req: ${JSON.stringify(req)}`)
     console.debug(`***** Attempting to make a request across Vercel route handlers to: ${url}`)
 
     const res = await fetch(url, {
