@@ -130,7 +130,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
     // others as secondary ones. Once we switch over to the new UI and data
     // model we will need to fix this.
     const secondaryDataSources = oldTypedProjectDataSources.length > 1 ? oldTypedProjectDataSources.slice(1) : []
-    await createProjectOnBoost(reqBody.name, oldTypedProjectDataSources[0], secondaryDataSources, user.email)
+    await createProjectOnBoost(reqBody.name, org.name, oldTypedProjectDataSources[0], secondaryDataSources, user.email)
 
     // Start by building up the objects we will create in the DB.
     // Make sure to cross-reference the Project and the Project Data Source
