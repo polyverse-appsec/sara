@@ -172,7 +172,12 @@ export const ProjectManager = () => {
       // references - whether they files have been processed or not. If
       // creation actually does happen this will take ~15 seconds. Anything
       // more should be considered a critical bug.
-      await createProjectOnBoost(project.name, project.mainRepository, [])
+      await createProjectOnBoost(
+        project.name,
+        org.login,
+        project.mainRepository,
+        [],
+      )
       const fileInfos = await getFileInfoForProject(
         project.name,
         project.mainRepository,

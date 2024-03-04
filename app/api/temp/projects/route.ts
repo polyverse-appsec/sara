@@ -37,6 +37,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
     // TODO: Get the returned value here
     await createProjectOnBoost(
         name,
+        org.login,
         primaryDataSource,
         secondaryDataSources,
         auth.user.email

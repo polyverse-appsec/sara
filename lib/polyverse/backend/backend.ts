@@ -178,12 +178,13 @@ export async function postFileInfoToGetFileInfo(
 
 export async function createProject(
   projectName: string,
+  orgId: string,
   primaryDataSource: Repository,
   secondaryDataSources: Repository[],
   email: string,
 ): Promise<string> {
   console.debug(`Invoking backend call createProject`)
-  const url = `${USER_SERVICE_URI}/api/user_project/${primaryDataSource.orgId}/${projectName}`
+  const url = `${USER_SERVICE_URI}/api/user_project/${orgId}/${projectName}`
 
   try {
     // For now the Boost backend doesn't support specifying primary data sources
