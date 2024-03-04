@@ -55,12 +55,17 @@ const PageIndex = ({ params: { id } }: { params: { id: string } }) => {
   return (
     <div className="flex-1 flex-col gap-4 p-10 text-2xl font-bold">
       <div className="bg-white shadow-md rounded-lg p-6">
-        <h3 className="text-lg font-semibold">{project.name}</h3>
         <div className="text-base my-1">
+          <h3 className="text-lg font-semibold">Name</h3>
+          <p>{project.name}</p>
+        </div>
+        <div className="text-base my-1">
+          <h3 className="text-lg font-semibold">Description</h3>
           <p>{project.description}</p>
         </div>
         {!goals ? null : (
           <div className="text-base my-1">
+            <h3 className="text-lg font-semibold">Goals</h3>
             <p>{JSON.stringify(goals)}</p>
           </div>
         )}
