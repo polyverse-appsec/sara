@@ -90,7 +90,7 @@ export function PromptForm({
               <Button
                 type="submit"
                 size="icon"
-                disabled={saraConfigured || input === ''}
+                disabled={input === '' || !saraConfigured}
               >
                 <IconArrowElbow />
                 <span className="sr-only">Send message</span>
