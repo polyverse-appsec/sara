@@ -42,7 +42,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
     console.debug(`***** Attempting to make a request across Vercel route handlers to: ${url}`)
 
     const res = await fetch(url, {
-      method: POST
+      method: 'POST'
     })
 
     if (!res.ok) {
