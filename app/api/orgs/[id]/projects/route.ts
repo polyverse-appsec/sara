@@ -25,6 +25,8 @@ import getProject from './../../../../../lib/polyverse/db/get-project'
 import getUser from './../../../../../lib/polyverse/db/get-user'
 import updateOrg from './../../../../../lib/polyverse/db/update-org'
 
+import { VERCEL_SERVICE_URI } from './../../../../../app/api/hosts'
+
 export const POST = auth(async (req: NextAuthRequest) => {
   const { auth } = req
 
@@ -32,6 +34,28 @@ export const POST = auth(async (req: NextAuthRequest) => {
     return new Response('Unauthorized', {
       status: 401,
     })
+  }
+
+  try {
+    const url = `${VERCEL_SERVICE_URI}/api/goals/someGoalId/chats`
+
+    console.debug(`***** Attempting to make a request across Vercel route handlers to: ${url}`)
+
+    const res = await fetch(url, {
+      method: POST
+    })
+
+    if (!res.ok) {
+      const errText = await res.text()
+
+      throw new Error(
+        `Failed to get a success response when making a request across Vercel route handlers because: ${errText}`,
+      )
+    }
+
+    console.debug(`***** Successfully made a request across Vercel route handlers`)
+  } catch (err) {
+    console.debug(`***** Caught the following error while doing cross-handler requests: ${err}`)
   }
 
   try {

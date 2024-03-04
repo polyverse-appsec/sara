@@ -2,21 +2,36 @@ import { auth } from '../../../../../auth'
 
 import { NextAuthRequest } from 'next-auth/lib'
 
+// TODO: Can increase the timeout on this method if needeed for up to 5 mins
+
+// TODO: High-level questions to answer/consider
+// Do I want like a property back called AI details that is attached to a chat that helps us contextualize
+// the chat but also move us towards AI provider agnostic solution?
+        
+// TODO: Other endpoints needed to support async chat
+// GET /api/chats/<id> - get details on the chat
+// GET /api/chats/<id>/refresh - refresh the assistant files and assistant prompt with the files
+// GET /api/chats/<id>/queries - all the messages associated with a chat
+// POST /api/chats/<id>/queries - create a new query
+// DELETE /api/chats/<id> - delete the chat at the ID
+
 export const POST = auth(async (req: NextAuthRequest) => {
     const { auth } = req
-  
+
     if (!auth || !auth.accessToken || !auth.user.email || !auth.user.id) {
-      return new Response('Unauthorized', {
-        status: 401,
-      })
+        return new Response('Unauthorized', {
+            status: 401,
+        })
     }
   
     try {
-        // TODO: Other endpoints needed to support async chat
-        // GET /api/chats/<id> - get details on the chat
-        // GET /api/chats/<id>/refresh - refresh the assistant files and assistant prompt with the files
-        // GET /api/chats/<id>/queries - all the messages associated with a chat
-        // DELETE /api/chats/<id> - delete the chat at the ID
+        // TODO: Add to data model for chatQuery
+            // TODO: Need a status - query received, query submitted, query error, response received, response error
+            // TODO: Need errorText
+        // TODO: Review the messages API - see if metadata can be assigned to a chat
+        // Looks like messages can have metadata: https://platform.openai.com/docs/api-reference/messages/createMessage
+
+        // TODO: Verify to see if we can do requests to the other handlers on vercel
 
         // TODO: Genereal ideas/steps to work through
         // 1) AuthZ
@@ -38,11 +53,12 @@ export const POST = auth(async (req: NextAuthRequest) => {
         //    Chat has pointer to last query (same as first in this response)
         // 6) Update global IDs
         //     Of what?
-        // 7) Respond to user with the details of the chat ID
-        // Async 8) Refresh assistant files from Boost
-        // Async 9) Update assistant prompt for asking Goal oriented question
-        // Aysnc 10) Build out OpenAI thread
-        // Async 11) Submit Goal to OpenAI thread by creating a run
+        // 7) Update other resources that would be impacted by a chat
+        // 8) Respond to user with the details of the chat ID
+        // Async 9) Refresh assistant files from Boost
+        // Async 10) Update assistant prompt for asking Goal oriented question
+        // Aysnc 11) Build out OpenAI thread
+        // Async 12) Submit Goal to OpenAI thread by creating a run
 
   
       // Return the chat details we created to the user...
@@ -58,7 +74,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
         status: 500,
       })
     }
-  }) as any
+}) as any
 
 
 // Note: Looks like based on this commit the NextAuth team are aware that their
