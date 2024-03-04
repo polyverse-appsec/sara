@@ -1,6 +1,13 @@
+import {
+	ReasonPhrases,
+	StatusCodes,
+} from 'http-status-codes'
+import { NextAuthRequest } from 'next-auth/lib'
+
 import { auth } from '../../../../../auth'
 
-import { NextAuthRequest } from 'next-auth/lib'
+
+
 
 
 // TODO: Can increase the timeout on this method if needeed for up to 5 mins
@@ -20,8 +27,8 @@ export const POST = auth(async (req: NextAuthRequest) => {
     const { auth } = req
 
     if (!auth || !auth.accessToken || !auth.user.email || !auth.user.id) {
-        return new Response('Unauthorized', {
-            status: 401,
+        return new Response(ReasonPhrases.UNAUTHORIZED, {
+            status: StatusCodes.UNAUTHORIZED,
         })
     }
   
@@ -68,7 +75,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
   
       // Return the chat details we created to the user...
       return new Response(null, {
-        status: 201,
+        status: StatusCodes.CREATED,
       })
     } catch (error) {
       console.error(
@@ -76,7 +83,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
       )
   
       return new Response('Failed to create chat', {
-        status: 500,
+        status: StatusCodes.INTERNAL_SERVER_ERROR,
       })
     }
 }) as any

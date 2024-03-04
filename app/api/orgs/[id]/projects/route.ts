@@ -1,6 +1,9 @@
 import {
+	ReasonPhrases,
+	StatusCodes,
+} from 'http-status-codes'
+import {
   type GitHubRepo,
-  type GoalPartDeux,
   type ProjectDataSourcePartDeux,
   type ProjectPartDeux,
   type Repository,
@@ -17,7 +20,6 @@ import {
 
 import { auth } from '../../../../../auth'
 import { createProject as createProjectOnBoost, getFileInfoPartDeux } from './../../../../../lib/polyverse/backend/backend'
-import createGoal from './../../../../../lib/polyverse/db/create-goal'
 import createProject from './../../../../../lib/polyverse/db/create-project'
 import createProjectDataSource from './../../../../../lib/polyverse/db/create-project-data-source'
 import getOrg from './../../../../../lib/polyverse/db/get-org'
@@ -29,8 +31,8 @@ export const POST = auth(async (req: NextAuthRequest) => {
   const { auth } = req
 
   if (!auth || !auth.accessToken || !auth.user.email || !auth.user.id) {
-    return new Response('Unauthorized', {
-      status: 401,
+    return new Response(ReasonPhrases.UNAUTHORIZED, {
+      status: StatusCodes.UNAUTHORIZED,
     })
   }
 
@@ -39,8 +41,8 @@ export const POST = auth(async (req: NextAuthRequest) => {
     const user = await getUser(auth.user.email)
 
     if (!user.orgIds || user.orgIds.length === 0) {
-      return new Response('Not Found', {
-        status: 404,
+      return new Response(ReasonPhrases.NOT_FOUND, {
+        status: StatusCodes.NOT_FOUND,
       })
     }
 
@@ -56,8 +58,8 @@ export const POST = auth(async (req: NextAuthRequest) => {
     const foundOrgId = user.orgIds.find((orgId) => orgId === requestedOrgId)
 
     if (!foundOrgId) {
-      return new Response('Forbidden', {
-        status: 403,
+      return new Response(ReasonPhrases.FORBIDDEN, {
+        status: StatusCodes.FORBIDDEN,
       })
     }
 
@@ -65,16 +67,16 @@ export const POST = auth(async (req: NextAuthRequest) => {
     const org = await getOrg(requestedOrgId)
 
     if (!org.userIds || org.userIds.length === 0) {
-      return new Response('Forbidden', {
-        status: 403,
+      return new Response(ReasonPhrases.FORBIDDEN, {
+        status: StatusCodes.FORBIDDEN,
       })
     }
 
     const foundUserId = org.userIds.find((userId) => userId === user.id)
 
     if (!foundUserId) {
-      return new Response('Forbidden', {
-        status: 403,
+      return new Response(ReasonPhrases.FORBIDDEN, {
+        status: StatusCodes.FORBIDDEN,
       })
     }
 
@@ -96,8 +98,8 @@ export const POST = auth(async (req: NextAuthRequest) => {
     const duplicateProject = projects.find((project) => project.name === reqBody.name)
 
     if (duplicateProject) {
-      return new Response(`Project with a name of '${name}' already exists`, {
-        status: 400,
+      return new Response(`Project with a name of '${reqBody.name}' already exists`, {
+        status: StatusCodes.BAD_REQUEST,
       })
     }
 
@@ -198,7 +200,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
 
     // Return the project we created to the user...
     return new Response(JSON.stringify(project), {
-      status: 201,
+      status: StatusCodes.CREATED,
     })
   } catch (error) {
     console.error(
@@ -206,7 +208,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
     )
 
     return new Response('Failed to create project', {
-      status: 500,
+      status: StatusCodes.INTERNAL_SERVER_ERROR,
     })
   }
 }) as any
@@ -215,8 +217,8 @@ export const GET = auth(async (req: NextAuthRequest) => {
   const { auth } = req
 
   if (!auth || !auth.accessToken || !auth.user.email) {
-    return new Response('Unauthorized', {
-      status: 401,
+    return new Response(ReasonPhrases.UNAUTHORIZED, {
+      status: StatusCodes.UNAUTHORIZED,
     })
   }
 
@@ -225,8 +227,8 @@ export const GET = auth(async (req: NextAuthRequest) => {
     const user = await getUser(auth.user.email)
 
     if (!user.orgIds || user.orgIds.length === 0) {
-      return new Response('Not Found', {
-        status: 404,
+      return new Response(ReasonPhrases.NOT_FOUND, {
+        status: StatusCodes.NOT_FOUND,
       })
     }
 
@@ -242,8 +244,8 @@ export const GET = auth(async (req: NextAuthRequest) => {
     const foundOrgId = user.orgIds.find((orgId) => orgId === requestedOrgId)
 
     if (!foundOrgId) {
-      return new Response('Forbidden', {
-        status: 403,
+      return new Response(ReasonPhrases.FORBIDDEN, {
+        status: StatusCodes.FORBIDDEN,
       })
     }
 
@@ -251,16 +253,16 @@ export const GET = auth(async (req: NextAuthRequest) => {
     const org = await getOrg(requestedOrgId)
 
     if (!org.userIds || org.userIds.length === 0) {
-      return new Response('Forbidden', {
-        status: 403,
+      return new Response(ReasonPhrases.FORBIDDEN, {
+        status: StatusCodes.FORBIDDEN,
       })
     }
 
     const foundUserId = org.userIds.find((userId) => userId === user.id)
 
     if (!foundUserId) {
-      return new Response('Forbidden', {
-        status: 403,
+      return new Response(ReasonPhrases.FORBIDDEN, {
+        status: StatusCodes.FORBIDDEN,
       })
     }
 
@@ -271,7 +273,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
     const projects = await Promise.all(projectPromises)
 
     return new Response(JSON.stringify(projects), {
-      status: 200,
+      status: StatusCodes.OK,
     })
   } catch (error) {
     console.error(
@@ -279,7 +281,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
     )
 
     return new Response('Failed to fetch projects', {
-      status: 500,
+      status: StatusCodes.INTERNAL_SERVER_ERROR,
     })
   }
 }) as any

@@ -1,3 +1,7 @@
+import {
+	ReasonPhrases,
+	StatusCodes,
+} from 'http-status-codes'
 import { NextAuthRequest } from 'next-auth/lib'
 
 import { auth } from './../../../auth'
@@ -12,8 +16,8 @@ export const POST = auth(async (req: NextAuthRequest) => {
   const { auth } = req
 
   if (!auth || !auth.accessToken || !auth.user.email || !auth.user.id) {
-    return new Response('Unauthorized', {
-      status: 401,
+    return new Response(ReasonPhrases.UNAUTHORIZED, {
+      status: StatusCodes.UNAUTHORIZED,
     })
   }
 
@@ -37,7 +41,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
       return new Response(
         `Billing organization with a name of '${name}' already exists`,
         {
-          status: 400,
+          status: StatusCodes.BAD_REQUEST,
         },
       )
     }
@@ -63,7 +67,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
 
     // Return the object we created to the user...
     return new Response(JSON.stringify(org), {
-      status: 201,
+      status: StatusCodes.CREATED,
     })
   } catch (error) {
     console.error(
@@ -71,7 +75,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
     )
 
     return new Response('Failed to fetch organizations', {
-      status: 500,
+      status: StatusCodes.INTERNAL_SERVER_ERROR,
     })
   }
 }) as any
@@ -80,8 +84,8 @@ export const GET = auth(async (req: NextAuthRequest) => {
   const { auth } = req
 
   if (!auth || !auth.accessToken || !auth.user.email) {
-    return new Response('Unauthorized', {
-      status: 401,
+    return new Response(ReasonPhrases.UNAUTHORIZED, {
+      status: StatusCodes.UNAUTHORIZED,
     })
   }
 
@@ -89,7 +93,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
     const orgs = await getUserOrgs(auth.user.email)
 
     return new Response(JSON.stringify(orgs), {
-      status: 200,
+      status: StatusCodes.OK,
     })
   } catch (error) {
     console.error(
@@ -97,7 +101,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
     )
 
     return new Response('Failed to fetch organizations', {
-      status: 500,
+      status: StatusCodes.INTERNAL_SERVER_ERROR,
     })
   }
 }) as any

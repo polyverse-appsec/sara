@@ -1,3 +1,7 @@
+import {
+	ReasonPhrases,
+	StatusCodes,
+} from 'http-status-codes'
 import { Octokit } from '@octokit/rest'
 import { NextAuthRequest } from 'next-auth/lib'
 
@@ -7,8 +11,8 @@ export const GET = auth(async (req: NextAuthRequest) => {
   const { auth } = req
 
   if (!auth || !auth.accessToken || !auth.user.username) {
-    return new Response('Unauthorized', {
-      status: 401,
+    return new Response(ReasonPhrases.UNAUTHORIZED, {
+      status: StatusCodes.UNAUTHORIZED,
     })
   }
 
@@ -29,7 +33,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
     }))
 
     return new Response(JSON.stringify(orgs), {
-      status: 200,
+      status: StatusCodes.OK,
     })
   } catch (error) {
     console.error(
@@ -37,7 +41,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
     )
 
     return new Response('Failed to fetch organizations', {
-      status: 500,
+      status: StatusCodes.INTERNAL_SERVER_ERROR,
     })
   }
 }) as any

@@ -1,6 +1,5 @@
 import { NextAuthRequest } from 'next-auth/lib'
 
-// TODO: Use this package for codes and phrases in other route handlers
 import {
 	ReasonPhrases,
 	StatusCodes,
@@ -143,7 +142,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
   
       // Return the goal details we created to the user...
       return new Response(JSON.stringify(goal), {
-        status: 201,
+        status: StatusCodes.CREATED,
       })
     } catch (error) {
       console.error(
@@ -151,7 +150,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
       )
   
       return new Response('Failed to create goal', {
-        status: 500,
+        status: StatusCodes.INTERNAL_SERVER_ERROR,
       })
     }
 }) as any

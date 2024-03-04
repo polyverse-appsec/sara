@@ -1,3 +1,8 @@
+import {
+	ReasonPhrases,
+	StatusCodes,
+} from 'http-status-codes'
+
 import { NextAuthRequest } from 'next-auth/lib'
 
 import { auth } from './../../../../auth'
@@ -8,8 +13,8 @@ export const GET = auth(async (req: NextAuthRequest) => {
   const { auth } = req
 
   if (!auth || !auth.accessToken || !auth.user.email) {
-    return new Response('Unauthorized', {
-      status: 401,
+    return new Response(ReasonPhrases.UNAUTHORIZED, {
+      status: StatusCodes.UNAUTHORIZED,
     })
   }
 
@@ -18,8 +23,8 @@ export const GET = auth(async (req: NextAuthRequest) => {
     const user = await getUser(auth.user.email)
 
     if (!user.orgIds || user.orgIds.length === 0) {
-      return new Response('Not Found', {
-        status: 404,
+      return new Response(ReasonPhrases.NOT_FOUND, {
+        status: StatusCodes.NOT_FOUND,
       })
     }
 
@@ -35,8 +40,8 @@ export const GET = auth(async (req: NextAuthRequest) => {
     const foundOrgId = user.orgIds.find((orgId) => orgId === requestedOrgId)
 
     if (!foundOrgId) {
-      return new Response('Not Found', {
-        status: 404,
+      return new Response(ReasonPhrases.NOT_FOUND, {
+        status: StatusCodes.NOT_FOUND,
       })
     }
 
@@ -44,21 +49,21 @@ export const GET = auth(async (req: NextAuthRequest) => {
     const org = await getOrg(requestedOrgId)
 
     if (!org.userIds || org.userIds.length === 0) {
-      return new Response('Forbidden', {
-        status: 403,
+      return new Response(ReasonPhrases.FORBIDDEN, {
+        status: StatusCodes.FORBIDDEN,
       })
     }
 
     const foundUserId = org.userIds.find((userId) => userId === user.id)
 
     if (!foundUserId) {
-      return new Response('Forbidden', {
-        status: 403,
+      return new Response(ReasonPhrases.FORBIDDEN, {
+        status: StatusCodes.FORBIDDEN,
       })
     }
 
     return new Response(JSON.stringify(org), {
-      status: 200,
+      status: StatusCodes.OK,
     })
   } catch (error) {
     console.error(
@@ -66,7 +71,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
     )
 
     return new Response('Failed to fetch organizations', {
-      status: 500,
+      status: StatusCodes.INTERNAL_SERVER_ERROR,
     })
   }
 }) as any
