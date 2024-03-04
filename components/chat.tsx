@@ -109,7 +109,7 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
   // to do so will mean that the chat functionality is non-functional and could
   // result in errors.
   if (path.includes('chat') && projectStatus === 'CONFIGURING') {
-    toast.custom('Loading project details - one moment please')
+    toast.success('Loading project details - one moment please')
     router.push('/')
     router.refresh()
     return
