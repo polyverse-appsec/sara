@@ -18,6 +18,7 @@ export async function getOrCreateProjectForRepo(
   // do a check here before we consume each method as well in case there are any
   // behavioral changes to said consumed functions.
   const session = await auth()
+  console.debug(`Invoking server action: getOrCreateProjectForRepo`)
 
   // Apply business logic auth check for `getRepository`
   if (!session?.user?.id) {

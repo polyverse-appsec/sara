@@ -13,6 +13,7 @@ import deleteProjectUserFileInfoIds from 'lib/polyverse/db/delete-project-user-f
 
 export const deleteCachedProjectUserFileInfos = async (user: User, projectName: string, fileInfos: ProjectDataReference[]) => {
     const session = await auth()
+    console.debug(`Invoking server action: deleteCachedProjectUserFileInfos`)
 
     if (!session?.user?.id || user.id !== session.user.id) {
       throw new Error('Unauthorized')

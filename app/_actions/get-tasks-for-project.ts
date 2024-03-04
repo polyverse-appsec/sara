@@ -12,10 +12,8 @@ const createUserIdUserRepoTasksRepoIdKey = (
 ) => `user:${userId}:repo:tasks:${projectName}`
 
 export const getTasksForProject = async (project: Project): Promise<Task[]> => {
-  console.debug(`***** getTasksForProject - project: ${JSON.stringify(project)}`)
   const session = await auth()
-
-  console.debug(`***** getTasksForProject - session: ${JSON.stringify(session)}`)
+  console.debug(`Invoking server action: getTasksForProject`)
 
   if (!session?.user?.id || session.user.id !== project.userId) {
     throw new Error('Unauthorized')
@@ -35,6 +33,5 @@ export const getTasksForProject = async (project: Project): Promise<Task[]> => {
 
   const tasks = (await taskPipeline.exec()) as Task[]
 
-  console.log(`***** getTasksForProject - tasks: ${JSON.stringify(tasks)}`)
   return tasks
 }

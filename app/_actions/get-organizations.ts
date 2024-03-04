@@ -6,6 +6,7 @@ import { fetchUserOrganizations } from './../../lib/polyverse/github/repos'
 
 export async function getOrganizations(): Promise<Organization[]> {
   const session = await auth()
+  console.debug(`Invoking server action: getOrganizations`)
 
   if (!session?.user?.id) {
     throw new Error('Unauthorized')

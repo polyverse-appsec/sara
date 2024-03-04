@@ -5,6 +5,8 @@ import { kv } from '@vercel/kv'
 import { type User } from './../../lib/data-model-types'
 
 export async function getUser(userId: string): Promise<User | null> {
+  console.debug(`Invoking server action: getUser`)
+
   const user = await kv.hgetall<User>(`user:${userId}`)
 
   if (!user) {

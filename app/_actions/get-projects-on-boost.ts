@@ -9,6 +9,7 @@ export const getProjectsOnBoost = async (
   user: User,
 ): Promise<Project[]> => {
   const session = await auth()
+  console.debug(`Invoking server action: getProjectsOnBoost`)
 
   if (
     !session?.user?.id ||

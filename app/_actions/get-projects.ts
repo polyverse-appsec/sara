@@ -10,6 +10,7 @@ export const getProjects = async (
   user: User,
 ): Promise<Project[]> => {
   const session = await auth()
+  console.debug(`Invoking server action: getProjects`)
 
   if (
     !session?.user?.id ||

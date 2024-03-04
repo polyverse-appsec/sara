@@ -15,6 +15,7 @@ export async function removeChat({
   path: string
 }) {
   const session = await auth()
+  console.debug(`Invoking server action: removeChat`)
 
   if (!session) {
     return {

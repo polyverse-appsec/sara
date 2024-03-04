@@ -7,6 +7,7 @@ import { type Project } from './../../lib/data-model-types'
 
 export async function getProject(projectKey: string): Promise<Project | null> {
   const session = await auth()
+  console.debug(`Invoking server action: getProject`)
 
   if (!session?.user?.id) {
     throw new Error('Unauthorized')

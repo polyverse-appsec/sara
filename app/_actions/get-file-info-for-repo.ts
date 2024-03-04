@@ -15,6 +15,7 @@ export async function getFileInfoForProject(
   user: User,
 ): Promise<ProjectDataReference[]> {
   const session = await auth()
+  console.debug(`Invoking server action: getFileInfoForProject`)
 
   if (!session?.user?.id || user.id !== session.user.id) {
     throw new Error('Unauthorized')

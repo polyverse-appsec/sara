@@ -5,6 +5,8 @@ import { createUser } from './create-user'
 import { getUser } from './get-user'
 
 export async function getOrCreateUserFromSession(session: any): Promise<User> {
+  console.debug(`Invoking server action: getOrCreateUserFromSession`)
+  
   if (!session?.user?.id) {
     throw new Error('Unauthorized')
   }
