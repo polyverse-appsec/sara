@@ -37,9 +37,31 @@ export const ProjectSelector = ({
 }: ProjectSelectorProps) => {
   const [projects, setProjects] = useState<Project[]>([])
 
+  console.log(
+    `***** Debug - <ProjectSelector> - prop state -  user: ${JSON.stringify(
+      user,
+    )}`,
+  )
+  console.log(
+    `***** Debug - <ProjectSelector> - prop state -  org: ${JSON.stringify(
+      org,
+    )}`,
+  )
+  console.log(
+    `***** Debug - <ProjectSelector> - prop state -  initialProject: ${JSON.stringify(
+      initialProject,
+    )}`,
+  )
+
   const setProjectsState = async () => {
     try {
       const projects = await getProjects(org.login, user)
+
+      console.log(
+        `***** Debug - <ProjectSelector> - retrieved projects: ${JSON.stringify(
+          projects,
+        )}`,
+      )
 
       setProjects(projects)
     } catch (err) {

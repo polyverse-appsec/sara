@@ -135,14 +135,6 @@ const renderProjectCreationManager = (
   )
 }
 
-// TODO: Work items to make functional
-// * Pass a onProjectChange handler to <ProjectSelector>
-// * Handle all of the other logic from GitHubSelect for on repo change
-// * Query for repos that are assocaited with the Project
-// * Add widget for creating a new project
-// * Add widget for configuring a selected project
-// * Review all of the synchronization states for the UI chat
-
 export const ProjectManager = () => {
   const {
     user,
@@ -150,6 +142,7 @@ export const ProjectManager = () => {
     setOrgConfig,
     setProjectConfig,
   } = useAppContext()
+
   const handleOrganizationChange = (org: Organization) => {
     console.debug(`Organization changed to: ${org.login}`)
 
