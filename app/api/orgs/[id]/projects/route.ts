@@ -239,7 +239,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
     const reqUrl = new URL(req.url)
     const reqUrlSlices = reqUrl.toString().split('/')
 
-    // The 3rd to the last slice ought to be the slug for the repo name
+    // The 2nd to the last slice ought to be the slug for the repo name
     const requestedOrgId = reqUrlSlices[reqUrlSlices.length - 2]
     const foundOrgId = user.orgIds.find((orgId) => orgId === requestedOrgId)
 

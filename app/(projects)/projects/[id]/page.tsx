@@ -5,31 +5,46 @@ import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
 
 import { Button } from './../../../../components/ui/button'
-import { type ProjectPartDeux } from './../../../../lib/data-model-types'
-import { useAppContext } from './../../../../lib/hooks/app-context'
+import {
+  GoalPartDeux,
+  type ProjectPartDeux,
+} from './../../../../lib/data-model-types'
 
 const PageIndex = ({ params: { id } }: { params: { id: string } }) => {
   const router = useRouter()
 
   const [project, setProject] = useState<ProjectPartDeux | null>(null)
+  const [goals, setGoals] = useState<GoalPartDeux[] | null>(null)
 
   const [deleteButtonEnabled, setDeleteButtonEnabled] = useState<boolean>(true)
 
   useEffect(() => {
     ;(async () => {
-      const res = await fetch(`/api/projects/${id}`)
+      const projectRes = await fetch(`/api/projects/${id}`)
 
-      if (!res.ok) {
-        const errText = await res.text()
+      if (!projectRes.ok) {
+        const errText = await projectRes.text()
 
         throw new Error(
           `Failed to get a success response when fetching project '${id}' because: ${errText}`,
         )
       }
 
-      const fetchedProject = await res.json()
+      const fetchedProject = (await projectRes.json()) as ProjectPartDeux
+
+      // Best effort collect the project goals
+      let goals = null
+      const goalsRes = await fetch(`/api/projects/${id}/goals`)
+
+      if (goalsRes.ok) {
+        goals = (await goalsRes.json()) as GoalPartDeux[]
+        console.log(`***** retrieved goals: ${JSON.stringify(goals)}`)
+      } else {
+        toast.error(`Failed to get project goals`)
+      }
 
       setProject(fetchedProject)
+      setGoals(goals)
     })()
   }, [])
 
@@ -41,6 +56,14 @@ const PageIndex = ({ params: { id } }: { params: { id: string } }) => {
     <div className="flex-1 flex-col gap-4 p-10 text-2xl font-bold">
       <div className="bg-white shadow-md rounded-lg p-6">
         <h3 className="text-lg font-semibold">{project.name}</h3>
+        <div className="text-base my-1">
+          <p>{project.description}</p>
+        </div>
+        {!goals ? null : (
+          <div className="text-base my-1">
+            <p>{JSON.stringify(goals)}</p>
+          </div>
+        )}
         <Button
           variant="ghost"
           className="bg-red-500 hover:bg-red-200"
