@@ -16,6 +16,7 @@ import { NextAuthRequest } from 'next-auth/lib'
 // DELETE /api/chats/<id> - delete the chat at the ID
 
 export const POST = auth(async (req: NextAuthRequest) => {
+    console.debug(`***** Attempting to accept a request across Vercel route handlers from: ${req.url}`)
     const { auth } = req
 
     if (!auth || !auth.accessToken || !auth.user.email || !auth.user.id) {
@@ -32,6 +33,8 @@ export const POST = auth(async (req: NextAuthRequest) => {
         // Looks like messages can have metadata: https://platform.openai.com/docs/api-reference/messages/createMessage
 
         // TODO: Verify to see if we can do requests to the other handlers on vercel
+
+        // AuthZ: Verify the user has access to the parent project
 
         // TODO: Genereal ideas/steps to work through
         // 1) AuthZ
@@ -61,8 +64,9 @@ export const POST = auth(async (req: NextAuthRequest) => {
         // Async 12) Submit Goal to OpenAI thread by creating a run
 
   
+        console.debug(`***** Sending a success response when accepting a request across Vercel route handlers from: ${req.url}`)
       // Return the chat details we created to the user...
-      return new Response(JSON.stringify(({})), {
+      return new Response(null, {
         status: 201,
       })
     } catch (error) {
