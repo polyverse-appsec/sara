@@ -17,7 +17,7 @@ export function SidebarList() {
   const {
     chatStreamLastFinishedAt,
     saraConfig: {
-      projectConfig: { project },
+      projectConfig: { project, status },
     },
   } = useAppContext()
   const router = useRouter()
@@ -41,6 +41,13 @@ export function SidebarList() {
   }
 
   useEffect(() => {
+    if (status === 'UNCONFIGURED') {
+      // If for some reason we just re-rendered and the project isn't
+      // configured just render and empty chat list
+      setChats([])
+      return
+    }
+
     const fetchChats = async () => {
       if (!project || !project.defaultTask?.id) {
         return

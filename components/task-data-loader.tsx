@@ -42,6 +42,13 @@ export function TaskDataLoader({ userId }: TaskDataLoaderProps) {
       // All of the aforementioned steps are represented by the `CONFIGURED`
       // state of the project from the Sara config
 
+      if (status === 'UNCONFIGURED') {
+        // If for some reason we just re-rendered and the project isn't
+        // configured just render and empty task list
+        setTasks([])
+        return
+      }
+
       if (status !== 'CONFIGURED' || !project) {
         return
       }
