@@ -27,6 +27,14 @@ import getProject from './../../../../../lib/polyverse/db/get-project'
 import getUser from './../../../../../lib/polyverse/db/get-user'
 import updateOrg from './../../../../../lib/polyverse/db/update-org'
 
+// 03/04/24: We set this max duration to 60 seconds during initial development
+// with no real criteria to use as a starting point for the max duration. We see
+// that this call is a lengthy call - possibly due to the upstream service
+// calls - but in the future probably want to consider having criteria for
+// setting the max duration and measuring response times/latency on routes and
+// adjust them accordingly.
+export const maxDuration = 60
+
 export const POST = auth(async (req: NextAuthRequest) => {
   const { auth } = req
 
