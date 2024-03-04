@@ -119,6 +119,11 @@ export interface ProjectPartDeux extends BaseSaraObject {
   // Will always be populated with at least one goal which is
   // the default "Learn More About Project" goal
   goalIds: string[]
+
+  // The last time this projects LLM was refreshed. Can mean different
+  // things depending on the LLM provider. In the case of OpenAI it means
+  // when we last updated its file IDs.
+  lastRefreshedAt: Date
 }
 
 // TODO: This type differs from `ProjectDataReference` right now as

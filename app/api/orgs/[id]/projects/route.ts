@@ -152,6 +152,9 @@ export const POST = auth(async (req: NextAuthRequest) => {
       goalIds: [goalBaseSaraObject.id],
       // TODO: Will this break the Redis write with a null value?
       closedAt: null,
+      // The last time we refreshed this project is technically when we created
+      // it
+      lastRefreshedAt: projectBaseSaraObject.createdAt
     }
 
     const projectDataSources = reqBody.projectDataSources.map((projectDataSource, projectDataSourceIndex) => ({
