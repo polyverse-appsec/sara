@@ -182,6 +182,7 @@ export async function createProject(
   secondaryDataSources: Repository[],
   email: string,
 ): Promise<string> {
+  console.debug(`Invoking backend call createProject`)
   const url = `${USER_SERVICE_URI}/api/user_project/${primaryDataSource.orgId}/${projectName}`
 
   try {

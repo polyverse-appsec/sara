@@ -11,6 +11,9 @@ export async function createProjectOnBoost(
 ) {
   const session = await auth()
   console.debug(`Invoking server action: createProjectOnBoost`)
+  console.debug(`createProjectOnBoost server action param: projectName - ${projectName}`)
+  console.debug(`createProjectOnBoost server action param: primaryDataSource - ${JSON.stringify(primaryDataSource)}`)
+  console.debug(`createProjectOnBoost server action param: secondaryDataSources - ${JSON.stringify(secondaryDataSources)}`)
 
   if (!session?.user?.id || !session.user.email) {
     throw new Error('Unauthorized')
