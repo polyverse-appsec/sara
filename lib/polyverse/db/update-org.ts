@@ -6,6 +6,8 @@ import { orgKey } from './keys'
 const updateOrg = async (org: OrgPartDeux): Promise<void> => {
   const itemKey = orgKey(org.id)
 
+  org.lastUpdatedAt = new Date()
+
   await kv.hset(itemKey, org)
 }
 

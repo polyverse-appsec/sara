@@ -2,6 +2,7 @@ import { auth } from '../../../../../auth'
 
 import { NextAuthRequest } from 'next-auth/lib'
 
+
 // TODO: Can increase the timeout on this method if needeed for up to 5 mins
 
 // TODO: High-level questions to answer/consider
@@ -16,7 +17,6 @@ import { NextAuthRequest } from 'next-auth/lib'
 // DELETE /api/chats/<id> - delete the chat at the ID
 
 export const POST = auth(async (req: NextAuthRequest) => {
-    console.debug(`***** Attempting to accept a request across Vercel route handlers from: ${req.url}`)
     const { auth } = req
 
     if (!auth || !auth.accessToken || !auth.user.email || !auth.user.id) {
@@ -26,6 +26,8 @@ export const POST = auth(async (req: NextAuthRequest) => {
     }
   
     try {
+
+
         // TODO: Add to data model for chatQuery
             // TODO: Need a status - query received, query submitted, query error, response received, response error
             // TODO: Need errorText
@@ -64,7 +66,6 @@ export const POST = auth(async (req: NextAuthRequest) => {
         // Async 12) Submit Goal to OpenAI thread by creating a run
 
   
-        console.debug(`***** Sending a success response when accepting a request across Vercel route handlers from: ${req.url}`)
       // Return the chat details we created to the user...
       return new Response(null, {
         status: 201,

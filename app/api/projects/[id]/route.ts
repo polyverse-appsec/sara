@@ -108,7 +108,7 @@ export const DELETE = auth(async (req: NextAuthRequest) => {
       })
     }
 
-    // This is a bad RBAC check but for now verify that there is only one user
+    // This is a bad AuthZ check but for now verify that there is only one user
     // within the project user IDs. If not then reject the request.
     if (project.userIds.length > 1) {
       return new Response('Forbidden', {
@@ -118,8 +118,12 @@ export const DELETE = auth(async (req: NextAuthRequest) => {
 
     const org = await getOrg(project.orgId)
 
-    // Take the reverse order approach to project creation when deleting. Start
-    // by deleting the OpenAI resources that are associated with the project.
+    // One simply can't take the reverse order of the Project creation logic in
+    // the POST request handlers. Other resources could have been created that
+    // would ultimately point back to the project - such as Goals - that also
+    // have to be accounted for. Please be very thoughtful in all of the
+    // resources that need to be cleaned up so as not to leave any dangling
+    // resources.
     const assistantMetadata: AssistantMetadata = {
       projectId: project.id,
       userName: user.username,
@@ -139,7 +143,6 @@ export const DELETE = auth(async (req: NextAuthRequest) => {
 
     // Now move onto grooming and deleting resources in our data stores.
     org.projectIds = org.projectIds.filter((projectId) => projectId !== project.id)
-    org.lastUpdatedAt = new Date()
     await updateOrg(org)
 
     // Delete all project and project related resources from our K/V

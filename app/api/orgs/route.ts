@@ -59,7 +59,6 @@ export const POST = auth(async (req: NextAuthRequest) => {
 
     // Update our user with the org ID...
     user.orgIds = [...user.orgIds, org.id]
-    user.lastUpdatedAt = new Date()
     await updateUser(user)
 
     // Return the object we created to the user...

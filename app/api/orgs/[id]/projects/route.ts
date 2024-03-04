@@ -4,8 +4,8 @@ import {
   type ProjectDataSourcePartDeux,
   type ProjectPartDeux,
   type Repository,
-} from 'lib/data-model-types'
-import { createBaseSaraObject } from 'lib/polyverse/db/utils'
+} from './../../../../../lib/data-model-types'
+import { createBaseSaraObject } from './../../../../../lib/polyverse/db/utils'
 import { NextAuthRequest } from 'next-auth/lib'
 
 import {
@@ -135,7 +135,6 @@ export const POST = auth(async (req: NextAuthRequest) => {
     // IDs that we will be persisting to the DB.
     const projectBaseSaraObject = createBaseSaraObject()
     const projectDataSourceBaseSaraObjects = reqBody.projectDataSources.map(() => createBaseSaraObject())
-    const goalBaseSaraObject = createBaseSaraObject()
 
     const projectDataSourceIds = projectDataSourceBaseSaraObjects.map((projectDataSourceBaseSaraObject) => projectDataSourceBaseSaraObject.id)
 
@@ -149,8 +148,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
       name: reqBody.name,
       description: reqBody.description,
       projectDataSourceIds,
-      goalIds: [goalBaseSaraObject.id],
-      // TODO: Will this break the Redis write with a null value?
+      goalIds: [],
       closedAt: null,
       // The last time we refreshed this project is technically when we created
       // it
@@ -166,34 +164,13 @@ export const POST = auth(async (req: NextAuthRequest) => {
       sourceUrl: projectDataSource.htmlUrl,
     } as ProjectDataSourcePartDeux))
 
-    // Build up a default project goal to be added to our project when we
-    // create it
-    const goal: GoalPartDeux = {
-      // BaseSaraObject properties
-      ...goalBaseSaraObject,
-
-      // Goal properties
-      orgId: org.id,
-      name: 'Learn More About Your Project',
-      description:
-        'Sara provides details about your project as she learns them',
-      // TODO: Set the chat ID to the empty string for now as we don't
-      // have a way to create chats after atomically in this workflow. We
-      // should submit this chat after created in our KV store.
-      chatId: '',
-      parentProjectId: projectBaseSaraObject.id,
-      taskIds: [],
-    }
-
     // Write the new objects to the DB. Start with the child objects first.
     const createProjectDataSourcePromises = projectDataSources.map((projectDataSource) => createProjectDataSource(projectDataSource))
     await Promise.all(createProjectDataSourcePromises)
-    await createGoal(goal)
     await createProject(project)
 
     // Update other objects with references to these newly created objects...
     org.projectIds = [...org.projectIds, project.id]
-    org.lastUpdatedAt = new Date()
     await updateOrg(org)
 
     // Prepare to build the OpenAI Assistant for the project by getting the file
