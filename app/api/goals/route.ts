@@ -126,9 +126,8 @@ export const POST = auth(async (req: NextAuthRequest) => {
 
             // Goal properties
             orgId: org.id,
-            name: 'Learn More About Your Project',
-            description:
-                'Provide details that will help me learn about my project. This includes details about the code in my project as well as the software packages/libraries it consumes.',
+            name: reqBody.name,
+            description: reqBody.description,
             chatId: '',
             parentProjectId: project.id,
             taskIds: [],

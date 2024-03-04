@@ -43,7 +43,7 @@ const DataSourceSelector = ({
   const [shouldShowLoadingSpinner, setShouldShowLoadingSpinner] =
     useState<boolean>(true)
 
-  // TODO: Use this pattern with the org selector
+  // TODO: Use this pattern with the org selector instead of react suspense
   // TODO: Rename github-org-selector to org-selector
   useEffect(() => {
     ;(async () => {

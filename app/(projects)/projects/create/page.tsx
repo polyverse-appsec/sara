@@ -15,6 +15,64 @@ const titleSchema = Joi.string()
   .pattern(/^[A-Za-z0-9](?:[A-Za-z0-9-_]*[A-Za-z0-9])?$/)
   .required()
 
+const postProject = async (
+  billingOrgId: string,
+  name: string,
+  description: string,
+  projectDataSources: GitHubRepo[],
+): Promise<ProjectPartDeux> => {
+  const projectBody = {
+    name,
+    description,
+    projectDataSources,
+  }
+
+  const res = await fetch(`/api/orgs/${billingOrgId}/projects`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(projectBody),
+  })
+
+  if (!res.ok) {
+    const errText = await res.text()
+    console.debug(`Failed to POST project because: ${errText}`)
+
+    throw new Error(`Failed to POST project`)
+  }
+
+  return (await res.json()) as ProjectPartDeux
+}
+
+const postDefaultGoal = async (
+  billingOrgId: string,
+  projectId: string,
+): Promise<void> => {
+  const goalBody = {
+    orgId: billingOrgId,
+    parentProjectId: projectId,
+    name: 'Learn More About Your Project',
+    description:
+      'Provide details that will help me learn about my project. This includes details about the code in my project as well as the software packages/libraries it consumes.',
+  }
+
+  const res = await fetch(`/api/goals`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(goalBody),
+  })
+
+  if (!res.ok) {
+    const errText = await res.text()
+    console.debug(`Failed to POST default project goal because: ${errText}`)
+
+    throw new Error(`Failed to POST default project goal`)
+  }
+}
+
 const ProjectCreate = () => {
   const router = useRouter()
   const { activeBillingOrg } = useAppContext()
@@ -106,45 +164,28 @@ const ProjectCreate = () => {
             }
 
             try {
-              const projectBody = {
-                name: projectName,
-                description: projectDescription,
-                projectDataSources: controlledProjectDataSources,
-              }
-
-              const res = await fetch(
-                `/api/orgs/${activeBillingOrg.id}/projects`,
-                {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify(projectBody),
-                },
+              // First create the project for the user...
+              const project = await postProject(
+                activeBillingOrg.id,
+                projectName,
+                projectDescription,
+                controlledProjectDataSources,
               )
 
-              if (!res.ok) {
-                const errText = await res.text()
+              // Secondly createa a default goal for them...
+              await postDefaultGoal(activeBillingOrg.id, project.id)
 
-                console.debug(`Failed to create a project because: ${errText}`)
-
-                toast.error(`Failed to create project`)
-
-                setSaveButtonEnabled(true)
-                return
-              }
-
-              const project = (await res.json()) as ProjectPartDeux
+              // Finally start the Sara chat for the default project goal...
 
               router.push(`/projects/${project.id}`)
             } catch (err) {
               console.debug(
-                `Caught error when trying to create a billing organization: ${err}`,
+                `Caught error when trying to create a project: ${err}`,
               )
 
               setSaveButtonEnabled(true)
 
-              toast.error(`Failed to create billing organization`)
+              toast.error(`Failed to create project`)
             }
           }}
         >
