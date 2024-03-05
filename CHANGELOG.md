@@ -2,6 +2,20 @@
 
 # Release Notes
 
+## Version 0.8.1: March 5th, 2024
+
+### New Features
+
+- N/A
+
+### Enhancements
+
+- N/A
+
+### Bug Fixes
+
+- Fix data member access on assistant metadata when searching for them
+
 ## Version 0.8.0: March 5th, 2024
 
 ### New Features

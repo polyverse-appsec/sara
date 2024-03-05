@@ -98,7 +98,7 @@ export async function findAssistantFromMetadata(
       retrievedMetadata.projectId === metadata.projectId &&
       retrievedMetadata.creator === ASSISTANT_METADATA_CREATOR &&
       retrievedMetadata.userName === metadata.userName &&
-      retrievedMetadata.org === metadata.orgName,
+      retrievedMetadata.orgName === metadata.orgName,
     // We can do version upgrades (e.g. if a major or minor Sara version comes out
     //   we can fail the match on a version compare and then create a new assistant
     //   with the new version of Sara)
