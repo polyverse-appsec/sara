@@ -106,18 +106,6 @@ function createOpenAIAssistantPromptForGoals(promptFileTypes: PromptFileTypes, g
       that are required to complete the project goal named ${goalName}.`
 }
 
-// function mapFileInfoToPromptAndIDs(fileInfos: ProjectDataReference[]) {
-//     let fileTypes: FileTypes = { aispec: '', blueprint: '', projectsource: '' }
-//     fileInfos.map(({ name, type }) => {
-//       fileTypes[type as keyof FileTypes] = name
-//     })
-  
-//     const prompt = getOpenAIAssistantInstructions(fileTypes)
-  
-//     const fileIDs = fileInfos.map(({ id }) => id)
-//     return { prompt, fileIDs }
-//   }
-
 const mapPromptFileInfosToPromptFileTypes = (promptFileInfos: PromptFileInfo[]): PromptFileTypes => {
     let identifiedPromptFileTypes: PromptFileTypes = { aispec: '', blueprint: '', projectsource: '' }
 
@@ -155,24 +143,3 @@ export const updateAssistantForProjectGoalContextualization = async (
         ]
     })
 }
-
-// export async function configAssistantForProjectGoal(
-//     fileInfos: ProjectDataReference[],
-//     assistantMetadata: AssistantMetadata,
-//   ): Promise<Assistant> {
-//     const { prompt, fileIDs } = mapFileInfoToPromptAndIDs(fileInfos)
-//     const assistantName = createAssistantName(assistantMetadata)
-  
-//     return await oaiClient.beta.assistants.create({
-//       model: OPENAI_MODEL,
-//       name: assistantName,
-//       file_ids: fileIDs,
-//       instructions: prompt,
-//       tools: [
-//         { type: 'code_interpreter' },
-//         { type: 'retrieval' },
-//         submitTaskStepsAssistantFunction,
-//       ],
-//       metadata: assistantMetadata,
-//     })
-// }
