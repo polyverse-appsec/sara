@@ -1,6 +1,6 @@
 'use client'
 
-import React, { use, useState } from 'react'
+import React, { use, useEffect, useState } from 'react'
 import { type GitHubOrg, type OrgPartDeux } from 'lib/data-model-types'
 
 import { Button } from './../../../../components/ui/button'
@@ -10,6 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from './../../../../components/ui/dropdown-menu'
+import LoadingSpinner from 'components/loading-spinner'
 
 const getGitHubOrgs = async (): Promise<GitHubOrg[]> => {
   const res = await fetch('/api/integrations/github/orgs')
@@ -39,16 +40,41 @@ const getBillingOrgs = async (): Promise<OrgPartDeux[]> => {
   return res.json()
 }
 
-interface SuspendedOrgSelectorProps {
+interface OrgSelectorProps {
   setControlledGitHubOrg: (gitHugOrg: GitHubOrg) => void
 }
 
-const SuspendedOrgSelector = ({
+const OrgSelector = ({
   setControlledGitHubOrg,
-}: SuspendedOrgSelectorProps) => {
-  const billingOrgs = use(getBillingOrgs())
-  const gitHubOrgs = use(getGitHubOrgs())
+}: OrgSelectorProps) => {
+  const [billingOrgs, setBillingOrgs] = useState<OrgPartDeux[]>([]);
+  const [gitHubOrgs, setGitHubOrgs] = useState<GitHubOrg[]>([]);
+  const [shouldShowLoadingSpinner, setShouldShowLoadingSpinner] =
+  useState<boolean>(true)
+  const [selectedGitHubOrg, setSelectedGitHubOrg] = useState<GitHubOrg | null>(
+    null,
+  )
+  
+  useEffect(() => {
+    const fetchOrgs = async () => {
+      try {
+        const fetchedBillingOrgs = await getBillingOrgs();
+        const fetchedGitHubOrgs = await getGitHubOrgs();
+        setBillingOrgs(fetchedBillingOrgs);
+        setGitHubOrgs(fetchedGitHubOrgs);
+      } catch (error) {
+        console.error('Error fetching orgs:', error);
+      }
+    };
 
+    fetchOrgs();
+    setShouldShowLoadingSpinner(false)
+  }, []);
+
+  if (shouldShowLoadingSpinner) {
+    return <LoadingSpinner />
+  }
+  
   // Filter the GitHub orgs by removing those that already exist by name on the
   // billing org instances
   const billingOrgsByName = billingOrgs.reduce(
@@ -63,28 +89,8 @@ const SuspendedOrgSelector = ({
     (gitHubOrg) => !billingOrgsByName[gitHubOrg.login],
   )
 
-  return (
-    <OrgSelector
-      gitHubOrgs={filteredGitHubOrgs}
-      setControlledGitHubOrg={setControlledGitHubOrg}
-    />
-  )
-}
 
-interface OrgSelectorProps {
-  gitHubOrgs: GitHubOrg[]
-  setControlledGitHubOrg: (gitHugOrg: GitHubOrg) => void
-}
-
-const OrgSelector = ({
-  gitHubOrgs,
-  setControlledGitHubOrg,
-}: OrgSelectorProps) => {
-  const [selectedGitHubOrg, setSelectedGitHubOrg] = useState<GitHubOrg | null>(
-    null,
-  )
-
-  if (gitHubOrgs.length === 0) {
+  if (filteredGitHubOrgs.length === 0) {
     return (
       <div className="text-base">
         <p>
@@ -109,7 +115,7 @@ const OrgSelector = ({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent sideOffset={8} align="start" className="min-w-64">
-          {gitHubOrgs.map((gitHubOrg) => (
+          {filteredGitHubOrgs.map((gitHubOrg) => (
             <DropdownMenuItem
               key={gitHubOrg.login}
               onSelect={() => {
@@ -131,4 +137,4 @@ const OrgSelector = ({
   )
 }
 
-export default SuspendedOrgSelector
+export default OrgSelector

@@ -35,13 +35,11 @@ const OrgCreate = () => {
           </div>
           <div className="my-1">
             <h3 className="text-lg font-semibold">Select Organization</h3>
-            <Suspense fallback={<LoadingSpinner />}>
               <OrgSelector
                 setControlledGitHubOrg={(gitHubOrg) =>
                   setControlledGitHubOrg(gitHubOrg)
                 }
               />
-            </Suspense>
           </div>
           <div className="my-1">
             <Button
