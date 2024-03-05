@@ -1,4 +1,6 @@
 import { Assistant } from 'openai/resources/beta/assistants/assistants'
+import { Thread } from 'openai/resources/beta/threads/threads'
+import { Run } from 'openai/resources/beta/threads/runs/runs'
 import OpenAI from 'openai'
 
 import { type PromptFileInfo } from './../../../lib/data-model-types'
@@ -143,3 +145,39 @@ export const updateAssistantForProjectGoalContextualization = async (
         ]
     })
 }
+
+export const createThreadForProjectGoalChatting = async (
+    projectId: string,
+    goalId: string,
+    chatId: string,
+    chatQueryId: string,
+    query: string
+): Promise<Thread> => {
+    const threadMetadata = {
+        projectId,
+        goalId,
+        chatId
+    }
+
+    const messageMetadata = {
+        chatQueryId
+    }
+
+    return oaiClient.beta.threads.create({
+        messages: [
+            {
+                role: 'user',
+                content: query,
+                metadata: messageMetadata
+            }
+        ],
+        metadata: threadMetadata
+    })
+}
+
+export const createThreadRunForProjectGoalChatting = async (assistantId: string, threadId: string): Promise<Run> => {
+    return oaiClient.beta.threads.runs.create(threadId, {
+        assistant_id: assistantId
+    })
+}
+  

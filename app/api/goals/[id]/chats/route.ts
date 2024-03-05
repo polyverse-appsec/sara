@@ -7,34 +7,33 @@ import Joi from 'joi'
 import isEqual from 'lodash/isEqual'
 import orderBy from 'lodash/orderBy'
 
-
 import { auth } from '../../../../../auth'
 import {
   type AssistantMetadata,
   findAssistantFromMetadata,
 } from './../../../../../lib/polyverse/openai/assistants'
 import {
-  updateAssistantForProjectGoalContextualization
+  updateAssistantForProjectGoalContextualization,
+  createThreadForProjectGoalChatting,
+  createThreadRunForProjectGoalChatting
 } from './../../../../../lib/polyverse/openai/goalsAssistant'
 import createPromptFileInfo from './../../../../../lib/polyverse/db/create-prompt-file-info'
 import createChatQuery from './../../../../../lib/polyverse/db/create-chat-query'
-import deleteChat from './../../../../../lib/polyverse/db/delete-chat'
-import deleteChatQuery from './../../../../../lib/polyverse/db/delete-chat-query'
-
 import deletePromptFileInfo from './../../../../../lib/polyverse/db/delete-prompt-file-info'
 import getGoal from './../../../../../lib/polyverse/db/get-goal'
 import getOrg from './../../../../../lib/polyverse/db/get-org'
 import getProject from './../../../../../lib/polyverse/db/get-project'
 import getUser from './../../../../../lib/polyverse/db/get-user'
 import getPromptFileInfo from './../../../../../lib/polyverse/db/get-prompt-file-info'
+import updateChat from './../../../../../lib/polyverse/db/update-chat'
 import updateGoal from './../../../../../lib/polyverse/db/update-goal'
+import updateChatQuery from './../../../../../lib/polyverse/db/update-chat-query'
+
 import { createBaseSaraObject } from './../../../../../lib/polyverse/db/utils'
 import { type PromptFileInfo, type ChatQueryPartDeux, type ChatPartDeux } from './../../../../../lib/data-model-types'
 import createChat from './../../../../../lib/polyverse/db/create-chat'
 import { getFileInfoPartDeux } from './../../../../../lib/polyverse/backend/backend'
 import getProjectPromptFileInfoIds from 'lib/polyverse/db/get-project-prompt-file-info-ids'
-
-
 
 // TODO: Can increase the timeout on this method if needeed for up to 5 mins
 
@@ -49,23 +48,27 @@ import getProjectPromptFileInfoIds from 'lib/polyverse/db/get-project-prompt-fil
 // POST /api/chats/<id>/queries - create a new query
 // DELETE /api/chats/<id> - delete the chat at the ID
 
+// TODO: Fail the API to add more chat queries if the previous one is in an error state or hasn't had a response received yet
 
+// TODO: update file caches
+// TODO: Everytime a project GET is done we need to update the OpenAI assistant with GET data_references
+// TODO: Everytime we POST a chat query/GET a chat query we need to update the OpenAI assitant with GET data_references
 
+// TODO: Every new chat query request needs to have the previous chat query ID as part of
+// the request body for validation purposes and synchronization purposes with the chat
 
+// TODO: Review the messages API - see if metadata can be assigned to a chat
+// Looks like messages can have metadata: https://platform.openai.com/docs/api-reference/messages/createMessage
 
-        // TODO: Fail the API to add more chat queries if the previous one is in an error state or hasn't had a response received yet
+// TODO: Verify to see if we can do requests to the other handlers on vercel
 
-        // TODO: update file caches
-        // TODO: Everytime a project GET is done we need to update the OpenAI assistant with GET data_references
-        // TODO: Everytime we POST a chat query/GET a chat query we need to update the OpenAI assitant with GET data_references
-
-        // TODO: Every new chat query request needs to have the previous chat query ID as part of
-        // the request body for validation purposes and synchronization purposes with the chat
-
-        // TODO: Review the messages API - see if metadata can be assigned to a chat
-        // Looks like messages can have metadata: https://platform.openai.com/docs/api-reference/messages/createMessage
-
-        // TODO: Verify to see if we can do requests to the other handlers on vercel
+// 03/04/24: We set this max duration to 60 seconds during initial development
+// with no real criteria to use as a starting point for the max duration. We see
+// that this call is a lengthy call - possibly due to the upstream service
+// calls - but in the future probably want to consider having criteria for
+// setting the max duration and measuring response times/latency on routes and
+// adjust them accordingly.
+export const maxDuration = 60
 
 const promptFileInfosEqual = (
   thisPromptFileInfos: PromptFileInfo[],
@@ -306,7 +309,11 @@ export const POST = auth(async (req: NextAuthRequest) => {
           // Chat is essentially a linked list so point ot the first and last
           // chat query that we are preparing
           headChatQueryId: chatQueryBaseSaraObject.id,
-          tailChatQueryId: chatQueryBaseSaraObject.id
+          tailChatQueryId: chatQueryBaseSaraObject.id,
+
+          // Set to `null` for now as we will update this later
+          openAiThreadId: null,
+          openAiThreadRunId: null,
         }
 
         const chatQuery: ChatQueryPartDeux = {
@@ -346,49 +353,30 @@ export const POST = auth(async (req: NextAuthRequest) => {
         goal.chatId = chat.id
         await updateGoal(goal)
 
-        // TODO: start here
-        // Aysnc 11) Build out OpenAI thread
-        // Async 12) Submit Goal chat to OpenAI thread by creating a run
-        // Async 13) Update the chat status as query submitted
+        // Create the OpenAI Thread that the assistant will work on for this
+        // run with the initial message populated based on the query we
+        // received
+        const thread = await createThreadForProjectGoalChatting(
+          project.id,
+          goal.id,
+          chat.id,
+          chatQuery.id,
+          chatQuery.query)
 
+        chat.openAiThreadId = thread.id
+        await updateChat(chat)
 
+        // Now start a run on the thread we just created with our assistant
+        const threadRun = await createThreadRunForProjectGoalChatting(assistant.id, chat.openAiThreadId)
+        chat.openAiThreadRunId = threadRun.id
+        await updateChat(chat)
 
-        // Build up the prompt with the latest file infos if need be...
-
-        // TODO: Genereal ideas/steps to work through
-        // 1) AuthZ
-        // 2) Validate URI slugs
-        //      make sure goal actually exists
-        // 3) Validate request body
-        //      Make sure chat for goal doesn't already exist
-        // 4) Build out query details in KV
-        //    Chat ID it is associated with
-        //    Pointer to previos query (in this case its empty since first query)
-        //    Pointer to neext query (in this case its empty since first query)
-        //    Timestamp when query received
-        //    Add query content
-        //    Empty response content
-        //    Timestamp when response received (empty in this case since it hasn't been received)
-        // 5) Build out chat details in KV
-        //    Chat points to goal
-        //    Chat has pointer for first query
-        //    Chat has pointer to last query (same as first in this response)
-        // 6) Update global IDs
-        //     Of what?
-        // 7) Update other resources that would be impacted by a chat
-
-        // (Dont think I can do this as Vercel doesn't allow background processing)
-        // 8) Respond to user with the details of the chat ID 
-        // Async 9) Refresh assistant files from Boost
-        // Async 10) Update assistant prompt for asking Goal oriented question
-
-        // Aysnc 11) Build out OpenAI thread
-        // Async 12) Submit Goal chat to OpenAI thread by creating a run
-        // Async 13) Update the chat status as query submitted
-
+        // Make sure to mark our chat query as submitted
+        chatQuery.status = 'QUERY_SUBMITTED'
+        await updateChatQuery(chatQuery)
   
       // Return the chat details we created to the user...
-      return new Response(null, {
+      return new Response(JSON.stringify(chat), {
         status: StatusCodes.CREATED,
       })
     } catch (error) {

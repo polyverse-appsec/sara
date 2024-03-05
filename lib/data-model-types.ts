@@ -148,6 +148,19 @@ export interface ChatPartDeux extends BaseSaraObject {
 
   // The ID of the last query made (most recent)
   tailChatQueryId: string | null
+
+  // OpenAI provider specific deatils about the thread which will be
+  // used to create a run on this. If null it means thread hasn't been
+  // created yet. With more data modeling work and a migration of the
+  // data in the data store these details can be decoupled from the chat.
+  openAiThreadId: string | null
+
+  // OpenAI provider specific deatils about the thread run that was
+  // ran on the thread ID that this instance references
+  // (i.e. openAiThreadId). If null it means thread run hasn't been
+  // created yet. With more data modeling work and a migration of the
+  // data in the data store these details can be decoupled from the chat.
+  openAiThreadRunId: string | null
 }
 
 // TODO: Test this with a Joi schema

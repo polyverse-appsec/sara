@@ -2,6 +2,20 @@
 
 # Release Notes
 
+## Version 0.8.0: March 5th, 2024
+
+### New Features
+
+- Add REST API for supporting asynchronous chats around project goals `/api/goals/goalId/chats`
+
+### Enhancements
+
+- N/A
+
+### Bug Fixes
+
+- N/A
+
 ## Version 0.7.2: March 5th, 2024
 
 ### New Features
