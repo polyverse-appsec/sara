@@ -1,7 +1,13 @@
 import Joi from 'joi'
 
-// TODO: Consider if I want the pattern of `user:${userId}:project:${projectId}`
-// or `project:${projectId}:user:${userId}` as right now I use both patterns
+// TODO: Test
+export const globalChatIdsSetKey = () => `global:chat:ids`
+
+// TODO: Test
+export const globalChatQueryIdsSetKey = () => `global:chat-query:ids`
+
+// TODO: Test
+export const globalPromptFileInfoIdsSetKey = () => `global:prompt-file-info:ids`
 
 // TODO: Test
 export const globalGoalIdsSetKey = () => `global:goal:ids`
@@ -20,6 +26,21 @@ export const globalProjectDataSourceIdsSetKey = () =>
 export const globalUserEmailsSetKey = () => `global:user:emails`
 
 // TODO: Test
+export const relatedChatQueriesToChatIdsSetKey = (chatId: string) => `chat:${chatId}:chat-query:ids`
+
+// TODO: Test
+export const relatedPromptFileInfosToProjectIdsSetKey = (projectId: string) => `project:${projectId}:prompt-file-info:ids`
+
+// TODO: Test
+export const chatKey = (chatId: string) => `chat:${chatId}`
+
+// TODO: Test
+export const chatQueryKey = (chatQueryId: string) => `chat-query:${chatQueryId}`
+
+// TODO: Test
+export const promptFileInfoKey = (fileInfoId: string) => `prompt-file-info:${fileInfoId}`
+
+// TODO: Test
 export const goalKey = (goalId: string) => `goal:${goalId}`
 
 // TODO: Test
@@ -34,6 +55,20 @@ export const projectDataSourceKey = (projectDataSourceId: string) =>
 
 // TODO: Test
 export const userKey = (email: string) => `user:${email}`
+
+
+
+
+
+
+
+////////////////////////////////////////////
+// Old keys used in old data model
+////////////////////////////////////////////
+
+// TODO: Consider if I want the pattern of `user:${userId}:project:${projectId}`
+// or `project:${projectId}:user:${userId}` as right now I use both patterns
+
 
 // TODO: Test
 export const userProjectKey = (userId: string, projectId: string) =>

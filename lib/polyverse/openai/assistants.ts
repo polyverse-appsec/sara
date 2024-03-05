@@ -49,11 +49,7 @@ function getOpenAIAssistantInstructions(fileTypes: FileTypes): string {
     1. ${fileTypes.blueprint} is a very short summary of the overall architecture. It talks about what programming languages are used, major frameworks, and so forth. 
     2. ${fileTypes.aispec} is another useful, medium size file. It has short summaries of all of the important code. 
     3. ${fileTypes.projectsource} is the concatenation of all of the source code in the project. 
-    For all queries, use the ${fileTypes.blueprint} and ${fileTypes.aispec} files. Retrieve code snippets as needed from the concatenated code file ${fileTypes.projectsource}.
-    
-    Important: If you are asked a question that requires multiple steps, you should record the steps in a task management database 
-    using the submitTaskSteps function. 
-    And then continue to respond as you normally would (i.e. give both the answer and call the submitTaskSteps function). `
+    For all queries, use the ${fileTypes.blueprint} and ${fileTypes.aispec} files. Retrieve code snippets as needed from the concatenated code file ${fileTypes.projectsource}.`
 }
 
 const oaiClient = new OpenAI({
@@ -87,7 +83,6 @@ export async function createAssistant(
     tools: [
       { type: 'code_interpreter' },
       { type: 'retrieval' },
-      submitTaskStepsAssistantFunction,
     ],
     metadata: assistantMetadata,
   })

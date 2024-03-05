@@ -128,8 +128,8 @@ export const DELETE = auth(async (req: NextAuthRequest) => {
       projectId: project.id,
       userName: user.username,
       orgName: org.name,
-      creator: '', // ignore creator for search
-      version: '', // ignore version for search
+      creator: '', // Ignore creator for search
+      version: '', // Ignore version for search
     }
 
     const assistant = await findAssistantFromMetadata(assistantMetadata)
@@ -145,7 +145,10 @@ export const DELETE = auth(async (req: NextAuthRequest) => {
     org.projectIds = org.projectIds.filter((projectId) => projectId !== project.id)
     await updateOrg(org)
 
-    // Delete all project and project related resources from our K/V
+    // Delete all project and project related resources from our K/V.
+    //
+    // Deleting a project will delete its related resources of prompt file infos
+    // since it has a relationship set key based off of the project ID.
     await deleteProject(project.id)
 
     const deleteGoalPromises = project.goalIds.map((goalId) => deleteGoal(goalId))

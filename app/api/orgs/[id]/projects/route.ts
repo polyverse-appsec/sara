@@ -2,26 +2,27 @@ import {
 	ReasonPhrases,
 	StatusCodes,
 } from 'http-status-codes'
+import { NextAuthRequest } from 'next-auth/lib'
+
 import {
   type GitHubRepo,
   type ProjectDataSourcePartDeux,
   type ProjectPartDeux,
+  type PromptFileInfo,
   type Repository,
 } from './../../../../../lib/data-model-types'
 import { createBaseSaraObject } from './../../../../../lib/polyverse/db/utils'
-import { NextAuthRequest } from 'next-auth/lib'
-
 import {
   ASSISTANT_METADATA_CREATOR,
   type AssistantMetadata,
   createAssistant,
   getVersion,
 } from './../../../../../lib/polyverse/openai/assistants'
-
 import { auth } from '../../../../../auth'
 import { createProject as createProjectOnBoost, getFileInfoPartDeux } from './../../../../../lib/polyverse/backend/backend'
 import createProject from './../../../../../lib/polyverse/db/create-project'
 import createProjectDataSource from './../../../../../lib/polyverse/db/create-project-data-source'
+import createPromptFileInfo from './../../../../../lib/polyverse/db/create-prompt-file-info'
 import getOrg from './../../../../../lib/polyverse/db/get-org'
 import getProject from './../../../../../lib/polyverse/db/get-project'
 import getUser from './../../../../../lib/polyverse/db/get-user'
@@ -187,7 +188,8 @@ export const POST = auth(async (req: NextAuthRequest) => {
     // info from the Boost backend for the project we just created
     // TODO: We really ought to be passing in the `ID` of the `project` instance
     // but need to build more support out for using generic IDs in the backend
-    const fileInfos = await getFileInfoPartDeux(org.name, project.name, user.email)
+    // TODO: Rename to getBoostFileInfo
+    const boostFileInfos = await getFileInfoPartDeux(org.name, project.name, user.email)
 
     // Build up OpenAI Assistant metadata that will be used to help identify it
     // in the future
@@ -199,12 +201,60 @@ export const POST = auth(async (req: NextAuthRequest) => {
       version: getVersion()
     }
 
-    await createAssistant(fileInfos, assistantMetadata)
+    // TODO: We probably need to prompt engineer a more generic prompt not attributed to a specific chat when we first create the assistant...
 
+    // TODO: After we switch over to the new UI/UX workflows change this signature to take
+    // PromptFileInfo
+    await createAssistant(boostFileInfos, assistantMetadata)
+
+    // Cache the prompt file info so that in the future we may update it if
+    // needed. For now we need to convert them into instances of
+    // `PromptFileInfo` since we rely on persisting data that first a basic
+    // structure based off of `BaseSaraObject` types.
+    const promptFileInfos = boostFileInfos.map((boostFileInfo) => {
+      const promptFileInfoBaseSaraObject = createBaseSaraObject()
+
+      const promptFileInfo: PromptFileInfo = {
+        // BaseSareObject properties...
+        ...promptFileInfoBaseSaraObject,
+
+        // PromptFileInfo properties...
+        //
+        // Note that spreading out the properties of Boost file info which is
+        // an instance of `ProjectDataReference` is replacing the ID that would
+        // be created as a result of spreading out the `BaseSaraObject`
+        ...boostFileInfo,
+        parentProjectId: project.id
+      }
+
+      // It isn't obvious what is going on here. When we make a call to the
+      // Boost backend for `GET data_references` the objects returned also
+      // contain the `lastUpdatedAt` property. Since we are persisting this info
+      // in our K/V set the `createdAt` value to that of `lastUpdatedAt` so it
+      // doesn't appear wonky in our data (i.e. that `createdAt` is more recent
+      // than `lastUpdatedAt`).
+      promptFileInfo.createdAt = promptFileInfo.lastUpdatedAt
+
+      return promptFileInfo
+    })
+
+    const createPromptFileInfoPromises = promptFileInfos.map((promptFileInfo) => createPromptFileInfo(promptFileInfo))
+    await Promise.all(createPromptFileInfoPromises)
+
+
+    // TODO: Need to reverse this logic and delete it when we delete the project...
+
+
+    // TODO: Start here here - the chat query needs to have the assitant prompt
     // TODO: Cache files
-
-    // Finally cache the file info we associated with the OpenAI Assistant so
-    // that in the future we can update it if need be.
+    // TODO: Start here by caching of the files - use these keys I just created:
+    // relatedFileInfosToProjectIdsSetKey
+    // globalFileInfoIdsSetKey
+    // fileInfoKey
+    // Note that I have to update the delete project DB function since it has a
+    // relationship key and now we need to delete those files.
+    // Note that I also need to update the delete logic to delete any files if I havent already
+    // THEN... go back to creating the chat in OpenAI
 
     // Return the project we created to the user...
     return new Response(JSON.stringify(project), {

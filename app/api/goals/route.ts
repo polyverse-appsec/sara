@@ -16,7 +16,7 @@ import getProject from './../../../lib/polyverse/db/get-project'
 import getUser from './../../../lib/polyverse/db/get-user'
 import updateProject from './../../../lib/polyverse/db/update-project'
 
-interface POSTReqBody {
+interface POSTGoalReqBody {
     // TODO: Make sure we mark request body data members as optional in other
     // handlers and check that they deserialized or fail with 400.
     // All of these properties are required for successful processing
@@ -37,8 +37,9 @@ export const POST = auth(async (req: NextAuthRequest) => {
   
     try {
         // Perform validation on the request body data
-        const reqBody = (await req.json()) as POSTReqBody
+        const reqBody = (await req.json()) as POSTGoalReqBody
 
+        // TODO: Validate these using Joi
         // Crucial to AuthZ
         if (!reqBody.orgId || reqBody.orgId.length === 0) {
             return new Response(`Request body is missing 'orgId'`, {
@@ -53,14 +54,16 @@ export const POST = auth(async (req: NextAuthRequest) => {
             })
         }
 
-        // Crucial to helping Sara contextualize the goal
+        // Crucial to helping Sara contextualize the goal (i.e. used for prompt
+        // engineering)
         if (!reqBody.name || reqBody.name.length === 0) {
             return new Response(`Request body is missing 'name'`, {
                 status: StatusCodes.BAD_REQUEST,
             })
         }
 
-        // Crucial to helping Sara contextualize the goal
+        // Crucial to helping Sara contextualize the goal (i.e. used for prompt
+        // engineering)
         if (!reqBody.description || reqBody.description.length === 0) {
             return new Response(`Request body is missing 'description'`, {
                 status: StatusCodes.BAD_REQUEST,
@@ -128,7 +131,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
             orgId: org.id,
             name: reqBody.name,
             description: reqBody.description,
-            chatId: '',
+            chatId: null,
             parentProjectId: project.id,
             taskIds: [],
         }

@@ -3,35 +3,6 @@ import Joi from 'joi'
 import { Assistant } from 'openai/resources/beta/assistants/assistants'
 import { Threads } from 'openai/resources/beta/threads/threads'
 
-/*
- ** Sara data model **
-
-We have a user, represented by a github id. We store additional information about the user,
-such as their email address.
-
-The principal object is a project.  a project consists of a set of repositories.
-
-Each user has a set of projects that they have access to. The ids of these repositories is stored in an array off of the user object.
-
-Each project object is stored in a KV namespace called `project:${projectid}`. Note that the id is *per user*. I.e. in a team
-environment, each user will have their own repository object to hang on to their own specific chats (which are not shared by default)
-
-Each repository has a set of reference repositories. This is stored in the data fields of the repository object
-
-A project has a set of tasks. The ids of these tasks is stored in a sorted set called `project:tasks:${repoId}`.
-
-Each task is stored in a KV namespace called `task:${taskId}`.
-
-A task can have a set of subtasks, which are stored in a sorted set called `task:subtasks:${taskId}`.
-
-The core model is a chat. 
-
-Chats are stored in a KV namespace called `chat:${id}`.
-
-Each task has a set of chats, the ids of these chats is stored in a sorted set called `task:chats:${taskId}`.
-
-*/
-
 ////////////////////////////
 // Refined Data Model Start
 ////////////////////////////
@@ -61,7 +32,7 @@ export interface BaseSaraObject extends Record<string, any> {
   lastUpdatedAt: Date
 }
 
-// TODO: Test this
+// TODO: Test this with a Joi schema
 // TODO: Note we called this interface `UserPartDeux` while we iterate on
 // the data model design and the UX/UI. We preserve the original `User`
 // interface for now until we have fully implemented enough details about
@@ -79,7 +50,7 @@ export interface UserPartDeux extends BaseSaraObject {
   lastSignedInAt: Date
 }
 
-// TODO: Test this
+// TODO: Test this with a Joi schema
 // TODO: Note we called this interface `OrgPartDeux` while we iterate on
 // the data model design and the UX/UI. We preserve the original `Org`
 // interface for now until we have fully implemented enough details about
@@ -97,7 +68,7 @@ export interface OrgPartDeux extends BaseSaraObject {
   projectIds: string[]
 }
 
-// TODO: Test this
+// TODO: Test this with a Joi schema
 // TODO: Note we called this interface `ProjectPartDeux` while we iterate on
 // the data model design and the UX/UI. We preserve the original `Project`
 // interface for now until we have fully implemented enough details about
@@ -126,6 +97,7 @@ export interface ProjectPartDeux extends BaseSaraObject {
   lastRefreshedAt: Date
 }
 
+// TODO: Test this with a Joi schema
 // TODO: This type differs from `ProjectDataReference` right now as
 // `ProjectDataReference` represents the return values from
 // `GET /user_project/billingOrgId/projectName/data_references`. They should
@@ -141,6 +113,7 @@ export interface ProjectDataSourcePartDeux extends BaseSaraObject {
   sourceUrl: string
 }
 
+// TODO: Test this with a Joi schema
 export interface GoalPartDeux extends BaseSaraObject {
   // Crucial to identity management/RBAC
   // Pertains to a billing organization (i.e. not a GitHub organization)
@@ -150,7 +123,7 @@ export interface GoalPartDeux extends BaseSaraObject {
   description: string
 
   // Chat may not exist - only if user initiates (sans default goal).
-  chatId: string
+  chatId: string | null
 
   parentProjectId: string
 
@@ -158,11 +131,90 @@ export interface GoalPartDeux extends BaseSaraObject {
   taskIds: string[]
 }
 
+// TODO: Test this with a Joi schema
+export interface ChatPartDeux extends BaseSaraObject {
+  // Crucial to identity management/RBAC
+  // Users who can participate - or make queries - in this chat
+  participatingUserIds: string[]
+
+  // Crucial to help contextualize what prompt to give to LLM provider
+  // Only one can be filled in. Never chats for both a goal and a task
+  goalId: string | null
+  taskId: string | null
+
+  // Chat is essentially a linked-list
+  // The ID of the first query made (oldest)
+  headChatQueryId: string | null
+
+  // The ID of the last query made (most recent)
+  tailChatQueryId: string | null
+}
+
+// TODO: Test this with a Joi schema
+export interface ChatQueryPartDeux extends BaseSaraObject {
+  // Crucial to identity management/RBAC
+  chatId: string
+
+  // The user that sent the query to the LLM
+  queryingUserId: string
+
+  // The question asked to the LLM
+  query: string
+
+  // The answer to the asked question to the LLM
+  response: string | null
+
+  // The prompt used when the query was submitted to the LLM
+  processingPrompt: string
+
+  status: 'QUERY_RECEIVED' | 'QUERY_SUBMITTED' | 'RESPONSE_RECEIVED' | 'ERROR'
+
+  // Empty/invalid if status not equal to 'ERROR'
+  errorText: string | null
+
+  // ISO 8601 string
+  querySubmittedAt: Date
+
+  // ISO 8601 string
+  responseReceivedAt: Date | null
+
+  // The query that was made before this query. Null if this is the first query
+  // in the chat.
+  prevChatQueryId: string | null
+
+  // The query that was made after this query. Null if this is the last query
+  // in the chat.
+  nextChatQueryId: string | null
+
+  // The score awarded to the quality of the response generated by the LLM.
+  // Values allowed: float [0.0-1.0]
+  fineTuningScore: number | null
+  // ISO 8601 string
+  fineTunedAt: Date | null
+}
+
+// TODO: Test
+export interface PromptFileInfo extends BaseSaraObject {
+  // Human semi-readable name 
+  name: string
+
+  // TODO: Restrict this to string values as expected from the Boost backend
+  // for GET data_references
+  // The type of file info
+  type: string
+
+  // The project that depends on this file info to be injected as part of the
+  // prompt passed to the LLM
+  parentProjectId: string
+}
+
+// TODO: Test
 export interface GitHubOrg {
   login: string
   avatarUrl: string
 }
 
+// TODO: Test
 export interface GitHubRepo {
   name: string
   htmlUrl: string
