@@ -1,15 +1,17 @@
 import { NextAuthRequest } from 'next-auth/lib'
 
-import {
-    type Organization,
-    type Repository
-  } from './../../../../lib/data-model-types'
-
-import { auth } from './../../../../auth'
-import { createProject as createProjectOnBoost, postFileInfoToGetFileInfo } from './../../../../lib/polyverse/backend/backend'
+import { configAssistantForProject } from './../../../../app/_actions/config-assistant-for-project'
 import { createProjectOnSara } from './../../../../app/_actions/create-project-on-sara'
 import { getFileInfoForProject } from './../../../../app/_actions/get-file-info-for-repo'
-import { configAssistantForProject } from './../../../../app/_actions/config-assistant-for-project'
+import { auth } from './../../../../auth'
+import {
+  type Organization,
+  type Repository,
+} from './../../../../lib/data-model-types'
+import {
+  createProject as createProjectOnBoost,
+  postFileInfoToGetFileInfo,
+} from './../../../../lib/polyverse/backend/backend'
 
 // 02/29/24: Set for 90 seconds for debugging purposes when timing out on using
 // the `createProject` server action (which is 15 seconds by default). Possibly
@@ -26,46 +28,49 @@ export const POST = auth(async (req: NextAuthRequest) => {
   }
 
   try {
-    const { name, primaryDataSource, secondaryDataSources, org } = (await req.json()) as {
+    const { name, primaryDataSource, secondaryDataSources, org } =
+      (await req.json()) as {
         name: string
         primaryDataSource: Repository
         secondaryDataSources: Repository[]
         org: Organization
-    }
+      }
 
     // First start by creating the project on the Boost service...
     // TODO: Get the returned value here
     await createProjectOnBoost(
-        name,
-        org.login,
-        primaryDataSource,
-        secondaryDataSources,
-        auth.user.email
+      name,
+      org.login,
+      primaryDataSource,
+      secondaryDataSources,
+      auth.user.email,
     )
 
     console.debug(
-        `***** REST POST /temp/projects - finished invoking createProjectOnBoost at ${new Date()}`,
+      `***** REST POST /temp/projects - finished invoking createProjectOnBoost at ${new Date()}`,
     )
 
     // Then create the project on the Sara service...
     const project = await createProjectOnSara(
-        name,
-        primaryDataSource,
-        secondaryDataSources,
+      name,
+      primaryDataSource,
+      secondaryDataSources,
     )
 
     console.log(
-      `***** REST POST /temp/projects - finished invoking createProjectOnSara - project: ${JSON.stringify(project)}`,
-  )
+      `***** REST POST /temp/projects - finished invoking createProjectOnSara - project: ${JSON.stringify(
+        project,
+      )}`,
+    )
     console.debug(
-        `***** REST POST /temp/projects - finished invoking createProjectOnSara at ${new Date()}`,
+      `***** REST POST /temp/projects - finished invoking createProjectOnSara at ${new Date()}`,
     )
 
-  //   const tickledFileInfos = await postFileInfoToGetFileInfo(name, primaryDataSource, auth.user)
+    //   const tickledFileInfos = await postFileInfoToGetFileInfo(name, primaryDataSource, auth.user)
 
-  //   console.debug(
-  //     `***** REST POST /temp/projects - tickledFileInfos ${JSON.stringify(tickledFileInfos)}`,
-  // )
+    //   console.debug(
+    //     `***** REST POST /temp/projects - tickledFileInfos ${JSON.stringify(tickledFileInfos)}`,
+    // )
 
     // Prepare for OpenAI Assistant creation by gathering file information. Note
     // this call needs to happen after we create the project on the Boost backend
@@ -74,43 +79,41 @@ export const POST = auth(async (req: NextAuthRequest) => {
     // Getting file IDs back isn't an indication that the files have been fully
     // processed yet.
     const fileInfos = await getFileInfoForProject(
-        name,
-        primaryDataSource,
-        auth.user,
+      name,
+      primaryDataSource,
+      auth.user,
     )
 
     console.debug(
       `***** REST POST /temp/projects - fileInfos ${JSON.stringify(fileInfos)}`,
-  )
+    )
 
     console.debug(
-        `***** REST POST /temp/projects - finished invoking getFileInfoForProject at ${new Date()}`,
+      `***** REST POST /temp/projects - finished invoking getFileInfoForProject at ${new Date()}`,
     )
 
     // Configure the OpenAI Assistant...
     const assistant = await configAssistantForProject(
-        project,
-        fileInfos,
-        auth.user,
-        org,
+      project,
+      fileInfos,
+      auth.user,
+      org,
     )
 
     console.debug(
-        `***** REST POST /temp/projects - finished invoking configAssistantForProject at ${new Date()}`,
+      `***** REST POST /temp/projects - finished invoking configAssistantForProject at ${new Date()}`,
     )
 
-    console.debug(
-        `***** REST POST /temp/projects - returning at ${new Date()}`,
-    )
+    console.debug(`***** REST POST /temp/projects - returning at ${new Date()}`)
 
     const resBody = {
-        project,
-        assistant
+      project,
+      assistant,
     }
 
     return new Response(JSON.stringify(resBody), {
-        status: 201,
-      })
+      status: 201,
+    })
   } catch (error) {
     console.error(
       `Failed creating project for '${auth.user.username}' because: ${error}`,

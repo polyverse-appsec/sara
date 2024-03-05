@@ -1,9 +1,7 @@
-import {
-	ReasonPhrases,
-	StatusCodes,
-} from 'http-status-codes'
+import { ReasonPhrases, StatusCodes } from 'http-status-codes'
 import { NextAuthRequest } from 'next-auth/lib'
 
+import { auth } from '../../../../../auth'
 import {
   type GitHubRepo,
   type ProjectDataSourcePartDeux,
@@ -11,15 +9,10 @@ import {
   type PromptFileInfo,
   type Repository,
 } from './../../../../../lib/data-model-types'
-import { createBaseSaraObject } from './../../../../../lib/polyverse/db/utils'
 import {
-  ASSISTANT_METADATA_CREATOR,
-  type AssistantMetadata,
-  createAssistant,
-  getVersion,
-} from './../../../../../lib/polyverse/openai/assistants'
-import { auth } from '../../../../../auth'
-import { createProject as createProjectOnBoost, getFileInfoPartDeux } from './../../../../../lib/polyverse/backend/backend'
+  createProject as createProjectOnBoost,
+  getFileInfoPartDeux,
+} from './../../../../../lib/polyverse/backend/backend'
 import createProject from './../../../../../lib/polyverse/db/create-project'
 import createProjectDataSource from './../../../../../lib/polyverse/db/create-project-data-source'
 import createPromptFileInfo from './../../../../../lib/polyverse/db/create-prompt-file-info'
@@ -27,6 +20,13 @@ import getOrg from './../../../../../lib/polyverse/db/get-org'
 import getProject from './../../../../../lib/polyverse/db/get-project'
 import getUser from './../../../../../lib/polyverse/db/get-user'
 import updateOrg from './../../../../../lib/polyverse/db/update-org'
+import { createBaseSaraObject } from './../../../../../lib/polyverse/db/utils'
+import {
+  ASSISTANT_METADATA_CREATOR,
+  createAssistant,
+  getVersion,
+  type AssistantMetadata,
+} from './../../../../../lib/polyverse/openai/assistants'
 
 // 03/04/24: We set this max duration to 60 seconds during initial development
 // with no real criteria to use as a starting point for the max duration. We see
@@ -104,50 +104,71 @@ export const POST = auth(async (req: NextAuthRequest) => {
     )
     const projects = await Promise.all(projectPromises)
 
-    const duplicateProject = projects.find((project) => project.name === reqBody.name)
+    const duplicateProject = projects.find(
+      (project) => project.name === reqBody.name,
+    )
 
     if (duplicateProject) {
-      return new Response(`Project with a name of '${reqBody.name}' already exists`, {
-        status: StatusCodes.BAD_REQUEST,
-      })
+      return new Response(
+        `Project with a name of '${reqBody.name}' already exists`,
+        {
+          status: StatusCodes.BAD_REQUEST,
+        },
+      )
     }
 
     // TODO: Remnove these temporary instances of the old Repository data
     // model object once we fully transfer over to the new UI and data model
-    const oldTypedProjectDataSources = reqBody.projectDataSources.map((projectDataSource) => ({
-      // These are data members that are actually consumed by
-      // `createProject`
-      orgId: org.name,
-      // TODO: Simply take the first primary data source for now since we don't have the support for multiple
-      html_url: projectDataSource.htmlUrl,
+    const oldTypedProjectDataSources = reqBody.projectDataSources.map(
+      (projectDataSource) =>
+        ({
+          // These are data members that are actually consumed by
+          // `createProject`
+          orgId: org.name,
+          // TODO: Simply take the first primary data source for now since we don't have the support for multiple
+          html_url: projectDataSource.htmlUrl,
 
-      // These aren't data members that are used by `createProject` so
-      // just bullshit the values for now since this will be removed
-      id: 'someId',
-      userId: 'someUserId',
-      name: 'someName',
-      full_name: 'someFullName',
-      description: 'someDescription',
-      organization: {
-        login: 'someLoginName',
-        avatar_url: 'someAvatarUrl',
-      },
-    } as Repository))
+          // These aren't data members that are used by `createProject` so
+          // just bullshit the values for now since this will be removed
+          id: 'someId',
+          userId: 'someUserId',
+          name: 'someName',
+          full_name: 'someFullName',
+          description: 'someDescription',
+          organization: {
+            login: 'someLoginName',
+            avatar_url: 'someAvatarUrl',
+          },
+        }) as Repository,
+    )
 
     // TODO: Since we still rely on the old data model for the usage of this API
     // just pass the first project data source as the primary one and all the
     // others as secondary ones. Once we switch over to the new UI and data
     // model we will need to fix this.
-    const secondaryDataSources = oldTypedProjectDataSources.length > 1 ? oldTypedProjectDataSources.slice(1) : []
-    await createProjectOnBoost(reqBody.name, org.name, oldTypedProjectDataSources[0], secondaryDataSources, user.email)
+    const secondaryDataSources =
+      oldTypedProjectDataSources.length > 1
+        ? oldTypedProjectDataSources.slice(1)
+        : []
+    await createProjectOnBoost(
+      reqBody.name,
+      org.name,
+      oldTypedProjectDataSources[0],
+      secondaryDataSources,
+      user.email,
+    )
 
     // Start by building up the objects we will create in the DB.
     // Make sure to cross-reference the Project and the Project Data Source
     // IDs that we will be persisting to the DB.
     const projectBaseSaraObject = createBaseSaraObject()
-    const projectDataSourceBaseSaraObjects = reqBody.projectDataSources.map(() => createBaseSaraObject())
+    const projectDataSourceBaseSaraObjects = reqBody.projectDataSources.map(
+      () => createBaseSaraObject(),
+    )
 
-    const projectDataSourceIds = projectDataSourceBaseSaraObjects.map((projectDataSourceBaseSaraObject) => projectDataSourceBaseSaraObject.id)
+    const projectDataSourceIds = projectDataSourceBaseSaraObjects.map(
+      (projectDataSourceBaseSaraObject) => projectDataSourceBaseSaraObject.id,
+    )
 
     const project: ProjectPartDeux = {
       // BaseSaraObject properties
@@ -163,20 +184,25 @@ export const POST = auth(async (req: NextAuthRequest) => {
       closedAt: null,
       // The last time we refreshed this project is technically when we created
       // it
-      lastRefreshedAt: projectBaseSaraObject.createdAt
+      lastRefreshedAt: projectBaseSaraObject.createdAt,
     }
 
-    const projectDataSources = reqBody.projectDataSources.map((projectDataSource, projectDataSourceIndex) => ({
-      // BaseSaraObject properties
-      ...projectDataSourceBaseSaraObjects[projectDataSourceIndex],
+    const projectDataSources = reqBody.projectDataSources.map(
+      (projectDataSource, projectDataSourceIndex) =>
+        ({
+          // BaseSaraObject properties
+          ...projectDataSourceBaseSaraObjects[projectDataSourceIndex],
 
-      // Project Data Source properties
-      parentProjectId: projectBaseSaraObject.id,
-      sourceUrl: projectDataSource.htmlUrl,
-    } as ProjectDataSourcePartDeux))
+          // Project Data Source properties
+          parentProjectId: projectBaseSaraObject.id,
+          sourceUrl: projectDataSource.htmlUrl,
+        }) as ProjectDataSourcePartDeux,
+    )
 
     // Write the new objects to the DB. Start with the child objects first.
-    const createProjectDataSourcePromises = projectDataSources.map((projectDataSource) => createProjectDataSource(projectDataSource))
+    const createProjectDataSourcePromises = projectDataSources.map(
+      (projectDataSource) => createProjectDataSource(projectDataSource),
+    )
     await Promise.all(createProjectDataSourcePromises)
     await createProject(project)
 
@@ -189,7 +215,11 @@ export const POST = auth(async (req: NextAuthRequest) => {
     // TODO: We really ought to be passing in the `ID` of the `project` instance
     // but need to build more support out for using generic IDs in the backend
     // TODO: Rename to getBoostFileInfo
-    const boostFileInfos = await getFileInfoPartDeux(org.name, project.name, user.email)
+    const boostFileInfos = await getFileInfoPartDeux(
+      org.name,
+      project.name,
+      user.email,
+    )
 
     // Build up OpenAI Assistant metadata that will be used to help identify it
     // in the future
@@ -198,7 +228,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
       userName: user.username,
       orgName: org.name,
       creator: ASSISTANT_METADATA_CREATOR,
-      version: getVersion()
+      version: getVersion(),
     }
 
     // TODO: We probably need to prompt engineer a more generic prompt not attributed to a specific chat when we first create the assistant...
@@ -224,7 +254,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
         // an instance of `ProjectDataReference` is replacing the ID that would
         // be created as a result of spreading out the `BaseSaraObject`
         ...boostFileInfo,
-        parentProjectId: project.id
+        parentProjectId: project.id,
       }
 
       // It isn't obvious what is going on here. When we make a call to the
@@ -238,12 +268,12 @@ export const POST = auth(async (req: NextAuthRequest) => {
       return promptFileInfo
     })
 
-    const createPromptFileInfoPromises = promptFileInfos.map((promptFileInfo) => createPromptFileInfo(promptFileInfo))
+    const createPromptFileInfoPromises = promptFileInfos.map((promptFileInfo) =>
+      createPromptFileInfo(promptFileInfo),
+    )
     await Promise.all(createPromptFileInfoPromises)
 
-
     // TODO: Need to reverse this logic and delete it when we delete the project...
-
 
     // TODO: Start here here - the chat query needs to have the assitant prompt
     // TODO: Cache files

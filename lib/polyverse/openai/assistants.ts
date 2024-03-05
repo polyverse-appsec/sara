@@ -80,10 +80,7 @@ export async function createAssistant(
     name: assistantName,
     file_ids: fileIDs,
     instructions: prompt,
-    tools: [
-      { type: 'code_interpreter' },
-      { type: 'retrieval' },
-    ],
+    tools: [{ type: 'code_interpreter' }, { type: 'retrieval' }],
     metadata: assistantMetadata,
   })
 }
@@ -181,10 +178,7 @@ export async function configAssistant(
     version: getVersion(),
   }
 
-  return await createAssistant(
-    fileInfos,
-    newAssistantMetadata,
-  )
+  return await createAssistant(fileInfos, newAssistantMetadata)
 }
 
 export async function deleteAssistant(assistantId: string) {
@@ -196,9 +190,9 @@ export async function deleteAssistantFiles(assistant: Assistant) {
     return
   }
 
-  const fileDeletePromises = assistant.file_ids.map((id) => oaiClient.beta.assistants.files.del(
-    assistant.id, id
-  ))
+  const fileDeletePromises = assistant.file_ids.map((id) =>
+    oaiClient.beta.assistants.files.del(assistant.id, id),
+  )
 
   await Promise.all(fileDeletePromises)
 }

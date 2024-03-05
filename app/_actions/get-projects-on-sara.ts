@@ -25,7 +25,11 @@ export const getProjectsOnSara = async (user: User): Promise<Project[]> => {
   console.debug(`Server action - getProjectsOnSara - setKey: ${setKey}`)
 
   const projectKeys = (await kv.zrange(setKey, 0, -1)) as string[]
-  console.debug(`Server action - getProjectsOnSara - projectKeys: ${JSON.stringify(projectKeys)}`)
+  console.debug(
+    `Server action - getProjectsOnSara - projectKeys: ${JSON.stringify(
+      projectKeys,
+    )}`,
+  )
 
   if (projectKeys.length === 0) {
     return []
@@ -37,7 +41,9 @@ export const getProjectsOnSara = async (user: User): Promise<Project[]> => {
 
   const projects = (await projectPipeline.exec()) as Project[]
 
-  console.debug(`Server action - getProjectsOnSara - projects: ${JSON.stringify(projects)}`)
+  console.debug(
+    `Server action - getProjectsOnSara - projects: ${JSON.stringify(projects)}`,
+  )
 
   return projects
 }

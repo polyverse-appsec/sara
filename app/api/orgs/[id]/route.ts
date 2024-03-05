@@ -1,8 +1,4 @@
-import {
-	ReasonPhrases,
-	StatusCodes,
-} from 'http-status-codes'
-
+import { ReasonPhrases, StatusCodes } from 'http-status-codes'
 import { NextAuthRequest } from 'next-auth/lib'
 
 import { auth } from './../../../../auth'

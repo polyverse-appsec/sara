@@ -1,7 +1,7 @@
 import { kv } from '@vercel/kv'
 
 import { type ChatPartDeux } from './../../data-model-types'
-import { globalChatIdsSetKey, chatKey } from './keys'
+import { chatKey, globalChatIdsSetKey } from './keys'
 
 const createChat = async (chat: ChatPartDeux): Promise<void> => {
   // Create the new chat...

@@ -1,83 +1,91 @@
-import { Assistant } from 'openai/resources/beta/assistants/assistants'
-import { Thread } from 'openai/resources/beta/threads/threads'
-import { Run } from 'openai/resources/beta/threads/runs/runs'
 import OpenAI from 'openai'
+import { Assistant } from 'openai/resources/beta/assistants/assistants'
+import { Run } from 'openai/resources/beta/threads/runs/runs'
+import { Thread } from 'openai/resources/beta/threads/threads'
 
 import { type PromptFileInfo } from './../../../lib/data-model-types'
-import { type AssistantMetadata, findAssistantFromMetadata } from './assistants'
+import { findAssistantFromMetadata, type AssistantMetadata } from './assistants'
 
 const oaiClient = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
+  apiKey: process.env.OPENAI_API_KEY,
 })
 
 interface PromptFileTypes {
-    blueprint: string
-    aispec: string
-    projectsource: string
+  blueprint: string
+  aispec: string
+  projectsource: string
 }
 
 export type WorkItemsForGoalType = {
-    title: string  
-    description: string
-    acceptanceCriteria: string
+  title: string
+  description: string
+  acceptanceCriteria: string
 }
 
 export type SubmitWorkItemsForGoalType = {
-    workItems: WorkItemsForGoalType[]
+  workItems: WorkItemsForGoalType[]
 }
 
 export const submitTaskStepsAssistantFunction: Assistant.Function = {
-    type: 'function',
-    function: {
-      name: 'submitWorkItemsForGoal',
-      description:
-        'If an answer has identified individual work items that will be required to complete the project goal, this function will let you record the work items in our database.',
-      parameters: {
-        type: 'object',
-        properties: {
-          workItems: {
-            type: 'array',
-            items: {
-              type: 'object',
-              properties: {
-                title: {
-                  type: 'string',
-                  description: 'The title of the work item',
-                },
-                description: {
-                  type: 'string',
-                  description:
-                    'The description of the work item to be done in markdown format',
-                },
-                acceptanceCriteria: {
-                    type: 'string',
-                    description:
-                      'Well defined acceptance criteria in a markdown bullet list format used to determine when the work item is complete',
-                  },
+  type: 'function',
+  function: {
+    name: 'submitWorkItemsForGoal',
+    description:
+      'If an answer has identified individual work items that will be required to complete the project goal, this function will let you record the work items in our database.',
+    parameters: {
+      type: 'object',
+      properties: {
+        workItems: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              title: {
+                type: 'string',
+                description: 'The title of the work item',
+              },
+              description: {
+                type: 'string',
+                description:
+                  'The description of the work item to be done in markdown format',
+              },
+              acceptanceCriteria: {
+                type: 'string',
+                description:
+                  'Well defined acceptance criteria in a markdown bullet list format used to determine when the work item is complete',
               },
             },
           },
         },
-        required: ['workItems'],
       },
+      required: ['workItems'],
     },
+  },
 }
 
 export const submitWorkItemsForGoal = async (
-    goalId: string,
-    toolCallArgs: SubmitWorkItemsForGoalType,
+  goalId: string,
+  toolCallArgs: SubmitWorkItemsForGoalType,
 ) => {
-    if (toolCallArgs) {
-        // TODO: Once we verify that the assistant is creating invidiaul work items for goals
-        // we need to add the task data type and actually persist them
-        toolCallArgs.workItems.forEach((workItem) => {
-            console.log(`***** assistant generated the following task for a goal with an ID of '${goalId}': ${JSON.stringify(workItem)}`)
-        })
-    }
+  if (toolCallArgs) {
+    // TODO: Once we verify that the assistant is creating invidiaul work items for goals
+    // we need to add the task data type and actually persist them
+    toolCallArgs.workItems.forEach((workItem) => {
+      console.log(
+        `***** assistant generated the following task for a goal with an ID of '${goalId}': ${JSON.stringify(
+          workItem,
+        )}`,
+      )
+    })
+  }
 }
 
-function createOpenAIAssistantPromptForGoals(promptFileTypes: PromptFileTypes, goalName: string, goalDescription: string): string {
-    return `
+function createOpenAIAssistantPromptForGoals(
+  promptFileTypes: PromptFileTypes,
+  goalName: string,
+  goalDescription: string,
+): string {
+  return `
       You are a software architecture assistant as well as a coding assistant named Sara. 
       You have access to the full codebase of a project in your files, including a file named ${promptFileTypes.aispec} that summarizes the code.
 
@@ -108,76 +116,95 @@ function createOpenAIAssistantPromptForGoals(promptFileTypes: PromptFileTypes, g
       that are required to complete the project goal named ${goalName}.`
 }
 
-const mapPromptFileInfosToPromptFileTypes = (promptFileInfos: PromptFileInfo[]): PromptFileTypes => {
-    let identifiedPromptFileTypes: PromptFileTypes = { aispec: '', blueprint: '', projectsource: '' }
+const mapPromptFileInfosToPromptFileTypes = (
+  promptFileInfos: PromptFileInfo[],
+): PromptFileTypes => {
+  let identifiedPromptFileTypes: PromptFileTypes = {
+    aispec: '',
+    blueprint: '',
+    projectsource: '',
+  }
 
-    promptFileInfos.map(({ name, type }) => {
-        identifiedPromptFileTypes[type as keyof PromptFileTypes] = name
-    })
+  promptFileInfos.map(({ name, type }) => {
+    identifiedPromptFileTypes[type as keyof PromptFileTypes] = name
+  })
 
-    return identifiedPromptFileTypes
+  return identifiedPromptFileTypes
 }
 
 export const updateAssistantForProjectGoalContextualization = async (
-    promptFileInfos: PromptFileInfo[],
-    goalName: string,
-    goalDescription: string,
-    assistantMetadata: AssistantMetadata
+  promptFileInfos: PromptFileInfo[],
+  goalName: string,
+  goalDescription: string,
+  assistantMetadata: AssistantMetadata,
 ): Promise<Assistant> => {
-    const assistant = await findAssistantFromMetadata(assistantMetadata)
+  const assistant = await findAssistantFromMetadata(assistantMetadata)
 
-    if (!assistant) {
-        console.debug(`Failed to find an assistant when updating one for project goal '${goalName}' contextualization using the following metadata: ${JSON.stringify(assistantMetadata)}`)
-        throw new Error(`Failed to find an assistant when updating one for project goal contextualization`)
-    }
+  if (!assistant) {
+    console.debug(
+      `Failed to find an assistant when updating one for project goal '${goalName}' contextualization using the following metadata: ${JSON.stringify(
+        assistantMetadata,
+      )}`,
+    )
+    throw new Error(
+      `Failed to find an assistant when updating one for project goal contextualization`,
+    )
+  }
 
-    const fileIDs = promptFileInfos.map(({ id }) => id)
-    const identifiedPromptFileTypes = mapPromptFileInfosToPromptFileTypes(promptFileInfos)
-    const prompt = createOpenAIAssistantPromptForGoals(identifiedPromptFileTypes, goalName, goalDescription)
+  const fileIDs = promptFileInfos.map(({ id }) => id)
+  const identifiedPromptFileTypes =
+    mapPromptFileInfosToPromptFileTypes(promptFileInfos)
+  const prompt = createOpenAIAssistantPromptForGoals(
+    identifiedPromptFileTypes,
+    goalName,
+    goalDescription,
+  )
 
-    return oaiClient.beta.assistants.update(assistant.id, {
-        file_ids: fileIDs,
-        instructions: prompt,
-        tools: [
-            { type: 'code_interpreter' },
-            { type: 'retrieval' },
-            submitTaskStepsAssistantFunction,
-        ]
-    })
+  return oaiClient.beta.assistants.update(assistant.id, {
+    file_ids: fileIDs,
+    instructions: prompt,
+    tools: [
+      { type: 'code_interpreter' },
+      { type: 'retrieval' },
+      submitTaskStepsAssistantFunction,
+    ],
+  })
 }
 
 export const createThreadForProjectGoalChatting = async (
-    projectId: string,
-    goalId: string,
-    chatId: string,
-    chatQueryId: string,
-    query: string
+  projectId: string,
+  goalId: string,
+  chatId: string,
+  chatQueryId: string,
+  query: string,
 ): Promise<Thread> => {
-    const threadMetadata = {
-        projectId,
-        goalId,
-        chatId
-    }
+  const threadMetadata = {
+    projectId,
+    goalId,
+    chatId,
+  }
 
-    const messageMetadata = {
-        chatQueryId
-    }
+  const messageMetadata = {
+    chatQueryId,
+  }
 
-    return oaiClient.beta.threads.create({
-        messages: [
-            {
-                role: 'user',
-                content: query,
-                metadata: messageMetadata
-            }
-        ],
-        metadata: threadMetadata
-    })
+  return oaiClient.beta.threads.create({
+    messages: [
+      {
+        role: 'user',
+        content: query,
+        metadata: messageMetadata,
+      },
+    ],
+    metadata: threadMetadata,
+  })
 }
 
-export const createThreadRunForProjectGoalChatting = async (assistantId: string, threadId: string): Promise<Run> => {
-    return oaiClient.beta.threads.runs.create(threadId, {
-        assistant_id: assistantId
-    })
+export const createThreadRunForProjectGoalChatting = async (
+  assistantId: string,
+  threadId: string,
+): Promise<Run> => {
+  return oaiClient.beta.threads.runs.create(threadId, {
+    assistant_id: assistantId,
+  })
 }
-  

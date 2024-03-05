@@ -292,7 +292,7 @@ export async function getUserProjects(
   const url = `${USER_SERVICE_URI}/api/user_project/${orgId}/projects`
 
   console.debug(`Backend call getUserProjects - url: ${url}`)
-  
+
   const signedHeader = createSignedHeader(email)
   const res = await fetch(url, {
     method: 'GET',
@@ -312,7 +312,9 @@ export async function getUserProjects(
 
   const resJson = await res.json()
 
-  console.debug(`Backend call getUserProjects - resJson: ${JSON.stringify(resJson)}`)
+  console.debug(
+    `Backend call getUserProjects - resJson: ${JSON.stringify(resJson)}`,
+  )
 
   // Soooooo this is super weird...
   // On non-production the JSON we deserialize is actually a list of projects.
@@ -321,11 +323,17 @@ export async function getUserProjects(
   // serialized JSON string. If so we return that deserialize. Otherwise we
   // return `resJson` as is expecting it to be an array of projects
   if (resJson.body) {
-    console.debug(`Backend call getUserProjects - parsing and returning resJson.body: ${resJson.body}`)
+    console.debug(
+      `Backend call getUserProjects - parsing and returning resJson.body: ${resJson.body}`,
+    )
     return JSON.parse(resJson.body) as Project[]
   }
 
-  console.debug(`Backend call getUserProjects - returning resJson already as parsed JSON: ${JSON.stringify(resJson)}`)
+  console.debug(
+    `Backend call getUserProjects - returning resJson already as parsed JSON: ${JSON.stringify(
+      resJson,
+    )}`,
+  )
 
   return resJson as Project[]
 }
@@ -363,8 +371,6 @@ export function stripUndefinedObjectProperties(
 
   return strippedObject
 }
-
-
 
 //////////////////////////////////////////////////////////////////
 // New Backend Calls The Support Updated Data Model

@@ -1,7 +1,11 @@
 import { kv } from '@vercel/kv'
 
 import { type ChatQueryPartDeux } from './../../data-model-types'
-import { globalChatQueryIdsSetKey, chatQueryKey, relatedChatQueriesToChatIdsSetKey } from './keys'
+import {
+  chatQueryKey,
+  globalChatQueryIdsSetKey,
+  relatedChatQueriesToChatIdsSetKey,
+} from './keys'
 
 const createChatQuery = async (chatQuery: ChatQueryPartDeux): Promise<void> => {
   // Create the new chat query...
@@ -17,7 +21,9 @@ const createChatQuery = async (chatQuery: ChatQueryPartDeux): Promise<void> => {
   })
 
   // Track our new chat query in relationship to its chat...
-  const chatQueriesToChatIdsSetKey = relatedChatQueriesToChatIdsSetKey(chatQuery.chatId)
+  const chatQueriesToChatIdsSetKey = relatedChatQueriesToChatIdsSetKey(
+    chatQuery.chatId,
+  )
   await kv.zadd(chatQueriesToChatIdsSetKey, {
     score: +new Date(),
     member: chatQuery.id,

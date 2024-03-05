@@ -103,7 +103,7 @@ export async function configAssistantForProject(
     userName: user.email!,
     orgName: org.login,
     creator: ASSISTANT_METADATA_CREATOR,
-    version: getVersion()
+    version: getVersion(),
   }
 
   // Otherwise just create a new assistant now with the file infos and cache

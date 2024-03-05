@@ -1,20 +1,19 @@
 import { NextAuthRequest } from 'next-auth/lib'
 
 import { auth } from './../../../../auth'
+import { deleteProject as deleteProjectOnBoost } from './../../../../lib/polyverse/backend/backend'
+import deleteGoal from './../../../../lib/polyverse/db/delete-goal'
+import deleteProject from './../../../../lib/polyverse/db/delete-project'
+import deleteProjectDataSource from './../../../../lib/polyverse/db/delete-project-data-source'
+import getOrg from './../../../../lib/polyverse/db/get-org'
 import getProjectDb from './../../../../lib/polyverse/db/get-project'
 import getUser from './../../../../lib/polyverse/db/get-user'
-import getOrg from './../../../../lib/polyverse/db/get-org'
 import updateOrg from './../../../../lib/polyverse/db/update-org'
-import deleteProject from './../../../../lib/polyverse/db/delete-project'
-import deleteGoal from './../../../../lib/polyverse/db/delete-goal'
-import deleteProjectDataSource from './../../../../lib/polyverse/db/delete-project-data-source'
-import { deleteProject as deleteProjectOnBoost } from './../../../../lib/polyverse/backend/backend'
-
 import {
-  type AssistantMetadata,
-  findAssistantFromMetadata,
+  deleteAssistant,
   deleteAssistantFiles,
-  deleteAssistant
+  findAssistantFromMetadata,
+  type AssistantMetadata,
 } from './../../../../lib/polyverse/openai/assistants'
 
 export const GET = auth(async (req: NextAuthRequest) => {
@@ -142,7 +141,9 @@ export const DELETE = auth(async (req: NextAuthRequest) => {
     }
 
     // Now move onto grooming and deleting resources in our data stores.
-    org.projectIds = org.projectIds.filter((projectId) => projectId !== project.id)
+    org.projectIds = org.projectIds.filter(
+      (projectId) => projectId !== project.id,
+    )
     await updateOrg(org)
 
     // Delete all project and project related resources from our K/V.
@@ -151,10 +152,14 @@ export const DELETE = auth(async (req: NextAuthRequest) => {
     // since it has a relationship set key based off of the project ID.
     await deleteProject(project.id)
 
-    const deleteGoalPromises = project.goalIds.map((goalId) => deleteGoal(goalId))
+    const deleteGoalPromises = project.goalIds.map((goalId) =>
+      deleteGoal(goalId),
+    )
     await Promise.all(deleteGoalPromises)
 
-    const deleteProjectDataSourcePromises = project.projectDataSourceIds.map((projectDataSourceId) => deleteProjectDataSource(projectDataSourceId))
+    const deleteProjectDataSourcePromises = project.projectDataSourceIds.map(
+      (projectDataSourceId) => deleteProjectDataSource(projectDataSourceId),
+    )
     await Promise.all(deleteProjectDataSourcePromises)
 
     // Finally delete the project on the Boost backend

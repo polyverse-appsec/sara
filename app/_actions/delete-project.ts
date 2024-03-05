@@ -6,41 +6,49 @@ import { userProjectIdsSetKey, userProjectKey } from 'lib/polyverse/db/keys'
 import { auth } from './../../auth'
 import { type User } from './../../lib/data-model-types'
 import { deleteProject as deleteProjectBackend } from './../../lib/polyverse/backend/backend'
-import getCachedProjectUserFileInfos from './get-cached-project-user-file-infos'
+import {
+  deleteAssistant,
+  deleteAssistantFiles,
+  findAssistantFromMetadata,
+  type AssistantMetadata,
+} from './../../lib/polyverse/openai/assistants'
 import { deleteCachedProjectUserFileInfos } from './delete-cached-project-user-file-infos'
-import { type AssistantMetadata, findAssistantFromMetadata, deleteAssistantFiles, deleteAssistant } from './../../lib/polyverse/openai/assistants'
+import getCachedProjectUserFileInfos from './get-cached-project-user-file-infos'
 
 const createUserIdUserRepoTasksRepoIdKey = (
-    userId: string,
-    projectName: string,
-  ) => `user:${userId}:repo:tasks:${projectName}`
+  userId: string,
+  projectName: string,
+) => `user:${userId}:repo:tasks:${projectName}`
 
-async function deleteAllTasksForProject (userId: string, projectName: string): Promise<void> {
+async function deleteAllTasksForProject(
+  userId: string,
+  projectName: string,
+): Promise<void> {
   // Start by getting all task keys associated with the user and project...
-  const key = createUserIdUserRepoTasksRepoIdKey(userId, projectName);
-  const taskKeys = (await kv.zrange(key, 0, -1)) as string[];
- 
+  const key = createUserIdUserRepoTasksRepoIdKey(userId, projectName)
+  const taskKeys = (await kv.zrange(key, 0, -1)) as string[]
+
   if (taskKeys.length === 0) {
-    console.log('No tasks to delete for the project');
-    return;
+    console.log('No tasks to delete for the project')
+    return
   }
 
   // Then delete all of the tasks for the user based on the retrieved keys...
-  const deletePipeline = kv.pipeline();
+  const deletePipeline = kv.pipeline()
   taskKeys.forEach((taskKey) => {
     // Assuming tasks are stored as hashes, we use del to remove them
-    deletePipeline.del(taskKey);
+    deletePipeline.del(taskKey)
     // Additionally, remove the task key from the sorted set of task keys
-    deletePipeline.zrem(key, taskKey);
-  });
-  
-  await deletePipeline.exec();
-};
+    deletePipeline.zrem(key, taskKey)
+  })
+
+  await deletePipeline.exec()
+}
 
 async function deleteProjectVercel(
   userId: string,
   projectId: string,
-  projectName: string
+  projectName: string,
 ): Promise<void> {
   // Generate the keys needed to locate the project in the k/v store
   const setKey = userProjectIdsSetKey(userId)
@@ -83,7 +91,9 @@ export const deleteProject = async (
     version: '', // ignore version for search
   }
 
-  const existingAssistant = await findAssistantFromMetadata(existingAssistantMetadata)
+  const existingAssistant = await findAssistantFromMetadata(
+    existingAssistantMetadata,
+  )
 
   if (existingAssistant) {
     await deleteAssistantFiles(existingAssistant)

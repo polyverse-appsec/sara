@@ -13,7 +13,10 @@ const createUserIdUserRepoTasksRepoIdKey = (
   projectName: string,
 ) => `user:${userId}:repo:tasks:${projectName}`
 
-export async function createTask(projectName: string, task: Task): Promise<Task> {
+export async function createTask(
+  projectName: string,
+  task: Task,
+): Promise<Task> {
   const session = await auth()
   console.debug(`Invoking server action: createTask`)
 

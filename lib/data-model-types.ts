@@ -208,7 +208,7 @@ export interface ChatQueryPartDeux extends BaseSaraObject {
 
 // TODO: Test
 export interface PromptFileInfo extends BaseSaraObject {
-  // Human semi-readable name 
+  // Human semi-readable name
   name: string
 
   // TODO: Restrict this to string values as expected from the Boost backend

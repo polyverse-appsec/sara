@@ -26,10 +26,12 @@ export const globalProjectDataSourceIdsSetKey = () =>
 export const globalUserEmailsSetKey = () => `global:user:emails`
 
 // TODO: Test
-export const relatedChatQueriesToChatIdsSetKey = (chatId: string) => `chat:${chatId}:chat-query:ids`
+export const relatedChatQueriesToChatIdsSetKey = (chatId: string) =>
+  `chat:${chatId}:chat-query:ids`
 
 // TODO: Test
-export const relatedPromptFileInfosToProjectIdsSetKey = (projectId: string) => `project:${projectId}:prompt-file-info:ids`
+export const relatedPromptFileInfosToProjectIdsSetKey = (projectId: string) =>
+  `project:${projectId}:prompt-file-info:ids`
 
 // TODO: Test
 export const chatKey = (chatId: string) => `chat:${chatId}`
@@ -38,7 +40,8 @@ export const chatKey = (chatId: string) => `chat:${chatId}`
 export const chatQueryKey = (chatQueryId: string) => `chat-query:${chatQueryId}`
 
 // TODO: Test
-export const promptFileInfoKey = (fileInfoId: string) => `prompt-file-info:${fileInfoId}`
+export const promptFileInfoKey = (fileInfoId: string) =>
+  `prompt-file-info:${fileInfoId}`
 
 // TODO: Test
 export const goalKey = (goalId: string) => `goal:${goalId}`
@@ -56,19 +59,12 @@ export const projectDataSourceKey = (projectDataSourceId: string) =>
 // TODO: Test
 export const userKey = (email: string) => `user:${email}`
 
-
-
-
-
-
-
 ////////////////////////////////////////////
 // Old keys used in old data model
 ////////////////////////////////////////////
 
 // TODO: Consider if I want the pattern of `user:${userId}:project:${projectId}`
 // or `project:${projectId}:user:${userId}` as right now I use both patterns
-
 
 // TODO: Test
 export const userProjectKey = (userId: string, projectId: string) =>
