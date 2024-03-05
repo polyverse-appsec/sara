@@ -22,7 +22,10 @@ export const getProjectsOnSara = async (user: User): Promise<Project[]> => {
 
   // First start by getting all of the projects associated with a user...
   const setKey = userProjectIdsSetKey(user.id)
+  console.debug(`Server action - getProjectsOnSara - setKey: ${setKey}`)
+
   const projectKeys = (await kv.zrange(setKey, 0, -1)) as string[]
+  console.debug(`Server action - getProjectsOnSara - projectKeys: ${JSON.stringify(projectKeys)}`)
 
   if (projectKeys.length === 0) {
     return []
@@ -33,6 +36,8 @@ export const getProjectsOnSara = async (user: User): Promise<Project[]> => {
   projectKeys.forEach((projectKey) => projectPipeline.hgetall(projectKey))
 
   const projects = (await projectPipeline.exec()) as Project[]
+
+  console.debug(`Server action - getProjectsOnSara - projects: ${JSON.stringify(projects)}`)
 
   return projects
 }

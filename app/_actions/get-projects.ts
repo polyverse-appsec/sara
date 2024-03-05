@@ -29,6 +29,8 @@ export const getProjects = async (
   const saraProjects = await getProjectsOnSara(user)
 
   // Map saraProjects properties to boostProjects based on the 'name' field
+  console.debug(`Server action getProjects - about to map the following JS object/array 'boostProjects': ${JSON.stringify(boostProjects)}`)
+
   const mappedProjects = boostProjects.map((boostProject) => {
     // Find the corresponding saraProject
     const correspondingSaraProject = saraProjects.find(

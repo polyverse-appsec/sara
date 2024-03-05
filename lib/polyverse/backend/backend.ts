@@ -288,8 +288,11 @@ export async function getUserProjects(
   orgId: string,
   email: string,
 ): Promise<Project[]> {
+  console.debug(`Backend call getUserProjects`)
   const url = `${USER_SERVICE_URI}/api/user_project/${orgId}/projects`
 
+  console.debug(`Backend call getUserProjects - url: ${url}`)
+  
   const signedHeader = createSignedHeader(email)
   const res = await fetch(url, {
     method: 'GET',
@@ -308,6 +311,8 @@ export async function getUserProjects(
   }
 
   const projects = await res.json()
+
+  console.debug(`Backend call getUserProjects - projects: ${JSON.stringify(projects)}`)
 
   return projects as Project[]
 }
