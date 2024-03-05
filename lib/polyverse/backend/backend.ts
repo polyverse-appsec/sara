@@ -310,11 +310,24 @@ export async function getUserProjects(
     throw new Error(errLogMsg)
   }
 
-  const projects = await res.json()
+  const resJson = await res.json()
 
-  console.debug(`Backend call getUserProjects - projects: ${JSON.stringify(projects)}`)
+  console.debug(`Backend call getUserProjects - resJson: ${JSON.stringify(resJson)}`)
 
-  return projects as Project[]
+  // Soooooo this is super weird...
+  // On non-production the JSON we deserialize is actually a list of projects.
+  // On production we are getting a JSON body in the HTTP response body. What we
+  // do here is check to see if resJson has a body property which is a
+  // serialized JSON string. If so we return that deserialize. Otherwise we
+  // return `resJson` as is expecting it to be an array of projects
+  if (resJson.body) {
+    console.debug(`Backend call getUserProjects - parsing and returning resJson.body: ${resJson.body}`)
+    return JSON.parse(resJson.body) as Project[]
+  }
+
+  console.debug(`Backend call getUserProjects - returning resJson already as parsed JSON: ${JSON.stringify(resJson)}`)
+
+  return resJson as Project[]
 }
 
 /**
