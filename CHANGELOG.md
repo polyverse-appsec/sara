@@ -2,6 +2,20 @@
 
 # Release Notes
 
+## Version 0.7.2: March 5th, 2024
+
+### New Features
+
+- N/A
+
+### Enhancements
+
+- N/A
+
+### Bug Fixes
+
+- Fix issue where Boost backend can return different formats when getting all projects associated with user
+
 ## Version 0.7.1: February 29th, 2024
 
 ### New Features
