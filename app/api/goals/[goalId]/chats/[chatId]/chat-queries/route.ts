@@ -2,22 +2,22 @@ import { ReasonPhrases, StatusCodes } from 'http-status-codes'
 import { NextAuthRequest } from 'next-auth/lib'
 import Joi from 'joi'
 
-import { auth } from '../../../../../../auth'
+import { auth } from '../../../../../../../auth'
 
-import getChat from './../../../../../../lib/polyverse/db/get-chat'
-import getChatQuery from './../../../../../../lib/polyverse/db/get-chat-query'
-import getGoal from './../../../../../../lib/polyverse/db/get-goal'
-import getOrg from './../../../../../../lib/polyverse/db/get-org'
-import getProject from './../../../../../../lib/polyverse/db/get-project'
-import getUser from './../../../../../../lib/polyverse/db/get-user'
-import getChatQueryRangeFromChat from './../../../../../../lib/polyverse/db/get-chat-query-range-from-chat'
-import updateChatQuery from './../../../../../../lib/polyverse/db/update-chat-query'
+import getChat from './../../../../../../../lib/polyverse/db/get-chat'
+import getChatQuery from './../../../../../../../lib/polyverse/db/get-chat-query'
+import getGoal from './../../../../../../../lib/polyverse/db/get-goal'
+import getOrg from './../../../../../../../lib/polyverse/db/get-org'
+import getProject from './../../../../../../../lib/polyverse/db/get-project'
+import getUser from './../../../../../../../lib/polyverse/db/get-user'
+import getChatQueryRangeFromChat from './../../../../../../../lib/polyverse/db/get-chat-query-range-from-chat'
+import updateChatQuery from './../../../../../../../lib/polyverse/db/update-chat-query'
 
 import {
   getChatQueryResponseFromThread,
   getThreadRunForProjectGoalChatting,
   handleRequiresActionStatusForProjectGoalChatting
-} from './../../../../../../lib/polyverse/openai/goalsAssistant'
+} from './../../../../../../../lib/polyverse/openai/goalsAssistant'
 
 // 03/04/24: We set this max duration to 60 seconds during initial development
 // with no real criteria to use as a starting point for the max duration. We see
