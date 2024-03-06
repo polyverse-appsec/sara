@@ -44,11 +44,11 @@ export const GET = auth(async (req: NextAuthRequest) => {
     const reqUrl = new URL(req.url)
     const reqUrlSlices = reqUrl.toString().split('/')
 
-    // The 3rd to the last slice ought to be the slug for the chat ID
-    const requestedChatId = reqUrlSlices[reqUrlSlices.length - 1]
+    // The 2nd to the last slice ought to be the slug for the chat ID
+    const requestedChatId = reqUrlSlices[reqUrlSlices.length - 2]
 
-    // The 5th to the last slice ought to be the slug for the chat ID
-    const requestedGoalId = reqUrlSlices[reqUrlSlices.length - 3]
+    // The 4th to the last slice ought to be the slug for the chat ID
+    const requestedGoalId = reqUrlSlices[reqUrlSlices.length - 4]
 
     // AuthZ: Check that the user is listed as a member on the org that owns
     // the goal
@@ -280,10 +280,10 @@ export const GET = auth(async (req: NextAuthRequest) => {
     })
   } catch (error) {
     console.error(
-      `Failed fetching chat for '${auth.user.username}' because: ${error}`,
+      `Failed fetching chat queries for '${auth.user.username}' because: ${error}`,
     )
 
-    return new Response('Failed to fetch projects', {
+    return new Response('Failed to fetch chat queries', {
       status: StatusCodes.INTERNAL_SERVER_ERROR,
     })
   }
