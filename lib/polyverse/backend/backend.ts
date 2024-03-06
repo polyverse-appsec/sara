@@ -402,7 +402,13 @@ export async function getFileInfoPartDeux(
       return []
     }
 
-    const fileInfos = await res.json()
+    const jsonRes = await res.json()
+
+    if (!jsonRes.body) {
+      throw new Error(`Response to GET ${url} doesn't have the 'body' property`)
+    }
+
+    const fileInfos = JSON.parse(jsonRes.body)
 
     // Convert the response format from the Boost Node backend to what we expect
     // for consumption in Sara
