@@ -2,6 +2,21 @@
 
 # Release Notes
 
+## Version 0.9.0: March 6th, 2024
+
+### New Features
+
+- Add REST API for getting chat queries associated with a chat `/api/goals/goalId/chats/chatId/chat-queries`
+
+### Enhancements
+
+- Render goals associated with a project
+
+### Bug Fixes
+
+- Fix issue with parsing the wrong URI segment for the goal ID and chat ID in `GET /api/goals/goalId/chats/chatId/chat-queries`
+- Fix issue with not submitting output back to OpenAI Assistant thread when handling action
+
 ## Version 0.8.1: March 5th, 2024
 
 ### New Features
