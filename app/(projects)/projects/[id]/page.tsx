@@ -9,6 +9,7 @@ import {
   GoalPartDeux,
   type ProjectPartDeux,
 } from './../../../../lib/data-model-types'
+import Link from 'next/link'
 
 const PageIndex = ({ params: { id } }: { params: { id: string } }) => {
   const router = useRouter()
@@ -55,18 +56,33 @@ const PageIndex = ({ params: { id } }: { params: { id: string } }) => {
   return (
     <div className="flex-1 flex-col gap-4 p-10 text-2xl font-bold">
       <div className="bg-white shadow-md rounded-lg p-6">
-        <div className="text-base my-1">
+        <div className="text-center text-base my-1">
           <h3 className="text-lg font-semibold">Name</h3>
           <p>{project.name}</p>
         </div>
-        <div className="text-base my-1">
+        <div className="text-center text-base my-1">
           <h3 className="text-lg font-semibold">Description</h3>
           <p>{project.description}</p>
         </div>
         {!goals ? null : (
-          <div className="text-base my-1">
-            <h3 className="text-lg font-semibold">Goals</h3>
-            <p>{JSON.stringify(goals)}</p>
+          <div className="border border-gray-300 p-2 text-base my-1 rounded-lg flex flex-col items-center justify-center">
+            <h3 className="text-lg font-semibold text-center">Goals</h3>
+            {Object.entries(goals).map(([goalKey, goalValue]) => (
+              <div className="block transform transition rounded-lg">
+                <Link
+                  href={`/projects/${id}`}
+                >
+                  <div key={goalKey} className="hover:bg-orange-200 border border-gray-300 rounded-lg my-1 p-1">
+                    <h3 className="text-md font-semibold text-center">Goal {goalKey}: {goalValue.name}</h3>
+                  </div>
+                </Link>
+              </div>
+            ))}
+            <Button
+            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-2"
+            >
+                Create New Goal
+            </Button>
           </div>
         )}
         <Button
