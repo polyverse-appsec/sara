@@ -68,11 +68,11 @@ const PageIndex = ({ params: { id } }: { params: { id: string } }) => {
           <div className="border border-gray-300 p-2 text-base my-1 rounded-lg flex flex-col items-center justify-center">
             <h3 className="text-lg font-semibold text-center">Goals</h3>
             {Object.entries(goals).map(([goalKey, goalValue]) => (
-              <div className="block transform transition rounded-lg">
+              <div key = {goalValue.id} className="block transform transition rounded-lg">
                 <Link
                   href={`/projects/${id}`}
                 >
-                  <div key={goalKey} className="hover:bg-orange-200 border border-gray-300 rounded-lg my-1 p-1">
+                  <div className="hover:bg-orange-200 border border-gray-300 rounded-lg my-1 p-1">
                     <h3 className="text-md font-semibold text-center">Goal {goalKey}: {goalValue.name}</h3>
                   </div>
                 </Link>
