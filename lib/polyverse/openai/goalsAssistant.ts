@@ -2,9 +2,12 @@ import OpenAI from 'openai'
 import { Assistant } from 'openai/resources/beta/assistants/assistants'
 import { Run } from 'openai/resources/beta/threads/runs/runs'
 import { Thread } from 'openai/resources/beta/threads/threads'
+import { ThreadMessage } from 'openai/resources/beta/threads/messages/messages'
 
 import { type PromptFileInfo } from './../../../lib/data-model-types'
 import { findAssistantFromMetadata, type AssistantMetadata } from './assistants'
+import { text } from 'stream/consumers'
+
 
 const oaiClient = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -65,18 +68,66 @@ export const submitTaskStepsAssistantFunction: Assistant.Function = {
 
 export const submitWorkItemsForGoal = async (
   goalId: string,
-  toolCallArgs: SubmitWorkItemsForGoalType,
+  parsedArgsAsWorkItems: SubmitWorkItemsForGoalType,
 ) => {
-  if (toolCallArgs) {
+  if (parsedArgsAsWorkItems) {
     // TODO: Once we verify that the assistant is creating invidiaul work items for goals
     // we need to add the task data type and actually persist them
-    toolCallArgs.workItems.forEach((workItem) => {
+    parsedArgsAsWorkItems.workItems.forEach((workItem) => {
       console.log(
         `***** assistant generated the following task for a goal with an ID of '${goalId}': ${JSON.stringify(
           workItem,
         )}`,
       )
     })
+  }
+}
+
+export const handleRequiresActionStatusForProjectGoalChatting = async (
+  threadRun: Run,
+  goalId: string
+) => {
+  // Identify any tool calls we may use while chatting about a project goal
+  if (
+    threadRun.required_action?.type === 'submit_tool_outputs' &&
+    threadRun.required_action?.submit_tool_outputs.tool_calls
+  ) {
+    console.debug(`Attempting to handle actions for thread run '${threadRun.id}' for goal '${goalId}'`)
+    const toolCalls = threadRun.required_action?.submit_tool_outputs.tool_calls
+
+    // All tool outputs need to be submitted in a single request per OpenAI
+    // docs. Track all tool outputs here for later submission as invoking all of
+    // our tools provided to the OpenAI Assistant.
+    const toolOutputs = []
+
+    for (const toolCall of toolCalls) {
+      const { name: toolName, arguments: toolArgs } = toolCall.function
+
+      if (toolName === 'submitWorkItemsForGoal') {
+        console.debug(`Invoking 'submitWorkItemsForGoal' as a required action chatting about goal '${goalId}'`)
+        const parsedArgsAsWorkItems = JSON.parse(toolArgs)
+
+        await submitWorkItemsForGoal(goalId, parsedArgsAsWorkItems)
+
+        toolOutputs.push({
+          tool_call_id: toolCall.id
+        })
+      }
+    }
+
+    // After going through all of our tool calls submit a single response with
+    // their outputs. Submitting a single response is required per the OpenAI
+    // docs.
+    await oaiClient.beta.threads.runs.submitToolOutputs(
+      threadRun.thread_id,
+      threadRun.id,
+      // While `tool_outputs` is required to have an array value it
+      // can be empty per the OpenAI API docs if nothing further is
+      // required.
+      {
+        tool_outputs: toolOutputs,
+      },
+    )
   }
 }
 
@@ -207,4 +258,103 @@ export const createThreadRunForProjectGoalChatting = async (
   return oaiClient.beta.threads.runs.create(threadId, {
     assistant_id: assistantId,
   })
+}
+
+export const getChatQueryResponseFromThread = async (threadId: string, chatQueryId: string): Promise<string> => {
+  const { data: messages } = await oaiClient.beta.threads.messages.list(
+    threadId
+  )
+
+  const messageMetadata = {
+    chatQueryId
+  }
+
+  // Find the index of the user query to OpenAI that we are tracking in our
+  // datastore as a chat query
+  const chatQueryIndex = messages.findIndex((message) => {
+    const metadata = message.metadata as { chatQueryId: string }
+
+    if (metadata.chatQueryId && metadata.chatQueryId === chatQueryId && message.role === 'user') {
+      return true
+    }
+
+    return false
+  })
+
+  // If we didn't find it throw an error. Typically we check for -1 indicating
+  // the index wasn't found but we also want to ensure that the corresponding
+  // user query isn't the first one in the messages array. This would denote
+  // that there aren't any assistant responses either.
+  if (chatQueryIndex < 1) {
+    throw new Error(`Unable to locate user chat query with an ID of '${chatQueryId}'`)
+  }
+
+  // Presuming that the messages returned by OpenAI are listed with the most
+  // recent message as the first index in the array returned take a slice of the
+  // responses up to our user query.
+  const assistantMessages = messages.slice(0, chatQueryIndex)
+  const chatQueryResponse = assistantMessages.reduce((concatenatedMessage, assistantMessage) => {
+    const { content: contents } = assistantMessage
+
+    contents.forEach((content) => {
+      if (content.type !== 'text') {
+        throw new Error(`Tried to process unrecognized content type '${content.type}' for chat query with an ID of '${chatQueryId}'`)
+      }
+
+      const textContent = content.text
+
+      // Handle citations to files the assistant included in the message
+      const annotations = textContent.annotations
+      const citations: string[] = []
+
+      annotations.forEach(async (annotation, index) => {
+        // Replace the text with a footnote
+        textContent.value = textContent.value.replace(
+          annotation.text,
+          ` [${index}]`
+        )
+
+        if (annotation.type !== 'file_citation' && annotation.type !== 'file_path') {
+          throw new Error(`Tried to process unrecognized annotation type for chat query with an ID of '${chatQueryId}'`)
+        }
+
+        // Handle citations within a message that points to a specific quote
+        // from a specific file associated with the assistant or message. This
+        // citation is generated when the assistant uses the 'retrieval' tool to
+        // search files.
+        if (annotation.type === 'file_citation') {
+          const citedFile = await oaiClient.files.retrieve(
+            annotation.file_citation.file_id
+          )
+
+          citations.push(`[${index}] ${annotation.file_citation.quote} from ${citedFile.filename}`)
+        }
+
+        // Handle citation within a message that generated a URL for the file
+        // the assistant used the 'code_interpreter' tool to generate a file.
+        if (annotation.type === 'file_path') {
+          const citedFile = await oaiClient.files.retrieve(
+            annotation.file_path.file_id
+          )
+
+          citations.push(`[${index}] Click <here> to download ${citedFile.filename}`)
+        }
+
+        // Note: Actual file download link or mechanism to trigger downloads not implemented
+      })
+
+      textContent.value += '\n' + citations.join('\n')
+
+      concatenatedMessage += textContent.value
+      concatenatedMessage += '\n'
+    })
+
+    return concatenatedMessage
+  }, '').trim()
+
+  return chatQueryResponse
+}
+
+export const getThreadRunForProjectGoalChatting = async (threadId: string, threadRunId: string): Promise<Run> => {
+  return oaiClient.beta.threads.runs.retrieve(threadId, threadRunId)
 }
