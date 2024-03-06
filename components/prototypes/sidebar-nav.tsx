@@ -9,10 +9,11 @@ import toast from 'react-hot-toast'
 
 import { useAppContext } from './../../lib/hooks/app-context'
 import SaraPortrait from './../../public/Sara_Cartoon_Portrait.png'
+import { UserMenu } from 'components/user-menu'
 
 const SidebarNav = () => {
   const router = useRouter()
-  const { activeBillingOrg } = useAppContext()
+  const { user, activeBillingOrg } = useAppContext()
 
   return (
     <motion.aside
@@ -38,6 +39,7 @@ const SidebarNav = () => {
           width={100} // Adjust the width as needed
           height={100} // Adjust the height as needed
         />
+        <UserMenu user={user} />
       </div>
       <div className="flex justify-center px-2 py-1 text-base font-medium rounded-lg">
         <p className="text-center">Active Billing Organization:</p>
