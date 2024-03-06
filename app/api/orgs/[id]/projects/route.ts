@@ -231,7 +231,8 @@ export const POST = auth(async (req: NextAuthRequest) => {
       version: getVersion(),
     }
 
-    // TODO: We probably need to prompt engineer a more generic prompt not attributed to a specific chat when we first create the assistant...
+    // TODO: We probably need to prompt engineer a more generic prompt not
+    // attributed to a specific chat when we first create the assistant...
 
     // TODO: After we switch over to the new UI/UX workflows change this signature to take
     // PromptFileInfo

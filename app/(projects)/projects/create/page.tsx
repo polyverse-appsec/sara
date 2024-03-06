@@ -7,7 +7,11 @@ import toast from 'react-hot-toast'
 
 import { Button } from './../../../../components/ui/button'
 import { Input } from './../../../../components/ui/input'
-import { GitHubRepo, ProjectPartDeux } from './../../../../lib/data-model-types'
+import {
+  GitHubRepo,
+  GoalPartDeux,
+  ProjectPartDeux,
+} from './../../../../lib/data-model-types'
 import { useAppContext } from './../../../../lib/hooks/app-context'
 import DataSourceSelector from './data-source-selector'
 
@@ -48,7 +52,7 @@ const postProject = async (
 const postDefaultGoal = async (
   billingOrgId: string,
   projectId: string,
-): Promise<void> => {
+): Promise<GoalPartDeux> => {
   const goalBody = {
     orgId: billingOrgId,
     parentProjectId: projectId,
@@ -70,6 +74,31 @@ const postDefaultGoal = async (
     console.debug(`Failed to POST default project goal because: ${errText}`)
 
     throw new Error(`Failed to POST default project goal`)
+  }
+
+  return (await res.json()) as GoalPartDeux
+}
+
+const postChatForDefaultGoal = async (goalId: string, query: string) => {
+  const chatBody = {
+    query,
+  }
+
+  const res = await fetch(`/api/goals/${goalId}/chats`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(chatBody),
+  })
+
+  if (!res.ok) {
+    const errText = await res.text()
+    console.debug(
+      `Failed to POST chat for default project goal because: ${errText}`,
+    )
+
+    throw new Error(`Failed to POST chat for default project goal`)
   }
 }
 
@@ -173,12 +202,20 @@ const ProjectCreate = () => {
               )
 
               // Secondly createa a default goal for them...
-              await postDefaultGoal(activeBillingOrg.id, project.id)
+              const defaultProjectGoal = await postDefaultGoal(
+                activeBillingOrg.id,
+                project.id,
+              )
 
               // Finally start the Sara chat for the default project goal...
+              await postChatForDefaultGoal(
+                defaultProjectGoal.id,
+                defaultProjectGoal.description,
+              )
 
               router.push(`/projects/${project.id}`)
             } catch (err) {
+              // TODO: Delete project if we fail any of the other steps?
               console.debug(
                 `Caught error when trying to create a project: ${err}`,
               )
