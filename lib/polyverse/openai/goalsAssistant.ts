@@ -71,15 +71,20 @@ export const submitWorkItemsForGoal = async (
   parsedArgsAsWorkItems: SubmitWorkItemsForGoalType,
 ) => {
   if (parsedArgsAsWorkItems) {
+    const workItems: any = []
+
     // TODO: Once we verify that the assistant is creating invidiaul work items for goals
     // we need to add the task data type and actually persist them
     parsedArgsAsWorkItems.workItems.forEach((workItem) => {
-      console.log(
-        `***** assistant generated the following task for a goal with an ID of '${goalId}': ${JSON.stringify(
-          workItem,
-        )}`,
-      )
+      // TODO: We are just temporarily capturing the work items for now for logging purposes
+      workItems.push(workItem)
     })
+
+    console.log(
+      `***** assistant generated the following tasks for a goal with an ID of '${goalId}': ${JSON.stringify(
+        workItems,
+      )}`,
+    )
   }
 }
 
@@ -110,7 +115,10 @@ export const handleRequiresActionStatusForProjectGoalChatting = async (
         await submitWorkItemsForGoal(goalId, parsedArgsAsWorkItems)
 
         toolOutputs.push({
-          tool_call_id: toolCall.id
+          tool_call_id: toolCall.id,
+          // For now we don't provide any output back to the assistant when
+          // generating tasks
+          output: ''
         })
       }
     }
