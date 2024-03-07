@@ -24,8 +24,8 @@ export const GET = auth(async (req: NextAuthRequest) => {
       const reqUrl = new URL(req.url)
       const reqUrlSlices = reqUrl.toString().split('/')
   
-      // The 2nd to the last slice ought to be the slug for the goal ID
-      const requestedGoalId = reqUrlSlices[reqUrlSlices.length - 2]
+      // The last slice ought to be the slug for the goal ID
+      const requestedGoalId = reqUrlSlices[reqUrlSlices.length - 1]
   
       const goal = await getGoal(requestedGoalId)
       

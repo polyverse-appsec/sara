@@ -70,7 +70,7 @@ const PageIndex = ({ params: { id } }: { params: { id: string } }) => {
             {Object.entries(goals).map(([goalKey, goalValue]) => (
               <div key = {goalValue.id} className="block transform transition rounded-lg">
                 <Link
-                  href={`/projects/${id}`}
+                  href={`/goals/${goalValue.id}`}
                 >
                   <div className="hover:bg-orange-200 border border-gray-300 rounded-lg my-1 p-1">
                     <h3 className="text-md font-semibold text-center">Goal {goalKey}: {goalValue.name}</h3>
