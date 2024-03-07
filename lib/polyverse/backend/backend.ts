@@ -50,10 +50,10 @@ function createSignedHeader(email: string): SignedHeader {
 
 export async function getFileInfo(
   projectName: string,
-  primaryDataSource: Repository,
+  orgId: string,
   email: string,
 ): Promise<ProjectDataReference[]> {
-  const url = `${USER_SERVICE_URI}/api/user_project/${primaryDataSource.orgId}/${projectName}/data_references`
+  const url = `${USER_SERVICE_URI}/api/user_project/${orgId}/${projectName}/data_references`
 
   try {
     const signedHeader = createSignedHeader(email)
@@ -67,7 +67,7 @@ export async function getFileInfo(
     if (!res.ok) {
       const errText = await res.text()
       console.error(
-        `${primaryDataSource.orgId}/${primaryDataSource.name} for ${email}' - Status: ${res.status} - Error: ${errText}`,
+        `${orgId}/${projectName} for ${email}' - Status: ${res.status} - Error: ${errText}`,
       )
 
       return []

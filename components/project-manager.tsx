@@ -180,7 +180,7 @@ export const ProjectManager = () => {
       )
       const fileInfos = await getFileInfoForProject(
         project.name,
-        project.mainRepository,
+        org.login,
         user,
       )
       const assistant = await configAssistantForProject(

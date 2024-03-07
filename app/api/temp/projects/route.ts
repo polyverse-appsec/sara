@@ -80,7 +80,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
     // processed yet.
     const fileInfos = await getFileInfoForProject(
       name,
-      primaryDataSource,
+      org.login,
       auth.user,
     )
 
@@ -91,6 +91,12 @@ export const POST = auth(async (req: NextAuthRequest) => {
     console.debug(
       `***** REST POST /temp/projects - finished invoking getFileInfoForProject at ${new Date()}`,
     )
+
+    if (!fileInfos || fileInfos.length === 0) {
+      return new Response('Failed to get file info during project creation', {
+        status: 500,
+      })
+    }
 
     // Configure the OpenAI Assistant...
     const assistant = await configAssistantForProject(
