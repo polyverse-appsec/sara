@@ -12,7 +12,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu'
+import { HamburgerMenuIcon } from '@radix-ui/react-icons'
 import { IconExternalLink } from './ui/icons'
+import LoadingCircle from './loading-spinner'
 
 export interface UserMenuProps {
   user: Session['user']
@@ -24,12 +26,16 @@ function getUserInitials(name: string) {
 }
 
 export function UserMenu({ user }: UserMenuProps) {
+  const isLoading = !user?.image || !user?.name;
+
   return (
     <div className="flex items-center justify-between">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="pl-0">
-            {user?.image ? (
+            {isLoading ? (
+              <LoadingCircle />
+            ) : user?.image ? (
               <Image
                 className="w-6 h-6 transition-opacity duration-300 rounded-full select-none ring-1 ring-zinc-100/10 hover:opacity-80"
                 src={user?.image ? `${user.image}&s=60` : ''}
@@ -43,6 +49,7 @@ export function UserMenu({ user }: UserMenuProps) {
               </div>
             )}
             <span className="ml-2">{user?.name}</span>
+            <HamburgerMenuIcon className="ml-2 w-4 h-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent sideOffset={8} align="start" className="w-[180px]">
