@@ -150,6 +150,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
       oldTypedProjectDataSources.length > 1
         ? oldTypedProjectDataSources.slice(1)
         : []
+
     await createProjectOnBoost(
       reqBody.name,
       org.name,
@@ -203,6 +204,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
     const createProjectDataSourcePromises = projectDataSources.map(
       (projectDataSource) => createProjectDataSource(projectDataSource),
     )
+
     await Promise.all(createProjectDataSourcePromises)
     await createProject(project)
 
@@ -273,19 +275,6 @@ export const POST = auth(async (req: NextAuthRequest) => {
       createPromptFileInfo(promptFileInfo),
     )
     await Promise.all(createPromptFileInfoPromises)
-
-    // TODO: Need to reverse this logic and delete it when we delete the project...
-
-    // TODO: Start here here - the chat query needs to have the assitant prompt
-    // TODO: Cache files
-    // TODO: Start here by caching of the files - use these keys I just created:
-    // relatedFileInfosToProjectIdsSetKey
-    // globalFileInfoIdsSetKey
-    // fileInfoKey
-    // Note that I have to update the delete project DB function since it has a
-    // relationship key and now we need to delete those files.
-    // Note that I also need to update the delete logic to delete any files if I havent already
-    // THEN... go back to creating the chat in OpenAI
 
     // Return the project we created to the user...
     return new Response(JSON.stringify(project), {

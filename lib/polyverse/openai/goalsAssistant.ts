@@ -268,6 +268,22 @@ export const createThreadRunForProjectGoalChatting = async (
   })
 }
 
+export const addQueryToThreadForProjectGoalChatting = async (
+  threadId: string,
+  chatQueryId: string,
+  query: string
+) => {
+  const messageMetadata = {
+    chatQueryId,
+  }
+
+  await oaiClient.beta.threads.messages.create(threadId, {
+    role: 'user',
+    content: query,
+    metadata: messageMetadata
+  })
+}
+
 export const getChatQueryResponseFromThread = async (threadId: string, chatQueryId: string): Promise<string> => {
   const { data: messages } = await oaiClient.beta.threads.messages.list(
     threadId

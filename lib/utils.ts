@@ -2,6 +2,13 @@ import { clsx, type ClassValue } from 'clsx'
 import { customAlphabet } from 'nanoid'
 import { twMerge } from 'tailwind-merge'
 
+import isEqual from 'lodash/isEqual'
+import orderBy from 'lodash/orderBy'
+
+import {
+    type PromptFileInfo,
+} from './../lib/data-model-types'
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
@@ -43,4 +50,35 @@ export function formatDate(input: string | number | Date): string {
     day: 'numeric',
     year: 'numeric',
   })
+}
+
+export const promptFileInfosEqual = (
+  thisPromptFileInfos: PromptFileInfo[],
+  thatPromptFileInfos: PromptFileInfo[],
+): boolean => {
+  console.debug(
+    `Checking to see if this and that prompt file infos are equal - this: ${JSON.stringify(
+      thisPromptFileInfos,
+    )} - that: ${JSON.stringify(thatPromptFileInfos)}`,
+  )
+
+  if (!thisPromptFileInfos && !thatPromptFileInfos) {
+    return true
+  }
+
+  if (
+    (!thisPromptFileInfos && thatPromptFileInfos) ||
+    (thisPromptFileInfos && !thatPromptFileInfos)
+  ) {
+    return false
+  }
+
+  if (thisPromptFileInfos.length !== thatPromptFileInfos.length) {
+    return false
+  }
+
+  const sortedThisFileInfos = orderBy(thisPromptFileInfos, ['id'])
+  const sortedThatFileInfos = orderBy(thatPromptFileInfos, ['id'])
+
+  return isEqual(sortedThisFileInfos, sortedThatFileInfos)
 }

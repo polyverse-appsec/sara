@@ -1,11 +1,10 @@
 import { ReasonPhrases, StatusCodes } from 'http-status-codes'
 import Joi from 'joi'
-import getProjectPromptFileInfoIds from 'lib/polyverse/db/get-project-prompt-file-info-ids'
-import isEqual from 'lodash/isEqual'
-import orderBy from 'lodash/orderBy'
+
 import { NextAuthRequest } from 'next-auth/lib'
 
 import { auth } from '../../../../../auth'
+import getProjectPromptFileInfoIds from '../../../../../lib/polyverse/db/get-project-prompt-file-info-ids'
 import {
   type ChatPartDeux,
   type ChatQueryPartDeux,
@@ -35,6 +34,8 @@ import {
   createThreadRunForProjectGoalChatting,
   updateAssistantForProjectGoalContextualization,
 } from './../../../../../lib/polyverse/openai/goalsAssistant'
+
+import { promptFileInfosEqual } from './../../../../../lib/utils'
 
 // TODO: Can increase the timeout on this method if needeed for up to 5 mins
 
@@ -84,37 +85,6 @@ import {
 // setting the max duration and measuring response times/latency on routes and
 // adjust them accordingly.
 export const maxDuration = 60
-
-const promptFileInfosEqual = (
-  thisPromptFileInfos: PromptFileInfo[],
-  thatPromptFileInfos: PromptFileInfo[],
-): boolean => {
-  console.debug(
-    `Checking to see if this and that prompt file infos are equal - this: ${JSON.stringify(
-      thisPromptFileInfos,
-    )} - that: ${JSON.stringify(thatPromptFileInfos)}`,
-  )
-
-  if (!thisPromptFileInfos && !thatPromptFileInfos) {
-    return true
-  }
-
-  if (
-    (!thisPromptFileInfos && thatPromptFileInfos) ||
-    (thisPromptFileInfos && !thatPromptFileInfos)
-  ) {
-    return false
-  }
-
-  if (thisPromptFileInfos.length !== thatPromptFileInfos.length) {
-    return false
-  }
-
-  const sortedThisFileInfos = orderBy(thisPromptFileInfos, ['id'])
-  const sortedThatFileInfos = orderBy(thatPromptFileInfos, ['id'])
-
-  return isEqual(sortedThisFileInfos, sortedThatFileInfos)
-}
 
 export const POST = auth(async (req: NextAuthRequest) => {
   const { auth } = req
@@ -253,9 +223,9 @@ export const POST = auth(async (req: NextAuthRequest) => {
       user.email,
     )
 
-    // For now we need to the file info we get from Boost into instances of
-    // `PromptFileInfo` since we rely on persisting data that first a basic
-    // structure based off of `BaseSaraObject` types.
+    // For now we need to convert the file info we get from Boost into instances
+    // of `PromptFileInfo` since we rely on persisting data that first has a
+    // basic structure based off of `BaseSaraObject` types.
     const promptFileInfos = boostFileInfos.map((boostFileInfo) => {
       const promptFileInfoBaseSaraObject = createBaseSaraObject()
 
@@ -287,9 +257,11 @@ export const POST = auth(async (req: NextAuthRequest) => {
     const cachedPromptFileInfoIds = await getProjectPromptFileInfoIds(
       project.id,
     )
+
     const cachedPromptFileInfoPromises = cachedPromptFileInfoIds.map(
       (cachedPromptFileInfoId) => getPromptFileInfo(cachedPromptFileInfoId),
     )
+
     const cachedPromptFileInfos = await Promise.all(
       cachedPromptFileInfoPromises,
     )
@@ -317,6 +289,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
       const createPromptFileInfoPromises = promptFileInfos.map(
         (promptFileInfo) => createPromptFileInfo(promptFileInfo),
       )
+
       await Promise.all(createPromptFileInfoPromises)
     }
 
@@ -432,6 +405,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
       assistant.id,
       chat.openAiThreadId,
     )
+
     chat.openAiThreadRunId = threadRun.id
     await updateChat(chat)
 
