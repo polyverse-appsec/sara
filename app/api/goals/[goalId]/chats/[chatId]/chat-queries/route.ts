@@ -611,7 +611,11 @@ export const GET = auth(async (req: NextAuthRequest) => {
     // have no way of background processing so this will have to suffice for
     // now.
     if (threadRunStatus === 'requires_action') {
-      await handleRequiresActionStatusForProjectGoalChatting(threadRun, goal.id)
+      await handleRequiresActionStatusForProjectGoalChatting(
+        threadRun,
+        goal.id,
+        org.id
+      )
 
       // We tried to use the status code '102 Processing' in the response but
       // NextJS (?) errored on the range and said it needed to be 200-599. Just

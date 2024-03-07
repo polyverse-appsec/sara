@@ -4,26 +4,27 @@ import {
   globalProjectIdsSetKey,
   projectKey,
   relatedPromptFileInfosToProjectIdsSetKey,
-} from './keys'
+} from './../../../lib/polyverse/db/keys'
+
+import deletePromptFileInfo from './../../../lib/polyverse/db/delete-prompt-file-info'
 
 const deleteProject = async (projectId: string): Promise<void> => {
   // Since there is a relationship set of IDs for prompt file infos start by
   // deleting those...
   const promptFileInfosToProjectIdsSetKey =
     relatedPromptFileInfosToProjectIdsSetKey(projectId)
+
   const promptFileInfoIds = (await kv.zrange(
     promptFileInfosToProjectIdsSetKey,
     0,
     -1,
   )) as string[]
 
-  if (promptFileInfoIds.length > 0) {
-    const deletePipeline = kv.pipeline()
-    promptFileInfoIds.forEach((promptFileInfoId) =>
-      deletePipeline.del(promptFileInfoId),
-    )
-    await deletePipeline.exec()
-  }
+  const deletePromptFileInfoPromises = promptFileInfoIds.map(
+    (promptFileInfoId) => deletePromptFileInfo(promptFileInfoId, projectId)
+  )
+
+  await Promise.all(deletePromptFileInfoPromises)
 
   // Now just delete the relationship set...
   await kv.del(promptFileInfosToProjectIdsSetKey)

@@ -122,6 +122,9 @@ export interface GoalPartDeux extends BaseSaraObject {
   name: string
   description: string
 
+  // Right now the only status value we have defined is 'OPEN'
+  status: 'OPEN'
+
   // Chat may not exist - only if user initiates (sans default goal).
   chatId: string | null
 
@@ -129,6 +132,36 @@ export interface GoalPartDeux extends BaseSaraObject {
 
   // Considered to be all the top-level tasks that are associated with the goal
   taskIds: string[]
+}
+
+export interface TaskPartDeux extends BaseSaraObject {
+  // Crucial to identity management/RBAC
+  // Pertains to a billing organization (i.e. not a GitHub organization)
+  orgId: string
+
+  name: string
+  description: string
+
+  // Right now the only status value we have defined is 'OPEN'
+  status: 'OPEN'
+
+  // Chat may not exist - only if user initiates
+  chatId: string | null
+
+  // If task associated with goal then won't be null (parentTaskId will be
+  // null). In other words setting the parent goal ID is a mutually exclusive
+  // event with setting the parent task ID.
+  parentGoalId: string | null
+
+  // If task is a sub-task of another task then won't be null (parentGoalId
+  // will be null). In other words setting the parent task ID is a mutually
+  // exclusive event with setting the parent goal ID.
+  parentTaskId: string | null
+
+  // Considered to be all the sub-tasks tasks that are
+  // associated with this task - always non-null even if no
+  // sub-tasks (i.e. empty list)
+  subTaskIds: string[]
 }
 
 // TODO: Test this with a Joi schema

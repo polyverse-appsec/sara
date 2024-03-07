@@ -2,12 +2,11 @@ import OpenAI from 'openai'
 import { Assistant } from 'openai/resources/beta/assistants/assistants'
 import { Run } from 'openai/resources/beta/threads/runs/runs'
 import { Thread } from 'openai/resources/beta/threads/threads'
-import { ThreadMessage } from 'openai/resources/beta/threads/messages/messages'
 
-import { type PromptFileInfo } from './../../../lib/data-model-types'
+import { TaskPartDeux, type PromptFileInfo } from './../../../lib/data-model-types'
 import { findAssistantFromMetadata, type AssistantMetadata } from './assistants'
-import { text } from 'stream/consumers'
-
+import { createBaseSaraObject } from './../../../lib/polyverse/db/utils'
+import createTask from './../../../lib/polyverse/db/create-task'
 
 const oaiClient = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -68,29 +67,55 @@ export const submitTaskStepsAssistantFunction: Assistant.Function = {
 
 export const submitWorkItemsForGoal = async (
   goalId: string,
+  orgId: string,
   parsedArgsAsWorkItems: SubmitWorkItemsForGoalType,
 ) => {
   if (parsedArgsAsWorkItems) {
-    const workItems: any = []
+    const createTaskPromises: Promise<void>[] = []
 
-    // TODO: Once we verify that the assistant is creating invidiaul work items for goals
-    // we need to add the task data type and actually persist them
     parsedArgsAsWorkItems.workItems.forEach((workItem) => {
-      // TODO: We are just temporarily capturing the work items for now for logging purposes
-      workItems.push(workItem)
+      // Build up the description as a combination of the description that Sara
+      // generated as well as the acceptance criteria for completing the work
+      // item
+      const description = workItem.description
+        + '\n'
+        + 'Acceptance Criteria'
+        + '\n'
+        + workItem.acceptanceCriteria
+
+      const taskBaseSaraObject = createBaseSaraObject()
+      const task: TaskPartDeux = {
+        // BaseSaraObject properties
+        ...taskBaseSaraObject,
+
+        // Task properties
+        orgId,
+        name: workItem.title,
+        description,
+        status: 'OPEN',
+        chatId: null,
+        parentGoalId: goalId,
+        parentTaskId: null,
+        subTaskIds: []
+      }
+
+      createTaskPromises.push(createTask(task))
     })
 
-    console.log(
-      `***** assistant generated the following tasks for a goal with an ID of '${goalId}': ${JSON.stringify(
-        workItems,
-      )}`,
-    )
+    // I'd prefer to not have to await for all of these task creation promises
+    // but my understanding is that Vercel doesn't have background processing.
+    // If we don't await here and we respond to the users request before these
+    // tasks are written to the data store I fear Vercel may just drop the
+    // work required to write them.
+    console.debug(`Sara generated ${createTaskPromises.length} for goal '${goalId}'`)
+    await Promise.all(createTaskPromises)
   }
 }
 
 export const handleRequiresActionStatusForProjectGoalChatting = async (
   threadRun: Run,
-  goalId: string
+  goalId: string,
+  orgId: string
 ) => {
   // Identify any tool calls we may use while chatting about a project goal
   if (
@@ -112,7 +137,7 @@ export const handleRequiresActionStatusForProjectGoalChatting = async (
         console.debug(`Invoking 'submitWorkItemsForGoal' as a required action chatting about goal '${goalId}'`)
         const parsedArgsAsWorkItems = JSON.parse(toolArgs)
 
-        await submitWorkItemsForGoal(goalId, parsedArgsAsWorkItems)
+        await submitWorkItemsForGoal(goalId, orgId, parsedArgsAsWorkItems)
 
         toolOutputs.push({
           tool_call_id: toolCall.id,
@@ -120,6 +145,10 @@ export const handleRequiresActionStatusForProjectGoalChatting = async (
           // generating tasks
           output: ''
         })
+      } else {
+        console.error(`Unrecognized tool invoked named '${toolName}' for goal '${goalId}' on OpenAI Thread Run '${threadRun.id}'`)
+
+        throw new Error(`Unrecognized tool invoked named '${toolName}' for goal`)
       }
     }
 

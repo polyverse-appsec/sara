@@ -1,5 +1,9 @@
 import Joi from 'joi'
 
+///////////////////////////
+// Global Key Sets
+///////////////////////////
+
 // TODO: Test
 export const globalChatIdsSetKey = () => `global:chat:ids`
 
@@ -22,8 +26,14 @@ export const globalProjectIdsSetKey = () => `global:project:ids`
 export const globalProjectDataSourceIdsSetKey = () =>
   `global:project-data-source:ids`
 
+export const globalTaskIdsSetKey = () => `global:task:ids`
+
 // TODO: Test
 export const globalUserEmailsSetKey = () => `global:user:emails`
+
+///////////////////////////
+// Relationship Key Sets
+///////////////////////////
 
 // TODO: Test
 export const relatedChatQueriesToChatIdsSetKey = (chatId: string) =>
@@ -32,6 +42,18 @@ export const relatedChatQueriesToChatIdsSetKey = (chatId: string) =>
 // TODO: Test
 export const relatedPromptFileInfosToProjectIdsSetKey = (projectId: string) =>
   `project:${projectId}:prompt-file-info:ids`
+
+// TODO: Test
+export const relatedChildTasksToParentGoalIdsSetKey = (parentGoalId: string) =>
+  `parent-goal:${parentGoalId}:child-task:ids`
+
+// TODO: Test
+export const relatedChildTasksToParentTaskIdsSetKey = (parentTaskId: string) =>
+  `parent-task:${parentTaskId}:child-task:ids`
+
+///////////////////////////
+// Instance Keys
+///////////////////////////
 
 // TODO: Test
 export const chatKey = (chatId: string) => `chat:${chatId}`
@@ -55,6 +77,17 @@ export const projectKey = (projectId: string) => `project:${projectId}`
 // TODO: Test
 export const projectDataSourceKey = (projectDataSourceId: string) =>
   `project-data-source:${projectDataSourceId}`
+
+
+export const taskKey = (taskId: string): string => {
+  if (Joi.string().required().validate(taskId).error) {
+    throw new Error(
+      `'taskId' not allowed to be blank (undefined, null, or the empty string)`,
+    )
+  }
+
+  return `task:${taskId}`
+}
 
 // TODO: Test
 export const userKey = (email: string) => `user:${email}`
@@ -151,28 +184,6 @@ export const projectUserFileInfoKey = (
   }
 
   return `project:${projectName}:user:${userId}:fileInfo:${fileInfoId}`
-}
-
-/**
- * Function that can be used to craft a Redis key in the format of:
- * task:<taskId>
- *
- * The key can be used to persist or query for tasks.
- *
- * @example
- * tasksKey(taskId)
- *
- * @param {string} userId String ID of a user
- * @returns Redis key that can be used to persist or query for tasks
- */
-export const taskKey = (taskId: string): string => {
-  if (Joi.string().required().validate(taskId).error) {
-    throw new Error(
-      `'taskId' not allowed to be blank (undefined, null, or the empty string)`,
-    )
-  }
-
-  return `task:${taskId}`
 }
 
 /**

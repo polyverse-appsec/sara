@@ -6,6 +6,8 @@ import {
   relatedChatQueriesToChatIdsSetKey,
 } from './../../../lib/polyverse/db/keys'
 
+import deleteChatQuery from './../../../lib/polyverse/db/delete-chat-query'
+
 const deleteChat = async (chatId: string): Promise<void> => {
   // Since there is a relationship set of IDs for chat queries start by
   // deleting those...
@@ -16,11 +18,10 @@ const deleteChat = async (chatId: string): Promise<void> => {
     -1,
   )) as string[]
 
-  if (chatQueryIds.length > 0) {
-    const deletePipeline = kv.pipeline()
-    chatQueryIds.forEach((chatQueryId) => deletePipeline.del(chatQueryId))
-    await deletePipeline.exec()
-  }
+  const deleteChatQueryPromises = chatQueryIds.map(
+    (chatQueryId) => deleteChatQuery(chatQueryId, chatId))
+
+  await Promise.all(deleteChatQueryPromises)
 
   // Now just delete the relationship set...
   await kv.del(chatQueriesToChatIdsSetKey)

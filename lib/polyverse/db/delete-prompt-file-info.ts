@@ -10,12 +10,14 @@ const deletePromptFileInfo = async (
   promptFileInfoId: string,
   parentProjectId: string,
 ): Promise<void> => {
+
   const itemKey = promptFileInfoKey(promptFileInfoId)
 
-  // Remove the tracked prompt file info its project relationship set of
+  // Remove the tracked prompt file info from its project relationship set of
   // IDs...
   const promptFileInfosToProjectIdsSetKey =
     relatedPromptFileInfosToProjectIdsSetKey(parentProjectId)
+
   await kv.zrem(promptFileInfosToProjectIdsSetKey, itemKey)
 
   // Remove the tracked prompt file info our global set of prompt file info

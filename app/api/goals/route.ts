@@ -127,6 +127,8 @@ export const POST = auth(async (req: NextAuthRequest) => {
       orgId: org.id,
       name: reqBody.name,
       description: reqBody.description,
+      // Right now the only status value we have defined is 'OPEN'
+      status: 'OPEN',
       chatId: null,
       parentProjectId: project.id,
       taskIds: [],
