@@ -2,11 +2,25 @@
 
 # Release Notes
 
+## Version 0.10.0: March 6th, 2024
+
+### New Features
+
+- Add REST API for creating chat queries associated with a chat `POST /api/goals/goalId/chats/chatId/chat-queries`
+
+### Enhancements
+
+- N/A
+
+### Bug Fixes
+
+- N/A
+
 ## Version 0.9.0: March 6th, 2024
 
 ### New Features
 
-- Add REST API for getting chat queries associated with a chat `/api/goals/goalId/chats/chatId/chat-queries`
+- Add REST API for getting chat queries associated with a chat `GET /api/goals/goalId/chats/chatId/chat-queries`
 
 ### Enhancements
 
