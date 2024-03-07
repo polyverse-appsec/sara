@@ -443,7 +443,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
       status: StatusCodes.INTERNAL_SERVER_ERROR,
     })
   }
-})
+}) as any
 
 export const GET = auth(async (req: NextAuthRequest) => {
   const { auth } = req
