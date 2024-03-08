@@ -24,19 +24,13 @@ export const maxDuration = 90
 
 async function getFileInfoWithRetry(name : string, orgId : string, user : User) :  Promise<ProjectDataReference[]> {
   return new Promise((resolve, reject) => {
-    let attempt = 0;
-    const maxAttempts = 10;
     const intervalId = setInterval(async () => {
       try {
         const fileInfos = await getFileInfoForProject(name, orgId, user)
-        attempt++;
         console.log(`Found ${fileInfos.length} items.`)
         if (fileInfos.length === 3) {
           clearInterval(intervalId) // Stop retrying
           resolve(fileInfos)
-        } else if (attempt >= maxAttempts) {
-          clearInterval(intervalId) // Stop retrying
-          reject('Max attempts to getFileInfosreached')
         }
       } catch (error) {
         console.error(error)
