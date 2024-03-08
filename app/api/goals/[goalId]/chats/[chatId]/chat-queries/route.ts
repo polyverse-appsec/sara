@@ -702,7 +702,14 @@ export const GET = auth(async (req: NextAuthRequest) => {
     // results like we do. Something for us to build on.
     const chatQueries = await getChatQueryRangeFromChat(chat.id)
 
-    return new Response(JSON.stringify(chatQueries), {
+    // Strip out the prompt that was used to generate the response for trade
+    // secret purposes
+    const sanitizedChatQueries = chatQueries.map((chatQuery) => {
+      delete chatQuery.prompt
+      return chatQuery
+    })
+
+    return new Response(JSON.stringify(sanitizedChatQueries), {
       status: StatusCodes.OK,
     })
   } catch (error) {
