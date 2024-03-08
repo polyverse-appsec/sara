@@ -35,11 +35,11 @@ const OrgCreate = () => {
           </div>
           <div className="my-1">
             <h3 className="text-lg font-semibold">Select Organization</h3>
-              <OrgSelector
-                setControlledGitHubOrg={(gitHubOrg) =>
-                  setControlledGitHubOrg(gitHubOrg)
-                }
-              />
+            <OrgSelector
+              setControlledGitHubOrg={(gitHubOrg) =>
+                setControlledGitHubOrg(gitHubOrg)
+              }
+            />
           </div>
           <div className="my-1">
             <Button

@@ -5,7 +5,6 @@ import { relatedPromptFileInfosToProjectIdsSetKey } from './keys'
 const getProjectPromptFileInfoIds = async (
   projectId: string,
 ): Promise<string[]> => {
-
   const promptFileInfosToProjectIdsSetKey =
     relatedPromptFileInfosToProjectIdsSetKey(projectId)
 

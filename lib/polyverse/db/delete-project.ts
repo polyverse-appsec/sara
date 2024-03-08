@@ -1,12 +1,11 @@
 import { kv } from '@vercel/kv'
 
+import deletePromptFileInfo from './../../../lib/polyverse/db/delete-prompt-file-info'
 import {
   globalProjectIdsSetKey,
   projectKey,
   relatedPromptFileInfosToProjectIdsSetKey,
 } from './../../../lib/polyverse/db/keys'
-
-import deletePromptFileInfo from './../../../lib/polyverse/db/delete-prompt-file-info'
 
 const deleteProject = async (projectId: string): Promise<void> => {
   // Since there is a relationship set of IDs for prompt file infos start by
@@ -21,7 +20,7 @@ const deleteProject = async (projectId: string): Promise<void> => {
   )) as string[]
 
   const deletePromptFileInfoPromises = promptFileInfoIds.map(
-    (promptFileInfoId) => deletePromptFileInfo(promptFileInfoId, projectId)
+    (promptFileInfoId) => deletePromptFileInfo(promptFileInfoId, projectId),
   )
 
   await Promise.all(deletePromptFileInfoPromises)

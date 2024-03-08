@@ -1,7 +1,11 @@
 import { kv } from '@vercel/kv'
 
-import { globalGoalIdsSetKey, goalKey, relatedChildTasksToParentGoalIdsSetKey } from './../../../lib/polyverse/db/keys'
 import deleteTask from './../../../lib/polyverse/db/delete-task'
+import {
+  globalGoalIdsSetKey,
+  goalKey,
+  relatedChildTasksToParentGoalIdsSetKey,
+} from './../../../lib/polyverse/db/keys'
 
 const deleteGoal = async (goalId: string): Promise<void> => {
   // Since there is a relationship set of IDs for tasks associated with the
@@ -15,11 +19,11 @@ const deleteGoal = async (goalId: string): Promise<void> => {
     -1,
   )) as string[]
 
-  const deleteChildTaskPromises = childTaskIds.map(
-    (childTaskId) => deleteTask(childTaskId, {
+  const deleteChildTaskPromises = childTaskIds.map((childTaskId) =>
+    deleteTask(childTaskId, {
       parentGoalId: goalId,
-      parentTaskId: null
-    })
+      parentTaskId: null,
+    }),
   )
 
   await Promise.all(deleteChildTaskPromises)

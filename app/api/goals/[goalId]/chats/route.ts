@@ -1,6 +1,5 @@
 import { ReasonPhrases, StatusCodes } from 'http-status-codes'
 import Joi from 'joi'
-
 import { NextAuthRequest } from 'next-auth/lib'
 
 import { auth } from '../../../../../auth'
@@ -26,18 +25,16 @@ import updateGoal from './../../../../../lib/polyverse/db/update-goal'
 import updateProject from './../../../../../lib/polyverse/db/update-project'
 import { createBaseSaraObject } from './../../../../../lib/polyverse/db/utils'
 import {
+  ASSISTANT_METADATA_CREATOR,
   findAssistantFromMetadata,
   type AssistantMetadata,
-  ASSISTANT_METADATA_CREATOR
 } from './../../../../../lib/polyverse/openai/assistants'
 import {
   createThreadForProjectGoalChatting,
   createThreadRunForProjectGoalChatting,
   updateAssistantForProjectGoalContextualization,
 } from './../../../../../lib/polyverse/openai/goalsAssistant'
-
 import { promptFileInfosEqual } from './../../../../../lib/utils'
-
 
 // TODO: Can increase the timeout on this method if needeed for up to 5 mins
 
@@ -66,19 +63,19 @@ import { promptFileInfosEqual } from './../../../../../lib/utils'
 
 // TODO: Verify to see if we can do requests to the other handlers on vercel
 
-        // TODO: Start here on 03/06/24 and complete this API
-        // Also...
-        // Consider - how quick to delight
-        // Phase 1: Hand sales
-        // Phase 2: Sharing/virality
+// TODO: Start here on 03/06/24 and complete this API
+// Also...
+// Consider - how quick to delight
+// Phase 1: Hand sales
+// Phase 2: Sharing/virality
 
-    ///////////////////////
+///////////////////////
 
-    // TODO: GET project should update the cache
-    // TODO: Task data model type and make it so tasks are written to the DB by the goals chat
-    // TODO: POST chatQuery REST API (look at other implementation notes on it - fail if the last chat query isn't in a completed state)
-    // TODO: PATCH chatQuery REST API - allows restarting/regenerating a response
-    // TODO: Landing page and delightful experience first time page
+// TODO: GET project should update the cache
+// TODO: Task data model type and make it so tasks are written to the DB by the goals chat
+// TODO: POST chatQuery REST API (look at other implementation notes on it - fail if the last chat query isn't in a completed state)
+// TODO: PATCH chatQuery REST API - allows restarting/regenerating a response
+// TODO: Landing page and delightful experience first time page
 
 // 03/04/24: We set this max duration to 60 seconds during initial development
 // with no real criteria to use as a starting point for the max duration. We see
@@ -121,9 +118,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
 
     const user = await getUser(auth.user.email)
 
-    const foundUserIdOnOrg = org.userIds.find(
-      (userId) => userId === user.id,
-    )
+    const foundUserIdOnOrg = org.userIds.find((userId) => userId === user.id)
 
     if (!foundUserIdOnOrg) {
       return new Response(ReasonPhrases.FORBIDDEN, {

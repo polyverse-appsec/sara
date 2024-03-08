@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
 
@@ -9,7 +10,6 @@ import {
   GoalPartDeux,
   type ProjectPartDeux,
 } from './../../../../lib/data-model-types'
-import Link from 'next/link'
 
 const PageIndex = ({ params: { id } }: { params: { id: string } }) => {
   const router = useRouter()
@@ -68,20 +68,21 @@ const PageIndex = ({ params: { id } }: { params: { id: string } }) => {
           <div className="border border-gray-300 p-2 text-base my-1 rounded-lg flex flex-col items-center justify-center">
             <h3 className="text-lg font-semibold text-center">Goals</h3>
             {Object.entries(goals).map(([goalKey, goalValue]) => (
-              <div key = {goalValue.id} className="block transform transition rounded-lg">
-                <Link
-                  href={`/goals/${goalValue.id}`}
-                >
+              <div
+                key={goalValue.id}
+                className="block transform transition rounded-lg"
+              >
+                <Link href={`/goals/${goalValue.id}`}>
                   <div className="hover:bg-orange-200 border border-gray-300 rounded-lg my-1 p-1">
-                    <h3 className="text-md font-semibold text-center">Goal {goalKey}: {goalValue.name}</h3>
+                    <h3 className="text-md font-semibold text-center">
+                      Goal {goalKey}: {goalValue.name}
+                    </h3>
                   </div>
                 </Link>
               </div>
             ))}
-            <Button
-            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-2"
-            >
-                Create New Goal
+            <Button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-2">
+              Create New Goal
             </Button>
           </div>
         )}

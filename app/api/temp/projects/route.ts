@@ -1,3 +1,4 @@
+import { resolve } from 'path'
 import { NextAuthRequest } from 'next-auth/lib'
 
 import { configAssistantForProject } from './../../../../app/_actions/config-assistant-for-project'
@@ -6,23 +7,25 @@ import { getFileInfoForProject } from './../../../../app/_actions/get-file-info-
 import { auth } from './../../../../auth'
 import {
   ProjectDataReference,
+  User,
   type Organization,
   type Repository,
-  User,
 } from './../../../../lib/data-model-types'
 import {
   createProject as createProjectOnBoost,
   postFileInfoToGetFileInfo,
 } from './../../../../lib/polyverse/backend/backend'
-import { resolve } from 'path'
 
 // 02/29/24: Set for 90 seconds for debugging purposes when timing out on using
 // the `createProject` server action (which is 15 seconds by default). Possibly
 // in the future we will modify this as we learn more.
 export const maxDuration = 90
 
-
-async function getFileInfoWithRetry(name : string, orgId : string, user : User) :  Promise<ProjectDataReference[]> {
+async function getFileInfoWithRetry(
+  name: string,
+  orgId: string,
+  user: User,
+): Promise<ProjectDataReference[]> {
   return new Promise((resolve, reject) => {
     const intervalId = setInterval(async () => {
       try {
@@ -101,7 +104,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
     //
     // Getting file IDs back isn't an indication that the files have been fully
     // processed yet.
-    const fileInfos = await getFileInfoWithRetry(name, org.login, auth.user);
+    const fileInfos = await getFileInfoWithRetry(name, org.login, auth.user)
 
     console.debug(
       `***** REST POST /temp/projects - fileInfos ${JSON.stringify(fileInfos)}`,

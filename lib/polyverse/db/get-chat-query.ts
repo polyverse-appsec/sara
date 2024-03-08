@@ -3,7 +3,9 @@ import { kv } from '@vercel/kv'
 import { type ChatQueryPartDeux } from './../../data-model-types'
 import { chatQueryKey } from './keys'
 
-const getChatQuery = async (chatQueryId: string): Promise<ChatQueryPartDeux> => {
+const getChatQuery = async (
+  chatQueryId: string,
+): Promise<ChatQueryPartDeux> => {
   const itemKey = chatQueryKey(chatQueryId)
 
   const chatQuery = await kv.hgetall<ChatQueryPartDeux>(itemKey)

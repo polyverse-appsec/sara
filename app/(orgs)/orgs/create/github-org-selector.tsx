@@ -1,6 +1,7 @@
 'use client'
 
 import React, { use, useEffect, useState } from 'react'
+import LoadingSpinner from 'components/loading-spinner'
 import { type GitHubOrg, type OrgPartDeux } from 'lib/data-model-types'
 
 import { Button } from './../../../../components/ui/button'
@@ -10,7 +11,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from './../../../../components/ui/dropdown-menu'
-import LoadingSpinner from 'components/loading-spinner'
 
 const getGitHubOrgs = async (): Promise<GitHubOrg[]> => {
   const res = await fetch('/api/integrations/github/orgs')
@@ -44,37 +44,35 @@ interface OrgSelectorProps {
   setControlledGitHubOrg: (gitHugOrg: GitHubOrg) => void
 }
 
-const OrgSelector = ({
-  setControlledGitHubOrg,
-}: OrgSelectorProps) => {
-  const [billingOrgs, setBillingOrgs] = useState<OrgPartDeux[]>([]);
-  const [gitHubOrgs, setGitHubOrgs] = useState<GitHubOrg[]>([]);
+const OrgSelector = ({ setControlledGitHubOrg }: OrgSelectorProps) => {
+  const [billingOrgs, setBillingOrgs] = useState<OrgPartDeux[]>([])
+  const [gitHubOrgs, setGitHubOrgs] = useState<GitHubOrg[]>([])
   const [shouldShowLoadingSpinner, setShouldShowLoadingSpinner] =
-  useState<boolean>(true)
+    useState<boolean>(true)
   const [selectedGitHubOrg, setSelectedGitHubOrg] = useState<GitHubOrg | null>(
     null,
   )
-  
+
   useEffect(() => {
     const fetchOrgs = async () => {
       try {
-        const fetchedBillingOrgs = await getBillingOrgs();
-        const fetchedGitHubOrgs = await getGitHubOrgs();
-        setBillingOrgs(fetchedBillingOrgs);
-        setGitHubOrgs(fetchedGitHubOrgs);
+        const fetchedBillingOrgs = await getBillingOrgs()
+        const fetchedGitHubOrgs = await getGitHubOrgs()
+        setBillingOrgs(fetchedBillingOrgs)
+        setGitHubOrgs(fetchedGitHubOrgs)
       } catch (error) {
-        console.error('Error fetching orgs:', error);
+        console.error('Error fetching orgs:', error)
       }
-    };
+    }
 
-    fetchOrgs();
+    fetchOrgs()
     setShouldShowLoadingSpinner(false)
-  }, []);
+  }, [])
 
   if (shouldShowLoadingSpinner) {
     return <LoadingSpinner />
   }
-  
+
   // Filter the GitHub orgs by removing those that already exist by name on the
   // billing org instances
   const billingOrgsByName = billingOrgs.reduce(
@@ -88,7 +86,6 @@ const OrgSelector = ({
   const filteredGitHubOrgs = gitHubOrgs.filter(
     (gitHubOrg) => !billingOrgsByName[gitHubOrg.login],
   )
-
 
   if (filteredGitHubOrgs.length === 0) {
     return (

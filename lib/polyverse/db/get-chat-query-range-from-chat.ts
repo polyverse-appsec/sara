@@ -1,9 +1,12 @@
 import { kv } from '@vercel/kv'
 
 import { type ChatQueryPartDeux } from '../../data-model-types'
-import { relatedChatQueriesToChatIdsSetKey, chatQueryKey } from './keys'
+import { chatQueryKey, relatedChatQueriesToChatIdsSetKey } from './keys'
 
-const getChatQueryRangeFromChat = async (chatId: string, rangeSize: number = 20): Promise<ChatQueryPartDeux[]> => {
+const getChatQueryRangeFromChat = async (
+  chatId: string,
+  rangeSize: number = 20,
+): Promise<ChatQueryPartDeux[]> => {
   const chatQueriesToChatIdsSetKey = relatedChatQueriesToChatIdsSetKey(chatId)
 
   const totalChatQueries = await kv.zcard(chatQueriesToChatIdsSetKey)
@@ -13,14 +16,20 @@ const getChatQueryRangeFromChat = async (chatId: string, rangeSize: number = 20)
   const startingIndex = Math.max(totalChatQueries - rangeSize, 0)
   const endingIndex = totalChatQueries - 1
 
-  const chatQueryIds = (await kv.zrange(chatQueriesToChatIdsSetKey, startingIndex, endingIndex)) as string[]
+  const chatQueryIds = (await kv.zrange(
+    chatQueriesToChatIdsSetKey,
+    startingIndex,
+    endingIndex,
+  )) as string[]
 
   if (chatQueryIds.length === 0) {
     return []
   }
 
   const chatQueriesPipeline = kv.pipeline()
-  chatQueryIds.forEach((chatQueryId) => chatQueriesPipeline.hgetall(chatQueryKey(chatQueryId)))
+  chatQueryIds.forEach((chatQueryId) =>
+    chatQueriesPipeline.hgetall(chatQueryKey(chatQueryId)),
+  )
 
   const chatQueries = (await chatQueriesPipeline.exec()) as ChatQueryPartDeux[]
 

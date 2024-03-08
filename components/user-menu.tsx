@@ -1,9 +1,11 @@
 'use client'
 
 import Image from 'next/image'
+import { HamburgerMenuIcon } from '@radix-ui/react-icons'
 import { type Session } from 'next-auth'
 import { signOut } from 'next-auth/react'
 
+import LoadingCircle from './loading-spinner'
 import { Button } from './ui/button'
 import {
   DropdownMenu,
@@ -12,9 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu'
-import { HamburgerMenuIcon } from '@radix-ui/react-icons'
 import { IconExternalLink } from './ui/icons'
-import LoadingCircle from './loading-spinner'
 
 export interface UserMenuProps {
   user: Session['user']
@@ -26,7 +26,7 @@ function getUserInitials(name: string) {
 }
 
 export function UserMenu({ user }: UserMenuProps) {
-  const isLoading = !user?.image || !user?.name;
+  const isLoading = !user?.image || !user?.name
 
   return (
     <div className="flex items-center justify-between">

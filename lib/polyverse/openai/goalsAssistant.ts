@@ -3,10 +3,13 @@ import { Assistant } from 'openai/resources/beta/assistants/assistants'
 import { Run } from 'openai/resources/beta/threads/runs/runs'
 import { Thread } from 'openai/resources/beta/threads/threads'
 
-import { TaskPartDeux, type PromptFileInfo } from './../../../lib/data-model-types'
-import { findAssistantFromMetadata, type AssistantMetadata } from './assistants'
-import { createBaseSaraObject } from './../../../lib/polyverse/db/utils'
+import {
+  TaskPartDeux,
+  type PromptFileInfo,
+} from './../../../lib/data-model-types'
 import createTask from './../../../lib/polyverse/db/create-task'
+import { createBaseSaraObject } from './../../../lib/polyverse/db/utils'
+import { findAssistantFromMetadata, type AssistantMetadata } from './assistants'
 
 const oaiClient = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -77,11 +80,12 @@ export const submitWorkItemsForGoal = async (
       // Build up the description as a combination of the description that Sara
       // generated as well as the acceptance criteria for completing the work
       // item
-      const description = workItem.description
-        + '\n'
-        + 'Acceptance Criteria'
-        + '\n'
-        + workItem.acceptanceCriteria
+      const description =
+        workItem.description +
+        '\n' +
+        'Acceptance Criteria' +
+        '\n' +
+        workItem.acceptanceCriteria
 
       const taskBaseSaraObject = createBaseSaraObject()
       const task: TaskPartDeux = {
@@ -96,7 +100,7 @@ export const submitWorkItemsForGoal = async (
         chatId: null,
         parentGoalId: goalId,
         parentTaskId: null,
-        subTaskIds: []
+        subTaskIds: [],
       }
 
       createTaskPromises.push(createTask(task))
@@ -107,7 +111,9 @@ export const submitWorkItemsForGoal = async (
     // If we don't await here and we respond to the users request before these
     // tasks are written to the data store I fear Vercel may just drop the
     // work required to write them.
-    console.debug(`Sara generated ${createTaskPromises.length} for goal '${goalId}'`)
+    console.debug(
+      `Sara generated ${createTaskPromises.length} for goal '${goalId}'`,
+    )
     await Promise.all(createTaskPromises)
   }
 }
@@ -115,14 +121,16 @@ export const submitWorkItemsForGoal = async (
 export const handleRequiresActionStatusForProjectGoalChatting = async (
   threadRun: Run,
   goalId: string,
-  orgId: string
+  orgId: string,
 ) => {
   // Identify any tool calls we may use while chatting about a project goal
   if (
     threadRun.required_action?.type === 'submit_tool_outputs' &&
     threadRun.required_action?.submit_tool_outputs.tool_calls
   ) {
-    console.debug(`Attempting to handle actions for thread run '${threadRun.id}' for goal '${goalId}'`)
+    console.debug(
+      `Attempting to handle actions for thread run '${threadRun.id}' for goal '${goalId}'`,
+    )
     const toolCalls = threadRun.required_action?.submit_tool_outputs.tool_calls
 
     // All tool outputs need to be submitted in a single request per OpenAI
@@ -134,7 +142,9 @@ export const handleRequiresActionStatusForProjectGoalChatting = async (
       const { name: toolName, arguments: toolArgs } = toolCall.function
 
       if (toolName === 'submitWorkItemsForGoal') {
-        console.debug(`Invoking 'submitWorkItemsForGoal' as a required action chatting about goal '${goalId}'`)
+        console.debug(
+          `Invoking 'submitWorkItemsForGoal' as a required action chatting about goal '${goalId}'`,
+        )
         const parsedArgsAsWorkItems = JSON.parse(toolArgs)
 
         await submitWorkItemsForGoal(goalId, orgId, parsedArgsAsWorkItems)
@@ -143,12 +153,16 @@ export const handleRequiresActionStatusForProjectGoalChatting = async (
           tool_call_id: toolCall.id,
           // For now we don't provide any output back to the assistant when
           // generating tasks
-          output: ''
+          output: '',
         })
       } else {
-        console.error(`Unrecognized tool invoked named '${toolName}' for goal '${goalId}' on OpenAI Thread Run '${threadRun.id}'`)
+        console.error(
+          `Unrecognized tool invoked named '${toolName}' for goal '${goalId}' on OpenAI Thread Run '${threadRun.id}'`,
+        )
 
-        throw new Error(`Unrecognized tool invoked named '${toolName}' for goal`)
+        throw new Error(
+          `Unrecognized tool invoked named '${toolName}' for goal`,
+        )
       }
     }
 
@@ -300,7 +314,7 @@ export const createThreadRunForProjectGoalChatting = async (
 export const addQueryToThreadForProjectGoalChatting = async (
   threadId: string,
   chatQueryId: string,
-  query: string
+  query: string,
 ) => {
   const messageMetadata = {
     chatQueryId,
@@ -309,17 +323,19 @@ export const addQueryToThreadForProjectGoalChatting = async (
   await oaiClient.beta.threads.messages.create(threadId, {
     role: 'user',
     content: query,
-    metadata: messageMetadata
+    metadata: messageMetadata,
   })
 }
 
-export const getChatQueryResponseFromThread = async (threadId: string, chatQueryId: string): Promise<string> => {
-  const { data: messages } = await oaiClient.beta.threads.messages.list(
-    threadId
-  )
+export const getChatQueryResponseFromThread = async (
+  threadId: string,
+  chatQueryId: string,
+): Promise<string> => {
+  const { data: messages } =
+    await oaiClient.beta.threads.messages.list(threadId)
 
   const messageMetadata = {
-    chatQueryId
+    chatQueryId,
   }
 
   // Find the index of the user query to OpenAI that we are tracking in our
@@ -327,7 +343,11 @@ export const getChatQueryResponseFromThread = async (threadId: string, chatQuery
   const chatQueryIndex = messages.findIndex((message) => {
     const metadata = message.metadata as { chatQueryId: string }
 
-    if (metadata.chatQueryId && metadata.chatQueryId === chatQueryId && message.role === 'user') {
+    if (
+      metadata.chatQueryId &&
+      metadata.chatQueryId === chatQueryId &&
+      message.role === 'user'
+    ) {
       return true
     }
 
@@ -339,75 +359,93 @@ export const getChatQueryResponseFromThread = async (threadId: string, chatQuery
   // user query isn't the first one in the messages array. This would denote
   // that there aren't any assistant responses either.
   if (chatQueryIndex < 1) {
-    throw new Error(`Unable to locate user chat query with an ID of '${chatQueryId}'`)
+    throw new Error(
+      `Unable to locate user chat query with an ID of '${chatQueryId}'`,
+    )
   }
 
   // Presuming that the messages returned by OpenAI are listed with the most
   // recent message as the first index in the array returned take a slice of the
   // responses up to our user query.
   const assistantMessages = messages.slice(0, chatQueryIndex)
-  const chatQueryResponse = assistantMessages.reduce((concatenatedMessage, assistantMessage) => {
-    const { content: contents } = assistantMessage
+  const chatQueryResponse = assistantMessages
+    .reduce((concatenatedMessage, assistantMessage) => {
+      const { content: contents } = assistantMessage
 
-    contents.forEach((content) => {
-      if (content.type !== 'text') {
-        throw new Error(`Tried to process unrecognized content type '${content.type}' for chat query with an ID of '${chatQueryId}'`)
-      }
-
-      const textContent = content.text
-
-      // Handle citations to files the assistant included in the message
-      const annotations = textContent.annotations
-      const citations: string[] = []
-
-      annotations.forEach(async (annotation, index) => {
-        // Replace the text with a footnote
-        textContent.value = textContent.value.replace(
-          annotation.text,
-          ` [${index}]`
-        )
-
-        if (annotation.type !== 'file_citation' && annotation.type !== 'file_path') {
-          throw new Error(`Tried to process unrecognized annotation type for chat query with an ID of '${chatQueryId}'`)
+      contents.forEach((content) => {
+        if (content.type !== 'text') {
+          throw new Error(
+            `Tried to process unrecognized content type '${content.type}' for chat query with an ID of '${chatQueryId}'`,
+          )
         }
 
-        // Handle citations within a message that points to a specific quote
-        // from a specific file associated with the assistant or message. This
-        // citation is generated when the assistant uses the 'retrieval' tool to
-        // search files.
-        if (annotation.type === 'file_citation') {
-          const citedFile = await oaiClient.files.retrieve(
-            annotation.file_citation.file_id
+        const textContent = content.text
+
+        // Handle citations to files the assistant included in the message
+        const annotations = textContent.annotations
+        const citations: string[] = []
+
+        annotations.forEach(async (annotation, index) => {
+          // Replace the text with a footnote
+          textContent.value = textContent.value.replace(
+            annotation.text,
+            ` [${index}]`,
           )
 
-          citations.push(`[${index}] ${annotation.file_citation.quote} from ${citedFile.filename}`)
-        }
+          if (
+            annotation.type !== 'file_citation' &&
+            annotation.type !== 'file_path'
+          ) {
+            throw new Error(
+              `Tried to process unrecognized annotation type for chat query with an ID of '${chatQueryId}'`,
+            )
+          }
 
-        // Handle citation within a message that generated a URL for the file
-        // the assistant used the 'code_interpreter' tool to generate a file.
-        if (annotation.type === 'file_path') {
-          const citedFile = await oaiClient.files.retrieve(
-            annotation.file_path.file_id
-          )
+          // Handle citations within a message that points to a specific quote
+          // from a specific file associated with the assistant or message. This
+          // citation is generated when the assistant uses the 'retrieval' tool to
+          // search files.
+          if (annotation.type === 'file_citation') {
+            const citedFile = await oaiClient.files.retrieve(
+              annotation.file_citation.file_id,
+            )
 
-          citations.push(`[${index}] Click <here> to download ${citedFile.filename}`)
-        }
+            citations.push(
+              `[${index}] ${annotation.file_citation.quote} from ${citedFile.filename}`,
+            )
+          }
 
-        // Note: Actual file download link or mechanism to trigger downloads not implemented
+          // Handle citation within a message that generated a URL for the file
+          // the assistant used the 'code_interpreter' tool to generate a file.
+          if (annotation.type === 'file_path') {
+            const citedFile = await oaiClient.files.retrieve(
+              annotation.file_path.file_id,
+            )
+
+            citations.push(
+              `[${index}] Click <here> to download ${citedFile.filename}`,
+            )
+          }
+
+          // Note: Actual file download link or mechanism to trigger downloads not implemented
+        })
+
+        textContent.value += '\n' + citations.join('\n')
+
+        concatenatedMessage += textContent.value
+        concatenatedMessage += '\n'
       })
 
-      textContent.value += '\n' + citations.join('\n')
-
-      concatenatedMessage += textContent.value
-      concatenatedMessage += '\n'
-    })
-
-    return concatenatedMessage
-  }, '').trim()
+      return concatenatedMessage
+    }, '')
+    .trim()
 
   return chatQueryResponse
 }
 
-export const getThreadRunForProjectGoalChatting = async (threadId: string, threadRunId: string): Promise<Run> => {
+export const getThreadRunForProjectGoalChatting = async (
+  threadId: string,
+  threadRunId: string,
+): Promise<Run> => {
   return oaiClient.beta.threads.runs.retrieve(threadId, threadRunId)
 }

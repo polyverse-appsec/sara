@@ -10,7 +10,6 @@ const deletePromptFileInfo = async (
   promptFileInfoId: string,
   parentProjectId: string,
 ): Promise<void> => {
-
   const itemKey = promptFileInfoKey(promptFileInfoId)
 
   // Remove the tracked prompt file info from its project relationship set of

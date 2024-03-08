@@ -4,12 +4,12 @@ import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { UserMenu } from 'components/user-menu'
 import { motion } from 'framer-motion'
 import toast from 'react-hot-toast'
 
 import { useAppContext } from './../../lib/hooks/app-context'
 import SaraPortrait from './../../public/Sara_Cartoon_Portrait.png'
-import { UserMenu } from 'components/user-menu'
 
 const SidebarNav = () => {
   const router = useRouter()

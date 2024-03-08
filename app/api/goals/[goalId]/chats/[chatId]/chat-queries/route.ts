@@ -1,47 +1,43 @@
 import { ReasonPhrases, StatusCodes } from 'http-status-codes'
-import { NextAuthRequest } from 'next-auth/lib'
 import Joi from 'joi'
+import createChatQuery from 'lib/polyverse/db/create-chat-query'
+import updateChat from 'lib/polyverse/db/update-chat'
+import { NextAuthRequest } from 'next-auth/lib'
 
 import { auth } from '../../../../../../../auth'
+import getProjectPromptFileInfoIds from '../../../../../../../lib/polyverse/db/get-project-prompt-file-info-ids'
 import {
   type ChatQueryPartDeux,
   type PromptFileInfo,
 } from './../../../../../../../lib/data-model-types'
-import getProjectPromptFileInfoIds from '../../../../../../../lib/polyverse/db/get-project-prompt-file-info-ids'
-import getPromptFileInfo from './../../../../../../../lib/polyverse/db/get-prompt-file-info'
-import { createBaseSaraObject } from './../../../../../../../lib/polyverse/db/utils'
-import getChat from './../../../../../../../lib/polyverse/db/get-chat'
+import { getFileInfoPartDeux } from './../../../../../../../lib/polyverse/backend/backend'
 import createPromptFileInfo from './../../../../../../../lib/polyverse/db/create-prompt-file-info'
 import deletePromptFileInfo from './../../../../../../../lib/polyverse/db/delete-prompt-file-info'
+import getChat from './../../../../../../../lib/polyverse/db/get-chat'
 import getChatQuery from './../../../../../../../lib/polyverse/db/get-chat-query'
+import getChatQueryRangeFromChat from './../../../../../../../lib/polyverse/db/get-chat-query-range-from-chat'
 import getGoal from './../../../../../../../lib/polyverse/db/get-goal'
 import getOrg from './../../../../../../../lib/polyverse/db/get-org'
 import getProject from './../../../../../../../lib/polyverse/db/get-project'
+import getPromptFileInfo from './../../../../../../../lib/polyverse/db/get-prompt-file-info'
 import getUser from './../../../../../../../lib/polyverse/db/get-user'
-import getChatQueryRangeFromChat from './../../../../../../../lib/polyverse/db/get-chat-query-range-from-chat'
 import updateChatQuery from './../../../../../../../lib/polyverse/db/update-chat-query'
 import updateProject from './../../../../../../../lib/polyverse/db/update-project'
-import { getFileInfoPartDeux } from './../../../../../../../lib/polyverse/backend/backend'
-import { promptFileInfosEqual } from './../../../../../../../lib/utils'
+import { createBaseSaraObject } from './../../../../../../../lib/polyverse/db/utils'
+import {
+  ASSISTANT_METADATA_CREATOR,
+  findAssistantFromMetadata,
+  type AssistantMetadata,
+} from './../../../../../../../lib/polyverse/openai/assistants'
 import {
   addQueryToThreadForProjectGoalChatting,
   createThreadRunForProjectGoalChatting,
-  updateAssistantForProjectGoalContextualization,
-} from './../../../../../../../lib/polyverse/openai/goalsAssistant'
-
-import {
-  findAssistantFromMetadata,
-  type AssistantMetadata,
-  ASSISTANT_METADATA_CREATOR
-} from './../../../../../../../lib/polyverse/openai/assistants'
-
-import {
   getChatQueryResponseFromThread,
   getThreadRunForProjectGoalChatting,
-  handleRequiresActionStatusForProjectGoalChatting
+  handleRequiresActionStatusForProjectGoalChatting,
+  updateAssistantForProjectGoalContextualization,
 } from './../../../../../../../lib/polyverse/openai/goalsAssistant'
-import createChatQuery from 'lib/polyverse/db/create-chat-query'
-import updateChat from 'lib/polyverse/db/update-chat'
+import { promptFileInfosEqual } from './../../../../../../../lib/utils'
 
 // 03/04/24: We set this max duration to 60 seconds during initial development
 // with no real criteria to use as a starting point for the max duration. We see
@@ -89,9 +85,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
 
     const user = await getUser(auth.user.email)
 
-    const foundUserIdOnOrg = org.userIds.find(
-      (userId) => userId === user.id,
-    )
+    const foundUserIdOnOrg = org.userIds.find((userId) => userId === user.id)
 
     if (!foundUserIdOnOrg) {
       return new Response(ReasonPhrases.FORBIDDEN, {
@@ -99,7 +93,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
       })
     }
 
-        // AuthZ: Check that the user lists the org as something they are a
+    // AuthZ: Check that the user lists the org as something they are a
     // member of
     if (!user.orgIds || user.orgIds.length === 0) {
       return new Response(ReasonPhrases.FORBIDDEN, {
@@ -148,7 +142,9 @@ export const POST = auth(async (req: NextAuthRequest) => {
       !chat.tailChatQueryId ||
       Joi.string().required().validate(chat.tailChatQueryId).error
     ) {
-      console.error(`Checking chat '${chat.id}' for the tail chat query but none was found`)
+      console.error(
+        `Checking chat '${chat.id}' for the tail chat query but none was found`,
+      )
 
       return new Response(ReasonPhrases.INTERNAL_SERVER_ERROR, {
         status: StatusCodes.INTERNAL_SERVER_ERROR,
@@ -213,7 +209,9 @@ export const POST = auth(async (req: NextAuthRequest) => {
 
     // Validate that the most recent chat query matches what the user supplied
     if (chat.tailChatQueryId !== reqBody.prevChatQueryId) {
-      console.error(`The ID of the previous chat query doesn't match that with the ID of the most recent chat query made`)
+      console.error(
+        `The ID of the previous chat query doesn't match that with the ID of the most recent chat query made`,
+      )
 
       return new Response(ReasonPhrases.BAD_REQUEST, {
         status: StatusCodes.BAD_REQUEST,
@@ -417,13 +415,13 @@ export const POST = auth(async (req: NextAuthRequest) => {
     await addQueryToThreadForProjectGoalChatting(
       chat.openAiThreadId,
       newTailChatQuery.id,
-      newTailChatQuery.query
+      newTailChatQuery.query,
     )
 
     // Now start a run on the thread for the query we just added
     const threadRun = await createThreadRunForProjectGoalChatting(
       assistant.id,
-      chat.openAiThreadId
+      chat.openAiThreadId,
     )
 
     // Don't forget to update the OpenAI thread run ID on the chat replacing
@@ -486,9 +484,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
 
     const user = await getUser(auth.user.email)
 
-    const foundUserIdOnOrg = org.userIds.find(
-      (userId) => userId === user.id,
-    )
+    const foundUserIdOnOrg = org.userIds.find((userId) => userId === user.id)
 
     if (!foundUserIdOnOrg) {
       return new Response(ReasonPhrases.FORBIDDEN, {
@@ -544,7 +540,9 @@ export const GET = auth(async (req: NextAuthRequest) => {
       !chat.tailChatQueryId ||
       Joi.string().required().validate(chat.tailChatQueryId).error
     ) {
-      console.error(`Checking chat '${chat.id}' for the tail chat query but none was found`)
+      console.error(
+        `Checking chat '${chat.id}' for the tail chat query but none was found`,
+      )
 
       return new Response(ReasonPhrases.INTERNAL_SERVER_ERROR, {
         status: StatusCodes.INTERNAL_SERVER_ERROR,
@@ -581,9 +579,12 @@ export const GET = auth(async (req: NextAuthRequest) => {
       !chat.openAiThreadRunId ||
       Joi.string().required().validate(chat.openAiThreadRunId).error
     ) {
-      return new Response(`Chat hasn't had any processing performed on it yet'`, {
-        status: StatusCodes.BAD_REQUEST,
-      })
+      return new Response(
+        `Chat hasn't had any processing performed on it yet'`,
+        {
+          status: StatusCodes.BAD_REQUEST,
+        },
+      )
     }
 
     // While this shouldn't happen validate that we have a tail chat query ID.
@@ -606,7 +607,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
     // processing thread.
     const threadRun = await getThreadRunForProjectGoalChatting(
       chat.openAiThreadId,
-      chat.openAiThreadRunId
+      chat.openAiThreadRunId,
     )
 
     const { status: threadRunStatus } = threadRun
@@ -619,7 +620,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
       await handleRequiresActionStatusForProjectGoalChatting(
         threadRun,
         goal.id,
-        org.id
+        org.id,
       )
 
       // We tried to use the status code '102 Processing' in the response but
@@ -629,9 +630,9 @@ export const GET = auth(async (req: NextAuthRequest) => {
       // the user. This REST API doesn't support paging yet but we are returning
       // results like we do. Something for us to build on.
       const chatQueries = await getChatQueryRangeFromChat(chat.id)
-      
+
       return new Response(JSON.stringify(chatQueries), {
-        status: StatusCodes.OK
+        status: StatusCodes.OK,
       })
     } else if (threadRunStatus === 'failed') {
       // If we hit a failed thread run state then we need to mark the last chat
@@ -640,7 +641,9 @@ export const GET = auth(async (req: NextAuthRequest) => {
       // If we get here we expect that most recent query in the chat to be
       // submitted. If it isn't then something is really wrong.
       if (tailChatQuery.status !== 'QUERY_SUBMITTED') {
-        console.error(`Most recent chat query isn't in the 'QUERY_SUBMITTED' state when trying to handle an OpenAI Thread Run failure`)
+        console.error(
+          `Most recent chat query isn't in the 'QUERY_SUBMITTED' state when trying to handle an OpenAI Thread Run failure`,
+        )
 
         return new Response(ReasonPhrases.INTERNAL_SERVER_ERROR, {
           status: StatusCodes.INTERNAL_SERVER_ERROR,
@@ -652,7 +655,9 @@ export const GET = auth(async (req: NextAuthRequest) => {
       if (threadRun.last_error) {
         tailChatQuery.errorText = threadRun.last_error.message
       } else {
-        console.debug(`OpenAI Thread Run in a 'failed' state but hasn't provided 'last_error' - Setting 'errorText' to unknown for most recent chat query`)
+        console.debug(
+          `OpenAI Thread Run in a 'failed' state but hasn't provided 'last_error' - Setting 'errorText' to unknown for most recent chat query`,
+        )
 
         tailChatQuery.errorText = 'Unknown'
       }
@@ -666,7 +671,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
       // state and that is a great - less restrictive improvement - on our REST
       // API.
       return new Response(ReasonPhrases.INTERNAL_SERVER_ERROR, {
-        status: StatusCodes.INTERNAL_SERVER_ERROR
+        status: StatusCodes.INTERNAL_SERVER_ERROR,
       })
     } else if (threadRunStatus === 'in_progress') {
       // We tried to use the status code '102 Processing' in the response but
@@ -676,22 +681,27 @@ export const GET = auth(async (req: NextAuthRequest) => {
       // the user. This REST API doesn't support paging yet but we are returning
       // results like we do. Something for us to build on.
       const chatQueries = await getChatQueryRangeFromChat(chat.id)
-      
+
       return new Response(JSON.stringify(chatQueries), {
-        status: StatusCodes.OK
+        status: StatusCodes.OK,
       })
     } else if (threadRunStatus !== 'completed') {
-      console.error(`Chat '${chat.id}' was requested and we encountered an unhandled thread run status of '${threadRunStatus}'`)
+      console.error(
+        `Chat '${chat.id}' was requested and we encountered an unhandled thread run status of '${threadRunStatus}'`,
+      )
 
       return new Response(ReasonPhrases.INTERNAL_SERVER_ERROR, {
-        status: StatusCodes.INTERNAL_SERVER_ERROR
+        status: StatusCodes.INTERNAL_SERVER_ERROR,
       })
     }
 
     // If we get to this point we must be dealing with a thread run in the
     // 'completed' status. If so then gather the messages from OpenAI and update
     // the most recent chat query.
-    const chatQueryResponse = await getChatQueryResponseFromThread(chat.openAiThreadId, chat.tailChatQueryId)
+    const chatQueryResponse = await getChatQueryResponseFromThread(
+      chat.openAiThreadId,
+      chat.tailChatQueryId,
+    )
     tailChatQuery.response = chatQueryResponse
     tailChatQuery.status = 'RESPONSE_RECEIVED'
 

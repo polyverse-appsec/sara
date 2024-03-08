@@ -78,7 +78,6 @@ export const projectKey = (projectId: string) => `project:${projectId}`
 export const projectDataSourceKey = (projectDataSourceId: string) =>
   `project-data-source:${projectDataSourceId}`
 
-
 export const taskKey = (taskId: string): string => {
   if (Joi.string().required().validate(taskId).error) {
     throw new Error(

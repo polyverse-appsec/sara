@@ -1,13 +1,10 @@
 import { clsx, type ClassValue } from 'clsx'
+import isEqual from 'lodash/isEqual'
+import orderBy from 'lodash/orderBy'
 import { customAlphabet } from 'nanoid'
 import { twMerge } from 'tailwind-merge'
 
-import isEqual from 'lodash/isEqual'
-import orderBy from 'lodash/orderBy'
-
-import {
-    type PromptFileInfo,
-} from './../lib/data-model-types'
+import { type PromptFileInfo } from './../lib/data-model-types'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))

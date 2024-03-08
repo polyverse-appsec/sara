@@ -1,12 +1,11 @@
 import { kv } from '@vercel/kv'
 
+import deleteChatQuery from './../../../lib/polyverse/db/delete-chat-query'
 import {
   chatKey,
   globalChatIdsSetKey,
   relatedChatQueriesToChatIdsSetKey,
 } from './../../../lib/polyverse/db/keys'
-
-import deleteChatQuery from './../../../lib/polyverse/db/delete-chat-query'
 
 const deleteChat = async (chatId: string): Promise<void> => {
   // Since there is a relationship set of IDs for chat queries start by
@@ -18,8 +17,9 @@ const deleteChat = async (chatId: string): Promise<void> => {
     -1,
   )) as string[]
 
-  const deleteChatQueryPromises = chatQueryIds.map(
-    (chatQueryId) => deleteChatQuery(chatQueryId, chatId))
+  const deleteChatQueryPromises = chatQueryIds.map((chatQueryId) =>
+    deleteChatQuery(chatQueryId, chatId),
+  )
 
   await Promise.all(deleteChatQueryPromises)
 
