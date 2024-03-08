@@ -5,18 +5,47 @@ import { createProjectOnSara } from './../../../../app/_actions/create-project-o
 import { getFileInfoForProject } from './../../../../app/_actions/get-file-info-for-repo'
 import { auth } from './../../../../auth'
 import {
+  ProjectDataReference,
   type Organization,
   type Repository,
+  User,
 } from './../../../../lib/data-model-types'
 import {
   createProject as createProjectOnBoost,
   postFileInfoToGetFileInfo,
 } from './../../../../lib/polyverse/backend/backend'
+import { resolve } from 'path'
 
 // 02/29/24: Set for 90 seconds for debugging purposes when timing out on using
 // the `createProject` server action (which is 15 seconds by default). Possibly
 // in the future we will modify this as we learn more.
 export const maxDuration = 90
+
+
+async function getFileInfoWithRetry(name : string, orgId : string, user : User) :  Promise<ProjectDataReference[]> {
+  return new Promise((resolve, reject) => {
+    let attempt = 0;
+    const maxAttempts = 10;
+    const intervalId = setInterval(async () => {
+      try {
+        const fileInfos = await getFileInfoForProject(name, orgId, user)
+        attempt++;
+        console.log(`Found ${fileInfos.length} items.`)
+        if (fileInfos.length === 3) {
+          clearInterval(intervalId) // Stop retrying
+          resolve(fileInfos)
+        } else if (attempt >= maxAttempts) {
+          clearInterval(intervalId) // Stop retrying
+          reject('Max attempts to getFileInfosreached')
+        }
+      } catch (error) {
+        console.error(error)
+        clearInterval(intervalId) // Ensure interval is cleared on error
+        reject(error)
+      }
+    }, 2000) // Retry every 2 seconds
+  })
+}
 
 export const POST = auth(async (req: NextAuthRequest) => {
   const { auth } = req
@@ -78,11 +107,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
     //
     // Getting file IDs back isn't an indication that the files have been fully
     // processed yet.
-    const fileInfos = await getFileInfoForProject(
-      name,
-      org.login,
-      auth.user,
-    )
+    const fileInfos = await getFileInfoWithRetry(name, org.login, auth.user);
 
     console.debug(
       `***** REST POST /temp/projects - fileInfos ${JSON.stringify(fileInfos)}`,
