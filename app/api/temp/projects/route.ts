@@ -21,27 +21,34 @@ import {
 // in the future we will modify this as we learn more.
 export const maxDuration = 90
 
-async function getFileInfoWithRetry(
-  name: string,
-  orgId: string,
-  user: User,
-): Promise<ProjectDataReference[]> {
+async function getFileInfoWithRetry(name: string, orgId: string, user: User): Promise<ProjectDataReference[]> {
   return new Promise((resolve, reject) => {
-    const intervalId = setInterval(async () => {
+    let attempt = 0;
+    const maxAttempts = 10; // Limit the number of retries to prevent infinite loops
+
+    const makeAttempt = async () => {
       try {
-        const fileInfos = await getFileInfoForProject(name, orgId, user)
-        console.log(`Found ${fileInfos.length} items.`)
+        const fileInfos = await getFileInfoForProject(name, orgId, user);
+        console.log(`Found ${fileInfos.length} items.`);
         if (fileInfos.length === 3) {
-          clearInterval(intervalId) // Stop retrying
-          resolve(fileInfos)
+          resolve(fileInfos); // Got the expected number of files, resolve the promise
+        } else {
+          attempt++;
+          if (attempt < maxAttempts) {
+            // Schedule the next attempt in 2 seconds
+            setTimeout(makeAttempt, 2000);
+          } else {
+            reject(new Error('Max attempts reached without success')); // Failed too many times
+          }
         }
       } catch (error) {
-        console.error(error)
-        clearInterval(intervalId) // Ensure interval is cleared on error
-        reject(error)
+        console.error(error);
+        reject(error);
       }
-    }, 2000) // Retry every 2 seconds
-  })
+    };
+
+    makeAttempt();
+  });
 }
 
 export const POST = auth(async (req: NextAuthRequest) => {
