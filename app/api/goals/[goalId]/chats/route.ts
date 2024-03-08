@@ -23,6 +23,7 @@ import getUser from './../../../../../lib/polyverse/db/get-user'
 import updateChat from './../../../../../lib/polyverse/db/update-chat'
 import updateChatQuery from './../../../../../lib/polyverse/db/update-chat-query'
 import updateGoal from './../../../../../lib/polyverse/db/update-goal'
+import updateProject from './../../../../../lib/polyverse/db/update-project'
 import { createBaseSaraObject } from './../../../../../lib/polyverse/db/utils'
 import {
   findAssistantFromMetadata,
@@ -36,6 +37,7 @@ import {
 } from './../../../../../lib/polyverse/openai/goalsAssistant'
 
 import { promptFileInfosEqual } from './../../../../../lib/utils'
+
 
 // TODO: Can increase the timeout on this method if needeed for up to 5 mins
 
@@ -310,6 +312,10 @@ export const POST = auth(async (req: NextAuthRequest) => {
         goal.id
       }': ${JSON.stringify(assistant)}`,
     )
+
+    // Don't forget to indicate that we refreshed the project
+    project.lastRefreshedAt = new Date()
+    await updateProject(project)
 
     // Build up the deatils of the chat and chat query objects for storing
     // in our K/V. Verify any data we may need first off of the assistant.

@@ -20,6 +20,7 @@ import getProject from './../../../../../../../lib/polyverse/db/get-project'
 import getUser from './../../../../../../../lib/polyverse/db/get-user'
 import getChatQueryRangeFromChat from './../../../../../../../lib/polyverse/db/get-chat-query-range-from-chat'
 import updateChatQuery from './../../../../../../../lib/polyverse/db/update-chat-query'
+import updateProject from './../../../../../../../lib/polyverse/db/update-project'
 import { getFileInfoPartDeux } from './../../../../../../../lib/polyverse/backend/backend'
 import { promptFileInfosEqual } from './../../../../../../../lib/utils'
 import {
@@ -341,6 +342,10 @@ export const POST = auth(async (req: NextAuthRequest) => {
         goal.id
       }': ${JSON.stringify(assistant)}`,
     )
+
+    // Don't forget to indicate that we refreshed the project
+    project.lastRefreshedAt = new Date()
+    await updateProject(project)
 
     // Build up the deatils of the chat query object for storing in our K/V.
     // Verify any data we may need first off of the assistant. Use
