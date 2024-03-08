@@ -1,17 +1,12 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import toast from 'react-hot-toast'
 
-import {
-  GoalPartDeux,
-  type ProjectPartDeux,
-} from './../../../../lib/data-model-types'
+import SaraChat from '../../../../components/sara-chat/sara-chat'
+import { type GoalPartDeux } from './../../../../lib/data-model-types'
 
 const GoalIndex = ({ params: { id } }: { params: { id: string } }) => {
-  const [selectedGoal, setSelectedGoal] = useState<GoalPartDeux | null>(null)
+  const [goal, setGoal] = useState<GoalPartDeux | null>(null)
 
   useEffect(() => {
     ;(async () => {
@@ -27,20 +22,27 @@ const GoalIndex = ({ params: { id } }: { params: { id: string } }) => {
 
       const fetchedGoal = (await goalRes.json()) as GoalPartDeux
 
-      setSelectedGoal(fetchedGoal)
+      setGoal(fetchedGoal)
     })()
   }, [])
 
   return (
-    <div className="flex-1 flex-col gap-4 p-10 text-2xl font-bold">
-      <div className="bg-white shadow-md rounded-lg p-6">
-        <div className="text-center text-base my-1">
-          <h3 className="text-lg font-semibold">Goal Name</h3>
-          <p>{selectedGoal?.name}</p>
-        </div>
-        <div className="text-center text-base my-1">
-          <h3 className="text-lg font-semibold">Goal Description</h3>
-          <p>{selectedGoal?.description}</p>
+    <div className="max-h-screen overflow-auto">
+      <div className="flex-1 flex-col gap-4 p-10 text-2xl font-bold">
+        <div className="bg-white shadow-md rounded-lg p-6">
+          <div className="text-center text-base my-1">
+            <h3 className="text-lg font-semibold">Goal Name</h3>
+            <p>{goal?.name}</p>
+          </div>
+          <div className="text-center text-base my-1">
+            <h3 className="text-lg font-semibold">Goal Description</h3>
+            <p>{goal?.description}</p>
+          </div>
+          {goal?.chatId ? (
+            <SaraChat
+              chatQueriesUrl={`/api/goals/${goal.id}/chats/${goal.chatId}/chat-queries`}
+            />
+          ) : null}
         </div>
       </div>
     </div>
