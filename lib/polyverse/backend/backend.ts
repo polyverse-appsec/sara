@@ -6,6 +6,7 @@ import {
   Project,
   ProjectDataReference,
   Repository,
+  UserOrgStatus,
 } from '../../data-model-types'
 
 const { sign } = jsonwebtoken
@@ -354,6 +355,45 @@ export async function getUserProjects(
   )
 
   return resJson as Project[]
+}
+
+export async function getUserStatus(
+  orgId: string,
+  email: string,
+): Promise<UserOrgStatus> {
+  const url = `${USER_SERVICE_URI}/api/user/${orgId}/account`
+
+  const signedHeader = createSignedHeader(email)
+  const res = await fetch(url, {
+    method: 'GET',
+    headers: {
+      ...signedHeader,
+    },
+  })
+
+
+  if (!res.ok) {
+    const errResMsg = await res.text()
+    const errLogMsg = `Got a failure response while trying to get status for '${orgId}' - Status: ${res.status} - Message: ${errResMsg}`
+
+    console.error(`${errLogMsg}`)
+
+    throw new Error(errLogMsg)
+  }
+
+  // TODO: Return this if we actually get something in the response
+  // TODO: Properly type the return of this
+  const jsonRes = await res.json()
+
+  if (!jsonRes.body) {
+    throw new Error(`Response to GET ${url} doesn't have the 'body' property`)
+  }
+
+  const userStatus = JSON.parse(jsonRes.body)
+
+  console.log(`Backend call getUserStatus - resJson: ${JSON.stringify(userStatus)}`)
+
+  return userStatus
 }
 
 /**

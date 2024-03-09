@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Joi from 'joi'
 import toast from 'react-hot-toast'
@@ -10,7 +10,10 @@ import { Input } from './../../../../components/ui/input'
 import {
   GitHubRepo,
   GoalPartDeux,
+  OrgPartDeux,
   ProjectPartDeux,
+  User,
+  UserOrgStatus,
 } from './../../../../lib/data-model-types'
 import { useAppContext } from './../../../../lib/hooks/app-context'
 import DataSourceSelector from './data-source-selector'
@@ -102,9 +105,33 @@ const postChatForDefaultGoal = async (goalId: string, query: string) => {
   }
 }
 
+const getUserStatus = async (orgId: string, userId : string) : Promise<UserOrgStatus> => {
+  console.log(`IN PAGE GET USER STATUS`)
+  const res = await fetch(`/api/orgs/${orgId}/users/${userId}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+
+  if (!res.ok) {
+    const errText = await res.text()
+    console.debug(
+      `Failed to get User Status because: ${errText}`,
+    )
+
+    throw new Error(`Failed to get user status`)
+  }
+
+  const userStatus = await res.json()
+  console.log(`In getUserStatus ON PAGE, user status is: ${JSON.stringify(userStatus)}`)
+  return userStatus
+
+}
+
 const ProjectCreate = () => {
   const router = useRouter()
-  const { activeBillingOrg } = useAppContext()
+  const { user, activeBillingOrg } = useAppContext()
 
   const [controlledProjectDataSources, setControlledProjectDataSources] =
     useState<GitHubRepo[]>([])
@@ -112,6 +139,7 @@ const ProjectCreate = () => {
   const [projectDescription, setProjectDescription] = useState<string>('')
 
   const [saveButtonEnabled, setSaveButtonEnabled] = useState<boolean>(true)
+  const [githubAppInstalled, setGithubAppInstalled] = useState<boolean>(false)
 
   // Force a user to select an active billing org first before they can create
   // a project
@@ -121,6 +149,22 @@ const ProjectCreate = () => {
 
     return null
   }
+
+  useEffect(() => {
+    const fetchUserStatus = async () => {
+      try {
+        const userStatus = await getUserStatus(activeBillingOrg.id, user?.id ?? '');
+
+        // Check if github_username exists and is not empty
+        const hasGitHubUsername = userStatus.github_username.length > 0;
+        setGithubAppInstalled(hasGitHubUsername);
+      } catch (error) {
+        toast.error(`Failed to fetch user status: ${error}`);
+      }
+    };
+
+    fetchUserStatus();
+  }, [activeBillingOrg.id]); // Depend on activeBillingOrg.id to refetch if it changes
 
   return (
     <div className="flex-1 flex-col p-10">
@@ -161,6 +205,12 @@ const ProjectCreate = () => {
             />
           </div>
         </div>
+        {!githubAppInstalled ? (
+          <div className="text-left text-base text-red-500 my-1">
+            <p>Please install Boost Github App before creating a project.</p>
+          </div>
+        ) : null
+        }
         <Button
           variant="ghost"
           className="bg-green-500 hover:bg-green-200"
@@ -225,6 +275,7 @@ const ProjectCreate = () => {
               toast.error(`Failed to create project`)
             }
           }}
+          disabled={!githubAppInstalled} // Disable button based on githubAppInstalled state
         >
           {saveButtonEnabled ? (
             <svg
