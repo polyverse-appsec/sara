@@ -105,7 +105,10 @@ const postChatForDefaultGoal = async (goalId: string, query: string) => {
   }
 }
 
-const getUserStatus = async (orgId: string, userId : string) : Promise<UserOrgStatus> => {
+const getUserStatus = async (
+  orgId: string,
+  userId: string,
+): Promise<UserOrgStatus> => {
   console.log(`IN PAGE GET USER STATUS`)
   const res = await fetch(`/api/orgs/${orgId}/users/${userId}`, {
     method: 'GET',
@@ -116,17 +119,16 @@ const getUserStatus = async (orgId: string, userId : string) : Promise<UserOrgSt
 
   if (!res.ok) {
     const errText = await res.text()
-    console.debug(
-      `Failed to get User Status because: ${errText}`,
-    )
+    console.debug(`Failed to get User Status because: ${errText}`)
 
     throw new Error(`Failed to get user status`)
   }
 
   const userStatus = await res.json()
-  console.log(`In getUserStatus ON PAGE, user status is: ${JSON.stringify(userStatus)}`)
+  console.log(
+    `In getUserStatus ON PAGE, user status is: ${JSON.stringify(userStatus)}`,
+  )
   return userStatus
-
 }
 
 const ProjectCreate = () => {
@@ -141,6 +143,29 @@ const ProjectCreate = () => {
   const [saveButtonEnabled, setSaveButtonEnabled] = useState<boolean>(true)
   const [githubAppInstalled, setGithubAppInstalled] = useState<boolean>(false)
 
+  useEffect(() => {
+    const fetchUserStatus = async () => {
+      try {
+        if (!activeBillingOrg) {
+          toast.error(`No active billing org set`)
+          return
+        }
+
+        const userStatus = await getUserStatus(
+          activeBillingOrg.id,
+          user?.id ?? '',
+        )
+
+        // Check if github_username exists and is not empty
+        const hasGitHubUsername = userStatus.github_username.length > 0
+        setGithubAppInstalled(hasGitHubUsername)
+      } catch (error) {
+        toast.error(`Failed to fetch user status: ${error}`)
+      }
+    }
+    fetchUserStatus()
+  }, [activeBillingOrg]) // Depend on activeBillingOrg.id to refetch if it changes
+
   // Force a user to select an active billing org first before they can create
   // a project
   if (!activeBillingOrg) {
@@ -149,22 +174,6 @@ const ProjectCreate = () => {
 
     return null
   }
-
-  useEffect(() => {
-    const fetchUserStatus = async () => {
-      try {
-        const userStatus = await getUserStatus(activeBillingOrg.id, user?.id ?? '');
-
-        // Check if github_username exists and is not empty
-        const hasGitHubUsername = userStatus.github_username.length > 0;
-        setGithubAppInstalled(hasGitHubUsername);
-      } catch (error) {
-        toast.error(`Failed to fetch user status: ${error}`);
-      }
-    };
-
-    fetchUserStatus();
-  }, [activeBillingOrg.id]); // Depend on activeBillingOrg.id to refetch if it changes
 
   return (
     <div className="flex-1 flex-col p-10">
@@ -209,8 +218,7 @@ const ProjectCreate = () => {
           <div className="text-left text-base text-red-500 my-1">
             <p>Please install Boost Github App before creating a project.</p>
           </div>
-        ) : null
-        }
+        ) : null}
         <Button
           variant="ghost"
           className="bg-green-500 hover:bg-green-200"
