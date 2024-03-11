@@ -22,10 +22,7 @@ export const BaseSaraObjectSchema = Joi.object({
     .required(),
 })
 
-export interface UserOrgStatus {
-  github_username: string
-  plan: string
-}
+
 
 export interface BaseSaraObject extends Record<string, any> {
   // Crucial to identity management/RBAC
@@ -258,6 +255,11 @@ export interface PromptFileInfo extends BaseSaraObject {
   // The project that depends on this file info to be injected as part of the
   // prompt passed to the LLM
   parentProjectId: string
+}
+
+// TODO: Test
+export interface UserOrgStatus {
+  gitHubAppInstalled: 'UNKNOWN' | 'INSTALLED'
 }
 
 // TODO: Test

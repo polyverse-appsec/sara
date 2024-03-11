@@ -8,12 +8,10 @@ import toast from 'react-hot-toast'
 import { Button } from './../../../../components/ui/button'
 import { Input } from './../../../../components/ui/input'
 import {
-  GitHubRepo,
-  GoalPartDeux,
-  OrgPartDeux,
-  ProjectPartDeux,
-  User,
-  UserOrgStatus,
+  type GitHubRepo,
+  type GoalPartDeux,
+  type ProjectPartDeux,
+  type UserOrgStatus,
 } from './../../../../lib/data-model-types'
 import { useAppContext } from './../../../../lib/hooks/app-context'
 import DataSourceSelector from './data-source-selector'
@@ -105,11 +103,10 @@ const postChatForDefaultGoal = async (goalId: string, query: string) => {
   }
 }
 
-const getUserStatus = async (
+const getOrgUserStatus = async (
   orgId: string,
   userId: string,
 ): Promise<UserOrgStatus> => {
-  console.log(`IN PAGE GET USER STATUS`)
   const res = await fetch(`/api/orgs/${orgId}/users/${userId}`, {
     method: 'GET',
     headers: {
@@ -124,10 +121,7 @@ const getUserStatus = async (
     throw new Error(`Failed to get user status`)
   }
 
-  const userStatus = await res.json()
-  console.log(
-    `In getUserStatus ON PAGE, user status is: ${JSON.stringify(userStatus)}`,
-  )
+  const userStatus = (await res.json()) as UserOrgStatus
   return userStatus
 }
 
@@ -151,18 +145,22 @@ const ProjectCreate = () => {
           return
         }
 
-        const userStatus = await getUserStatus(
+        if (!user) {
+          toast.error(`No active user set`)
+          return
+        }
+
+        const orgUserStatus = await getOrgUserStatus(
           activeBillingOrg.id,
-          user?.id ?? '',
+          user.id,
         )
 
-        // Check if github_username exists and is not empty
-        const hasGitHubUsername = userStatus.github_username.length > 0
-        setGithubAppInstalled(hasGitHubUsername)
+        setGithubAppInstalled(orgUserStatus.gitHubAppInstalled === 'INSTALLED')
       } catch (error) {
         toast.error(`Failed to fetch user status: ${error}`)
       }
     }
+
     fetchUserStatus()
   }, [activeBillingOrg]) // Depend on activeBillingOrg.id to refetch if it changes
 

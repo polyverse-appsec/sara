@@ -6,7 +6,6 @@ import {
   Project,
   ProjectDataReference,
   Repository,
-  UserOrgStatus,
 } from '../../data-model-types'
 
 const { sign } = jsonwebtoken
@@ -32,6 +31,17 @@ const USER_SERVICE_URI =
 
 interface SignedHeader {
   'x-signed-identity': string
+}
+
+export interface BoostUserOrgStatusResponse {
+  enabled?: boolean
+  // TODO: What could the values of these be?
+  status?: string
+  // TODO: What could the values of these be?
+  plan?: string
+  saas_client?: boolean
+  portal_url?: string | null
+  github_username?: string
 }
 
 function createSignedHeader(email: string): SignedHeader {
@@ -357,11 +367,11 @@ export async function getUserProjects(
   return resJson as Project[]
 }
 
-export async function getUserStatus(
-  orgId: string,
+export async function getBoostOrgUserStatus(
+  orgName: string,
   email: string,
-): Promise<UserOrgStatus> {
-  const url = `${USER_SERVICE_URI}/api/user/${orgId}/account`
+): Promise<BoostUserOrgStatusResponse> {
+  const url = `${USER_SERVICE_URI}/api/user/${orgName}/account`
 
   const signedHeader = createSignedHeader(email)
   const res = await fetch(url, {
@@ -374,7 +384,7 @@ export async function getUserStatus(
 
   if (!res.ok) {
     const errResMsg = await res.text()
-    const errLogMsg = `Got a failure response while trying to get status for '${orgId}' - Status: ${res.status} - Message: ${errResMsg}`
+    const errLogMsg = `Got a failure response while trying to get status for '${orgName}' - Status: ${res.status} - Message: ${errResMsg}`
 
     console.error(`${errLogMsg}`)
 
@@ -389,11 +399,9 @@ export async function getUserStatus(
     throw new Error(`Response to GET ${url} doesn't have the 'body' property`)
   }
 
-  const userStatus = JSON.parse(jsonRes.body)
+  const userStatus = JSON.parse(jsonRes.body) as BoostUserOrgStatusResponse
 
-  console.log(`Backend call getUserStatus - resJson: ${JSON.stringify(userStatus)}`)
-
-  return userStatus
+  return userStatus as BoostUserOrgStatusResponse
 }
 
 /**

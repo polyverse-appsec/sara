@@ -2,9 +2,11 @@ import { ReasonPhrases, StatusCodes } from 'http-status-codes'
 import { NextAuthRequest } from 'next-auth/lib'
 
 import { auth } from 'auth'
-import { getUserStatus } from 'lib/polyverse/backend/backend'
-import { getUser } from 'app/_actions/get-user'
+import { getBoostOrgUserStatus } from 'lib/polyverse/backend/backend'
 import getOrg from 'lib/polyverse/db/get-org'
+
+import getUser from './../../../../../../lib/polyverse/db/get-user'
+import { UserOrgStatus } from 'lib/data-model-types'
 
 export const GET = auth(async (req: NextAuthRequest) => {
   const { auth } = req
@@ -59,9 +61,18 @@ export const GET = auth(async (req: NextAuthRequest) => {
         })
     }
 
-    const userStatus = await getUserStatus(requestedOrgId, auth.user.email)
+    const boostOrgUserStatus = await getBoostOrgUserStatus(org.name, user.email)
 
-    return new Response(JSON.stringify(userStatus), {
+    // Convert the response format from the Boost Node backend to something we
+    // expect or consistent with our developer experience (DX).
+    const orgUserStatus: UserOrgStatus = {
+      // If the `username` data member shows up on the user status that means
+      // the user has the GitHub app installed.
+      gitHubAppInstalled: boostOrgUserStatus.github_username && boostOrgUserStatus.github_username.length > 0 ?
+        'INSTALLED' : 'UNKNOWN'
+    }
+
+    return new Response(JSON.stringify(orgUserStatus), {
       status: StatusCodes.OK,
     })
   } catch (error) {
