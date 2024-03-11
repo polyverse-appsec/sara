@@ -135,7 +135,8 @@ const ProjectCreate = () => {
   const [projectDescription, setProjectDescription] = useState<string>('')
 
   const [saveButtonEnabled, setSaveButtonEnabled] = useState<boolean>(true)
-  const [githubAppInstalled, setGithubAppInstalled] = useState<boolean>(false)
+  
+  const [githubAppInstalled, setGithubAppInstalled] = useState<boolean>(true)
 
   useEffect(() => {
     const fetchUserStatus = async () => {
@@ -214,7 +215,7 @@ const ProjectCreate = () => {
         </div>
         {!githubAppInstalled ? (
           <div className="text-left text-base text-red-500 my-1">
-            <p>Please install Boost Github App before creating a project.</p>
+            <p>Please install Boost Github App for your user before creating a project.</p>
           </div>
         ) : null}
         <Button

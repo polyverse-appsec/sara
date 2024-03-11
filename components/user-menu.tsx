@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { HamburgerMenuIcon } from '@radix-ui/react-icons'
+import { HamburgerMenuIcon, ExclamationTriangleIcon } from '@radix-ui/react-icons'
 import { type Session } from 'next-auth'
 import { signOut } from 'next-auth/react'
 
@@ -15,6 +15,10 @@ import {
   DropdownMenuTrigger,
 } from './ui/dropdown-menu'
 import { IconExternalLink } from './ui/icons'
+import { UserOrgStatus } from 'lib/data-model-types'
+import { useEffect, useState } from 'react'
+import { useAppContext } from 'lib/hooks/app-context'
+import toast from 'react-hot-toast'
 
 export interface UserMenuProps {
   user: Session['user']
@@ -25,8 +29,60 @@ function getUserInitials(name: string) {
   return lastName ? `${firstName[0]}${lastName[0]}` : firstName.slice(0, 2)
 }
 
+const getUserStatus = async (
+  orgId: string,
+  userId: string,
+): Promise<UserOrgStatus> => {
+  const res = await fetch(`/api/orgs/${orgId}/users/${userId}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+
+  if (!res.ok) {
+    const errText = await res.text()
+    console.debug(`Failed to get User Status because: ${errText}`)
+
+    throw new Error(`Failed to get user status`)
+  }
+
+  const userStatus = await res.json()
+  return userStatus
+}
+
+
 export function UserMenu({ user }: UserMenuProps) {
   const isLoading = !user?.image || !user?.name
+  const { activeBillingOrg } = useAppContext()
+
+  const [githubAppInstalled, setGithubAppInstalled] = useState<boolean>(true)
+  const [userIsPremium, setUserIsPremium] = useState<boolean>(true)
+  
+  useEffect(() => {
+    const fetchUserStatus = async () => {
+      try {
+        if (!activeBillingOrg) {
+          return
+        }
+
+        const userStatus = await getUserStatus(
+          activeBillingOrg.id,
+          user?.id ?? '',
+        )
+
+        // Check if github_username exists and is not empty
+        const hasGitHubUsername = userStatus.github_username.length > 0
+        setGithubAppInstalled(hasGitHubUsername)
+
+        const hasPremiumPlan = userStatus.plan == 'premium'
+        setUserIsPremium(hasPremiumPlan)
+      } catch (error) {
+        toast.error(`Failed to fetch user status: ${error}`)
+      }
+    }
+    fetchUserStatus()
+  }, [activeBillingOrg]) // Depend on activeBillingOrg.id to refetch if it changes
 
   return (
     <div className="flex items-center justify-between">
@@ -50,6 +106,16 @@ export function UserMenu({ user }: UserMenuProps) {
             )}
             <span className="ml-2">{user?.name}</span>
             <HamburgerMenuIcon className="ml-2 w-4 h-4" />
+            { !githubAppInstalled ?  
+              <div title="The User GitHub App has not been installed.">
+                <ExclamationTriangleIcon className="w-4 h-4 text-red-500"/>
+              </div> 
+            : null }
+            { !userIsPremium ?
+              <div title="The User is not on a premium plan.">
+                <ExclamationTriangleIcon className="w-4 h-4 text-yellow-500"/>
+              </div>
+            : null }
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent sideOffset={8} align="start" className="w-[180px]">
@@ -70,26 +136,40 @@ export function UserMenu({ user }: UserMenuProps) {
             </a>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <a
-              href="https://buy.stripe.com/8wM9AY9hAe4y5fa000"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-between w-full text-xs"
-            >
-              Upgrade to Premium Subscription
-              <IconExternalLink className="w-3 h-3 ml-auto" />
-            </a>
+            <div>
+              <a
+                href="https://buy.stripe.com/8wM9AY9hAe4y5fa000"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-between w-full text-xs"
+              >
+                Upgrade to Premium Subscription
+                <IconExternalLink className="w-3 h-3 ml-auto" />
+              </a>
+              { !userIsPremium ?
+              <div title="The User is not on a premium plan.">
+                <ExclamationTriangleIcon className="w-4 h-4 text-yellow-500"/>
+              </div>
+            : null }
+            </div>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <a
-              href="https://github.com/apps/polyverse-boost"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-between w-full text-xs"
-            >
-              Authorize Private Repositories
-              <IconExternalLink className="w-3 h-3 ml-auto" />
-            </a>
+            <div>
+              <a
+                href="https://github.com/apps/polyverse-boost"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-between w-full text-xs"
+              >
+                Authorize Private Repositories
+                <IconExternalLink className="w-3 h-3 ml-auto" />
+              </a>
+              { !githubAppInstalled ?  
+                <div title="The User GitHub App has not been installed.">
+                  <ExclamationTriangleIcon className="w-4 h-4 text-red-500"/>
+                </div> 
+              : null }
+            </div>
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() =>
