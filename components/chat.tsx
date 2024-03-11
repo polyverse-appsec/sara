@@ -103,20 +103,37 @@ export function Chat({ chat, initialMessages = [], className }: ChatProps) {
       },
     })
 
-  // If this path was navigated it through a path that includes /chat and we
+  // 03/11/24 Notes: We are currently in the process of cutting over to a new
+  // set of UI components and UX that won't use this path and <Chat>
+  // components (at least not planned). Below is the original comment explaining
+  // why we redirected for configuration purposes. We updated the conditinals
+  // below to make sure that the path wasn't exactly `/chat` in addition to the
+  // other logic and routed to `/chat` if needed. This allowed us to use the
+  // `/chat` path as our flag to get to the old UI for a safety net while
+  // cutting over to the new UI.
+  //
+  // If this path was navigated to through a path that includes /chat and we
   // haven't yet configured Sara then redirect to the home path so that the user
   // has to configure her by selecting an organization and a repository. Failure
   // to do so will mean that the chat functionality is non-functional and could
   // result in errors.
-  if (path.includes('chat') && projectStatus === 'CONFIGURING') {
+  if (
+    path !== '/chat' &&
+    path.includes('chat') &&
+    projectStatus === 'CONFIGURING'
+  ) {
     toast.success('Loading project details - one moment please')
-    router.push('/')
+    router.push('/chat')
     router.refresh()
     return
   }
 
-  if (path.includes('chat') && projectStatus !== 'CONFIGURED') {
-    router.push('/')
+  if (
+    path !== '/chat' &&
+    path.includes('chat') &&
+    projectStatus !== 'CONFIGURED'
+  ) {
+    router.push('/chat')
     router.refresh()
     return
   }

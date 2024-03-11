@@ -1,7 +1,7 @@
-import { Chat } from './../../components/chat'
-import { nanoid } from './../../lib/utils'
+import { Chat } from './../../../components/chat'
+import { nanoid } from './../../../lib/utils'
 
-export default function IndexPage() {
+export default function ChatIndexPage() {
   const id = nanoid()
   //TODO what chat is this?  This is going to break us until we implement a 'user chat' with no
   //repo selected.
