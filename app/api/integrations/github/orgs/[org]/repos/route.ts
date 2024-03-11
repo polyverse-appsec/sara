@@ -7,7 +7,7 @@ import { auth } from '../../../../../../../auth'
 export const GET = auth(async (req: NextAuthRequest) => {
   const { auth } = req
 
-  if (!auth || !auth.accessToken || !auth.user.username) {
+  if (!auth || !auth.accessToken) {
     return new Response(ReasonPhrases.UNAUTHORIZED, {
       status: StatusCodes.UNAUTHORIZED,
     })

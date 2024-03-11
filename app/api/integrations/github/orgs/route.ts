@@ -7,7 +7,9 @@ import { auth } from '../../../../../auth'
 export const GET = auth(async (req: NextAuthRequest) => {
   const { auth } = req
 
-  if (!auth || !auth.accessToken || !auth.user.username) {
+  console.log(`***** /api/integration/github/orgs - auth: ${JSON.stringify(auth)}`)
+
+  if (!auth || !auth.accessToken) {
     return new Response(ReasonPhrases.UNAUTHORIZED, {
       status: StatusCodes.UNAUTHORIZED,
     })
@@ -28,6 +30,9 @@ export const GET = auth(async (req: NextAuthRequest) => {
       login: org.login,
       avatarUrl: org.avatar_url,
     }))
+
+    console.log(`***** /api/integration/github/orgs - returning orgs: ${JSON.stringify(orgs)}`)
+
 
     return new Response(JSON.stringify(orgs), {
       status: StatusCodes.OK,
