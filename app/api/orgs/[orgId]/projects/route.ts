@@ -8,6 +8,7 @@ import {
   type ProjectPartDeux,
   type PromptFileInfo,
   type Repository,
+  type ProjectDataReference
 } from './../../../../../lib/data-model-types'
 import {
   createProject as createProjectOnBoost,
@@ -35,6 +36,43 @@ import {
 // setting the max duration and measuring response times/latency on routes and
 // adjust them accordingly.
 export const maxDuration = 60
+
+const getFileInfoPartDeuxWithRetry = async (orgName: string, projectName: string, userEmail: string): Promise<ProjectDataReference[]> => {
+  return new Promise((resolve, reject) => {
+    let retryAttempt = 0
+    const maxRetryAttempts = 10
+
+    const attemptToGetFileInfoPartDeux = async () => {
+      try {
+        const boostFileInfos = await getFileInfoPartDeux(
+          orgName,
+          projectName,
+          userEmail,
+        )
+
+        if (boostFileInfos && boostFileInfos.length === 3) {
+          resolve(boostFileInfos)
+          return
+        }
+
+        retryAttempt++
+
+        if (retryAttempt < maxRetryAttempts) {
+          setTimeout(attemptToGetFileInfoPartDeux, 2000)
+          return
+        }
+
+        reject(`Max attempts reached when trying to get file infos for project creation`)
+      } catch (error) {
+        const errMsg = `Error while attemping to get file infos for project creation in a loop: ${error}`
+        console.debug(errMsg)
+        reject(errMsg)
+      }
+    }
+
+    attemptToGetFileInfoPartDeux()
+  })
+}
 
 export const POST = auth(async (req: NextAuthRequest) => {
   const { auth } = req
@@ -217,10 +255,10 @@ export const POST = auth(async (req: NextAuthRequest) => {
     // TODO: We really ought to be passing in the `ID` of the `project` instance
     // but need to build more support out for using generic IDs in the backend
     // TODO: Rename to getBoostFileInfo
-    const boostFileInfos = await getFileInfoPartDeux(
+    const boostFileInfos = await getFileInfoPartDeuxWithRetry(
       org.name,
       project.name,
-      user.email,
+      user.email
     )
 
     // Build up OpenAI Assistant metadata that will be used to help identify it
