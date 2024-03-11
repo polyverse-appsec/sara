@@ -107,7 +107,7 @@ const getOrgUserStatus = async (
   orgId: string,
   userId: string,
 ): Promise<UserOrgStatus> => {
-  const res = await fetch(`/api/orgs/${orgId}/users/${userId}`, {
+  const res = await fetch(`/api/orgs/${orgId}/users/${userId}/status`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
