@@ -2,6 +2,20 @@
 
 # Release Notes
 
+## Version 0.11.0: March 11th, 2024
+
+### New Features
+
+- Sara writes tasks to the DB now associated with goals
+
+### Enhancements
+
+- Disable project creation button if GitHub app not installed based on org user status level
+
+### Bug Fixes
+
+- N/A
+
 ## Version 0.10.0: March 6th, 2024
 
 ### New Features
