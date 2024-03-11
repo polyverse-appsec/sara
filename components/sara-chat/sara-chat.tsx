@@ -18,9 +18,7 @@ const SaraChat = ({ chatQueriesUrl }: SaraChatProps) => {
     null,
   )
 
-  const [input, setInput] = useState(
-    'Some input setter that I need to determine if I actually need',
-  )
+  const [input, setInput] = useState('Provide your chat query here...')
 
   useEffect(() => {
     let isMounted = true
