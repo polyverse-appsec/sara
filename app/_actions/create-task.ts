@@ -18,7 +18,6 @@ export async function createTask(
   task: Task,
 ): Promise<Task> {
   const session = await auth()
-  console.debug(`Invoking server action: createTask`)
 
   if (!session?.user?.id || task.userId !== session.user.id) {
     throw new Error('Unauthorized')

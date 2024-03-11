@@ -13,7 +13,6 @@ const createUserIdUserRepoTasksRepoIdKey = (
 
 export const getTasksForProject = async (project: Project): Promise<Task[]> => {
   const session = await auth()
-  console.debug(`Invoking server action: getTasksForProject`)
 
   if (!session?.user?.id || session.user.id !== project.userId) {
     throw new Error('Unauthorized')

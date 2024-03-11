@@ -16,7 +16,6 @@ export const deleteCachedProjectUserFileInfos = async (
   fileInfos: ProjectDataReference[],
 ) => {
   const session = await auth()
-  console.debug(`Invoking server action: deleteCachedProjectUserFileInfos`)
 
   if (!session?.user?.id || user.id !== session.user.id) {
     throw new Error('Unauthorized')

@@ -7,7 +7,6 @@ import { type User } from './../../lib/data-model-types'
 
 export async function createUser(user: User): Promise<User> {
   const session = await auth()
-  console.debug(`Invoking server action: createUser`)
 
   if (!session?.user?.id || user.id !== session.user.id) {
     throw new Error('Unauthorized')

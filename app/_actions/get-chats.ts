@@ -7,7 +7,6 @@ import { type Chat } from './../../lib/data-model-types'
 const TEN_MINS_IN_MILLIS = 600000
 
 export async function getChats(taskId?: string | null) {
-  console.debug(`Invoking server action: getChats`)
 
   if (!taskId) {
     return []

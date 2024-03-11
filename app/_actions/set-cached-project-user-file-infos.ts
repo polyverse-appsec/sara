@@ -15,7 +15,6 @@ const setCachedProjectUserFileInfos = async (
   fileInfos: ProjectDataReference[],
 ): Promise<void> => {
   const session = await auth()
-  console.debug(`Invoking server action: setCachedProjectUserFileInfos`)
 
   if (!session?.user?.id || user.id !== session.user.id) {
     throw new Error('Unauthorized')

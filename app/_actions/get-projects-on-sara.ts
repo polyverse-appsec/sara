@@ -8,7 +8,6 @@ import { userProjectIdsSetKey } from './../../lib/polyverse/db/keys'
 
 export const getProjectsOnSara = async (user: User): Promise<Project[]> => {
   const session = await auth()
-  console.debug(`Invoking server action: getProjectsOnSara`)
 
   if (
     !session?.user?.id ||

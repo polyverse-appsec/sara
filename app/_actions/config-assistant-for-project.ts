@@ -53,8 +53,6 @@ export async function configAssistantForProject(
 ): Promise<Assistant> {
   const session = await auth()
 
-  console.debug(`Invoking server action: configAssistantForProject`)
-
   if (!session?.user?.id || user.id !== session.user.id) {
     throw new Error('Unauthorized')
   }

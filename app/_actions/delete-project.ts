@@ -72,7 +72,6 @@ export const deleteProject = async (
   projectId: string,
 ) => {
   const session = await auth()
-  console.debug(`Invoking server action: deleteProject`)
 
   if (!session?.user?.id || user?.id !== session.user.id || !user.email) {
     throw new Error('Unauthorized')

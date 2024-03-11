@@ -10,7 +10,6 @@ const getCachedProjectUserFileInfos = async (
   user: User,
 ): Promise<ProjectDataReference[]> => {
   const session = await auth()
-  console.debug(`Invoking server action: getCachedProjectUserFileInfos`)
 
   if (!session?.user?.id || !user || user.id !== session.user.id) {
     throw new Error('Unauthorized')

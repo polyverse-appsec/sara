@@ -17,7 +17,6 @@ export async function createProjectOnSara(
   // do a check here before we consume each method as well in case there are any
   // behavioral changes to said consumed functions.
   const session = await auth()
-  console.debug(`Invoking server action: createProjectOnSara`)
 
   // Apply business logic auth check for `getRepository`
   if (!session?.user?.id) {

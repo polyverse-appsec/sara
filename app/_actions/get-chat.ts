@@ -5,7 +5,6 @@ import { kv } from '@vercel/kv'
 import { type Chat } from './../../lib/data-model-types'
 
 export async function getChat(id: string, userId: string) {
-  console.debug(`Invoking server action: getChat`)
 
   const chat = await kv.hgetall<Chat>(`chat:${id}`)
 

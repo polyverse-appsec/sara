@@ -11,7 +11,6 @@ export async function getRepositoriesForOrg(
   org: string,
 ): Promise<Repository[]> {
   const session = await auth()
-  console.debug(`Invoking server action: getRepositoriesForOrg`)
 
   if (!session?.user?.id) {
     throw new Error('Unauthorized')
