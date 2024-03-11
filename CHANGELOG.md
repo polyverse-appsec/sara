@@ -2,6 +2,20 @@
 
 # Release Notes
 
+## Version 0.11.1: March 11th, 2024
+
+### New Features
+
+- N/A
+
+### Enhancements
+
+- N/A
+
+### Bug Fixes
+
+- Add AuthZ to `GET /api/goals/<goalId>`
+
 ## Version 0.11.0: March 11th, 2024
 
 ### New Features
