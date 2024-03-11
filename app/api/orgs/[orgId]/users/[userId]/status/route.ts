@@ -2,10 +2,10 @@ import { ReasonPhrases, StatusCodes } from 'http-status-codes'
 import { NextAuthRequest } from 'next-auth/lib'
 
 import { auth } from 'auth'
-import { getBoostOrgUserStatus } from 'lib/polyverse/backend/backend'
-import getOrg from 'lib/polyverse/db/get-org'
+import { getBoostOrgUserStatus } from './../../../../../../../lib/polyverse/backend/backend'
+import getOrg from './../../../../../../../lib/polyverse/db/get-org'
 
-import getUser from './../../../../../../lib/polyverse/db/get-user'
+import getUser from './../../../../../../../lib/polyverse/db/get-user'
 import { UserOrgStatus } from 'lib/data-model-types'
 
 export const GET = auth(async (req: NextAuthRequest) => {
