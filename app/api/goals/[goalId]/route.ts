@@ -3,6 +3,9 @@ import { NextAuthRequest } from 'next-auth/lib'
 
 import { auth } from '../../../../auth'
 import getGoal from './../../../../lib/polyverse/db/get-goal'
+import getOrg from './../../../../lib/polyverse/db/get-org'
+import getProject from './../../../../lib/polyverse/db/get-project'
+import getUser from './../../../../lib/polyverse/db/get-user'
 
 export const GET = auth(async (req: NextAuthRequest) => {
   const { auth } = req
@@ -24,8 +27,64 @@ export const GET = auth(async (req: NextAuthRequest) => {
     // The last slice ought to be the slug for the goal ID
     const requestedGoalId = reqUrlSlices[reqUrlSlices.length - 1]
 
+    // AuthZ: Check that the user is listed as a member on the org that owns
+    // the goal
     const goal = await getGoal(requestedGoalId)
+    const org = await getOrg(goal.orgId)
 
+    if (!org.userIds || org.userIds.length === 0) {
+      return new Response(ReasonPhrases.FORBIDDEN, {
+        status: StatusCodes.FORBIDDEN,
+      })
+    }
+
+    const user = await getUser(auth.user.email)
+
+    const foundUserIdOnOrg = org.userIds.find((userId) => userId === user.id)
+
+    if (!foundUserIdOnOrg) {
+      return new Response(ReasonPhrases.FORBIDDEN, {
+        status: StatusCodes.FORBIDDEN,
+      })
+    }
+
+    // AuthZ: Check that the user lists the org as something they are a
+    // member of
+    if (!user.orgIds || user.orgIds.length === 0) {
+      return new Response(ReasonPhrases.FORBIDDEN, {
+        status: StatusCodes.FORBIDDEN,
+      })
+    }
+
+    const foundOrgId = user.orgIds.find((orgId) => orgId === org.id)
+
+    if (!foundOrgId) {
+      return new Response(ReasonPhrases.FORBIDDEN, {
+        status: StatusCodes.FORBIDDEN,
+      })
+    }
+
+    // AuthZ: Check that the project the goal is associated with lists the
+    // user
+    const project = await getProject(goal.parentProjectId)
+
+    if (!project.userIds || project.userIds.length === 0) {
+      return new Response(ReasonPhrases.FORBIDDEN, {
+        status: StatusCodes.FORBIDDEN,
+      })
+    }
+
+    const foundUserIdOnProject = project.userIds.find(
+      (userId) => userId === user.id,
+    )
+
+    if (!foundUserIdOnProject) {
+      return new Response(ReasonPhrases.FORBIDDEN, {
+        status: StatusCodes.FORBIDDEN,
+      })
+    }    
+
+    // Finally authorized... return the goal to the client
     return new Response(JSON.stringify(goal), {
       status: StatusCodes.OK,
     })
