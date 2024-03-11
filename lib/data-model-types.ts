@@ -260,6 +260,7 @@ export interface PromptFileInfo extends BaseSaraObject {
 // TODO: Test
 export interface UserOrgStatus {
   gitHubAppInstalled: 'UNKNOWN' | 'INSTALLED'
+  isPremium: 'FREE' | 'PREMIUM'
 }
 
 // TODO: Test

@@ -69,8 +69,11 @@ export const GET = auth(async (req: NextAuthRequest) => {
       // If the `username` data member shows up on the user status that means
       // the user has the GitHub app installed.
       gitHubAppInstalled: boostOrgUserStatus.github_username && boostOrgUserStatus.github_username.length > 0 ?
-        'INSTALLED' : 'UNKNOWN'
+        'INSTALLED' : 'UNKNOWN',
+      isPremium:  boostOrgUserStatus.plan && boostOrgUserStatus.plan == 'premium' ? 'FREE' : 'PREMIUM',
     }
+
+
 
     return new Response(JSON.stringify(orgUserStatus), {
       status: StatusCodes.OK,

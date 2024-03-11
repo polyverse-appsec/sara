@@ -33,7 +33,7 @@ const getUserStatus = async (
   orgId: string,
   userId: string,
 ): Promise<UserOrgStatus> => {
-  const res = await fetch(`/api/orgs/${orgId}/users/${userId}`, {
+  const res = await fetch(`/api/orgs/${orgId}/users/${userId}/status`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -71,12 +71,10 @@ export function UserMenu({ user }: UserMenuProps) {
           user?.id ?? '',
         )
 
-        // Check if github_username exists and is not empty
-        const hasGitHubUsername = userStatus.github_username.length > 0
-        setGithubAppInstalled(hasGitHubUsername)
 
-        const hasPremiumPlan = userStatus.plan == 'premium'
-        setUserIsPremium(hasPremiumPlan)
+        setGithubAppInstalled(userStatus.gitHubAppInstalled === 'INSTALLED')
+
+        setUserIsPremium(userStatus.isPremium === 'PREMIUM')
       } catch (error) {
         toast.error(`Failed to fetch user status: ${error}`)
       }
