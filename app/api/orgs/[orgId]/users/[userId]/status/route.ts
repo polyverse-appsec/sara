@@ -34,8 +34,9 @@ export const GET = auth(async (req: NextAuthRequest) => {
     const reqUrl = new URL(req.url)
     const reqUrlSlices = reqUrl.toString().split('/')
 
-    // The 3rd to the last slice ought to be the slug for the org id
-    const requestedOrgId = reqUrlSlices[reqUrlSlices.length - 3]
+    // The 4th to the last slice ought to be the slug for the user id
+    const requestedOrgId = reqUrlSlices[reqUrlSlices.length - 4]
+
     const foundOrgId = user.orgIds.find((orgId: string) => orgId === requestedOrgId)
 
     if (!foundOrgId) {

@@ -47,28 +47,95 @@ export const {
       // that conincides with why `url` has an incorrect value. 
       return baseUrl
     },
-    jwt({ token, profile, account }) {
-      if (profile) {
-        token.id = profile.id
-        token.username = profile.login // Save the GitHub username
-        token.image = profile.avatar_url || profile.picture
-        token.email = profile.email
+    async jwt({ token, profile, account, trigger }) {
+        if (trigger === 'signIn') {
+          if (!profile) {
+            throw new Error(`ERROR (shouldn't get here): 'profile' doesn't exist from provider`)
+          }
+
+          // We shouldn't get here in theory as we check for the these properties
+          // in the `signIn` callback and fail if they aren't present. Lets log
+          // scary messages here and return so we don't mess with the DB if for some
+          // reason we do get here.
+          if (!profile.email) {
+            throw new Error(`ERROR (shouldn't get here): 'profile' doesn't have 'email' property from provider`)
+          }
+
+          if (!profile.login) {
+            throw new Error(`ERROR (shouldn't get here): 'profile' doesn't have 'login' property from provider`)
+          }
+
+          if (!account) {
+            throw new Error(`ERROR (shouldn't get here): 'account' doesn't exist from provider`)
+          }
+
+          if (!account.access_token) {
+            throw new Error(`ERROR (shouldn't get here): 'account' doesn't have 'access_token' property from provider`)
+          }
+
+          // TODO: Move this logic to the signUp trigger
+          try {
+            // Start by looking for a user in our DB...
+            const retrievedUser = await getUser(profile.email)
+            console.debug(`Found existing user for ${profile.email} on sign in`)
+
+            // If we do have one then update the last signed in at date
+            retrievedUser.lastSignedInAt = new Date()
+            await updateUser(retrievedUser)
+
+            token = {
+              ...token,
+              ...retrievedUser,
+              accessToken: account.access_token
+            }
+
+            return token
+          } catch (error) {
+            if (error instanceof Error && error.message.includes(createUserNotFoundErrorString(profile.email))) {
+              console.debug(`Caught user not found error for ${profile.email} on sign in - attempting to create now`)
+              const baseSaraObject = createBaseSaraObject()
+
+              const newUser: UserPartDeux = {
+                // BaseSaraObject properties
+                ...baseSaraObject,
+
+                // User properties
+                email: profile.email,
+                orgIds: [],
+                username: profile.login as string,
+                lastSignedInAt: baseSaraObject.createdAt,
+              }
+
+              await createUser(newUser)
+
+              token = {
+                ...token,
+                ...newUser,
+                accessToken: account.access_token
+              }
+
+              return token
+            }
+        }
       }
 
-      if (account) {
-        token.accessToken = account.access_token
-      }
-
+      // TODO: Should I fail here?
       return token
     },
     session: ({ session, token }) => {
       if (session?.user && token?.id) {
         session.user.id = String(token.id)
-        session.user.username = (token as any).username as string // Type assertion
       }
+
       if (token?.accessToken && typeof token.accessToken === 'string') {
         session.accessToken = token.accessToken
       }
+
+      session = {
+        ...session,
+        ...token
+      }
+
       return session
     },
     authorized({ auth }) {

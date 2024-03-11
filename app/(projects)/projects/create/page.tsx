@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Joi from 'joi'
+import { useSession } from 'next-auth/react'
 import toast from 'react-hot-toast'
 
 import { Button } from './../../../../components/ui/button'
@@ -127,7 +128,9 @@ const getOrgUserStatus = async (
 
 const ProjectCreate = () => {
   const router = useRouter()
-  const { user, activeBillingOrg } = useAppContext()
+  const session = useSession()
+
+  const { activeBillingOrg } = useAppContext()
 
   const [controlledProjectDataSources, setControlledProjectDataSources] =
     useState<GitHubRepo[]>([])
@@ -146,14 +149,29 @@ const ProjectCreate = () => {
           return
         }
 
-        if (!user) {
+        if (!session) {
+          toast.error(`No session available`)
+          return
+        }
+
+        if (!session.data) {
+          toast.error(`No active session data set`)
+          return
+        }
+
+        if (!session.data.user) {
+          toast.error(`No active session data user set`)
+          return
+        }
+
+        if (!session.data.user.id) {
           toast.error(`No active user set`)
           return
         }
 
         const orgUserStatus = await getOrgUserStatus(
           activeBillingOrg.id,
-          user.id,
+          session.data.user.id,
         )
 
         setGithubAppInstalled(orgUserStatus.gitHubAppInstalled === 'INSTALLED')
