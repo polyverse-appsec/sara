@@ -1,4 +1,5 @@
 import { Chat } from './../../../components/chat'
+import { Header } from './../../../components/header'
 import { nanoid } from './../../../lib/utils'
 
 export default function ChatIndexPage() {
@@ -14,5 +15,10 @@ export default function ChatIndexPage() {
     path: `/chat/${id}`,
   }
 
-  return <Chat chat={chat} />
+  return (
+    <>
+      <Header />
+      <Chat chat={chat} />
+    </>
+  )
 }

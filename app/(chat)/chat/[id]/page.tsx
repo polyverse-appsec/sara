@@ -4,6 +4,7 @@ import { notFound, redirect } from 'next/navigation'
 import { getChat } from './../../../../app/_actions/get-chat'
 import { auth } from './../../../../auth'
 import { Chat } from './../../../../components/chat'
+import { Header } from './../../../../components/header'
 
 export interface ChatPageProps {
   params: {
@@ -43,5 +44,10 @@ export default async function ChatPage({ params }: ChatPageProps) {
     notFound()
   }
 
-  return <Chat chat={chat} initialMessages={chat.messages} />
+  return (
+    <>
+      <Header />
+      <Chat chat={chat} initialMessages={chat.messages} />
+    </>
+  )
 }
