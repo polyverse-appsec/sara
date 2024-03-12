@@ -1,37 +1,10 @@
-// TODO: 'use server' this and replace actions with it?
-import { data } from 'components/ui/treeview-data-test'
-import jsonwebtoken from 'jsonwebtoken'
-
 import {
   Project,
   ProjectDataReference,
   Repository,
 } from '../../data-model-types'
 
-const { sign } = jsonwebtoken
-
-// AWS Endpoints for our Boost ReST API (Backend)
-// Legacy:  'https://pt5sl5vwfjn6lsr2k6szuvfhnq0vaxhl.lambda-url.us-west-2.on.aws/api/user_project'
-
-// Local: 'http://localhost:8000'
-const URL_SERVICE_URI_DEV =
-  'https://3c27qu2ddje63mw2dmuqp6oa7u0ergex.lambda-url.us-west-2.on.aws' // SARA_STAGE=dev
-const URL_SERVICE_URI_PREVIEW =
-  'https://sztg3725fqtcptfts5vrvcozoe0nxcew.lambda-url.us-west-2.on.aws' // SARA_STAGE=test
-const URL_SERVICE_URI_PROD =
-  'https://33pdosoitl22c42c7sf46tabi40qwlae.lambda-url.us-west-2.on.aws' // SARA_STAGE=prod
-
-// set the URL_BASE to the appropriate value for the env variable SARA_STAGE or default to dev
-const USER_SERVICE_URI =
-  process.env.SARA_STAGE?.toLowerCase() === 'preview'
-    ? URL_SERVICE_URI_PREVIEW
-    : process.env.SARA_STAGE?.toLowerCase() === 'prod'
-      ? URL_SERVICE_URI_PROD
-      : URL_SERVICE_URI_DEV
-
-interface SignedHeader {
-  'x-signed-identity': string
-}
+import { createSignedHeader, USER_SERVICE_URI } from './utils'
 
 export interface BoostUserOrgStatusResponse {
   enabled?: boolean
@@ -42,21 +15,6 @@ export interface BoostUserOrgStatusResponse {
   saas_client?: boolean
   portal_url?: string | null
   github_username?: string
-}
-
-function createSignedHeader(email: string): SignedHeader {
-  const privateSaraClientKey = process.env.SARA_CLIENT_PRIVATE_KEY
-  const signedIdentityHeader = sign(
-    { email },
-    privateSaraClientKey as jsonwebtoken.Secret,
-    {
-      algorithm: 'RS256',
-    },
-  )
-  const header: SignedHeader = {
-    'x-signed-identity': signedIdentityHeader,
-  }
-  return header
 }
 
 export async function getFileInfo(
