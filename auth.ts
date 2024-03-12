@@ -1,6 +1,5 @@
 import NextAuth from 'next-auth'
 import GitHub from 'next-auth/providers/github'
-import { kv } from '@vercel/kv'
 
 import { type UserPartDeux } from './lib/data-model-types'
 import { createBaseSaraObject } from './lib/polyverse/db/utils'
@@ -48,87 +47,104 @@ export const {
       return baseUrl
     },
     async jwt({ token, profile, account, trigger }) {
-        if (trigger === 'signIn') {
-          if (!profile) {
-            throw new Error(`ERROR (shouldn't get here): 'profile' doesn't exist from provider`)
+      // This callback is called whenever a JSON Web Token is created (i.e. at
+      // sign in) or updated (i.e whenever a session is accessed in the client).
+      // The returned value will be encrypted, and it is stored in a cookie.
+      //
+      // The first time this callback is invoked the value of `trigger` ought to
+      // equal `signIn`. At this time the params `user`, `profile`, and
+      // `account` ought to be present. In subsequent calls only `token` will be
+      // available.
+      //
+      // The GitHub auth provider ought to set these values on the `profile`:
+      // `id`, `name`, `email`, `image`. Additionally you ought to have `login`
+      // which will correspond to the GitHub user name (i.e. `Giners`).
+      //
+      // An OAuth2/OpenID token ought to be available on `account.access_token`
+      //
+      // We are able to add any data we wish in this token and later make it
+      // available in the browser.
+      if (trigger === 'signIn') {
+        if (!profile) {
+          throw new Error(`ERROR (shouldn't get here): 'profile' doesn't exist from provider`)
+        }
+
+        // We shouldn't get here in theory as we check for the these properties
+        // in the `signIn` callback and fail if they aren't present. Lets log
+        // scary messages here and return so we don't mess with the DB if for some
+        // reason we do get here.
+        if (!profile.email) {
+          throw new Error(`ERROR (shouldn't get here): 'profile' doesn't have 'email' property from provider`)
+        }
+
+        if (!profile.login) {
+          throw new Error(`ERROR (shouldn't get here): 'profile' doesn't have 'login' property from provider`)
+        }
+
+        if (!account) {
+          throw new Error(`ERROR (shouldn't get here): 'account' doesn't exist from provider`)
+        }
+
+        if (!account.access_token) {
+          throw new Error(`ERROR (shouldn't get here): 'account' doesn't have 'access_token' property from provider`)
+        }
+
+        try {
+          // Start by looking for a user in our DB...
+          const retrievedUser = await getUser(profile.email)
+          console.debug(`Found existing user for ${profile.email} on sign in`)
+
+          // If we do have one then update the last signed in at date
+          retrievedUser.lastSignedInAt = new Date()
+          await updateUser(retrievedUser)
+
+          token = {
+            // Don't forget to copy over any of the other original token props
+            ...token,
+            ...retrievedUser,
+            accessToken: account.access_token
           }
+        } catch (error) {
+          if (error instanceof Error && error.message.includes(createUserNotFoundErrorString(profile.email))) {
+            console.debug(`Caught user not found error for ${profile.email} on sign in - attempting to create now`)
+            const baseSaraObject = createBaseSaraObject()
 
-          // We shouldn't get here in theory as we check for the these properties
-          // in the `signIn` callback and fail if they aren't present. Lets log
-          // scary messages here and return so we don't mess with the DB if for some
-          // reason we do get here.
-          if (!profile.email) {
-            throw new Error(`ERROR (shouldn't get here): 'profile' doesn't have 'email' property from provider`)
-          }
+            const newUser: UserPartDeux = {
+              // BaseSaraObject properties
+              ...baseSaraObject,
 
-          if (!profile.login) {
-            throw new Error(`ERROR (shouldn't get here): 'profile' doesn't have 'login' property from provider`)
-          }
+              // User properties
+              email: profile.email,
+              orgIds: [],
+              username: profile.login as string,
+              lastSignedInAt: baseSaraObject.createdAt,
+            }
 
-          if (!account) {
-            throw new Error(`ERROR (shouldn't get here): 'account' doesn't exist from provider`)
-          }
-
-          if (!account.access_token) {
-            throw new Error(`ERROR (shouldn't get here): 'account' doesn't have 'access_token' property from provider`)
-          }
-
-          // TODO: Move this logic to the signUp trigger
-          try {
-            // Start by looking for a user in our DB...
-            const retrievedUser = await getUser(profile.email)
-            console.debug(`Found existing user for ${profile.email} on sign in`)
-
-            // If we do have one then update the last signed in at date
-            retrievedUser.lastSignedInAt = new Date()
-            await updateUser(retrievedUser)
+            await createUser(newUser)
 
             token = {
+                // Don't forget to copy over any of the other original token props
               ...token,
-              ...retrievedUser,
+              ...newUser,
               accessToken: account.access_token
             }
-
-            return token
-          } catch (error) {
-            if (error instanceof Error && error.message.includes(createUserNotFoundErrorString(profile.email))) {
-              console.debug(`Caught user not found error for ${profile.email} on sign in - attempting to create now`)
-              const baseSaraObject = createBaseSaraObject()
-
-              const newUser: UserPartDeux = {
-                // BaseSaraObject properties
-                ...baseSaraObject,
-
-                // User properties
-                email: profile.email,
-                orgIds: [],
-                username: profile.login as string,
-                lastSignedInAt: baseSaraObject.createdAt,
-              }
-
-              await createUser(newUser)
-
-              token = {
-                ...token,
-                ...newUser,
-                accessToken: account.access_token
-              }
-
-              return token
-            }
+          }
         }
       }
 
-      // TODO: Should I fail here?
       return token
     },
     session: ({ session, token }) => {
-      if (session?.user && token?.id) {
-        session.user.id = String(token.id)
-      }
+      // The `session` callback is called whenver a session is checked. For
+      // security purposes anything we added to the token in the `jwt` callback
+      // we need to forward it to the session here.
 
-      if (token?.accessToken && typeof token.accessToken === 'string') {
-        session.accessToken = token.accessToken
+      // We use this logic to preserve some of the old functionality in the old
+      // UI. We are currently (03/11/24) trying to cut over to the new UI so
+      // we might be able to remove this logic later and just rely on
+      // `session.id` which we spread onto the session below.
+      if (session.user  && token.id) {
+        session.user.id = String(token.id)
       }
 
       session = {
@@ -140,66 +156,6 @@ export const {
     },
     authorized({ auth }) {
       return !!auth?.user // this ensures there is a logged in user for -every- request
-    }
-  },
-  // More info regarding events: https://authjs.dev/guides/basics/events
-  //
-  // Note that the execution of our authentication API will be blocked on awaits
-  // in our event handlers. If it starts burdensome work it should not block its
-  // own promise on that work.
-  events: {
-    signIn: async ({ profile }) => {
-      if (!profile) {
-        console.error(`ERROR (shouldn't get here): 'profile' doesn't exist from provider`)
-        return
-      }
-
-      // We shouldn't get here in theory as we check for the these properties
-      // in the `signIn` callback and fail if they aren't present. Lets log
-      // scary messages here and return so we don't mess with the DB if for some
-      // reason we do get here.
-      if (!profile.email) {
-        console.error(`ERROR (shouldn't get here): 'profile' doesn't have 'email' property from provider`)
-        return
-      }
-
-      if (!profile.login) {
-        console.error(`ERROR (shouldn't get here): 'profile' doesn't have 'login' property from provider`)
-        return
-      }
-
-      try {
-        // Start by looking for a user in our DB...
-        const retrievedUser = await getUser(profile.email)
-        console.debug(`Found existing user for ${profile.email} on sign in`)
-
-        // If we do have one then update the last signed in at date
-        retrievedUser.lastSignedInAt = new Date()
-        await updateUser(retrievedUser)
-      } catch (error) {
-        if (error instanceof Error && error.message.includes(createUserNotFoundErrorString(profile.email))) {
-          console.debug(`Caught user not found error for ${profile.email} on sign in - attempting to create now`)
-          const baseSaraObject = createBaseSaraObject()
-
-          const newUser: UserPartDeux = {
-            // BaseSaraObject properties
-            ...baseSaraObject,
-
-            // User properties
-            email: profile.email,
-            orgIds: [],
-            username: profile.login as string,
-            lastSignedInAt: baseSaraObject.createdAt,
-          }
-
-          await createUser(newUser)
-
-          return
-        }
-
-        // If we didn't find the specific user doesn't exist error then re-throw
-        throw error
-      }
     }
   },
   pages: {
