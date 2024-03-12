@@ -6,10 +6,11 @@ import {
   ExclamationTriangleIcon,
   HamburgerMenuIcon,
 } from '@radix-ui/react-icons'
+import { type SaraSession } from 'auth'
 import { UserOrgStatus } from 'lib/data-model-types'
 import { useAppContext } from 'lib/hooks/app-context'
 import { type Session } from 'next-auth'
-import { signOut } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 import toast from 'react-hot-toast'
 
 import LoadingCircle from './loading-spinner'
@@ -55,8 +56,9 @@ const getUserStatus = async (
 }
 
 export function UserMenu({ user }: UserMenuProps) {
-  const isLoading = !user?.image || !user?.name
   const { activeBillingOrg } = useAppContext()
+  const session = useSession()
+  const saraSession = session.data ? (session.data as SaraSession) : null
 
   const [githubAppInstalled, setGithubAppInstalled] = useState<boolean>(true)
   const [userIsPremium, setUserIsPremium] = useState<boolean>(true)
@@ -68,42 +70,44 @@ export function UserMenu({ user }: UserMenuProps) {
           return
         }
 
+        if (!saraSession) {
+          return
+        }
+
         const userStatus = await getUserStatus(
           activeBillingOrg.id,
-          user?.id ?? '',
+          saraSession.id,
         )
 
         setGithubAppInstalled(userStatus.gitHubAppInstalled === 'INSTALLED')
-
         setUserIsPremium(userStatus.isPremium === 'PREMIUM')
       } catch (error) {
         toast.error(`Failed to fetch user status: ${error}`)
       }
     }
     fetchUserStatus()
-  }, [activeBillingOrg]) // Depend on activeBillingOrg.id to refetch if it changes
-
+  }, [activeBillingOrg, saraSession])
   return (
     <div className="flex items-center justify-between">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="pl-0">
-            {isLoading ? (
+            {!saraSession ? (
               <LoadingCircle />
-            ) : user?.image ? (
+            ) : saraSession.picture ? (
               <Image
                 className="w-6 h-6 transition-opacity duration-300 rounded-full select-none ring-1 ring-zinc-100/10 hover:opacity-80"
-                src={user?.image ? `${user.image}&s=60` : ''}
-                alt={user.name ?? 'Avatar'}
+                src={saraSession.picture ? `${saraSession.picture}&s=60` : ''}
+                alt={saraSession.name ?? 'Avatar'}
                 height={48}
                 width={48}
               />
             ) : (
               <div className="flex items-center justify-center text-xs font-medium uppercase rounded-full select-none h-7 w-7 shrink-0 bg-muted/50 text-muted-foreground">
-                {user?.name ? getUserInitials(user?.name) : null}
+                {saraSession.name ? getUserInitials(saraSession.name) : null}
               </div>
             )}
-            <span className="ml-2">{user?.name}</span>
+            <span className="ml-2">{saraSession?.name}</span>
             <HamburgerMenuIcon className="ml-2 w-4 h-4" />
             {!githubAppInstalled ? (
               <div title="The User GitHub App has not been installed.">
@@ -119,8 +123,8 @@ export function UserMenu({ user }: UserMenuProps) {
         </DropdownMenuTrigger>
         <DropdownMenuContent sideOffset={8} align="start" className="w-[180px]">
           <DropdownMenuItem className="flex-col items-start">
-            <div className="text-xs font-medium">{user?.name}</div>
-            <div className="text-xs text-zinc-500">{user?.email}</div>
+            <div className="text-xs font-medium">{saraSession?.name}</div>
+            <div className="text-xs text-zinc-500">{saraSession?.email}</div>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>

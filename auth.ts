@@ -6,6 +6,7 @@ import { createBaseSaraObject } from './lib/polyverse/db/utils'
 import createUser from './lib/polyverse/db/create-user'
 import getUser, { createUserNotFoundErrorString } from './lib/polyverse/db/get-user'
 import updateUser from 'lib/polyverse/db/update-user'
+import { Session } from 'next-auth/types'
 
 export const {
   handlers: { GET, POST },
@@ -162,3 +163,14 @@ export const {
     signIn: '/sign-in' // overrides the next-auth default signin page https://authjs.dev/guides/basics/pages
   }
 })
+
+// These properties correlate to what is spread out from the GitHub auth
+// provider from the `jwt` callback when we spread out `profile`. Additionally
+// details about the user as we preserve in our DB are stored here. Most
+// importantly of those details is `id`.
+export interface SaraSession extends Session {
+  id: string
+  name: string
+  email: string
+  picture: string
+}

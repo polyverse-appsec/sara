@@ -75,6 +75,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
         boostOrgUserStatus.github_username.length > 0
           ? 'INSTALLED'
           : 'UNKNOWN',
+
       isPremium:
         boostOrgUserStatus.plan && boostOrgUserStatus.plan == 'premium'
           ? 'FREE'
