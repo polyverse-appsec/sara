@@ -33,7 +33,7 @@ function getUserInitials(name: string) {
   return lastName ? `${firstName[0]}${lastName[0]}` : firstName.slice(0, 2)
 }
 
-const getUserStatus = async (
+const getOrgUserStatus = async (
   orgId: string,
   userId: string,
 ): Promise<UserOrgStatus> => {
@@ -60,8 +60,8 @@ export function UserMenu({ user }: UserMenuProps) {
   const session = useSession()
   const saraSession = session.data ? (session.data as SaraSession) : null
 
-  const [githubAppInstalled, setGithubAppInstalled] = useState<boolean>(true)
-  const [userIsPremium, setUserIsPremium] = useState<boolean>(true)
+  const [gitHubAppInstalled, setGitHubAppInstalled] = useState<boolean>(false)
+  const [userIsPremium, setUserIsPremium] = useState<boolean>(false)
 
   useEffect(() => {
     const fetchUserStatus = async () => {
@@ -74,19 +74,20 @@ export function UserMenu({ user }: UserMenuProps) {
           return
         }
 
-        const userStatus = await getUserStatus(
+        const orgUserStatus = await getOrgUserStatus(
           activeBillingOrg.id,
           saraSession.id,
         )
 
-        setGithubAppInstalled(userStatus.gitHubAppInstalled === 'INSTALLED')
-        setUserIsPremium(userStatus.isPremium === 'PREMIUM')
+        setGitHubAppInstalled(orgUserStatus.gitHubAppInstalled === 'INSTALLED')
+        setUserIsPremium(orgUserStatus.isPremium === 'PREMIUM')
       } catch (error) {
         toast.error(`Failed to fetch user status: ${error}`)
       }
     }
     fetchUserStatus()
   }, [activeBillingOrg, saraSession])
+
   return (
     <div className="flex items-center justify-between">
       <DropdownMenu>
@@ -109,7 +110,7 @@ export function UserMenu({ user }: UserMenuProps) {
             )}
             <span className="ml-2">{saraSession?.name}</span>
             <HamburgerMenuIcon className="ml-2 w-4 h-4" />
-            {!githubAppInstalled ? (
+            {!gitHubAppInstalled ? (
               <div title="The User GitHub App has not been installed.">
                 <ExclamationTriangleIcon className="w-4 h-4 text-red-500" />
               </div>
@@ -167,7 +168,7 @@ export function UserMenu({ user }: UserMenuProps) {
                 Authorize Private Repositories
                 <IconExternalLink className="w-3 h-3 ml-auto" />
               </a>
-              {!githubAppInstalled ? (
+              {!gitHubAppInstalled ? (
                 <div title="The User GitHub App has not been installed.">
                   <ExclamationTriangleIcon className="w-4 h-4 text-red-500" />
                 </div>

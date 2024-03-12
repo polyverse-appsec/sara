@@ -6,6 +6,7 @@ import Joi from 'joi'
 import { useSession } from 'next-auth/react'
 import toast from 'react-hot-toast'
 
+import { type SaraSession } from './../../../../auth'
 import { Button } from './../../../../components/ui/button'
 import { Input } from './../../../../components/ui/input'
 import {
@@ -126,9 +127,26 @@ const getOrgUserStatus = async (
   return userStatus
 }
 
+const renderButtonText = (
+  gitHubAppInstalled: boolean,
+  userIsPremium: boolean,
+  saveButtonEnabled: boolean,
+) => {
+  if (!gitHubAppInstalled) {
+    return 'Install GitHub App'
+  }
+
+  if (!userIsPremium) {
+    return 'Upgrade To Premium'
+  }
+
+  return saveButtonEnabled ? 'Save' : 'Saving'
+}
+
 const ProjectCreate = () => {
   const router = useRouter()
   const session = useSession()
+  const saraSession = session.data ? (session.data as SaraSession) : null
 
   const { activeBillingOrg } = useAppContext()
 
@@ -138,8 +156,8 @@ const ProjectCreate = () => {
   const [projectDescription, setProjectDescription] = useState<string>('')
 
   const [saveButtonEnabled, setSaveButtonEnabled] = useState<boolean>(true)
-
-  const [githubAppInstalled, setGithubAppInstalled] = useState<boolean>(true)
+  const [gitHubAppInstalled, setGitHubAppInstalled] = useState<boolean>(false)
+  const [userIsPremium, setUserIsPremium] = useState<boolean>(false)
 
   useEffect(() => {
     const fetchUserStatus = async () => {
@@ -149,39 +167,25 @@ const ProjectCreate = () => {
           return
         }
 
-        if (!session) {
+        if (!saraSession) {
           toast.error(`No session available`)
-          return
-        }
-
-        if (!session.data) {
-          toast.error(`No active session data set`)
-          return
-        }
-
-        if (!session.data.user) {
-          toast.error(`No active session data user set`)
-          return
-        }
-
-        if (!session.data.user.id) {
-          toast.error(`No active user set`)
           return
         }
 
         const orgUserStatus = await getOrgUserStatus(
           activeBillingOrg.id,
-          session.data.user.id,
+          saraSession.id,
         )
 
-        setGithubAppInstalled(orgUserStatus.gitHubAppInstalled === 'INSTALLED')
+        setGitHubAppInstalled(orgUserStatus.gitHubAppInstalled === 'INSTALLED')
+        setUserIsPremium(orgUserStatus.isPremium === 'PREMIUM')
       } catch (error) {
         toast.error(`Failed to fetch user status: ${error}`)
       }
     }
 
     fetchUserStatus()
-  }, [activeBillingOrg]) // Depend on activeBillingOrg.id to refetch if it changes
+  }, [activeBillingOrg, saraSession])
 
   // Force a user to select an active billing org first before they can create
   // a project
@@ -231,11 +235,18 @@ const ProjectCreate = () => {
             />
           </div>
         </div>
-        {!githubAppInstalled ? (
+        {!gitHubAppInstalled ? (
           <div className="text-left text-base text-red-500 my-1">
             <p>
               Please install Boost Github App for your user before creating a
               project.
+            </p>
+          </div>
+        ) : null}
+        {!userIsPremium ? (
+          <div className="text-left text-base text-red-500 my-1">
+            <p>
+              Please upgrade to a Premium account before creating a project.
             </p>
           </div>
         ) : null}
@@ -293,7 +304,6 @@ const ProjectCreate = () => {
 
               router.push(`/projects/${project.id}`)
             } catch (err) {
-              // TODO: Delete project if we fail any of the other steps?
               console.debug(
                 `Caught error when trying to create a project: ${err}`,
               )
@@ -303,7 +313,7 @@ const ProjectCreate = () => {
               toast.error(`Failed to create project`)
             }
           }}
-          disabled={!githubAppInstalled} // Disable button based on githubAppInstalled state
+          disabled={!saveButtonEnabled && !gitHubAppInstalled && !userIsPremium}
         >
           {saveButtonEnabled ? (
             <svg
@@ -338,7 +348,11 @@ const ProjectCreate = () => {
               />
             </svg>
           )}
-          {saveButtonEnabled ? 'Save' : 'Saving'}
+          {renderButtonText(
+            gitHubAppInstalled,
+            userIsPremium,
+            saveButtonEnabled,
+          )}
         </Button>
       </div>
     </div>
