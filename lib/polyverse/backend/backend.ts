@@ -314,11 +314,11 @@ export async function deleteProject(
 }
 
 export async function getUserProjects(
-  orgId: string,
+  orgName: string,
   email: string,
 ): Promise<Project[]> {
   console.debug(`Backend call getUserProjects`)
-  const url = `${USER_SERVICE_URI}/api/user_project/${orgId}/projects`
+  const url = `${USER_SERVICE_URI}/api/user_project/${orgName}/projects`
 
   console.debug(`Backend call getUserProjects - url: ${url}`)
 
@@ -332,7 +332,7 @@ export async function getUserProjects(
 
   if (!res.ok) {
     const errResMsg = await res.text()
-    const errLogMsg = `Got a failure response while trying to get projects for '${orgId}' for '${email}' - Status: ${res.status} - Message: ${errResMsg}`
+    const errLogMsg = `Got a failure response while trying to get projects for '${orgName}' for '${email}' - Status: ${res.status} - Message: ${errResMsg}`
 
     console.error(`${errLogMsg}`)
 

@@ -256,6 +256,52 @@ export interface PromptFileInfo extends BaseSaraObject {
 }
 
 // TODO: Test
+export type ProjectHealthStatusValue = 'UNHEALTHY' | 'PARTIALLY_HEALTHY' | 'HEALTHY'
+
+export type ProjectHealthScalarValuesByReadableValues = {
+  [readableValue in ProjectHealthStatusValue]: number
+}
+
+export const projectHealthScalarValuesByReadableValues: ProjectHealthScalarValuesByReadableValues = {
+  UNHEALTHY: 0.0,
+  PARTIALLY_HEALTHY: 0.5,
+  HEALTHY: 0.0
+}
+
+export interface ProjectHealth {
+  // The ID of the project that the health details are for
+  projectId: string
+
+  // Indicates the health of the project. While it allows for a range
+  // of health scores most likely we will only use the following 3
+  // scalar values: 0.0, 0.5, 1.0.
+  //
+  // A scalar value of 1.0 would denote the project is completely
+  // healthy. A scalar value of 0.0 would denote the project is
+  // completely unhealthy. Another way to think of the scalar values
+  // is:
+  // 0.0: Unhealthy
+  // 0.5: Partially healthy
+  // 1.0: Healthy
+  //
+  // A value of 0.0 would denote something that the user can't fix without the
+  // help of support
+  scalarValue: number
+  readableValue: ProjectHealthStatusValue
+
+  // Reasoning for the current value of the health
+  message: string
+
+  // If the value of the health isn't 1.0 then this message may optionally be
+  // provided to the user to allow them to take some action to help improve
+  // the health
+  actionableRecourse: string | null
+
+  // ISO 8601 string
+  lastCheckedAt: Date
+}
+
+// TODO: Test
 export interface UserOrgStatus {
   gitHubAppInstalled: 'UNKNOWN' | 'INSTALLED'
   isPremium: 'FREE' | 'PREMIUM'
