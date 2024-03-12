@@ -12,6 +12,7 @@ import {
 } from './../../../../../lib/data-model-types'
 import {
   createProject as createProjectOnBoost,
+  getBoostOrgUserStatus,
   getFileInfoPartDeux,
 } from './../../../../../lib/polyverse/backend/backend'
 import createProject from './../../../../../lib/polyverse/db/create-project'
@@ -146,6 +147,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
     const projectPromises = org.projectIds.map((projectId) =>
       getProject(projectId),
     )
+
     const projects = await Promise.all(projectPromises)
 
     const duplicateProject = projects.find(
@@ -159,6 +161,34 @@ export const POST = auth(async (req: NextAuthRequest) => {
           status: StatusCodes.BAD_REQUEST,
         },
       )
+    }
+
+    // 03/12/24: For now we are blocking project creation unless you have the
+    // GitHub App installed for the org you are trying to create a project under
+    // and you are a premium user. In the future we will more intelligently
+    // allow projects to be created and thus making this workflow more
+    // permissive.
+    const boostOrgUserStatus = await getBoostOrgUserStatus(org.name, user.email)
+
+    // If the `username` data member shows up on the user status that means
+    // the user has the GitHub App installed.
+    const gitHubAppInstalled = boostOrgUserStatus.github_username &&
+        boostOrgUserStatus.github_username.length > 0
+
+    if (!gitHubAppInstalled) {
+      console.log(`User with email '${user.email}' for org '${org.id}' tried to create a project but doesn't have the GitHub app installed`)
+      return new Response(ReasonPhrases.FORBIDDEN, {
+        status: StatusCodes.FORBIDDEN,
+      })
+    }
+
+    const isPremiumUser = boostOrgUserStatus.plan && boostOrgUserStatus.plan == 'premium'
+
+    if (!isPremiumUser) {
+      console.log(`User with email '${user.email}' for org '${org.id}' tried to create a project but isn't a premium user`)
+      return new Response(ReasonPhrases.FORBIDDEN, {
+        status: StatusCodes.FORBIDDEN,
+      })
     }
 
     // TODO: Remnove these temporary instances of the old Repository data
