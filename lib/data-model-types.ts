@@ -256,17 +256,21 @@ export interface PromptFileInfo extends BaseSaraObject {
 }
 
 // TODO: Test
-export type ProjectHealthStatusValue = 'UNHEALTHY' | 'PARTIALLY_HEALTHY' | 'HEALTHY'
+export type ProjectHealthStatusValue =
+  | 'UNHEALTHY'
+  | 'PARTIALLY_HEALTHY'
+  | 'HEALTHY'
 
 export type ProjectHealthScalarValuesByReadableValues = {
   [readableValue in ProjectHealthStatusValue]: number
 }
 
-export const projectHealthScalarValuesByReadableValues: ProjectHealthScalarValuesByReadableValues = {
-  UNHEALTHY: 0.0,
-  PARTIALLY_HEALTHY: 0.5,
-  HEALTHY: 0.0
-}
+export const projectHealthScalarValuesByReadableValues: ProjectHealthScalarValuesByReadableValues =
+  {
+    UNHEALTHY: 0.0,
+    PARTIALLY_HEALTHY: 0.5,
+    HEALTHY: 0.0,
+  }
 
 export interface ProjectHealth {
   // The ID of the project that the health details are for

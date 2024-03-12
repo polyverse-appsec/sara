@@ -172,20 +172,26 @@ export const POST = auth(async (req: NextAuthRequest) => {
 
     // If the `username` data member shows up on the user status that means
     // the user has the GitHub App installed.
-    const gitHubAppInstalled = boostOrgUserStatus.github_username &&
-        boostOrgUserStatus.github_username.length > 0
+    const gitHubAppInstalled =
+      boostOrgUserStatus.github_username &&
+      boostOrgUserStatus.github_username.length > 0
 
     if (!gitHubAppInstalled) {
-      console.log(`User with email '${user.email}' for org '${org.id}' tried to create a project but doesn't have the GitHub app installed`)
+      console.log(
+        `User with email '${user.email}' for org '${org.id}' tried to create a project but doesn't have the GitHub app installed`,
+      )
       return new Response(ReasonPhrases.FORBIDDEN, {
         status: StatusCodes.FORBIDDEN,
       })
     }
 
-    const isPremiumUser = boostOrgUserStatus.plan && boostOrgUserStatus.plan == 'premium'
+    const isPremiumUser =
+      boostOrgUserStatus.plan && boostOrgUserStatus.plan == 'premium'
 
     if (!isPremiumUser) {
-      console.log(`User with email '${user.email}' for org '${org.id}' tried to create a project but isn't a premium user`)
+      console.log(
+        `User with email '${user.email}' for org '${org.id}' tried to create a project but isn't a premium user`,
+      )
       return new Response(ReasonPhrases.FORBIDDEN, {
         status: StatusCodes.FORBIDDEN,
       })

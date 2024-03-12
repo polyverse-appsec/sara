@@ -21,37 +21,40 @@ export const USER_SERVICE_URI =
       ? URL_SERVICE_URI_PROD
       : URL_SERVICE_URI_DEV
 
-
 interface SignedHeader {
-    'x-signed-identity': string
+  'x-signed-identity': string
 }
 
 export const createSignedHeader = (email: string): SignedHeader => {
-    const privateSaraClientKey = process.env.SARA_CLIENT_PRIVATE_KEY
-    const signedIdentityHeader = sign(
-        { email },
-        privateSaraClientKey as jsonwebtoken.Secret,
-        { algorithm: 'RS256', },
-    )
+  const privateSaraClientKey = process.env.SARA_CLIENT_PRIVATE_KEY
+  const signedIdentityHeader = sign(
+    { email },
+    privateSaraClientKey as jsonwebtoken.Secret,
+    { algorithm: 'RS256' },
+  )
 
-    const header: SignedHeader = {
-        'x-signed-identity': signedIdentityHeader,
-    }
+  const header: SignedHeader = {
+    'x-signed-identity': signedIdentityHeader,
+  }
 
-    return header
+  return header
 }
 
 interface BoostServiceResponseJsonBody {
-    statusCode: number,
-    body: string | null
+  statusCode: number
+  body: string | null
 }
 
-export const getBodyFromBoostServiceResponse = async <DeserializedType>(res: Response): Promise<DeserializedType> => {
-    const boostJsonRes = await res.json() as BoostServiceResponseJsonBody
+export const getBodyFromBoostServiceResponse = async <DeserializedType>(
+  res: Response,
+): Promise<DeserializedType> => {
+  const boostJsonRes = (await res.json()) as BoostServiceResponseJsonBody
 
-    if (!boostJsonRes.body) {
-        throw new Error(`Boost service response doesn't contain 'body' in JSON response`)
-    }
+  if (!boostJsonRes.body) {
+    throw new Error(
+      `Boost service response doesn't contain 'body' in JSON response`,
+    )
+  }
 
-    return JSON.parse(boostJsonRes.body) as DeserializedType
+  return JSON.parse(boostJsonRes.body) as DeserializedType
 }

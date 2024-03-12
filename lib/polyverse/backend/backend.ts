@@ -3,7 +3,6 @@ import {
   ProjectDataReference,
   Repository,
 } from '../../data-model-types'
-
 import { createSignedHeader, USER_SERVICE_URI } from './utils'
 
 export interface BoostUserOrgStatusResponse {

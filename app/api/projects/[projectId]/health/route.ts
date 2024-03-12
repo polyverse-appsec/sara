@@ -1,35 +1,36 @@
 import { ReasonPhrases, StatusCodes } from 'http-status-codes'
-import { NextAuthRequest } from 'next-auth/lib'
-import { type Assistant } from 'openai/resources/beta/assistants/assistants'
 import isEqual from 'lodash/isEqual'
 import sortBy from 'lodash/sortBy'
-
+import { NextAuthRequest } from 'next-auth/lib'
+import { type Assistant } from 'openai/resources/beta/assistants/assistants'
 
 import { auth } from '../../../../../auth'
 import getOrg from '../../../../../lib/polyverse/db/get-org'
 import getProject from '../../../../../lib/polyverse/db/get-project'
 import getUser from '../../../../../lib/polyverse/db/get-user'
 import {
-  ASSISTANT_METADATA_CREATOR,
-  type AssistantMetadata,
-  findAssistantFromMetadata,
-} from './../../../../../lib/polyverse/openai/assistants'
-
-import {
+  ProjectDataReference,
+  projectHealthScalarValuesByReadableValues,
   type ProjectDataSourcePartDeux,
   type ProjectHealth,
   type ProjectHealthStatusValue,
-  projectHealthScalarValuesByReadableValues,
-  ProjectDataReference
 } from './../../../../../lib/data-model-types'
-
+import { getFileInfoPartDeux } from './../../../../../lib/polyverse/backend/backend'
+import getBoostProjectStatus, {
+  BoostProjectStatuses,
+} from './../../../../../lib/polyverse/backend/get-boost-project-status'
 import {
-  getFileInfoPartDeux,
-} from './../../../../../lib/polyverse/backend/backend'
+  ASSISTANT_METADATA_CREATOR,
+  findAssistantFromMetadata,
+  type AssistantMetadata,
+} from './../../../../../lib/polyverse/openai/assistants'
 
-import getBoostProjectStatus, { BoostProjectStatuses } from './../../../../../lib/polyverse/backend/get-boost-project-status'
-
-const createProjectHealth = (projectId: string, readableValue: ProjectHealthStatusValue, message: string, actionableRecourse: string | null = null) => {
+const createProjectHealth = (
+  projectId: string,
+  readableValue: ProjectHealthStatusValue,
+  message: string,
+  actionableRecourse: string | null = null,
+) => {
   const scalarValue = projectHealthScalarValuesByReadableValues[readableValue]
 
   const projectHealth: ProjectHealth = {
@@ -38,7 +39,7 @@ const createProjectHealth = (projectId: string, readableValue: ProjectHealthStat
     readableValue,
     message,
     actionableRecourse,
-    lastCheckedAt: new Date()
+    lastCheckedAt: new Date(),
   }
 
   return projectHealth
@@ -122,7 +123,6 @@ export const GET = auth(async (req: NextAuthRequest) => {
       })
     }
 
-
     // For a project to be healthy we need to meet these circumstances:
     // 1) 3 files returned from
     // `GET /api/user_project/${billingOrgName}/${projectId}/data_references`
@@ -151,11 +151,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
     } catch (error) {
       const errMsg = `Failed to get data references for project '${project.name}' for org '${org.name}' because: ${error}`
 
-      const projectHealth = createProjectHealth(
-        project.id,
-        'UNHEALTHY',
-        errMsg
-      )
+      const projectHealth = createProjectHealth(project.id, 'UNHEALTHY', errMsg)
 
       return new Response(JSON.stringify(projectHealth), {
         status: StatusCodes.OK,
@@ -167,9 +163,9 @@ export const GET = auth(async (req: NextAuthRequest) => {
         project.id,
         'UNHEALTHY',
         'Data references not available',
-        'Try to get data references again'
+        'Try to get data references again',
       )
-      
+
       return new Response(JSON.stringify(projectHealth), {
         status: StatusCodes.OK,
       })
@@ -191,11 +187,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
     } catch (error) {
       const errMsg = `Failed to get LLM for project '${project.name}' for org '${org.name}' because: ${error}`
 
-      const projectHealth = createProjectHealth(
-        project.id,
-        'UNHEALTHY',
-        errMsg
-      )
+      const projectHealth = createProjectHealth(project.id, 'UNHEALTHY', errMsg)
 
       return new Response(JSON.stringify(projectHealth), {
         status: StatusCodes.OK,
@@ -212,7 +204,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
         project.id,
         'PARTIALLY_HEALTHY',
         `LLM not yet created`,
-        `Refresh project`
+        `Refresh project`,
       )
 
       return new Response(JSON.stringify(projectHealth), {
@@ -226,7 +218,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
         project.id,
         'PARTIALLY_HEALTHY',
         `LLM missing full file references`,
-        `Refresh project`
+        `Refresh project`,
       )
 
       return new Response(JSON.stringify(projectHealth), {
@@ -239,8 +231,12 @@ export const GET = auth(async (req: NextAuthRequest) => {
     //
     // Any changes to the files on the backend will cause new file IDs to be
     // generated so just check that the Assistant has the same file IDs.
-    const sortedAssistantFileIds = sortBy(assistant.file_ids.map((fileId) => fileId))
-    const sortedBoostFileIds = sortBy(boostFileInfos.map((boostFileInfo) => boostFileInfo.id))
+    const sortedAssistantFileIds = sortBy(
+      assistant.file_ids.map((fileId) => fileId),
+    )
+    const sortedBoostFileIds = sortBy(
+      boostFileInfos.map((boostFileInfo) => boostFileInfo.id),
+    )
     const fileIdsEqual = isEqual(sortedAssistantFileIds, sortedBoostFileIds)
 
     if (!fileIdsEqual) {
@@ -248,7 +244,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
         project.id,
         'PARTIALLY_HEALTHY',
         `File references need to be updated for the LLM`,
-        `Refresh project`
+        `Refresh project`,
       )
 
       return new Response(JSON.stringify(projectHealth), {
@@ -260,8 +256,8 @@ export const GET = auth(async (req: NextAuthRequest) => {
     try {
       const boostProjectStatus = await getBoostProjectStatus(
         user.email,
-        org.name, 
-        project.name
+        org.name,
+        project.name,
       )
 
       // Rather than check all of the file states just check that the project is
@@ -271,9 +267,9 @@ export const GET = auth(async (req: NextAuthRequest) => {
           project.id,
           'PARTIALLY_HEALTHY',
           `LLM not synchronized`,
-          `Refresh project`
+          `Refresh project`,
         )
-  
+
         return new Response(JSON.stringify(projectHealth), {
           status: StatusCodes.OK,
         })
@@ -281,11 +277,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
     } catch (error) {
       const errMsg = `Failed to get LLM status for project '${project.name}' for org '${org.name}' because: ${error}`
 
-      const projectHealth = createProjectHealth(
-        project.id,
-        'UNHEALTHY',
-        errMsg
-      )
+      const projectHealth = createProjectHealth(project.id, 'UNHEALTHY', errMsg)
 
       return new Response(JSON.stringify(projectHealth), {
         status: StatusCodes.OK,
@@ -294,7 +286,11 @@ export const GET = auth(async (req: NextAuthRequest) => {
 
     // At this point we have passed all of our health check so signal to the
     // user that the project is healthy
-    const projectHealth = createProjectHealth(project.id, 'HEALTHY', 'Sara LLM configured')
+    const projectHealth = createProjectHealth(
+      project.id,
+      'HEALTHY',
+      'Sara LLM configured',
+    )
 
     // Return a healthy project status
     return new Response(JSON.stringify(projectHealth), {
