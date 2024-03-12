@@ -77,9 +77,9 @@ export const GET = auth(async (req: NextAuthRequest) => {
           : 'UNKNOWN',
 
       isPremium:
-        boostOrgUserStatus.plan && boostOrgUserStatus.plan == 'premium'
-          ? 'FREE'
-          : 'PREMIUM',
+        boostOrgUserStatus.plan && boostOrgUserStatus.plan === 'premium'
+          ? 'PREMIUM'
+          : 'FREE',
     }
 
     return new Response(JSON.stringify(orgUserStatus), {

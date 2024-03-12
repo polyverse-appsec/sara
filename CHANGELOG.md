@@ -2,6 +2,20 @@
 
 # Release Notes
 
+## Version 0.12.0: March 12th, 2024
+
+### New Features
+
+- N/A
+
+### Enhancements
+
+- Block project creation unless user has GitHub App installed for org and is also a premium user
+
+### Bug Fixes
+
+- Correctly identify if a user is a premium user for `GET /api/orgs/<orgId>/users/<userId>/status`
+
 ## Version 0.11.1: March 11th, 2024
 
 ### New Features
