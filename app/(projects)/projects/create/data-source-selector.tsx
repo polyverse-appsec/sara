@@ -18,7 +18,8 @@ interface DataSourceSelectorProps {
   setControlledProjectDataSources: (gitHubRepos: GitHubRepo[]) => void
 }
 
-const createDataSourceCheckboxStates = (
+// Creates the intial data source checkbox states from a list of GitHub repos
+const createInitialDataSourceCheckboxStates = (
   gitHubRepos: GitHubRepo[],
 ): Record<string, DataSourceCheckboxState> =>
   gitHubRepos.reduce(
@@ -43,8 +44,6 @@ const DataSourceSelector = ({
   const [shouldShowLoadingSpinner, setShouldShowLoadingSpinner] =
     useState<boolean>(true)
 
-  // TODO: Use this pattern with the org selector instead of react suspense
-  // TODO: Rename github-org-selector to org-selector
   useEffect(() => {
     ;(async () => {
       const res = await fetch(`/api/integrations/github/orgs/${orgName}/repos`)
@@ -58,7 +57,7 @@ const DataSourceSelector = ({
       }
 
       const repos = (await res.json()) as GitHubRepo[]
-      const checkboxStates = createDataSourceCheckboxStates(repos)
+      const checkboxStates = createInitialDataSourceCheckboxStates(repos)
 
       setDataSourceCheckboxStates(checkboxStates)
       setShouldShowLoadingSpinner(false)
@@ -88,6 +87,14 @@ const DataSourceSelector = ({
                 id={repoName}
                 checked={checked}
                 onCheckedChange={(checked) => {
+                  // 03/12/24: For the initial release which is scheduled for
+                  // 03/15 we are only allowing a single repo source to be
+                  // selected. In this case just set checkbox to false before
+                  // evaluating to see if its check state has been set.
+                  Object.keys(dataSourceCheckboxStates).forEach((repoName) => {
+                    dataSourceCheckboxStates[repoName].checked = false
+                  })
+
                   if (checked !== 'indeterminate') {
                     dataSourceCheckboxStates[repoName].checked = checked
                   }
