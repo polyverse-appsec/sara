@@ -1,8 +1,8 @@
+import internal from 'stream'
 import { type Message } from 'ai'
 import Joi from 'joi'
 import { Assistant } from 'openai/resources/beta/assistants/assistants'
 import { Threads } from 'openai/resources/beta/threads/threads'
-import internal from 'stream'
 
 ////////////////////////////
 // Refined Data Model Start
@@ -21,8 +21,6 @@ export const BaseSaraObjectSchema = Joi.object({
     .max(`now`)
     .required(),
 })
-
-
 
 export interface BaseSaraObject extends Record<string, any> {
   // Crucial to identity management/RBAC

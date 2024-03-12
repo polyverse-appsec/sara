@@ -4,11 +4,11 @@ import { NextAuthRequest } from 'next-auth/lib'
 import { auth } from '../../../../../auth'
 import {
   type GitHubRepo,
+  type ProjectDataReference,
   type ProjectDataSourcePartDeux,
   type ProjectPartDeux,
   type PromptFileInfo,
   type Repository,
-  type ProjectDataReference
 } from './../../../../../lib/data-model-types'
 import {
   createProject as createProjectOnBoost,
@@ -37,7 +37,11 @@ import {
 // adjust them accordingly.
 export const maxDuration = 60
 
-const getFileInfoPartDeuxWithRetry = async (orgName: string, projectName: string, userEmail: string): Promise<ProjectDataReference[]> => {
+const getFileInfoPartDeuxWithRetry = async (
+  orgName: string,
+  projectName: string,
+  userEmail: string,
+): Promise<ProjectDataReference[]> => {
   return new Promise((resolve, reject) => {
     let retryAttempt = 0
     const maxRetryAttempts = 10
@@ -62,7 +66,9 @@ const getFileInfoPartDeuxWithRetry = async (orgName: string, projectName: string
           return
         }
 
-        reject(`Max attempts reached when trying to get file infos for project creation`)
+        reject(
+          `Max attempts reached when trying to get file infos for project creation`,
+        )
       } catch (error) {
         const errMsg = `Error while attemping to get file infos for project creation in a loop: ${error}`
         console.debug(errMsg)
@@ -258,7 +264,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
     const boostFileInfos = await getFileInfoPartDeuxWithRetry(
       org.name,
       project.name,
-      user.email
+      user.email,
     )
 
     // Build up OpenAI Assistant metadata that will be used to help identify it

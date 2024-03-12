@@ -381,7 +381,6 @@ export async function getBoostOrgUserStatus(
     },
   })
 
-
   if (!res.ok) {
     const errResMsg = await res.text()
     const errLogMsg = `Got a failure response while trying to get status for '${orgName}' - Status: ${res.status} - Message: ${errResMsg}`

@@ -1,12 +1,11 @@
+import { auth } from 'auth'
 import { ReasonPhrases, StatusCodes } from 'http-status-codes'
+import { UserOrgStatus } from 'lib/data-model-types'
 import { NextAuthRequest } from 'next-auth/lib'
 
-import { auth } from 'auth'
 import { getBoostOrgUserStatus } from './../../../../../../../lib/polyverse/backend/backend'
 import getOrg from './../../../../../../../lib/polyverse/db/get-org'
-
 import getUser from './../../../../../../../lib/polyverse/db/get-user'
-import { UserOrgStatus } from 'lib/data-model-types'
 
 export const GET = auth(async (req: NextAuthRequest) => {
   const { auth } = req
@@ -22,9 +21,9 @@ export const GET = auth(async (req: NextAuthRequest) => {
     const user = await getUser(auth.user.email)
 
     if (!user || !user.orgIds || user.orgIds.length === 0) {
-        return new Response(ReasonPhrases.NOT_FOUND, {
-            status: StatusCodes.NOT_FOUND,
-        })
+      return new Response(ReasonPhrases.NOT_FOUND, {
+        status: StatusCodes.NOT_FOUND,
+      })
     }
 
     // TODO: Should be able to do Dynamic Route segments as documented:
@@ -37,7 +36,9 @@ export const GET = auth(async (req: NextAuthRequest) => {
     // The 4th to the last slice ought to be the slug for the user id
     const requestedOrgId = reqUrlSlices[reqUrlSlices.length - 4]
 
-    const foundOrgId = user.orgIds.find((orgId: string) => orgId === requestedOrgId)
+    const foundOrgId = user.orgIds.find(
+      (orgId: string) => orgId === requestedOrgId,
+    )
 
     if (!foundOrgId) {
       return new Response(ReasonPhrases.FORBIDDEN, {
@@ -49,17 +50,17 @@ export const GET = auth(async (req: NextAuthRequest) => {
     const org = await getOrg(requestedOrgId)
 
     if (!org.userIds || org.userIds.length === 0) {
-        return new Response(ReasonPhrases.FORBIDDEN, {
-            status: StatusCodes.FORBIDDEN,
-        })
+      return new Response(ReasonPhrases.FORBIDDEN, {
+        status: StatusCodes.FORBIDDEN,
+      })
     }
 
     const foundUserId = org.userIds.find((userId) => userId === user.id)
 
     if (!foundUserId) {
-        return new Response(ReasonPhrases.FORBIDDEN, {
-            status: StatusCodes.FORBIDDEN,
-        })
+      return new Response(ReasonPhrases.FORBIDDEN, {
+        status: StatusCodes.FORBIDDEN,
+      })
     }
 
     const boostOrgUserStatus = await getBoostOrgUserStatus(org.name, user.email)
@@ -69,12 +70,16 @@ export const GET = auth(async (req: NextAuthRequest) => {
     const orgUserStatus: UserOrgStatus = {
       // If the `username` data member shows up on the user status that means
       // the user has the GitHub app installed.
-      gitHubAppInstalled: boostOrgUserStatus.github_username && boostOrgUserStatus.github_username.length > 0 ?
-        'INSTALLED' : 'UNKNOWN',
-      isPremium:  boostOrgUserStatus.plan && boostOrgUserStatus.plan == 'premium' ? 'FREE' : 'PREMIUM',
+      gitHubAppInstalled:
+        boostOrgUserStatus.github_username &&
+        boostOrgUserStatus.github_username.length > 0
+          ? 'INSTALLED'
+          : 'UNKNOWN',
+      isPremium:
+        boostOrgUserStatus.plan && boostOrgUserStatus.plan == 'premium'
+          ? 'FREE'
+          : 'PREMIUM',
     }
-
-
 
     return new Response(JSON.stringify(orgUserStatus), {
       status: StatusCodes.OK,

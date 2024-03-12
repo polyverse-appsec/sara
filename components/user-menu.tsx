@@ -1,9 +1,16 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import Image from 'next/image'
-import { HamburgerMenuIcon, ExclamationTriangleIcon } from '@radix-ui/react-icons'
+import {
+  ExclamationTriangleIcon,
+  HamburgerMenuIcon,
+} from '@radix-ui/react-icons'
+import { UserOrgStatus } from 'lib/data-model-types'
+import { useAppContext } from 'lib/hooks/app-context'
 import { type Session } from 'next-auth'
 import { signOut } from 'next-auth/react'
+import toast from 'react-hot-toast'
 
 import LoadingCircle from './loading-spinner'
 import { Button } from './ui/button'
@@ -15,10 +22,6 @@ import {
   DropdownMenuTrigger,
 } from './ui/dropdown-menu'
 import { IconExternalLink } from './ui/icons'
-import { UserOrgStatus } from 'lib/data-model-types'
-import { useEffect, useState } from 'react'
-import { useAppContext } from 'lib/hooks/app-context'
-import toast from 'react-hot-toast'
 
 export interface UserMenuProps {
   user: Session['user']
@@ -51,14 +54,13 @@ const getUserStatus = async (
   return userStatus
 }
 
-
 export function UserMenu({ user }: UserMenuProps) {
   const isLoading = !user?.image || !user?.name
   const { activeBillingOrg } = useAppContext()
 
   const [githubAppInstalled, setGithubAppInstalled] = useState<boolean>(true)
   const [userIsPremium, setUserIsPremium] = useState<boolean>(true)
-  
+
   useEffect(() => {
     const fetchUserStatus = async () => {
       try {
@@ -70,7 +72,6 @@ export function UserMenu({ user }: UserMenuProps) {
           activeBillingOrg.id,
           user?.id ?? '',
         )
-
 
         setGithubAppInstalled(userStatus.gitHubAppInstalled === 'INSTALLED')
 
@@ -104,16 +105,16 @@ export function UserMenu({ user }: UserMenuProps) {
             )}
             <span className="ml-2">{user?.name}</span>
             <HamburgerMenuIcon className="ml-2 w-4 h-4" />
-            { !githubAppInstalled ?  
+            {!githubAppInstalled ? (
               <div title="The User GitHub App has not been installed.">
-                <ExclamationTriangleIcon className="w-4 h-4 text-red-500"/>
-              </div> 
-            : null }
-            { !userIsPremium ?
-              <div title="The User is not on a premium plan.">
-                <ExclamationTriangleIcon className="w-4 h-4 text-yellow-500"/>
+                <ExclamationTriangleIcon className="w-4 h-4 text-red-500" />
               </div>
-            : null }
+            ) : null}
+            {!userIsPremium ? (
+              <div title="The User is not on a premium plan.">
+                <ExclamationTriangleIcon className="w-4 h-4 text-yellow-500" />
+              </div>
+            ) : null}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent sideOffset={8} align="start" className="w-[180px]">
@@ -144,11 +145,11 @@ export function UserMenu({ user }: UserMenuProps) {
                 Upgrade to Premium Subscription
                 <IconExternalLink className="w-3 h-3 ml-auto" />
               </a>
-              { !userIsPremium ?
-              <div title="The User is not on a premium plan.">
-                <ExclamationTriangleIcon className="w-4 h-4 text-yellow-500"/>
-              </div>
-            : null }
+              {!userIsPremium ? (
+                <div title="The User is not on a premium plan.">
+                  <ExclamationTriangleIcon className="w-4 h-4 text-yellow-500" />
+                </div>
+              ) : null}
             </div>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
@@ -162,11 +163,11 @@ export function UserMenu({ user }: UserMenuProps) {
                 Authorize Private Repositories
                 <IconExternalLink className="w-3 h-3 ml-auto" />
               </a>
-              { !githubAppInstalled ?  
+              {!githubAppInstalled ? (
                 <div title="The User GitHub App has not been installed.">
-                  <ExclamationTriangleIcon className="w-4 h-4 text-red-500"/>
-                </div> 
-              : null }
+                  <ExclamationTriangleIcon className="w-4 h-4 text-red-500" />
+                </div>
+              ) : null}
             </div>
           </DropdownMenuItem>
           <DropdownMenuItem

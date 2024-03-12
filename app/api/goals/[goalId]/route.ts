@@ -82,7 +82,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
       return new Response(ReasonPhrases.FORBIDDEN, {
         status: StatusCodes.FORBIDDEN,
       })
-    }    
+    }
 
     // Finally authorized... return the goal to the client
     return new Response(JSON.stringify(goal), {
