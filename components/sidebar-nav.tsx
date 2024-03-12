@@ -8,8 +8,8 @@ import { UserMenu } from 'components/user-menu'
 import { motion } from 'framer-motion'
 import toast from 'react-hot-toast'
 
-import SaraPortrait from './../../public/Sara_Cartoon_Portrait.png'
 import { useAppContext } from './../lib/hooks/app-context'
+import SaraPortrait from './../public/Sara_Cartoon_Portrait.png'
 
 const SidebarNav = () => {
   const router = useRouter()
