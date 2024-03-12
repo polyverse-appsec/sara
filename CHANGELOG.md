@@ -2,7 +2,7 @@
 
 # Release Notes
 
-## Version 0.12.1: March 12th, 2024
+## Version 0.13.0: March 12th, 2024
 
 ### New Features
 
@@ -10,7 +10,7 @@
 
 ### Enhancements
 
-- N/A
+- Add REST API for getting project health `GET /api/projects/<projectId>/health`
 
 ### Bug Fixes
 
