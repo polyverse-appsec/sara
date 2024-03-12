@@ -2,6 +2,20 @@
 
 # Release Notes
 
+## Version 0.12.1: March 12th, 2024
+
+### New Features
+
+- N/A
+
+### Enhancements
+
+- N/A
+
+### Bug Fixes
+
+- In old UI when `New Chat` clicked navigate to `/chat` instead of `/`
+
 ## Version 0.12.0: March 12th, 2024
 
 ### New Features
