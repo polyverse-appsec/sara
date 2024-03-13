@@ -183,9 +183,11 @@ const ProjectCreate = () => {
   const [projectDescription, setProjectDescription] = useState<string>('')
 
   const [saveButtonEnabled, setSaveButtonEnabled] = useState<boolean>(true)
-  const [userGitHubAppInstalled, setUserGitHubAppInstalled] = useState<boolean>(true)
-  const [orgGithubAppInstalled, setOrgGitHubAppInstalled] = useState<boolean>(true)
-  const [userIsPremium, setUserIsPremium] = useState<boolean>(true)
+  const [userGitHubAppInstalled, setUserGitHubAppInstalled] =
+    useState<boolean>(false)
+  const [orgGithubAppInstalled, setOrgGitHubAppInstalled] =
+    useState<boolean>(false)
+  const [userIsPremium, setUserIsPremium] = useState<boolean>(false)
 
   useEffect(() => {
     const fetchUserStatus = async () => {
@@ -207,10 +209,12 @@ const ProjectCreate = () => {
 
         const orgStatus = await getOrgStatus(
           activeBillingOrg.id,
-          saraSession.id
+          saraSession.id,
         )
 
-        setUserGitHubAppInstalled(orgUserStatus.gitHubAppInstalled === 'INSTALLED')
+        setUserGitHubAppInstalled(
+          orgUserStatus.gitHubAppInstalled === 'INSTALLED',
+        )
         setOrgGitHubAppInstalled(orgStatus.gitHubAppInstalled === 'INSTALLED')
         setUserIsPremium(orgUserStatus.isPremium === 'PREMIUM')
       } catch (error) {
@@ -332,17 +336,20 @@ const ProjectCreate = () => {
                 controlledProjectDataSources,
               )
 
+              // TODO: This logic needs to be moved to the mechanism that constantly updates the
+              // the selected active project. If the health comes back green then check to see if
+              // there is a default chat and if not then create the default
               // Secondly createa a default goal for them...
-              const defaultProjectGoal = await postDefaultGoal(
-                activeBillingOrg.id,
-                project.id,
-              )
+              // const defaultProjectGoal = await postDefaultGoal(
+              //   activeBillingOrg.id,
+              //   project.id,
+              // )
 
-              // Finally start the Sara chat for the default project goal...
-              await postChatForDefaultGoal(
-                defaultProjectGoal.id,
-                defaultProjectGoal.description,
-              )
+              // // Finally start the Sara chat for the default project goal...
+              // await postChatForDefaultGoal(
+              //   defaultProjectGoal.id,
+              //   defaultProjectGoal.description,
+              // )
 
               router.push(`/projects/${project.id}`)
             } catch (err) {
@@ -355,7 +362,12 @@ const ProjectCreate = () => {
               toast.error(`Failed to create project`)
             }
           }}
-          disabled={!saveButtonEnabled && !userGitHubAppInstalled && !orgGithubAppInstalled && !userIsPremium}
+          disabled={
+            !saveButtonEnabled &&
+            !userGitHubAppInstalled &&
+            !orgGithubAppInstalled &&
+            !userIsPremium
+          }
         >
           {saveButtonEnabled ? (
             <svg
