@@ -127,13 +127,40 @@ const getOrgUserStatus = async (
   return userStatus
 }
 
+const getOrgStatus = async (
+  orgId: string,
+  userId: string,
+): Promise<UserOrgStatus> => {
+  const res = await fetch(`/api/orgs/${orgId}/status`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+
+  if (!res.ok) {
+    const errText = await res.text()
+    console.debug(`Failed to get org Status because: ${errText}`)
+
+    throw new Error(`Failed to get org status`)
+  }
+
+  const orgStatus = await res.json()
+  return orgStatus
+}
+
 const renderButtonText = (
-  gitHubAppInstalled: boolean,
+  userGitHubAppInstalled: boolean,
+  orgGithubAppInstalled: boolean,
   userIsPremium: boolean,
   saveButtonEnabled: boolean,
 ) => {
-  if (!gitHubAppInstalled) {
-    return 'Install GitHub App'
+  if (!userGitHubAppInstalled) {
+    return 'Install GitHub App for user'
+  }
+
+  if (!orgGithubAppInstalled) {
+    return 'Install GitHub App for org'
   }
 
   if (!userIsPremium) {
@@ -156,8 +183,9 @@ const ProjectCreate = () => {
   const [projectDescription, setProjectDescription] = useState<string>('')
 
   const [saveButtonEnabled, setSaveButtonEnabled] = useState<boolean>(true)
-  const [gitHubAppInstalled, setGitHubAppInstalled] = useState<boolean>(false)
-  const [userIsPremium, setUserIsPremium] = useState<boolean>(false)
+  const [userGitHubAppInstalled, setUserGitHubAppInstalled] = useState<boolean>(true)
+  const [orgGithubAppInstalled, setOrgGitHubAppInstalled] = useState<boolean>(true)
+  const [userIsPremium, setUserIsPremium] = useState<boolean>(true)
 
   useEffect(() => {
     const fetchUserStatus = async () => {
@@ -177,7 +205,13 @@ const ProjectCreate = () => {
           saraSession.id,
         )
 
-        setGitHubAppInstalled(orgUserStatus.gitHubAppInstalled === 'INSTALLED')
+        const orgStatus = await getOrgStatus(
+          activeBillingOrg.id,
+          saraSession.id
+        )
+
+        setUserGitHubAppInstalled(orgUserStatus.gitHubAppInstalled === 'INSTALLED')
+        setOrgGitHubAppInstalled(orgStatus.gitHubAppInstalled === 'INSTALLED')
         setUserIsPremium(orgUserStatus.isPremium === 'PREMIUM')
       } catch (error) {
         toast.error(`Failed to fetch user status: ${error}`)
@@ -235,11 +269,19 @@ const ProjectCreate = () => {
             />
           </div>
         </div>
-        {!gitHubAppInstalled ? (
+        {!userGitHubAppInstalled ? (
           <div className="text-left text-base text-red-500 my-1">
             <p>
               Please install Boost Github App for your user before creating a
               project.
+            </p>
+          </div>
+        ) : null}
+        {!orgGithubAppInstalled ? (
+          <div className="text-left text-base text-red-500 my-1">
+            <p>
+              Please install Boost Github App for your organization before
+              creating a project.
             </p>
           </div>
         ) : null}
@@ -313,7 +355,7 @@ const ProjectCreate = () => {
               toast.error(`Failed to create project`)
             }
           }}
-          disabled={!saveButtonEnabled && !gitHubAppInstalled && !userIsPremium}
+          disabled={!saveButtonEnabled && !userGitHubAppInstalled && !orgGithubAppInstalled && !userIsPremium}
         >
           {saveButtonEnabled ? (
             <svg
@@ -349,7 +391,8 @@ const ProjectCreate = () => {
             </svg>
           )}
           {renderButtonText(
-            gitHubAppInstalled,
+            userGitHubAppInstalled,
+            orgGithubAppInstalled,
             userIsPremium,
             saveButtonEnabled,
           )}

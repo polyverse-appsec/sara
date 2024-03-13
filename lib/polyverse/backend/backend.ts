@@ -360,6 +360,42 @@ export async function getBoostOrgUserStatus(
   return userStatus as BoostUserOrgStatusResponse
 }
 
+export async function getBoostOrgStatus(
+  orgName: string,
+  email: string,
+): Promise<BoostUserOrgStatusResponse> {
+  const url = `${USER_SERVICE_URI}/api/org/${orgName}/account`
+
+  const signedHeader = createSignedHeader(email)
+  const res = await fetch(url, {
+    method: 'GET',
+    headers: {
+      ...signedHeader,
+    },
+  })
+
+  if (!res.ok) {
+    const errResMsg = await res.text()
+    const errLogMsg = `Got a failure response while trying to get status for '${orgName}' - Status: ${res.status} - Message: ${errResMsg}`
+
+    console.error(`${errLogMsg}`)
+
+    throw new Error(errLogMsg)
+  }
+
+  // TODO: Return this if we actually get something in the response
+  // TODO: Properly type the return of this
+  const jsonRes = await res.json()
+
+  if (!jsonRes.body) {
+    throw new Error(`Response to GET ${url} doesn't have the 'body' property`)
+  }
+
+  const userStatus = JSON.parse(jsonRes.body) as BoostUserOrgStatusResponse
+
+  return userStatus as BoostUserOrgStatusResponse
+}
+
 /**
  * Helper method that creates a shallow copy of the given object with all properties
  * that evaluate to undefined removed. This does not modify the original object.

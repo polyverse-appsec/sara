@@ -1,11 +1,11 @@
+import { getUser } from 'app/_actions/get-user'
 import { auth } from 'auth'
 import { ReasonPhrases, StatusCodes } from 'http-status-codes'
 import { UserOrgStatus } from 'lib/data-model-types'
+import { getBoostOrgStatus } from 'lib/polyverse/backend/backend'
+import getOrg from 'lib/polyverse/db/get-org'
 import { NextAuthRequest } from 'next-auth/lib'
 
-import { getBoostOrgUserStatus } from './../../../../../../../lib/polyverse/backend/backend'
-import getOrg from './../../../../../../../lib/polyverse/db/get-org'
-import getUser from './../../../../../../../lib/polyverse/db/get-user'
 
 export const GET = auth(async (req: NextAuthRequest) => {
   const { auth } = req
@@ -33,8 +33,8 @@ export const GET = auth(async (req: NextAuthRequest) => {
     const reqUrl = new URL(req.url)
     const reqUrlSlices = reqUrl.toString().split('/')
 
-    // The 4th to the last slice ought to be the slug for the org id
-    const requestedOrgId = reqUrlSlices[reqUrlSlices.length - 4]
+    // The 2nd to the last slice ought to be the slug for the org id
+    const requestedOrgId = reqUrlSlices[reqUrlSlices.length - 2]
 
     const foundOrgId = user.orgIds.find(
       (orgId: string) => orgId === requestedOrgId,
@@ -63,34 +63,34 @@ export const GET = auth(async (req: NextAuthRequest) => {
       })
     }
 
-    const boostOrgUserStatus = await getBoostOrgUserStatus(org.name, user.email)
+    const boostOrgStatus = await getBoostOrgStatus(org.name, user.email ?? '')
 
     // Convert the response format from the Boost Node backend to something we
     // expect or consistent with our developer experience (DX).
-    const orgUserStatus: UserOrgStatus = {
+    const orgStatus: UserOrgStatus = {
       // If the `username` data member shows up on the user status that means
-      // the user has the GitHub app installed.
+      // the org has the GitHub app installed.
       gitHubAppInstalled:
-        boostOrgUserStatus.github_username &&
-        boostOrgUserStatus.github_username.length > 0
+        boostOrgStatus.github_username &&
+        boostOrgStatus.github_username.length > 0
           ? 'INSTALLED'
           : 'UNKNOWN',
 
       isPremium:
-        boostOrgUserStatus.plan && boostOrgUserStatus.plan === 'premium'
+        boostOrgStatus.plan && boostOrgStatus.plan === 'premium'
           ? 'PREMIUM'
           : 'FREE',
     }
 
-    return new Response(JSON.stringify(orgUserStatus), {
+    return new Response(JSON.stringify(orgStatus), {
       status: StatusCodes.OK,
     })
   } catch (error) {
     console.error(
-      `Failed to get user org status for '${auth.user.username}' because: ${error}`,
+      `Failed to get org status for '${auth.user.username}' because: ${error}`,
     )
 
-    return new Response('Failed to get user org status', {
+    return new Response('Failed to get org status', {
       status: StatusCodes.INTERNAL_SERVER_ERROR,
     })
   }

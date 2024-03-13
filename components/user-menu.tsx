@@ -55,13 +55,36 @@ const getOrgUserStatus = async (
   return userStatus
 }
 
+const getOrgStatus = async (
+  orgId: string,
+  userId: string,
+): Promise<UserOrgStatus> => {
+  const res = await fetch(`/api/orgs/${orgId}/status`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+
+  if (!res.ok) {
+    const errText = await res.text()
+    console.debug(`Failed to get org Status because: ${errText}`)
+
+    throw new Error(`Failed to get org status`)
+  }
+
+  const orgStatus = await res.json()
+  return orgStatus
+}
+
 export function UserMenu({ user }: UserMenuProps) {
   const { activeBillingOrg } = useAppContext()
   const session = useSession()
   const saraSession = session.data ? (session.data as SaraSession) : null
 
-  const [gitHubAppInstalled, setGitHubAppInstalled] = useState<boolean>(false)
-  const [userIsPremium, setUserIsPremium] = useState<boolean>(false)
+  const [userGitHubAppInstalled, setUserGitHubAppInstalled] = useState<boolean>(true)
+  const [orgGithubAppInstalled, setOrgGitHubAppInstalled] = useState<boolean>(true)
+  const [userIsPremium, setUserIsPremium] = useState<boolean>(true)
 
   useEffect(() => {
     const fetchUserStatus = async () => {
@@ -79,7 +102,13 @@ export function UserMenu({ user }: UserMenuProps) {
           saraSession.id,
         )
 
-        setGitHubAppInstalled(orgUserStatus.gitHubAppInstalled === 'INSTALLED')
+        const orgStatus = await getOrgStatus(
+          activeBillingOrg.id,
+          saraSession.id
+        )
+
+        setUserGitHubAppInstalled(orgUserStatus.gitHubAppInstalled === 'INSTALLED')
+        setOrgGitHubAppInstalled(orgStatus.gitHubAppInstalled === 'INSTALLED')
         setUserIsPremium(orgUserStatus.isPremium === 'PREMIUM')
       } catch (error) {
         toast.error(`Failed to fetch user status: ${error}`)
@@ -110,8 +139,13 @@ export function UserMenu({ user }: UserMenuProps) {
             )}
             <span className="ml-2">{saraSession?.name}</span>
             <HamburgerMenuIcon className="ml-2 w-4 h-4" />
-            {!gitHubAppInstalled ? (
+            {!userGitHubAppInstalled ? (
               <div title="The User GitHub App has not been installed.">
+                <ExclamationTriangleIcon className="w-4 h-4 text-red-500" />
+              </div>
+            ) : null}
+            {!orgGithubAppInstalled ? (
+              <div title="The Organization GitHub App has not been installed.">
                 <ExclamationTriangleIcon className="w-4 h-4 text-red-500" />
               </div>
             ) : null}
@@ -168,8 +202,13 @@ export function UserMenu({ user }: UserMenuProps) {
                 Authorize Private Repositories
                 <IconExternalLink className="w-3 h-3 ml-auto" />
               </a>
-              {!gitHubAppInstalled ? (
+              {!userGitHubAppInstalled ? (
                 <div title="The User GitHub App has not been installed.">
+                  <ExclamationTriangleIcon className="w-4 h-4 text-red-500" />
+                </div>
+              ) : null}
+              {!orgGithubAppInstalled ? (
+                <div title="The Organization GitHub App has not been installed.">
                   <ExclamationTriangleIcon className="w-4 h-4 text-red-500" />
                 </div>
               ) : null}
