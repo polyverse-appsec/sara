@@ -160,9 +160,9 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
                 </Link>
               </div>
             ))}
-            <Button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-2">
+            {/* <Button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-2">
               Create New Goal
-            </Button>
+            </Button> */}
           </div>
         )}
         <Button
