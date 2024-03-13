@@ -1,11 +1,11 @@
-import { getUser } from 'app/_actions/get-user'
 import { auth } from 'auth'
 import { ReasonPhrases, StatusCodes } from 'http-status-codes'
 import { UserOrgStatus } from 'lib/data-model-types'
 import { getBoostOrgStatus } from 'lib/polyverse/backend/backend'
-import getOrg from 'lib/polyverse/db/get-org'
 import { NextAuthRequest } from 'next-auth/lib'
 
+import getUser from './../../../../../lib/polyverse/db/get-user'
+import getOrg from './../../../../../lib/polyverse/db/get-org'
 
 export const GET = auth(async (req: NextAuthRequest) => {
   const { auth } = req
@@ -63,7 +63,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
       })
     }
 
-    const boostOrgStatus = await getBoostOrgStatus(org.name, user.email ?? '')
+    const boostOrgStatus = await getBoostOrgStatus(org.name, user.email)
 
     // Convert the response format from the Boost Node backend to something we
     // expect or consistent with our developer experience (DX).
