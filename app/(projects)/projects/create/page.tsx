@@ -175,7 +175,7 @@ const ProjectCreate = () => {
   const session = useSession()
   const saraSession = session.data ? (session.data as SaraSession) : null
 
-  const { activeBillingOrg } = useAppContext()
+  const { activeBillingOrg, setProjectIdForRefreshing } = useAppContext()
 
   const [controlledProjectDataSources, setControlledProjectDataSources] =
     useState<GitHubRepo[]>([])
@@ -276,7 +276,7 @@ const ProjectCreate = () => {
         {!userGitHubAppInstalled ? (
           <div className="text-left text-base text-red-500 my-1">
             <p>
-              Please install Boost Github App for your user before creating a
+              Please install Boost GitHub App for your user before creating a
               project.
             </p>
           </div>
@@ -284,7 +284,7 @@ const ProjectCreate = () => {
         {!orgGithubAppInstalled ? (
           <div className="text-left text-base text-red-500 my-1">
             <p>
-              Please install Boost Github App for your organization before
+              Please install Boost GitHub App for your organization before
               creating a project.
             </p>
           </div>
@@ -350,6 +350,8 @@ const ProjectCreate = () => {
               //   defaultProjectGoal.id,
               //   defaultProjectGoal.description,
               // )
+
+              setProjectIdForRefreshing(project.id)
 
               router.push(`/projects/${project.id}`)
             } catch (err) {

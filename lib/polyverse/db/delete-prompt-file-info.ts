@@ -17,12 +17,12 @@ const deletePromptFileInfo = async (
   const promptFileInfosToProjectIdsSetKey =
     relatedPromptFileInfosToProjectIdsSetKey(parentProjectId)
 
-  await kv.zrem(promptFileInfosToProjectIdsSetKey, itemKey)
+  await kv.zrem(promptFileInfosToProjectIdsSetKey, promptFileInfoId)
 
   // Remove the tracked prompt file info our global set of prompt file info
   // IDs...
   const promptFileInfoIdsSetKey = globalPromptFileInfoIdsSetKey()
-  await kv.zrem(promptFileInfoIdsSetKey, itemKey)
+  await kv.zrem(promptFileInfoIdsSetKey, promptFileInfoId)
 
   // Delete the prompt file info instance...
   await kv.del(itemKey)

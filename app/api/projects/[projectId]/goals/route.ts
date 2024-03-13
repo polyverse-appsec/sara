@@ -30,10 +30,6 @@ export const GET = auth(async (req: NextAuthRequest) => {
     // AuthZ: Check that the user has access to the project that is being requested
     const user = await getUser(auth.user.email)
 
-    console.debug(
-      `User '${user.email}' is attempting to fetch goals for project '${requestedProjectId}'`,
-    )
-
     const project = await getProject(requestedProjectId)
 
     if (!project.userIds || project.userIds.length === 0) {

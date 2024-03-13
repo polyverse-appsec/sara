@@ -29,11 +29,11 @@ const deleteProject = async (projectId: string): Promise<void> => {
   await kv.del(promptFileInfosToProjectIdsSetKey)
 
   // Remove the tracked project from our global set of project IDs...
-  const itemKey = projectKey(projectId)
   const projectIdsSetKey = globalProjectIdsSetKey()
-  await kv.zrem(projectIdsSetKey, itemKey)
+  await kv.zrem(projectIdsSetKey, projectId)
 
   // Delete the project instance...
+  const itemKey = projectKey(projectId)
   await kv.del(itemKey)
 }
 

@@ -25,14 +25,12 @@ const deleteTask = async (
     )
   }
 
-  const itemKey = taskKey(taskId)
-
   // Remove the tracked task from its parent goal relationship of IDs...
   if (parentId.parentGoalId) {
     const childTaskToParentGoalIdsSetKey =
       relatedChildTasksToParentGoalIdsSetKey(parentId.parentGoalId)
 
-    await kv.zrem(childTaskToParentGoalIdsSetKey, itemKey)
+    await kv.zrem(childTaskToParentGoalIdsSetKey, taskId)
   }
 
   // Remove the tracked task from its parent task relationship of IDs...
@@ -40,7 +38,7 @@ const deleteTask = async (
     const childTaskToParentTaskIdsSetKey =
       relatedChildTasksToParentTaskIdsSetKey(parentId.parentTaskId)
 
-    await kv.zrem(childTaskToParentTaskIdsSetKey, itemKey)
+    await kv.zrem(childTaskToParentTaskIdsSetKey, taskId)
 
     // In theory this method can be called recursively if need be on a set
     // of tasks. In supporting that check if the parent task relationship
@@ -62,9 +60,10 @@ const deleteTask = async (
 
   // Remove the tracked task from our global set of task IDs...
   const taskIdsSetKey = globalTaskIdsSetKey()
-  await kv.zrem(taskIdsSetKey, itemKey)
+  await kv.zrem(taskIdsSetKey, taskId)
 
   // Delete the task instance...
+  const itemKey = taskKey(taskId)
   await kv.del(itemKey)
 }
 

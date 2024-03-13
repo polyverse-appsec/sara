@@ -53,12 +53,6 @@ export const promptFileInfosEqual = (
   thisPromptFileInfos: PromptFileInfo[],
   thatPromptFileInfos: PromptFileInfo[],
 ): boolean => {
-  console.debug(
-    `Checking to see if this and that prompt file infos are equal - this: ${JSON.stringify(
-      thisPromptFileInfos,
-    )} - that: ${JSON.stringify(thatPromptFileInfos)}`,
-  )
-
   if (!thisPromptFileInfos && !thatPromptFileInfos) {
     return true
   }
@@ -74,8 +68,14 @@ export const promptFileInfosEqual = (
     return false
   }
 
-  const sortedThisFileInfos = orderBy(thisPromptFileInfos, ['id'])
-  const sortedThatFileInfos = orderBy(thatPromptFileInfos, ['id'])
+  // Stringify and parse the objects once to ensure that the objects can not
+  // fail strict equality tests when it looks like the objects are in deed
+  // copies of each other.
+  const sortedThisPromptFileInfos = orderBy(thisPromptFileInfos, ['id']).map(
+    (sortedThisPromptFileInfo) => JSON.parse(JSON.stringify(sortedThisPromptFileInfo)))
 
-  return isEqual(sortedThisFileInfos, sortedThatFileInfos)
+  const sortedThatPromptFileInfos = orderBy(thatPromptFileInfos, ['id']).map(
+    (sortedThatPromptFileInfo) => JSON.parse(JSON.stringify(sortedThatPromptFileInfo)))
+
+  return isEqual(sortedThisPromptFileInfos, sortedThatPromptFileInfos)
 }

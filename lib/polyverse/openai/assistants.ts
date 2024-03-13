@@ -130,6 +130,12 @@ export async function findAssistantFromMetadata(
   )
 }
 
+export async function getAssistant(
+  assistantId: string,
+): Promise<Assistant> {
+  return oaiClient.beta.assistants.retrieve(assistantId)
+}
+
 /**
  * Updates the file IDs for an existing OpenAI assistant.
  *

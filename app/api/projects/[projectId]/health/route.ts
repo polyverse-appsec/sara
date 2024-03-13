@@ -22,6 +22,7 @@ import getBoostProjectStatus, {
 import {
   ASSISTANT_METADATA_CREATOR,
   findAssistantFromMetadata,
+  getAssistant,
   type AssistantMetadata,
 } from './../../../../../lib/polyverse/openai/assistants'
 
@@ -67,10 +68,6 @@ export const GET = auth(async (req: NextAuthRequest) => {
 
     // AuthZ: Check that the user has access to the project that is being requested
     const user = await getUser(auth.user.email)
-
-    console.debug(
-      `User '${user.email}' is attempting to fetch goals for project '${requestedProjectId}'`,
-    )
 
     const project = await getProject(requestedProjectId)
 
@@ -139,7 +136,6 @@ export const GET = auth(async (req: NextAuthRequest) => {
 
     // 1) Check that we are getting 3 files back from
     // `GET /api/user_project/${billingOrgName}/${projectId}/data_references`
-
     let boostFileInfos: ProjectDataReference[] | null = null
 
     try {
@@ -184,6 +180,17 @@ export const GET = auth(async (req: NextAuthRequest) => {
       }
 
       assistant = await findAssistantFromMetadata(assistantMetadata)
+
+      // It has been observed - although not documented in the OpenAI API docs
+      // that the list of Assistants returned doesn't contain the file IDs
+      // associated with them. Maybe a bug - maybe a weird design decision? If we
+      // get to this point get the Assistant with a direct call instead of through
+      // a list as the call to `findAssistantFromMetadata` does. The Assistant
+      // returned by a direct call appears to return the file IDs attached to an
+      // Assistant.
+      if (assistant) {
+        assistant = await getAssistant(assistant.id)
+      }
     } catch (error) {
       const errMsg = `Failed to get LLM for project '${project.name}' for org '${org.name}' because: ${error}`
 
@@ -212,7 +219,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
       })
     }
 
-    // 3) OpenAI Assistant has 3 files attached to it
+    // 3) OpenAI Assistant has 3 files attached to it.
     if (assistant.file_ids.length !== 3) {
       const projectHealth = createProjectHealth(
         project.id,

@@ -31,13 +31,12 @@ const deleteGoal = async (goalId: string): Promise<void> => {
   // Now just delete the relationship set...
   await kv.del(childTasksToParentGoalIdsSetKey)
 
-  const itemKey = goalKey(goalId)
-
   // Remove the tracked goal from our global set of goal IDs...
   const goalIdsSetKey = globalGoalIdsSetKey()
-  await kv.zrem(goalIdsSetKey, itemKey)
+  await kv.zrem(goalIdsSetKey, goalId)
 
   // Delete the goal instance...
+  const itemKey = goalKey(goalId)
   await kv.del(itemKey)
 }
 

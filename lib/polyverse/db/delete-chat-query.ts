@@ -14,11 +14,11 @@ const deleteChatQuery = async (
 
   // Remove the tracked chat query from its chat relationship set of IDs...
   const chatQueriesToChatIdsSetKey = relatedChatQueriesToChatIdsSetKey(chatId)
-  await kv.zrem(chatQueriesToChatIdsSetKey, itemKey)
+  await kv.zrem(chatQueriesToChatIdsSetKey, chatQueryId)
 
   // Remove the tracked chat query from our global set of chat query IDs...
   const chatQueryIdsSetKey = globalChatQueryIdsSetKey()
-  await kv.zrem(chatQueryIdsSetKey, itemKey)
+  await kv.zrem(chatQueryIdsSetKey, chatQueryId)
 
   // Delete the chat query instance...
   await kv.del(itemKey)

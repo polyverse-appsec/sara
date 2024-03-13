@@ -17,7 +17,6 @@ import {
 } from './../../../../../lib/polyverse/backend/backend'
 import createProject from './../../../../../lib/polyverse/db/create-project'
 import createProjectDataSource from './../../../../../lib/polyverse/db/create-project-data-source'
-import createPromptFileInfo from './../../../../../lib/polyverse/db/create-prompt-file-info'
 import getOrg from './../../../../../lib/polyverse/db/get-org'
 import getProject from './../../../../../lib/polyverse/db/get-project'
 import getUser from './../../../../../lib/polyverse/db/get-user'
@@ -315,7 +314,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
     })
   } catch (error) {
     console.error(
-      `Failed creating project for '${auth.user.username}' because: ${error}`,
+      `Failed creating project for '${auth.user.name}' because: ${error}`,
     )
 
     return new Response('Failed to create project', {

@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { ExclamationTriangleIcon, HeartFilledIcon } from '@radix-ui/react-icons'
+import { HeartFilledIcon } from '@radix-ui/react-icons'
 import toast from 'react-hot-toast'
 
 import { Button } from './../../../../components/ui/button'
@@ -13,6 +13,7 @@ import {
   type ProjectHealthStatusValue,
   type ProjectPartDeux,
 } from './../../../../lib/data-model-types'
+import { useAppContext } from './../../../../lib/hooks/app-context'
 
 const renderHealthIcon = (readableHealthValue: ProjectHealthStatusValue) => {
   if (readableHealthValue === 'UNHEALTHY') {
@@ -52,6 +53,7 @@ const renderHumanReadableHealthStatus = (
 
 const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
   const router = useRouter()
+  const { setProjectIdForRefreshing } = useAppContext()
 
   const [project, setProject] = useState<ProjectPartDeux | null>(null)
   const [goals, setGoals] = useState<GoalPartDeux[] | null>(null)
@@ -61,6 +63,7 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
 
   useEffect(() => {
     let isMounted = true
+    const fetchProjectDeatilsFrequencyMilliseconds = 5000
 
     const fetchProjectDetails = async () => {
       try {
@@ -96,16 +99,20 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
           console.debug(`Failed to get project health`)
         }
 
-        console.debug(`***** COMPELTED PROJECT FETCH LOOP`)
-
         if (isMounted) {
-          setTimeout(fetchProjectDetails, 5000)
+          setTimeout(
+            fetchProjectDetails,
+            fetchProjectDeatilsFrequencyMilliseconds,
+          )
         }
       } catch (err) {
         console.debug(`Failed to fetch project details because: ${err}`)
 
         if (isMounted) {
-          setTimeout(fetchProjectDetails, 5000)
+          setTimeout(
+            fetchProjectDetails,
+            fetchProjectDeatilsFrequencyMilliseconds,
+          )
         }
       }
     }
@@ -120,6 +127,10 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
   if (!project) {
     return null
   }
+
+  // Once we have loaded our data set the project that ought to be actively
+  // refreshed
+  setProjectIdForRefreshing(project.id)
 
   return (
     <div className="flex-1 flex-col gap-4 p-10 text-2xl font-bold">
@@ -189,6 +200,7 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
                 return
               }
 
+              setProjectIdForRefreshing(null)
               router.push(`/projects`)
             } catch (err) {
               console.debug(

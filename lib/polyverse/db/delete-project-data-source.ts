@@ -5,13 +5,13 @@ import { globalProjectDataSourceIdsSetKey, projectDataSourceKey } from './keys'
 const deleteProjectDataSource = async (
   projectDataSourceId: string,
 ): Promise<void> => {
-  const itemKey = projectDataSourceKey(projectDataSourceId)
 
   // Remove the tracked project data source from our global set of goal IDs...
   const projectDataSourceIdsSetKey = globalProjectDataSourceIdsSetKey()
-  await kv.zrem(projectDataSourceIdsSetKey, itemKey)
+  await kv.zrem(projectDataSourceIdsSetKey, projectDataSourceId)
 
   // Delete the project data source...
+  const itemKey = projectDataSourceKey(projectDataSourceId)
   await kv.del(itemKey)
 }
 

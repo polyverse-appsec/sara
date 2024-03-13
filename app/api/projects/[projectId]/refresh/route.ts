@@ -56,24 +56,20 @@ export const POST = auth(async (req: NextAuthRequest) => {
     })
   }
 
+
+  // TODO: Should be able to do Dynamic Route segments as documented:
+  // https://nextjs.org/docs/app/building-your-application/routing/route-handlers#dynamic-route-segments
+  // Problem is our Auth wrapper doesn't like it. See if we can figure
+  // out a way to move to this pattern.
+  const reqUrl = new URL(req.url)
+  const reqUrlSlices = reqUrl.toString().split('/')
+
+  // The 2nd to the last slice ought to be the slug for the project ID
+  const requestedProjectId = reqUrlSlices[reqUrlSlices.length - 2]
+
   try {
-    // TODO: Should be able to do Dynamic Route segments as documented:
-    // https://nextjs.org/docs/app/building-your-application/routing/route-handlers#dynamic-route-segments
-    // Problem is our Auth wrapper doesn't like it. See if we can figure
-    // out a way to move to this pattern.
-    const reqUrl = new URL(req.url)
-    const reqUrlSlices = reqUrl.toString().split('/')
-
-    // The 2nd to the last slice ought to be the slug for the project ID
-    const requestedProjectId = reqUrlSlices[reqUrlSlices.length - 2]
-
     // AuthZ: Check that the user has access to the project that is being requested
     const user = await getUser(auth.user.email)
-
-    console.debug(
-      `User '${user.email}' is attempting to fetch goals for project '${requestedProjectId}'`,
-    )
-
     const project = await getProject(requestedProjectId)
 
     if (!project.userIds || project.userIds.length === 0) {
@@ -215,8 +211,8 @@ export const POST = auth(async (req: NextAuthRequest) => {
     // Get our cached file infos to see if we ought to update our prompt
     const cachedPromptFileInfoIds = await getProjectPromptFileInfoIds(
         project.id,
-        )
-    
+    )
+
     const cachedPromptFileInfoPromises = cachedPromptFileInfoIds.map(
         (cachedPromptFileInfoId) => getPromptFileInfo(cachedPromptFileInfoId),
     )
@@ -224,11 +220,11 @@ export const POST = auth(async (req: NextAuthRequest) => {
     const cachedPromptFileInfos = await Promise.all(
         cachedPromptFileInfoPromises,
     )
-    
-    const shouldUpdateCachedPromptFileInfos = promptFileInfosEqual(
+
+    const shouldUpdateCachedPromptFileInfos = !(promptFileInfosEqual(
         cachedPromptFileInfos,
         promptFileInfos,
-    )
+    ))
 
     // Before we proceed to update prompts lets make sure we have an Assistant
     // in the first place. Remember that this REST API is expected to be invoked
@@ -247,7 +243,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
     try {
       assistant = await findAssistantFromMetadata(assistantMetadata)
     } catch (error) {
-        console.debug(`Failing finding the OpenAI Assistant for project '${project.id}' because: ${error}`)
+        console.debug(`Failed making a request for the OpenAI Assistant for project '${project.id}' because: ${error}`)
 
         return new Response(ReasonPhrases.INTERNAL_SERVER_ERROR, {
             status: StatusCodes.INTERNAL_SERVER_ERROR,
@@ -303,11 +299,11 @@ export const POST = auth(async (req: NextAuthRequest) => {
 
     // Return the refreshed project to the user...
     return new Response(JSON.stringify(project), {
-      status: StatusCodes.CREATED,
+      status: StatusCodes.OK,
     })
   } catch (error) {
     console.error(
-      `Failed creating project for '${auth.user.username}' because: ${error}`,
+      `Failed refreshing project '${requestedProjectId}' for '${auth.user.name}' because: ${error}`,
     )
 
     return new Response('Failed to create project', {

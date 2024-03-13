@@ -90,6 +90,7 @@ export function UserMenu({ user }: UserMenuProps) {
 
   useEffect(() => {
     let isMounted = true
+    const fetchUserStatusFrequencyMilliseconds = 5000
 
     const fetchUserStatus = async () => {
       try {
@@ -117,15 +118,16 @@ export function UserMenu({ user }: UserMenuProps) {
         setOrgGitHubAppInstalled(orgStatus.gitHubAppInstalled === 'INSTALLED')
         setUserIsPremium(orgUserStatus.isPremium === 'PREMIUM')
         if (isMounted) {
-          setTimeout(fetchUserStatus, 5000)
+          setTimeout(fetchUserStatus, fetchUserStatusFrequencyMilliseconds)
         }
       } catch (error) {
         toast.error(`Failed to fetch user status: ${error}`)
         if (isMounted) {
-          setTimeout(fetchUserStatus, 5000)
+          setTimeout(fetchUserStatus, fetchUserStatusFrequencyMilliseconds)
         }
       }
     }
+
     fetchUserStatus()
 
     return () => {

@@ -22,6 +22,7 @@ const SaraChat = ({ chatQueriesUrl }: SaraChatProps) => {
 
   useEffect(() => {
     let isMounted = true
+    const fetchChatQueriesFrequencyMilliseconds = 5000
 
     const fetchChatQuerires = async () => {
       try {
@@ -36,7 +37,7 @@ const SaraChat = ({ chatQueriesUrl }: SaraChatProps) => {
           )
 
           if (isMounted) {
-            setTimeout(fetchChatQuerires, 5000)
+            setTimeout(fetchChatQuerires, fetchChatQueriesFrequencyMilliseconds)
           }
 
           return
@@ -48,13 +49,13 @@ const SaraChat = ({ chatQueriesUrl }: SaraChatProps) => {
         setChatQueries(fetchedChatQueries)
 
         if (isMounted) {
-          setTimeout(fetchChatQuerires, 5000)
+          setTimeout(fetchChatQuerires, fetchChatQueriesFrequencyMilliseconds)
         }
       } catch (err) {
         console.debug(`Failed to fetch chat queries because: ${err}`)
 
         if (isMounted) {
-          setTimeout(fetchChatQuerires, 5000)
+          setTimeout(fetchChatQuerires, fetchChatQueriesFrequencyMilliseconds)
         }
       }
     }

@@ -27,11 +27,11 @@ const deleteChat = async (chatId: string): Promise<void> => {
   await kv.del(chatQueriesToChatIdsSetKey)
 
   // Remove the tracked goal from our global set of goal IDs...
-  const itemKey = chatKey(chatId)
   const chatIdsSetKey = globalChatIdsSetKey()
-  await kv.zrem(chatIdsSetKey, itemKey)
+  await kv.zrem(chatIdsSetKey, chatId)
 
   // Now delete the actual chat...
+  const itemKey = chatKey(chatId)
   await kv.del(itemKey)
 }
 

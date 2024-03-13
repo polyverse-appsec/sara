@@ -300,10 +300,10 @@ export const POST = auth(async (req: NextAuthRequest) => {
       cachedPromptFileInfoPromises,
     )
 
-    const shouldUpdateCachedPromptFileInfos = promptFileInfosEqual(
+    const shouldUpdateCachedPromptFileInfos = !(promptFileInfosEqual(
       cachedPromptFileInfos,
       promptFileInfos,
-    )
+    ))
 
     if (shouldUpdateCachedPromptFileInfos) {
       // Since we are updating our cached file infos lets also update the
