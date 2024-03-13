@@ -4,22 +4,17 @@ import { Run } from 'openai/resources/beta/threads/runs/runs'
 import { Thread } from 'openai/resources/beta/threads/threads'
 
 import {
-  TaskPartDeux,
+  type TaskPartDeux,
   type PromptFileInfo,
 } from './../../../lib/data-model-types'
 import createTask from './../../../lib/polyverse/db/create-task'
 import { createBaseSaraObject } from './../../../lib/polyverse/db/utils'
-import { findAssistantFromMetadata, type AssistantMetadata } from './assistants'
+import { findAssistantFromMetadata, type AssistantMetadata } from './../../../lib/polyverse/openai/assistants'
+import { mapPromptFileInfosToPromptFileTypes, type PromptFileTypes } from './../../../lib/polyverse/openai/utils'
 
 const oaiClient = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 })
-
-interface PromptFileTypes {
-  blueprint: string
-  aispec: string
-  projectsource: string
-}
 
 export type WorkItemsForGoalType = {
   title: string
@@ -182,12 +177,11 @@ export const handleRequiresActionStatusForProjectGoalChatting = async (
   }
 }
 
-function createOpenAIAssistantPromptForGoals(
+export const createOpenAIAssistantPromptForGoals = (
   promptFileTypes: PromptFileTypes,
   goalName: string,
   goalDescription: string,
-): string {
-  return `
+): string => `
       You are a software architecture assistant as well as a coding assistant named Sara. 
       You have access to the full codebase of a project in your files, including a file named ${promptFileTypes.aispec} that summarizes the code.
 
@@ -216,62 +210,6 @@ function createOpenAIAssistantPromptForGoals(
 
       You can then continue to response to the question as you normally would by provide both the answer as well as the individual work items you recorded 
       that are required to complete the project goal named ${goalName}.`
-}
-
-const mapPromptFileInfosToPromptFileTypes = (
-  promptFileInfos: PromptFileInfo[],
-): PromptFileTypes => {
-  let identifiedPromptFileTypes: PromptFileTypes = {
-    aispec: '',
-    blueprint: '',
-    projectsource: '',
-  }
-
-  promptFileInfos.map(({ name, type }) => {
-    identifiedPromptFileTypes[type as keyof PromptFileTypes] = name
-  })
-
-  return identifiedPromptFileTypes
-}
-
-export const updateAssistantForProjectGoalContextualization = async (
-  promptFileInfos: PromptFileInfo[],
-  goalName: string,
-  goalDescription: string,
-  assistantMetadata: AssistantMetadata,
-): Promise<Assistant> => {
-  const assistant = await findAssistantFromMetadata(assistantMetadata)
-
-  if (!assistant) {
-    console.debug(
-      `Failed to find an assistant when updating one for project goal '${goalName}' contextualization using the following metadata: ${JSON.stringify(
-        assistantMetadata,
-      )}`,
-    )
-    throw new Error(
-      `Failed to find an assistant when updating one for project goal contextualization`,
-    )
-  }
-
-  const fileIDs = promptFileInfos.map(({ id }) => id)
-  const identifiedPromptFileTypes =
-    mapPromptFileInfosToPromptFileTypes(promptFileInfos)
-  const prompt = createOpenAIAssistantPromptForGoals(
-    identifiedPromptFileTypes,
-    goalName,
-    goalDescription,
-  )
-
-  return oaiClient.beta.assistants.update(assistant.id, {
-    file_ids: fileIDs,
-    instructions: prompt,
-    tools: [
-      { type: 'code_interpreter' },
-      { type: 'retrieval' },
-      submitTaskStepsAssistantFunction,
-    ],
-  })
-}
 
 export const createThreadForProjectGoalChatting = async (
   projectId: string,
@@ -303,11 +241,36 @@ export const createThreadForProjectGoalChatting = async (
 }
 
 export const createThreadRunForProjectGoalChatting = async (
+  promptFileInfos: PromptFileInfo[],
+  goalName: string,
+  goalDescription: string,
   assistantId: string,
   threadId: string,
 ): Promise<Run> => {
+
+  const identifiedPromptFileTypes = mapPromptFileInfosToPromptFileTypes(promptFileInfos)
+
+  const prompt = createOpenAIAssistantPromptForGoals(
+    identifiedPromptFileTypes,
+    goalName,
+    goalDescription,
+  )
+
+  // TODO: Verify that the thread IDs are static/synchronized once a thread run starts
+  // For example if I go to refresh the project again make sure we don't override the
+  // file IDs that are referenced in this prompt
   return oaiClient.beta.threads.runs.create(threadId, {
     assistant_id: assistantId,
+    // Override the OpenAI Assistant instructions for this thread run to provide
+    // more specifics on how the question ought to be answered
+    instructions: prompt,
+    // Override the OpenAI Assistant tools for this thread run to allow for the
+    // creation of tasks (called work items in the prompt)
+    tools: [
+      { type: 'code_interpreter' },
+      { type: 'retrieval' },
+      submitTaskStepsAssistantFunction,
+    ],
   })
 }
 

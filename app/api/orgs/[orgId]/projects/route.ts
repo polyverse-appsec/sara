@@ -292,69 +292,22 @@ export const POST = auth(async (req: NextAuthRequest) => {
     org.projectIds = [...org.projectIds, project.id]
     await updateOrg(org)
 
-    // Prepare to build the OpenAI Assistant for the project by getting the file
-    // info from the Boost backend for the project we just created
-    // TODO: We really ought to be passing in the `ID` of the `project` instance
-    // but need to build more support out for using generic IDs in the backend
-    // TODO: Rename to getBoostFileInfo
-    const boostFileInfos = await getFileInfoPartDeuxWithRetry(
-      org.name,
-      project.name,
-      user.email,
-    )
-
-    // Build up OpenAI Assistant metadata that will be used to help identify it
-    // in the future
-    const assistantMetadata: AssistantMetadata = {
-      projectId: project.id,
-      userName: user.username,
-      orgName: org.name,
-      creator: ASSISTANT_METADATA_CREATOR,
-      version: getVersion(),
-    }
-
-    // TODO: We probably need to prompt engineer a more generic prompt not
-    // attributed to a specific chat when we first create the assistant...
-
-    // TODO: After we switch over to the new UI/UX workflows change this signature to take
-    // PromptFileInfo
-    await createAssistant(boostFileInfos, assistantMetadata)
-
-    // Cache the prompt file info so that in the future we may update it if
-    // needed. For now we need to convert them into instances of
-    // `PromptFileInfo` since we rely on persisting data that first a basic
-    // structure based off of `BaseSaraObject` types.
-    const promptFileInfos = boostFileInfos.map((boostFileInfo) => {
-      const promptFileInfoBaseSaraObject = createBaseSaraObject()
-
-      const promptFileInfo: PromptFileInfo = {
-        // BaseSareObject properties...
-        ...promptFileInfoBaseSaraObject,
-
-        // PromptFileInfo properties...
-        //
-        // Note that spreading out the properties of Boost file info which is
-        // an instance of `ProjectDataReference` is replacing the ID that would
-        // be created as a result of spreading out the `BaseSaraObject`
-        ...boostFileInfo,
-        parentProjectId: project.id,
-      }
-
-      // It isn't obvious what is going on here. When we make a call to the
-      // Boost backend for `GET data_references` the objects returned also
-      // contain the `lastUpdatedAt` property. Since we are persisting this info
-      // in our K/V set the `createdAt` value to that of `lastUpdatedAt` so it
-      // doesn't appear wonky in our data (i.e. that `createdAt` is more recent
-      // than `lastUpdatedAt`).
-      promptFileInfo.createdAt = promptFileInfo.lastUpdatedAt
-
-      return promptFileInfo
-    })
-
-    const createPromptFileInfoPromises = promptFileInfos.map((promptFileInfo) =>
-      createPromptFileInfo(promptFileInfo),
-    )
-    await Promise.all(createPromptFileInfoPromises)
+    // It may seem weird that we don't go on to create the OpenAI Assistant
+    // here or cache the file info used when building the OpenAI Assistant
+    // prompt but we defer this logic to the handler for:
+    // `POST /api/projects/projectId/refresh`.
+    //
+    // This is done for UX/UI synchronization pruposes wherein the UI can
+    // start polling for the projects health at:
+    // `GET /api/projects/projectId/health`.
+    //
+    // This allows the UI to provide a more responsive - and restrictive if
+    // need be - experience. For example we can prevent chatting if the project
+    // is in an `UNHEALTHY` state if it doesn't have the most up-to-date files.
+    //
+    // This solution/API may not be suitable for a headless agent model so in
+    // the future we may need to revisit this logic/approach to project
+    // creation.
 
     // Return the project we created to the user...
     return new Response(JSON.stringify(project), {

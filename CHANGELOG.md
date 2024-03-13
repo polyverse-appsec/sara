@@ -2,6 +2,22 @@
 
 # Release Notes
 
+## Version 0.14.0: March 13th, 2024
+
+### New Features
+
+- N/A
+
+### Enhancements
+
+- Add REST API for updating a projects file info used in prompt engineering `POST /api/projects/<projectId>/refresh`
+- Modify project creation API to not create Open AI assistant `POST /api/orgs/orgId/projects`
+  - These details of Open AI assistant creation and updating the prompt get deferred to `POST /api/projects/<projectId>/refresh`
+
+### Bug Fixes
+
+- N/A
+
 ## Version 0.13.0: March 12th, 2024
 
 ### New Features

@@ -28,14 +28,18 @@ import {
   ASSISTANT_METADATA_CREATOR,
   findAssistantFromMetadata,
   type AssistantMetadata,
+  updateAssistantForPromptFileInfos
 } from './../../../../../../../lib/polyverse/openai/assistants'
+import {
+  mapPromptFileInfosToPromptFileTypes
+} from './../../../../../../../lib/polyverse/openai/utils'
 import {
   addQueryToThreadForProjectGoalChatting,
   createThreadRunForProjectGoalChatting,
   getChatQueryResponseFromThread,
   getThreadRunForProjectGoalChatting,
   handleRequiresActionStatusForProjectGoalChatting,
-  updateAssistantForProjectGoalContextualization,
+  createOpenAIAssistantPromptForGoals
 } from './../../../../../../../lib/polyverse/openai/goalsAssistant'
 import { promptFileInfosEqual } from './../../../../../../../lib/utils'
 
@@ -302,6 +306,12 @@ export const POST = auth(async (req: NextAuthRequest) => {
     )
 
     if (shouldUpdateCachedPromptFileInfos) {
+      // Since we are updating our cached file infos lets also update the
+      // generalized prompt of the OpenAI Assistant. Remember that when we
+      // perform a Run on a Thread we will override these generalized
+      // instructions with ones more specific to contextualizing goals.
+      assistant = await updateAssistantForPromptFileInfos(promptFileInfos, assistantMetadata)
+
       // If we need to update our prompt start by updating the cache of our
       // prompt file infos. Start by deleting the existing cached prompt
       // file infos.
@@ -323,18 +333,6 @@ export const POST = auth(async (req: NextAuthRequest) => {
       await Promise.all(createPromptFileInfoPromises)
     }
 
-    // Regardless of if we cached any new files or not we need to always
-    // update the prompt of our OpenAI Assistant to contextualize it for
-    // this specific goal
-    assistant = await updateAssistantForProjectGoalContextualization(
-      shouldUpdateCachedPromptFileInfos
-        ? promptFileInfos
-        : cachedPromptFileInfos,
-      goal.name,
-      goal.description,
-      assistantMetadata,
-    )
-
     console.debug(
       `Updated assistant for project goal contextualization with a goal ID of '${
         goal.id
@@ -344,22 +342,6 @@ export const POST = auth(async (req: NextAuthRequest) => {
     // Don't forget to indicate that we refreshed the project
     project.lastRefreshedAt = new Date()
     await updateProject(project)
-
-    // Build up the deatils of the chat query object for storing in our K/V.
-    // Verify any data we may need first off of the assistant. Use
-    // `!assistant.instructions` to narrow for TypeScripting purposes here
-    if (
-      !assistant.instructions ||
-      Joi.string().required().validate(assistant.instructions).error
-    ) {
-      console.debug(
-        `Updated assistant with ID of '${assistant.id} missing prompt instructions required for creating a chat with a query`,
-      )
-
-      return new Response(ReasonPhrases.INTERNAL_SERVER_ERROR, {
-        status: StatusCodes.INTERNAL_SERVER_ERROR,
-      })
-    }
 
     const chatQueryBaseSaraObject = createBaseSaraObject()
 
@@ -373,7 +355,9 @@ export const POST = auth(async (req: NextAuthRequest) => {
 
       query: reqBody.query,
       response: null,
-      processingPrompt: assistant.instructions,
+      // We will capture the processing prompt that was used from the Thread Run
+      // below when we change `status` states
+      processingPrompt: '',
 
       status: 'QUERY_RECEIVED',
       errorText: null,
@@ -420,6 +404,11 @@ export const POST = auth(async (req: NextAuthRequest) => {
 
     // Now start a run on the thread for the query we just added
     const threadRun = await createThreadRunForProjectGoalChatting(
+      shouldUpdateCachedPromptFileInfos ?
+        promptFileInfos :
+        cachedPromptFileInfos,
+      goal.name,
+      goal.description,
       assistant.id,
       chat.openAiThreadId,
     )
@@ -429,7 +418,9 @@ export const POST = auth(async (req: NextAuthRequest) => {
     chat.openAiThreadRunId = threadRun.id
     await updateChat(chat)
 
-    // Make sure to mark our chat query as submitted
+    // Make sure to capture details about the processing prompt used when Sara
+    // answers this question and mark our chat query as submitted
+    newTailChatQuery.processingPrompt = threadRun.instructions
     newTailChatQuery.status = 'QUERY_SUBMITTED'
     await updateChatQuery(newTailChatQuery)
 

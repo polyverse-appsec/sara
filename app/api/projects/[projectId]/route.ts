@@ -144,6 +144,7 @@ export const DELETE = auth(async (req: NextAuthRequest) => {
     org.projectIds = org.projectIds.filter(
       (projectId) => projectId !== project.id,
     )
+
     await updateOrg(org)
 
     // Delete all project and project related resources from our K/V.
@@ -155,6 +156,7 @@ export const DELETE = auth(async (req: NextAuthRequest) => {
     const deleteGoalPromises = project.goalIds.map((goalId) =>
       deleteGoal(goalId),
     )
+
     await Promise.all(deleteGoalPromises)
 
     const deleteProjectDataSourcePromises = project.projectDataSourceIds.map(

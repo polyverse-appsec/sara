@@ -28,54 +28,17 @@ import {
   ASSISTANT_METADATA_CREATOR,
   findAssistantFromMetadata,
   type AssistantMetadata,
+  updateAssistantForPromptFileInfos
 } from './../../../../../lib/polyverse/openai/assistants'
 import {
   createThreadForProjectGoalChatting,
   createThreadRunForProjectGoalChatting,
-  updateAssistantForProjectGoalContextualization,
+  createOpenAIAssistantPromptForGoals,
 } from './../../../../../lib/polyverse/openai/goalsAssistant'
+import {
+  mapPromptFileInfosToPromptFileTypes
+} from './../../../../../lib/polyverse/openai/utils'
 import { promptFileInfosEqual } from './../../../../../lib/utils'
-
-// TODO: Can increase the timeout on this method if needeed for up to 5 mins
-
-// TODO: High-level questions to answer/consider
-// Do I want like a property back called AI details that is attached to a chat that helps us contextualize
-// the chat but also move us towards AI provider agnostic solution?
-
-// TODO: Other endpoints needed to support async chat
-// GET /api/chats/<id> - get details on the chat
-// GET /api/chats/<id>/refresh - refresh the assistant files and assistant prompt with the files
-// GET /api/chats/<id>/queries - all the messages associated with a chat
-// POST /api/chats/<id>/queries - create a new query
-// DELETE /api/chats/<id> - delete the chat at the ID
-
-// TODO: Fail the API to add more chat queries if the previous one is in an error state or hasn't had a response received yet
-
-// TODO: update file caches
-// TODO: Everytime a project GET is done we need to update the OpenAI assistant with GET data_references
-// TODO: Everytime we POST a chat query/GET a chat query we need to update the OpenAI assitant with GET data_references
-
-// TODO: Every new chat query request needs to have the previous chat query ID as part of
-// the request body for validation purposes and synchronization purposes with the chat
-
-// TODO: Review the messages API - see if metadata can be assigned to a chat
-// Looks like messages can have metadata: https://platform.openai.com/docs/api-reference/messages/createMessage
-
-// TODO: Verify to see if we can do requests to the other handlers on vercel
-
-// TODO: Start here on 03/06/24 and complete this API
-// Also...
-// Consider - how quick to delight
-// Phase 1: Hand sales
-// Phase 2: Sharing/virality
-
-///////////////////////
-
-// TODO: GET project should update the cache
-// TODO: Task data model type and make it so tasks are written to the DB by the goals chat
-// TODO: POST chatQuery REST API (look at other implementation notes on it - fail if the last chat query isn't in a completed state)
-// TODO: PATCH chatQuery REST API - allows restarting/regenerating a response
-// TODO: Landing page and delightful experience first time page
 
 // 03/04/24: We set this max duration to 60 seconds during initial development
 // with no real criteria to use as a starting point for the max duration. We see
@@ -192,7 +155,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
       projectId: project.id,
       userName: user.username,
       orgName: org.name,
-      creator: ASSISTANT_METADATA_CREATOR, // Ignore creator for search
+      creator: ASSISTANT_METADATA_CREATOR,
       version: '', // Ignore version for search
     }
 
@@ -269,6 +232,12 @@ export const POST = auth(async (req: NextAuthRequest) => {
     )
 
     if (shouldUpdateCachedPromptFileInfos) {
+      // Since we are updating our cached file infos lets also update the
+      // generalized prompt of the OpenAI Assistant. Remember that when we
+      // perform a Run on a Thread we will override these generalized
+      // instructions with ones more specific to contextualizing goals.
+      assistant = await updateAssistantForPromptFileInfos(promptFileInfos, assistantMetadata)
+
       // If we need to update our prompt start by updating the cache of our
       // prompt file infos. Start by deleting the existing cached prompt
       // file infos.
@@ -290,18 +259,6 @@ export const POST = auth(async (req: NextAuthRequest) => {
       await Promise.all(createPromptFileInfoPromises)
     }
 
-    // Regardless of if we cached any new files or not we need to always
-    // update the prompt of our OpenAI Assistant to contextualize it for
-    // this specific goal
-    assistant = await updateAssistantForProjectGoalContextualization(
-      shouldUpdateCachedPromptFileInfos
-        ? promptFileInfos
-        : cachedPromptFileInfos,
-      goal.name,
-      goal.description,
-      assistantMetadata,
-    )
-
     console.debug(
       `Updated assistant for project goal contextualization with a goal ID of '${
         goal.id
@@ -311,22 +268,6 @@ export const POST = auth(async (req: NextAuthRequest) => {
     // Don't forget to indicate that we refreshed the project
     project.lastRefreshedAt = new Date()
     await updateProject(project)
-
-    // Build up the deatils of the chat and chat query objects for storing
-    // in our K/V. Verify any data we may need first off of the assistant.
-    // Use `!assistant.instructions` to narrow for TypeScripting purposes here
-    if (
-      !assistant.instructions ||
-      Joi.string().required().validate(assistant.instructions).error
-    ) {
-      console.debug(
-        `Updated assistant with ID of '${assistant.id} missing prompt instructions required for creating a chat with a query`,
-      )
-
-      return new Response(ReasonPhrases.INTERNAL_SERVER_ERROR, {
-        status: StatusCodes.INTERNAL_SERVER_ERROR,
-      })
-    }
 
     const chatBaseSaraObject = createBaseSaraObject()
     const chatQueryBaseSaraObject = createBaseSaraObject()
@@ -360,7 +301,9 @@ export const POST = auth(async (req: NextAuthRequest) => {
 
       query: reqBody.query,
       response: null,
-      processingPrompt: assistant.instructions,
+      // We will capture the processing prompt that was used from the Thread Run
+      // below when we change `status` states
+      processingPrompt: '',
 
       status: 'QUERY_RECEIVED',
       errorText: null,
@@ -403,6 +346,11 @@ export const POST = auth(async (req: NextAuthRequest) => {
 
     // Now start a run on the thread we just created with our assistant
     const threadRun = await createThreadRunForProjectGoalChatting(
+      shouldUpdateCachedPromptFileInfos ?
+        promptFileInfos :
+        cachedPromptFileInfos,
+      goal.name,
+      goal.description,
       assistant.id,
       chat.openAiThreadId,
     )
@@ -410,7 +358,9 @@ export const POST = auth(async (req: NextAuthRequest) => {
     chat.openAiThreadRunId = threadRun.id
     await updateChat(chat)
 
-    // Make sure to mark our chat query as submitted
+    // Make sure to capture details about the processing prompt used when Sara
+    // answers this question and mark our chat query as submitted
+    chatQuery.processingPrompt = threadRun.instructions
     chatQuery.status = 'QUERY_SUBMITTED'
     await updateChatQuery(chatQuery)
 
