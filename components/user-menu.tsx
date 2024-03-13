@@ -82,9 +82,11 @@ export function UserMenu({ user }: UserMenuProps) {
   const session = useSession()
   const saraSession = session.data ? (session.data as SaraSession) : null
 
-  const [userGitHubAppInstalled, setUserGitHubAppInstalled] = useState<boolean>(true)
-  const [orgGithubAppInstalled, setOrgGitHubAppInstalled] = useState<boolean>(true)
-  const [userIsPremium, setUserIsPremium] = useState<boolean>(true)
+  const [userGitHubAppInstalled, setUserGitHubAppInstalled] =
+    useState<boolean>(false)
+  const [orgGitHubAppInstalled, setOrgGitHubAppInstalled] =
+    useState<boolean>(false)
+  const [userIsPremium, setUserIsPremium] = useState<boolean>(false)
 
   useEffect(() => {
     let isMounted = true
@@ -106,10 +108,12 @@ export function UserMenu({ user }: UserMenuProps) {
 
         const orgStatus = await getOrgStatus(
           activeBillingOrg.id,
-          saraSession.id
+          saraSession.id,
         )
 
-        setUserGitHubAppInstalled(orgUserStatus.gitHubAppInstalled === 'INSTALLED')
+        setUserGitHubAppInstalled(
+          orgUserStatus.gitHubAppInstalled === 'INSTALLED',
+        )
         setOrgGitHubAppInstalled(orgStatus.gitHubAppInstalled === 'INSTALLED')
         setUserIsPremium(orgUserStatus.isPremium === 'PREMIUM')
         if (isMounted) {
@@ -156,7 +160,7 @@ export function UserMenu({ user }: UserMenuProps) {
                 <ExclamationTriangleIcon className="w-4 h-4 text-red-500" />
               </div>
             ) : null}
-            {!orgGithubAppInstalled ? (
+            {!orgGitHubAppInstalled ? (
               <div title="The Organization GitHub App has not been installed.">
                 <ExclamationTriangleIcon className="w-4 h-4 text-red-500" />
               </div>
@@ -219,7 +223,7 @@ export function UserMenu({ user }: UserMenuProps) {
                   <ExclamationTriangleIcon className="w-4 h-4 text-red-500" />
                 </div>
               ) : null}
-              {!orgGithubAppInstalled ? (
+              {!orgGitHubAppInstalled ? (
                 <div title="The Organization GitHub App has not been installed.">
                   <ExclamationTriangleIcon className="w-4 h-4 text-red-500" />
                 </div>

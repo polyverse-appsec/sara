@@ -3,50 +3,118 @@
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { ExclamationTriangleIcon, HeartFilledIcon } from '@radix-ui/react-icons'
 import toast from 'react-hot-toast'
 
 import { Button } from './../../../../components/ui/button'
 import {
-  GoalPartDeux,
+  type GoalPartDeux,
+  type ProjectHealth,
+  type ProjectHealthStatusValue,
   type ProjectPartDeux,
 } from './../../../../lib/data-model-types'
 
-const PageIndex = ({ params: { id } }: { params: { id: string } }) => {
+const renderHealthIcon = (readableHealthValue: ProjectHealthStatusValue) => {
+  if (readableHealthValue === 'UNHEALTHY') {
+    return <HeartFilledIcon className="w-4 h-4 text-red-500" />
+  }
+
+  if (readableHealthValue === 'PARTIALLY_HEALTHY') {
+    return <HeartFilledIcon className="w-4 h-4 text-yellow-500" />
+  }
+
+  if (readableHealthValue === 'HEALTHY') {
+    return <HeartFilledIcon className="w-4 h-4 text-green-500" />
+  }
+
+  // If we don't know what value it is then render an icon as if it was
+  // unhealthy
+  return <HeartFilledIcon className="w-4 h-4 text-red-500" />
+}
+
+const renderHumanReadableHealthStatus = (
+  readableHealthValue: ProjectHealthStatusValue,
+) => {
+  if (readableHealthValue === 'UNHEALTHY') {
+    return 'Unhealthy'
+  }
+
+  if (readableHealthValue === 'PARTIALLY_HEALTHY') {
+    return 'Partially Healthy'
+  }
+
+  if (readableHealthValue === 'HEALTHY') {
+    return 'Healthy'
+  }
+
+  return 'Unknown'
+}
+
+const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
   const router = useRouter()
 
   const [project, setProject] = useState<ProjectPartDeux | null>(null)
   const [goals, setGoals] = useState<GoalPartDeux[] | null>(null)
+  const [health, setHealth] = useState<ProjectHealth | null>(null)
 
   const [deleteButtonEnabled, setDeleteButtonEnabled] = useState<boolean>(true)
 
   useEffect(() => {
-    ;(async () => {
-      const projectRes = await fetch(`/api/projects/${id}`)
+    let isMounted = true
 
-      if (!projectRes.ok) {
-        const errText = await projectRes.text()
+    const fetchProjectDetails = async () => {
+      try {
+        const projectRes = await fetch(`/api/projects/${id}`)
 
-        throw new Error(
-          `Failed to get a success response when fetching project '${id}' because: ${errText}`,
-        )
+        if (!projectRes.ok) {
+          const errText = await projectRes.text()
+
+          throw new Error(
+            `Failed to get a success response when fetching project '${id}' because: ${errText}`,
+          )
+        }
+
+        const fetchedProject = (await projectRes.json()) as ProjectPartDeux
+        setProject(fetchedProject)
+
+        // Best effort collect goals associated with the project and its health
+        const goalsRes = await fetch(`/api/projects/${id}/goals`)
+
+        if (goalsRes.ok) {
+          const fetchedGoals = (await goalsRes.json()) as GoalPartDeux[]
+          setGoals(fetchedGoals)
+        } else {
+          console.debug(`Failed to get project goals`)
+        }
+
+        const healthRes = await fetch(`/api/projects/${id}/health`)
+
+        if (healthRes.ok) {
+          const fetchedHealth = (await healthRes.json()) as ProjectHealth
+          setHealth(fetchedHealth)
+        } else {
+          console.debug(`Failed to get project health`)
+        }
+
+        console.debug(`***** COMPELTED PROJECT FETCH LOOP`)
+
+        if (isMounted) {
+          setTimeout(fetchProjectDetails, 5000)
+        }
+      } catch (err) {
+        console.debug(`Failed to fetch project details because: ${err}`)
+
+        if (isMounted) {
+          setTimeout(fetchProjectDetails, 5000)
+        }
       }
+    }
 
-      const fetchedProject = (await projectRes.json()) as ProjectPartDeux
+    fetchProjectDetails()
 
-      // Best effort collect the project goals
-      let goals = null
-      const goalsRes = await fetch(`/api/projects/${id}/goals`)
-
-      if (goalsRes.ok) {
-        goals = (await goalsRes.json()) as GoalPartDeux[]
-        console.log(`***** retrieved goals: ${JSON.stringify(goals)}`)
-      } else {
-        toast.error(`Failed to get project goals`)
-      }
-
-      setProject(fetchedProject)
-      setGoals(goals)
-    })()
+    return () => {
+      isMounted = false
+    }
   }, [])
 
   if (!project) {
@@ -63,6 +131,17 @@ const PageIndex = ({ params: { id } }: { params: { id: string } }) => {
         <div className="text-center text-base my-1">
           <h3 className="text-lg font-semibold">Description</h3>
           <p>{project.description}</p>
+        </div>
+        <div className="text-center text-base my-1">
+          <h3 className="text-lg font-semibold">Health Status</h3>
+          <div className="flex items-center">
+            {renderHealthIcon(health ? health.readableValue : 'UNHEALTHY')}
+            <p>
+              {renderHumanReadableHealthStatus(
+                health ? health.readableValue : 'UNHEALTHY',
+              )}
+            </p>
+          </div>
         </div>
         {!goals ? null : (
           <div className="border border-gray-300 p-2 text-base my-1 rounded-lg flex flex-col items-center justify-center">
@@ -162,4 +241,4 @@ const PageIndex = ({ params: { id } }: { params: { id: string } }) => {
   )
 }
 
-export default PageIndex
+export default ProjectPageIndex
