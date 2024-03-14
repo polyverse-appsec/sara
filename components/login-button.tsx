@@ -28,7 +28,7 @@ export function LoginButton({
         signIn('github')
       }}
       disabled={isLoading}
-      className={cn(className)}
+      className={cn("text-lg px-6 py-3", className)}
       {...props}
     >
       {isLoading ? (

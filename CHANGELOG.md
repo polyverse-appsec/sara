@@ -16,6 +16,7 @@
 - Added notification warnings for user plan, and github app installations
 - Disabled project creation if github app is not installed for selected billing org
 - Renamed buttons and text to clarify their purpose
+- Added branding to the login page
 
 ### Bug Fixes
 
