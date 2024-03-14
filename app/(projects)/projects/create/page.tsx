@@ -175,7 +175,7 @@ const ProjectCreate = () => {
   const session = useSession()
   const saraSession = session.data ? (session.data as SaraSession) : null
 
-  const { activeBillingOrg, setProjectIdForRefreshing } = useAppContext()
+  const { activeBillingOrg, setProjectIdForConfiguration } = useAppContext()
 
   const [controlledProjectDataSources, setControlledProjectDataSources] =
     useState<GitHubRepo[]>([])
@@ -336,22 +336,7 @@ const ProjectCreate = () => {
                 controlledProjectDataSources,
               )
 
-              // TODO: This logic needs to be moved to the mechanism that constantly updates the
-              // the selected active project. If the health comes back green then check to see if
-              // there is a default chat and if not then create the default
-              // Secondly createa a default goal for them...
-              // const defaultProjectGoal = await postDefaultGoal(
-              //   activeBillingOrg.id,
-              //   project.id,
-              // )
-
-              // // Finally start the Sara chat for the default project goal...
-              // await postChatForDefaultGoal(
-              //   defaultProjectGoal.id,
-              //   defaultProjectGoal.description,
-              // )
-
-              setProjectIdForRefreshing(project.id)
+              setProjectIdForConfiguration(project.id)
 
               router.push(`/projects/${project.id}`)
             } catch (err) {

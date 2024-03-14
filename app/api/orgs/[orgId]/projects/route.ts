@@ -294,7 +294,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
     // It may seem weird that we don't go on to create the OpenAI Assistant
     // here or cache the file info used when building the OpenAI Assistant
     // prompt but we defer this logic to the handler for:
-    // `POST /api/projects/projectId/refresh`.
+    // `POST /api/projects/projectId/config`.
     //
     // This is done for UX/UI synchronization pruposes wherein the UI can
     // start polling for the projects health at:

@@ -72,7 +72,7 @@ const renderHumanReadableHealthStatus = (
 
 const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
   const router = useRouter()
-  const { setProjectIdForRefreshing } = useAppContext()
+  const { setProjectIdForConfiguration } = useAppContext()
 
   const [project, setProject] = useState<ProjectPartDeux | null>(null)
   const [goals, setGoals] = useState<GoalPartDeux[] | null>(null)
@@ -149,7 +149,7 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
 
   // Once we have loaded our data set the project that ought to be actively
   // refreshed
-  setProjectIdForRefreshing(project.id)
+  setProjectIdForConfiguration(project.id)
 
   return (
     <div className="flex-1 flex-col gap-4 p-10 text-2xl font-bold">
@@ -217,7 +217,7 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
                 return
               }
 
-              setProjectIdForRefreshing(null)
+              setProjectIdForConfiguration(null)
               router.push(`/projects`)
             } catch (err) {
               console.debug(

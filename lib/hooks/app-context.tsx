@@ -246,10 +246,10 @@ interface AppContextType {
   activeBillingOrg: OrgPartDeux | null
   setActiveBillingOrg: (org: OrgPartDeux) => void
 
-  // To only be used to refresh the project. All individual pages ought to pull
+  // To only be used to config the project. All individual pages ought to pull
   // the project details from the REST APIs based on the project ID they get in
   // their rendered route slugs
-  setProjectIdForRefreshing: (projectId: string | null) => void
+  setProjectIdForConfiguration: (projectId: string | null) => void
 }
 
 const AppContext = createContext<AppContextType | null>(null)
@@ -291,7 +291,7 @@ export function AppProvider({ children }: AppProviderProps) {
     null,
   )
 
-  const [projectIdForRefreshing, setProjectIdForRefreshing] = useState<
+  const [projectIdForConfiguration, setProjectIdForConfiguration] = useState<
     string | null
   >(null)
 
@@ -312,8 +312,8 @@ export function AppProvider({ children }: AppProviderProps) {
     setPrototypeContext,
     activeBillingOrg,
     setActiveBillingOrg,
-    projectIdForRefreshing,
-    setProjectIdForRefreshing,
+    projectIdForConfiguration,
+    setProjectIdForConfiguration,
   }
 
   const { data: session } = useSession()
@@ -337,9 +337,9 @@ export function AppProvider({ children }: AppProviderProps) {
     fetchUser()
   }, [session])
 
-  // // Ehhh... This is probably the wrong construct to piggyback on this logic
-  // // but will be good enough for our first pass through. This project refreshing
-  // // logic is probably best suited for its own provider.
+  // Ehhh... This is probably the wrong construct to piggyback on this logic
+  // but will be good enough for our first pass through. This project config
+  // logic is probably best suited for its own provider.
   useEffect(() => {
     let isMounted = true
 
@@ -348,31 +348,31 @@ export function AppProvider({ children }: AppProviderProps) {
     // set to run every 10 seconds but for now we are running it every 60
     // seconds while we review architecture/approaches to satisfying UX moving
     // forward.
-    const refreshProjectFrequencyMilliseconds = 60000
+    const configProjectFrequencyMilliseconds = 60000
 
-    const refreshProject = async () => {
-      if (!activeBillingOrg || !projectIdForRefreshing) {
+    const configProject = async () => {
+      if (!activeBillingOrg || !projectIdForConfiguration) {
         if (isMounted) {
-          setTimeout(refreshProject, refreshProjectFrequencyMilliseconds)
+          setTimeout(configProject, configProjectFrequencyMilliseconds)
         }
 
         return
       }
 
       try {
-        // Start by just refreshing the project as we care about this request
+        // Start by just confing the project as we care about this request
         // not being short-circuited if the order of requests were different to
-        // ensure that at least there is an attempt to refresh the project.
-        const refreshRes = await fetch(
-          `/api/projects/${projectIdForRefreshing}/refresh`,
+        // ensure that at least there is an attempt to config the project.
+        const configRes = await fetch(
+          `/api/projects/${projectIdForConfiguration}/config`,
           {
             method: 'POST',
           },
         )
 
-        if (!refreshRes.ok) {
-          const resErrText = await refreshRes.text()
-          const errMsg = `Request refreshing project '${projectIdForRefreshing}' failed because: ${resErrText}`
+        if (!configRes.ok) {
+          const resErrText = await configRes.text()
+          const errMsg = `Request configuring project '${projectIdForConfiguration}' failed because: ${resErrText}`
 
           console.debug(errMsg)
           throw new Error(errMsg)
@@ -381,12 +381,12 @@ export function AppProvider({ children }: AppProviderProps) {
         // Now check the health of the project. If it is healthy then submit the
         // default chat question for the project if it hasn't been already
         const fetchProjectHealthRes = await fetch(
-          `/api/projects/${projectIdForRefreshing}/health`,
+          `/api/projects/${projectIdForConfiguration}/health`,
         )
 
         if (!fetchProjectHealthRes.ok) {
           const resErrText = await fetchProjectHealthRes.text()
-          const errMsg = `Request for projects '${projectIdForRefreshing}' health failed because: ${resErrText}`
+          const errMsg = `Request for projects '${projectIdForConfiguration}' health failed because: ${resErrText}`
 
           console.debug(errMsg)
           throw new Error(errMsg)
@@ -397,11 +397,11 @@ export function AppProvider({ children }: AppProviderProps) {
 
         if (projectHealth.readableValue !== 'HEALTHY') {
           console.debug(
-            `Project '${projectIdForRefreshing}' healths is '${projectHealth.readableValue}' - skipping default goal/chat creation`,
+            `Project '${projectIdForConfiguration}' healths is '${projectHealth.readableValue}' - skipping default goal/chat creation`,
           )
 
           if (isMounted) {
-            setTimeout(refreshProject, refreshProjectFrequencyMilliseconds)
+            setTimeout(configProject, configProjectFrequencyMilliseconds)
           }
 
           return
@@ -414,12 +414,12 @@ export function AppProvider({ children }: AppProviderProps) {
         // always creating a default goal if the user has deleted all of their
         // goals at any one point.
         const fetchProjectRes = await fetch(
-          `/api/projects/${projectIdForRefreshing}`,
+          `/api/projects/${projectIdForConfiguration}`,
         )
 
         if (!fetchProjectRes.ok) {
           const resErrText = await fetchProjectRes.text()
-          const errMsg = `Request for project '${projectIdForRefreshing}' details failed because: ${resErrText}`
+          const errMsg = `Request for project '${projectIdForConfiguration}' details failed because: ${resErrText}`
 
           console.debug(errMsg)
           throw new Error(errMsg)
@@ -434,7 +434,7 @@ export function AppProvider({ children }: AppProviderProps) {
           // have any goal IDs associated with it...
           const goalBody = {
             orgId: activeBillingOrg.id,
-            parentProjectId: projectIdForRefreshing,
+            parentProjectId: projectIdForConfiguration,
             name: 'Learn More About Your Project',
             description:
               'Provide details that will help me learn about my project. This includes details about the code in my project as well as the software packages/libraries it consumes.',
@@ -450,7 +450,7 @@ export function AppProvider({ children }: AppProviderProps) {
 
           if (!createDefeaultGoalRes.ok) {
             const resErrText = await createDefeaultGoalRes.text()
-            const errMsg = `Failed to POST default goal for project '${projectIdForRefreshing}' because: ${resErrText}`
+            const errMsg = `Failed to POST default goal for project '${projectIdForConfiguration}' because: ${resErrText}`
 
             console.debug(errMsg)
             throw new Error(errMsg)
@@ -477,7 +477,7 @@ export function AppProvider({ children }: AppProviderProps) {
 
           if (!createDefeaultGoalChatRes.ok) {
             const resErrText = await createDefeaultGoalChatRes.text()
-            const errMsg = `Failed to POST chat for default goal for project '${projectIdForRefreshing}' because: ${resErrText}`
+            const errMsg = `Failed to POST chat for default goal for project '${projectIdForConfiguration}' because: ${resErrText}`
 
             console.debug(errMsg)
             throw new Error(errMsg)
@@ -486,25 +486,25 @@ export function AppProvider({ children }: AppProviderProps) {
 
         // Restart it all over again...
         if (isMounted) {
-          setTimeout(refreshProject, refreshProjectFrequencyMilliseconds)
+          setTimeout(configProject, configProjectFrequencyMilliseconds)
         }
       } catch (error) {
         console.debug(
-          `Failed to refresh project '${projectIdForRefreshing}' because: ${error}`,
+          `Failed to config project '${projectIdForConfiguration}' because: ${error}`,
         )
 
         if (isMounted) {
-          setTimeout(refreshProject, refreshProjectFrequencyMilliseconds)
+          setTimeout(configProject, configProjectFrequencyMilliseconds)
         }
       }
     }
 
-    refreshProject()
+    configProject()
 
     return () => {
       isMounted = false
     }
-  }, [activeBillingOrg, projectIdForRefreshing])
+  }, [activeBillingOrg, projectIdForConfiguration])
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>
 }
