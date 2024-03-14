@@ -340,165 +340,171 @@ export function AppProvider({ children }: AppProviderProps) {
   // // Ehhh... This is probably the wrong construct to piggyback on this logic
   // // but will be good enough for our first pass through. This project refreshing
   // // logic is probably best suited for its own provider.
-  // useEffect(() => {
-  //   let isMounted = true
-  //   const refreshProjectFrequencyMilliseconds = 10000
+  useEffect(() => {
+    let isMounted = true
 
-  //   const refreshProject = async () => {
-  //     if (!activeBillingOrg || !projectIdForRefreshing) {
-  //       if (isMounted) {
-  //         setTimeout(refreshProject, refreshProjectFrequencyMilliseconds)
-  //       }
+    // 03/14/24: We saw our Vercel K/V usage spike between 03/10-03/13. We
+    // introduced a lot of polling from the UI. This polling here was originally
+    // set to run every 10 seconds but for now we are running it every 60
+    // seconds while we review architecture/approaches to satisfying UX moving
+    // forward.
+    const refreshProjectFrequencyMilliseconds = 60000
 
-  //       return
-  //     }
+    const refreshProject = async () => {
+      if (!activeBillingOrg || !projectIdForRefreshing) {
+        if (isMounted) {
+          setTimeout(refreshProject, refreshProjectFrequencyMilliseconds)
+        }
 
-  //     try {
-  //       // Start by just refreshing the project as we care about this request
-  //       // not being short-circuited if the order of requests were different to
-  //       // ensure that at least there is an attempt to refresh the project.
-  //       const refreshRes = await fetch(
-  //         `/api/projects/${projectIdForRefreshing}/refresh`,
-  //         {
-  //           method: 'POST',
-  //         },
-  //       )
+        return
+      }
 
-  //       if (!refreshRes.ok) {
-  //         const resErrText = await refreshRes.text()
-  //         const errMsg = `Request refreshing project '${projectIdForRefreshing}' failed because: ${resErrText}`
+      try {
+        // Start by just refreshing the project as we care about this request
+        // not being short-circuited if the order of requests were different to
+        // ensure that at least there is an attempt to refresh the project.
+        const refreshRes = await fetch(
+          `/api/projects/${projectIdForRefreshing}/refresh`,
+          {
+            method: 'POST',
+          },
+        )
 
-  //         console.debug(errMsg)
-  //         throw new Error(errMsg)
-  //       }
+        if (!refreshRes.ok) {
+          const resErrText = await refreshRes.text()
+          const errMsg = `Request refreshing project '${projectIdForRefreshing}' failed because: ${resErrText}`
 
-  //       // Now check the health of the project. If it is healthy then submit the
-  //       // default chat question for the project if it hasn't been already
-  //       const fetchProjectHealthRes = await fetch(
-  //         `/api/projects/${projectIdForRefreshing}/health`,
-  //       )
+          console.debug(errMsg)
+          throw new Error(errMsg)
+        }
 
-  //       if (!fetchProjectHealthRes.ok) {
-  //         const resErrText = await fetchProjectHealthRes.text()
-  //         const errMsg = `Request for projects '${projectIdForRefreshing}' health failed because: ${resErrText}`
+        // Now check the health of the project. If it is healthy then submit the
+        // default chat question for the project if it hasn't been already
+        const fetchProjectHealthRes = await fetch(
+          `/api/projects/${projectIdForRefreshing}/health`,
+        )
 
-  //         console.debug(errMsg)
-  //         throw new Error(errMsg)
-  //       }
+        if (!fetchProjectHealthRes.ok) {
+          const resErrText = await fetchProjectHealthRes.text()
+          const errMsg = `Request for projects '${projectIdForRefreshing}' health failed because: ${resErrText}`
 
-  //       const projectHealth =
-  //         (await fetchProjectHealthRes.json()) as ProjectHealth
+          console.debug(errMsg)
+          throw new Error(errMsg)
+        }
 
-  //       if (projectHealth.readableValue !== 'HEALTHY') {
-  //         console.debug(
-  //           `Project '${projectIdForRefreshing}' healths is '${projectHealth.readableValue}' - skipping default goal/chat creation`,
-  //         )
+        const projectHealth =
+          (await fetchProjectHealthRes.json()) as ProjectHealth
 
-  //         if (isMounted) {
-  //           setTimeout(refreshProject, refreshProjectFrequencyMilliseconds)
-  //         }
+        if (projectHealth.readableValue !== 'HEALTHY') {
+          console.debug(
+            `Project '${projectIdForRefreshing}' healths is '${projectHealth.readableValue}' - skipping default goal/chat creation`,
+          )
 
-  //         return
-  //       }
+          if (isMounted) {
+            setTimeout(refreshProject, refreshProjectFrequencyMilliseconds)
+          }
 
-  //       // This is a lazy heuristic for determining if the default goal/chat has
-  //       // been created for a project but just check to see if it has any goal
-  //       // IDs associated with it. If not we will create the default goal. In
-  //       // the future we can improve on this. Note this has the downside of
-  //       // always creating a default goal if the user has deleted all of their
-  //       // goals at any one point.
-  //       const fetchProjectRes = await fetch(
-  //         `/api/projects/${projectIdForRefreshing}`,
-  //       )
+          return
+        }
 
-  //       if (!fetchProjectRes.ok) {
-  //         const resErrText = await fetchProjectRes.text()
-  //         const errMsg = `Request for project '${projectIdForRefreshing}' details failed because: ${resErrText}`
+        // This is a lazy heuristic for determining if the default goal/chat has
+        // been created for a project but just check to see if it has any goal
+        // IDs associated with it. If not we will create the default goal. In
+        // the future we can improve on this. Note this has the downside of
+        // always creating a default goal if the user has deleted all of their
+        // goals at any one point.
+        const fetchProjectRes = await fetch(
+          `/api/projects/${projectIdForRefreshing}`,
+        )
 
-  //         console.debug(errMsg)
-  //         throw new Error(errMsg)
-  //       }
+        if (!fetchProjectRes.ok) {
+          const resErrText = await fetchProjectRes.text()
+          const errMsg = `Request for project '${projectIdForRefreshing}' details failed because: ${resErrText}`
 
-  //       const project = (await fetchProjectRes.json()) as ProjectPartDeux
+          console.debug(errMsg)
+          throw new Error(errMsg)
+        }
 
-  //       // Create the default goal if we don't find any goal IDs associated with
-  //       // the project
-  //       if (project.goalIds.length === 0) {
-  //         // Proceed with default goal and chat creation if the project doesn't
-  //         // have any goal IDs associated with it...
-  //         const goalBody = {
-  //           orgId: activeBillingOrg.id,
-  //           parentProjectId: projectIdForRefreshing,
-  //           name: 'Learn More About Your Project',
-  //           description:
-  //             'Provide details that will help me learn about my project. This includes details about the code in my project as well as the software packages/libraries it consumes.',
-  //         }
+        const project = (await fetchProjectRes.json()) as ProjectPartDeux
 
-  //         const createDefeaultGoalRes = await fetch(`/api/goals`, {
-  //           method: 'POST',
-  //           headers: {
-  //             'Content-Type': 'application/json',
-  //           },
-  //           body: JSON.stringify(goalBody),
-  //         })
+        // Create the default goal if we don't find any goal IDs associated with
+        // the project
+        if (project.goalIds.length === 0) {
+          // Proceed with default goal and chat creation if the project doesn't
+          // have any goal IDs associated with it...
+          const goalBody = {
+            orgId: activeBillingOrg.id,
+            parentProjectId: projectIdForRefreshing,
+            name: 'Learn More About Your Project',
+            description:
+              'Provide details that will help me learn about my project. This includes details about the code in my project as well as the software packages/libraries it consumes.',
+          }
 
-  //         if (!createDefeaultGoalRes.ok) {
-  //           const resErrText = await createDefeaultGoalRes.text()
-  //           const errMsg = `Failed to POST default goal for project '${projectIdForRefreshing}' because: ${resErrText}`
+          const createDefeaultGoalRes = await fetch(`/api/goals`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(goalBody),
+          })
 
-  //           console.debug(errMsg)
-  //           throw new Error(errMsg)
-  //         }
+          if (!createDefeaultGoalRes.ok) {
+            const resErrText = await createDefeaultGoalRes.text()
+            const errMsg = `Failed to POST default goal for project '${projectIdForRefreshing}' because: ${resErrText}`
 
-  //         const defaultGoal =
-  //           (await createDefeaultGoalRes.json()) as GoalPartDeux
+            console.debug(errMsg)
+            throw new Error(errMsg)
+          }
 
-  //         // Now create the chat for the default goal.
-  //         const chatBody = {
-  //           query: defaultGoal.description,
-  //         }
+          const defaultGoal =
+            (await createDefeaultGoalRes.json()) as GoalPartDeux
 
-  //         const createDefeaultGoalChatRes = await fetch(
-  //           `/api/goals/${defaultGoal.id}/chats`,
-  //           {
-  //             method: 'POST',
-  //             headers: {
-  //               'Content-Type': 'application/json',
-  //             },
-  //             body: JSON.stringify(chatBody),
-  //           },
-  //         )
+          // Now create the chat for the default goal.
+          const chatBody = {
+            query: defaultGoal.description,
+          }
 
-  //         if (!createDefeaultGoalChatRes.ok) {
-  //           const resErrText = await createDefeaultGoalChatRes.text()
-  //           const errMsg = `Failed to POST chat for default goal for project '${projectIdForRefreshing}' because: ${resErrText}`
+          const createDefeaultGoalChatRes = await fetch(
+            `/api/goals/${defaultGoal.id}/chats`,
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(chatBody),
+            },
+          )
 
-  //           console.debug(errMsg)
-  //           throw new Error(errMsg)
-  //         }
-  //       }
+          if (!createDefeaultGoalChatRes.ok) {
+            const resErrText = await createDefeaultGoalChatRes.text()
+            const errMsg = `Failed to POST chat for default goal for project '${projectIdForRefreshing}' because: ${resErrText}`
 
-  //       // Restart it all over again...
-  //       if (isMounted) {
-  //         setTimeout(refreshProject, refreshProjectFrequencyMilliseconds)
-  //       }
-  //     } catch (error) {
-  //       console.debug(
-  //         `Failed to refresh project '${projectIdForRefreshing}' because: ${error}`,
-  //       )
+            console.debug(errMsg)
+            throw new Error(errMsg)
+          }
+        }
 
-  //       if (isMounted) {
-  //         setTimeout(refreshProject, refreshProjectFrequencyMilliseconds)
-  //       }
-  //     }
-  //   }
+        // Restart it all over again...
+        if (isMounted) {
+          setTimeout(refreshProject, refreshProjectFrequencyMilliseconds)
+        }
+      } catch (error) {
+        console.debug(
+          `Failed to refresh project '${projectIdForRefreshing}' because: ${error}`,
+        )
 
-  //   refreshProject()
+        if (isMounted) {
+          setTimeout(refreshProject, refreshProjectFrequencyMilliseconds)
+        }
+      }
+    }
 
-  //   return () => {
-  //     isMounted = false
-  //   }
-  // }, [activeBillingOrg, projectIdForRefreshing])
+    refreshProject()
+
+    return () => {
+      isMounted = false
+    }
+  }, [activeBillingOrg, projectIdForRefreshing])
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>
 }
