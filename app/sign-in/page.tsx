@@ -1,11 +1,10 @@
 import { redirect } from 'next/navigation'
+import BoostExplanation from 'components/boost-explanation'
 
 import { auth } from './../../auth'
 import { LoginButton } from './../../components/login-button'
-
-import SaraPortrait from './../../public/Sara_Cartoon_Portrait.png'
 import PolyverseLogo from './../../public/Polyverse logo medium.jpg'
-import BoostExplanation from 'components/boost-explanation'
+import SaraPortrait from './../../public/Sara_Cartoon_Portrait.png'
 
 export default async function SignInPage() {
   const session = await auth()

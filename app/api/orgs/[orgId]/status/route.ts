@@ -4,8 +4,8 @@ import { UserOrgStatus } from 'lib/data-model-types'
 import { getBoostOrgStatus } from 'lib/polyverse/backend/backend'
 import { NextAuthRequest } from 'next-auth/lib'
 
-import getUser from './../../../../../lib/polyverse/db/get-user'
 import getOrg from './../../../../../lib/polyverse/db/get-org'
+import getUser from './../../../../../lib/polyverse/db/get-user'
 
 export const GET = auth(async (req: NextAuthRequest) => {
   const { auth } = req

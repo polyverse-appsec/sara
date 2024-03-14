@@ -4,13 +4,19 @@ import { Run } from 'openai/resources/beta/threads/runs/runs'
 import { Thread } from 'openai/resources/beta/threads/threads'
 
 import {
-  type TaskPartDeux,
   type PromptFileInfo,
+  type TaskPartDeux,
 } from './../../../lib/data-model-types'
 import createTask from './../../../lib/polyverse/db/create-task'
 import { createBaseSaraObject } from './../../../lib/polyverse/db/utils'
-import { findAssistantFromMetadata, type AssistantMetadata } from './../../../lib/polyverse/openai/assistants'
-import { mapPromptFileInfosToPromptFileTypes, type PromptFileTypes } from './../../../lib/polyverse/openai/utils'
+import {
+  findAssistantFromMetadata,
+  type AssistantMetadata,
+} from './../../../lib/polyverse/openai/assistants'
+import {
+  mapPromptFileInfosToPromptFileTypes,
+  type PromptFileTypes,
+} from './../../../lib/polyverse/openai/utils'
 
 const oaiClient = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -247,8 +253,8 @@ export const createThreadRunForProjectGoalChatting = async (
   assistantId: string,
   threadId: string,
 ): Promise<Run> => {
-
-  const identifiedPromptFileTypes = mapPromptFileInfosToPromptFileTypes(promptFileInfos)
+  const identifiedPromptFileTypes =
+    mapPromptFileInfosToPromptFileTypes(promptFileInfos)
 
   const prompt = createOpenAIAssistantPromptForGoals(
     identifiedPromptFileTypes,

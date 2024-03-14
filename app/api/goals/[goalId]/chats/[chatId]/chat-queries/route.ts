@@ -27,20 +27,18 @@ import { createBaseSaraObject } from './../../../../../../../lib/polyverse/db/ut
 import {
   ASSISTANT_METADATA_CREATOR,
   findAssistantFromMetadata,
+  updateAssistantForPromptFileInfos,
   type AssistantMetadata,
-  updateAssistantForPromptFileInfos
 } from './../../../../../../../lib/polyverse/openai/assistants'
 import {
-  mapPromptFileInfosToPromptFileTypes
-} from './../../../../../../../lib/polyverse/openai/utils'
-import {
   addQueryToThreadForProjectGoalChatting,
+  createOpenAIAssistantPromptForGoals,
   createThreadRunForProjectGoalChatting,
   getChatQueryResponseFromThread,
   getThreadRunForProjectGoalChatting,
   handleRequiresActionStatusForProjectGoalChatting,
-  createOpenAIAssistantPromptForGoals
 } from './../../../../../../../lib/polyverse/openai/goalsAssistant'
+import { mapPromptFileInfosToPromptFileTypes } from './../../../../../../../lib/polyverse/openai/utils'
 import { promptFileInfosEqual } from './../../../../../../../lib/utils'
 
 // 03/04/24: We set this max duration to 60 seconds during initial development
@@ -300,17 +298,20 @@ export const POST = auth(async (req: NextAuthRequest) => {
       cachedPromptFileInfoPromises,
     )
 
-    const shouldUpdateCachedPromptFileInfos = !(promptFileInfosEqual(
+    const shouldUpdateCachedPromptFileInfos = !promptFileInfosEqual(
       cachedPromptFileInfos,
       promptFileInfos,
-    ))
+    )
 
     if (shouldUpdateCachedPromptFileInfos) {
       // Since we are updating our cached file infos lets also update the
       // generalized prompt of the OpenAI Assistant. Remember that when we
       // perform a Run on a Thread we will override these generalized
       // instructions with ones more specific to contextualizing goals.
-      assistant = await updateAssistantForPromptFileInfos(promptFileInfos, assistantMetadata)
+      assistant = await updateAssistantForPromptFileInfos(
+        promptFileInfos,
+        assistantMetadata,
+      )
 
       // If we need to update our prompt start by updating the cache of our
       // prompt file infos. Start by deleting the existing cached prompt
@@ -404,9 +405,9 @@ export const POST = auth(async (req: NextAuthRequest) => {
 
     // Now start a run on the thread for the query we just added
     const threadRun = await createThreadRunForProjectGoalChatting(
-      shouldUpdateCachedPromptFileInfos ?
-        promptFileInfos :
-        cachedPromptFileInfos,
+      shouldUpdateCachedPromptFileInfos
+        ? promptFileInfos
+        : cachedPromptFileInfos,
       goal.name,
       goal.description,
       assistant.id,

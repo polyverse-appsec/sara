@@ -2,8 +2,8 @@ import { ReasonPhrases, StatusCodes } from 'http-status-codes'
 import { NextAuthRequest } from 'next-auth/lib'
 import { Assistant } from 'openai/resources/beta/assistants/assistants'
 
-
 import { auth } from '../../../../../auth'
+import getProjectPromptFileInfoIds from '../../../../../lib/polyverse/db/get-project-prompt-file-info-ids'
 import {
   type GitHubRepo,
   type ProjectDataReference,
@@ -17,25 +17,24 @@ import {
   getBoostOrgUserStatus,
   getFileInfoPartDeux,
 } from './../../../../../lib/polyverse/backend/backend'
-import getProjectPromptFileInfoIds from '../../../../../lib/polyverse/db/get-project-prompt-file-info-ids'
-import getPromptFileInfo from './../../../../../lib/polyverse/db/get-prompt-file-info'
-import deletePromptFileInfo from './../../../../../lib/polyverse/db/delete-prompt-file-info'
 import createProject from './../../../../../lib/polyverse/db/create-project'
 import createProjectDataSource from './../../../../../lib/polyverse/db/create-project-data-source'
 import createPromptFileInfo from './../../../../../lib/polyverse/db/create-prompt-file-info'
+import deletePromptFileInfo from './../../../../../lib/polyverse/db/delete-prompt-file-info'
 import getOrg from './../../../../../lib/polyverse/db/get-org'
 import getProject from './../../../../../lib/polyverse/db/get-project'
+import getPromptFileInfo from './../../../../../lib/polyverse/db/get-prompt-file-info'
 import getUser from './../../../../../lib/polyverse/db/get-user'
 import updateOrg from './../../../../../lib/polyverse/db/update-org'
 import updateProject from './../../../../../lib/polyverse/db/update-project'
 import { createBaseSaraObject } from './../../../../../lib/polyverse/db/utils'
 import {
   ASSISTANT_METADATA_CREATOR,
-  findAssistantFromMetadata,
   createAssistant,
+  findAssistantFromMetadata,
   getVersion,
+  updateAssistantForPromptFileInfos,
   type AssistantMetadata,
-  updateAssistantForPromptFileInfos
 } from './../../../../../lib/polyverse/openai/assistants'
 import { promptFileInfosEqual } from './../../../../../lib/utils'
 
@@ -55,7 +54,6 @@ export const POST = auth(async (req: NextAuthRequest) => {
       status: StatusCodes.UNAUTHORIZED,
     })
   }
-
 
   // TODO: Should be able to do Dynamic Route segments as documented:
   // https://nextjs.org/docs/app/building-your-application/routing/route-handlers#dynamic-route-segments
@@ -91,17 +89,17 @@ export const POST = auth(async (req: NextAuthRequest) => {
     // AuthZ: Check that the user has access to the organization that is listed
     // on the project
     if (!user.orgIds || user.orgIds.length === 0) {
-        return new Response(ReasonPhrases.UNAUTHORIZED, {
-            status: StatusCodes.UNAUTHORIZED,
-        })
+      return new Response(ReasonPhrases.UNAUTHORIZED, {
+        status: StatusCodes.UNAUTHORIZED,
+      })
     }
 
     const foundOrgId = user.orgIds.find((orgId) => orgId === project.orgId)
 
     if (!foundOrgId) {
-        return new Response(ReasonPhrases.UNAUTHORIZED, {
-            status: StatusCodes.UNAUTHORIZED,
-        })
+      return new Response(ReasonPhrases.UNAUTHORIZED, {
+        status: StatusCodes.UNAUTHORIZED,
+      })
     }
 
     // AuthZ: Check that the organization that owns the project has listed
@@ -109,17 +107,17 @@ export const POST = auth(async (req: NextAuthRequest) => {
     const org = await getOrg(project.orgId)
 
     if (!org.userIds || org.userIds.length === 0) {
-        return new Response(ReasonPhrases.UNAUTHORIZED, {
-            status: StatusCodes.UNAUTHORIZED,
-        })
+      return new Response(ReasonPhrases.UNAUTHORIZED, {
+        status: StatusCodes.UNAUTHORIZED,
+      })
     }
 
     const foundUserIdOnOrg = org.userIds.find((userId) => userId === user.id)
 
     if (!foundUserIdOnOrg) {
-        return new Response(ReasonPhrases.UNAUTHORIZED, {
-            status: StatusCodes.UNAUTHORIZED,
-        })
+      return new Response(ReasonPhrases.UNAUTHORIZED, {
+        status: StatusCodes.UNAUTHORIZED,
+      })
     }
 
     // 03/12/24: For now we are blocking project refresh unless you have the
@@ -165,89 +163,93 @@ export const POST = auth(async (req: NextAuthRequest) => {
     // don't have the 3 file infos for the project (blueprint, AI spec, project
     // source) then fail as we won't refresh the project without them.
     const boostFileInfos = await getFileInfoPartDeux(
-        org.name,
-        project.name,
-        user.email,
+      org.name,
+      project.name,
+      user.email,
     )
 
     if (!boostFileInfos || boostFileInfos.length !== 3) {
-        console.debug(`Failing refresh for project '${project.id}' because failed to get the 3 requisite file infos`)
+      console.debug(
+        `Failing refresh for project '${project.id}' because failed to get the 3 requisite file infos`,
+      )
 
-        return new Response(ReasonPhrases.INTERNAL_SERVER_ERROR, {
-            status: StatusCodes.INTERNAL_SERVER_ERROR,
-        })
+      return new Response(ReasonPhrases.INTERNAL_SERVER_ERROR, {
+        status: StatusCodes.INTERNAL_SERVER_ERROR,
+      })
     }
 
     // For now we need to convert the file info we get from Boost into instances
     // of `PromptFileInfo` since we rely on persisting data that first has a
     // basic structure based off of `BaseSaraObject` types.
     const promptFileInfos = boostFileInfos.map((boostFileInfo) => {
-        const promptFileInfoBaseSaraObject = createBaseSaraObject()
-  
-        const promptFileInfo: PromptFileInfo = {
-          // BaseSareObject properties...
-          ...promptFileInfoBaseSaraObject,
-  
-          // PromptFileInfo properties...
-          //
-          // Note that spreading out the properties of Boost file info which is
-          // an instance of `ProjectDataReference` is replacing the ID that would
-          // be created as a result of spreading out the `BaseSaraObject`
-          ...boostFileInfo,
-          parentProjectId: project.id,
-        }
-  
-        // It isn't obvious what is going on here. When we make a call to the
-        // Boost backend for `GET data_references` the objects returned also
-        // contain the `lastUpdatedAt` property. Since we are persisting this info
-        // in our K/V set the `createdAt` value to that of `lastUpdatedAt` so it
-        // doesn't appear wonky in our data (i.e. that `createdAt` is more recent
-        // than `lastUpdatedAt`).
-        promptFileInfo.createdAt = promptFileInfo.lastUpdatedAt
-  
-        return promptFileInfo
-      })
+      const promptFileInfoBaseSaraObject = createBaseSaraObject()
+
+      const promptFileInfo: PromptFileInfo = {
+        // BaseSareObject properties...
+        ...promptFileInfoBaseSaraObject,
+
+        // PromptFileInfo properties...
+        //
+        // Note that spreading out the properties of Boost file info which is
+        // an instance of `ProjectDataReference` is replacing the ID that would
+        // be created as a result of spreading out the `BaseSaraObject`
+        ...boostFileInfo,
+        parentProjectId: project.id,
+      }
+
+      // It isn't obvious what is going on here. When we make a call to the
+      // Boost backend for `GET data_references` the objects returned also
+      // contain the `lastUpdatedAt` property. Since we are persisting this info
+      // in our K/V set the `createdAt` value to that of `lastUpdatedAt` so it
+      // doesn't appear wonky in our data (i.e. that `createdAt` is more recent
+      // than `lastUpdatedAt`).
+      promptFileInfo.createdAt = promptFileInfo.lastUpdatedAt
+
+      return promptFileInfo
+    })
 
     // Get our cached file infos to see if we ought to update our prompt
     const cachedPromptFileInfoIds = await getProjectPromptFileInfoIds(
-        project.id,
+      project.id,
     )
 
     const cachedPromptFileInfoPromises = cachedPromptFileInfoIds.map(
-        (cachedPromptFileInfoId) => getPromptFileInfo(cachedPromptFileInfoId),
-    )
-    
-    const cachedPromptFileInfos = await Promise.all(
-        cachedPromptFileInfoPromises,
+      (cachedPromptFileInfoId) => getPromptFileInfo(cachedPromptFileInfoId),
     )
 
-    const shouldUpdateCachedPromptFileInfos = !(promptFileInfosEqual(
-        cachedPromptFileInfos,
-        promptFileInfos,
-    ))
+    const cachedPromptFileInfos = await Promise.all(
+      cachedPromptFileInfoPromises,
+    )
+
+    const shouldUpdateCachedPromptFileInfos = !promptFileInfosEqual(
+      cachedPromptFileInfos,
+      promptFileInfos,
+    )
 
     // Before we proceed to update prompts lets make sure we have an Assistant
     // in the first place. Remember that this REST API is expected to be invoked
     // after simply creating a shell of the project data in Sara and Boost.
     let assistant: Assistant | undefined = undefined
     const assistantMetadata: AssistantMetadata = {
-        projectId: project.id,
-        userName: user.username,
-        orgName: org.name,
-        // Will be ignored when searching
-        creator: ASSISTANT_METADATA_CREATOR,
-        // Will be ignored when searching
-        version: getVersion(),
+      projectId: project.id,
+      userName: user.username,
+      orgName: org.name,
+      // Will be ignored when searching
+      creator: ASSISTANT_METADATA_CREATOR,
+      // Will be ignored when searching
+      version: getVersion(),
     }
 
     try {
       assistant = await findAssistantFromMetadata(assistantMetadata)
     } catch (error) {
-        console.debug(`Failed making a request for the OpenAI Assistant for project '${project.id}' because: ${error}`)
+      console.debug(
+        `Failed making a request for the OpenAI Assistant for project '${project.id}' because: ${error}`,
+      )
 
-        return new Response(ReasonPhrases.INTERNAL_SERVER_ERROR, {
-            status: StatusCodes.INTERNAL_SERVER_ERROR,
-        })
+      return new Response(ReasonPhrases.INTERNAL_SERVER_ERROR, {
+        status: StatusCodes.INTERNAL_SERVER_ERROR,
+      })
     }
 
     // Now actually create the Assistant if it doesn't exist or update its
@@ -255,16 +257,16 @@ export const POST = auth(async (req: NextAuthRequest) => {
     // generic vs. the prompt we would provide it when processing a goal or a
     // task.
     if (!assistant) {
-        // TODO: After we switch over to the new UI/UX workflows change this signature to take
-        // PromptFileInfo
-        await createAssistant(boostFileInfos, assistantMetadata)
+      // TODO: After we switch over to the new UI/UX workflows change this signature to take
+      // PromptFileInfo
+      await createAssistant(boostFileInfos, assistantMetadata)
     } else {
-        await updateAssistantForPromptFileInfos(
-            shouldUpdateCachedPromptFileInfos
-                ? promptFileInfos
-                : cachedPromptFileInfos,
-                assistantMetadata
-            )
+      await updateAssistantForPromptFileInfos(
+        shouldUpdateCachedPromptFileInfos
+          ? promptFileInfos
+          : cachedPromptFileInfos,
+        assistantMetadata,
+      )
     }
 
     // We cache after creating/updating the OpenAI Assistant so that in the
@@ -272,26 +274,26 @@ export const POST = auth(async (req: NextAuthRequest) => {
     // updating the Assistant and thus the cache again on subsequent invocations
     // of this REST API.
     if (shouldUpdateCachedPromptFileInfos) {
-        // If we need to update our prompt start by updating the cache of our
-        // prompt file infos. Start by deleting the existing cached prompt
-        // file infos.
-        const deleteCachedPromptFileInfoPromises = cachedPromptFileInfos.map(
-          (cachedPromptFileInfo) =>
-            deletePromptFileInfo(
-              cachedPromptFileInfo.id,
-              cachedPromptFileInfo.parentProjectId,
-            ),
-        )
-  
-        await Promise.all(deleteCachedPromptFileInfoPromises)
-  
-        // Now cache the new set of prompt file infos.
-        const createPromptFileInfoPromises = promptFileInfos.map(
-          (promptFileInfo) => createPromptFileInfo(promptFileInfo),
-        )
-  
-        await Promise.all(createPromptFileInfoPromises)
-      }
+      // If we need to update our prompt start by updating the cache of our
+      // prompt file infos. Start by deleting the existing cached prompt
+      // file infos.
+      const deleteCachedPromptFileInfoPromises = cachedPromptFileInfos.map(
+        (cachedPromptFileInfo) =>
+          deletePromptFileInfo(
+            cachedPromptFileInfo.id,
+            cachedPromptFileInfo.parentProjectId,
+          ),
+      )
+
+      await Promise.all(deleteCachedPromptFileInfoPromises)
+
+      // Now cache the new set of prompt file infos.
+      const createPromptFileInfoPromises = promptFileInfos.map(
+        (promptFileInfo) => createPromptFileInfo(promptFileInfo),
+      )
+
+      await Promise.all(createPromptFileInfoPromises)
+    }
 
     // Don't forget to indicate that we refreshed the project
     project.lastRefreshedAt = new Date()

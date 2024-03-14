@@ -9,10 +9,12 @@ import {
 } from '../../data-model-types'
 import { getFileInfo } from '../backend/backend'
 import { isRecord } from '../typescript/helpers'
+import {
+  mapPromptFileInfosToPromptFileTypes,
+  type PromptFileTypes,
+} from './../../../lib/polyverse/openai/utils'
 import { submitTaskStepsAssistantFunction } from './assistantTools'
 import { OPENAI_MODEL } from './constants'
-import { mapPromptFileInfosToPromptFileTypes, type PromptFileTypes } from './../../../lib/polyverse/openai/utils'
-
 
 export const ASSISTANT_METADATA_CREATOR = 'sara.frontend'
 
@@ -49,7 +51,9 @@ function createAssistantName(metadata: AssistantMetadata): string {
 // in this file use the old `FileTypes` type. Once we have fully cut over to
 // the new UI that consumes this new data model/Open AI logic  we ought to
 // update the other functions to use the new type.
-function getOpenAIAssistantInstructions(fileTypes: FileTypes | PromptFileTypes): string {
+function getOpenAIAssistantInstructions(
+  fileTypes: FileTypes | PromptFileTypes,
+): string {
   // This prompt was engineered to guide Sara on what she will be doing
   // overall when she is created as an OpenAI Assistant. When specific questions
   // are asked of her in a Thread and she is told to provide an answer to the
@@ -130,9 +134,7 @@ export async function findAssistantFromMetadata(
   )
 }
 
-export async function getAssistant(
-  assistantId: string,
-): Promise<Assistant> {
+export async function getAssistant(assistantId: string): Promise<Assistant> {
   return oaiClient.beta.assistants.retrieve(assistantId)
 }
 
@@ -255,9 +257,7 @@ export const updateAssistantForPromptFileInfos = async (
   const identifiedPromptFileTypes =
     mapPromptFileInfosToPromptFileTypes(promptFileInfos)
 
-  const prompt = getOpenAIAssistantInstructions(
-    identifiedPromptFileTypes,
-  )
+  const prompt = getOpenAIAssistantInstructions(identifiedPromptFileTypes)
 
   return oaiClient.beta.assistants.update(assistant.id, {
     file_ids: fileIDs,

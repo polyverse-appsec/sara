@@ -72,10 +72,14 @@ export const promptFileInfosEqual = (
   // fail strict equality tests when it looks like the objects are in deed
   // copies of each other.
   const sortedThisPromptFileInfos = orderBy(thisPromptFileInfos, ['id']).map(
-    (sortedThisPromptFileInfo) => JSON.parse(JSON.stringify(sortedThisPromptFileInfo)))
+    (sortedThisPromptFileInfo) =>
+      JSON.parse(JSON.stringify(sortedThisPromptFileInfo)),
+  )
 
   const sortedThatPromptFileInfos = orderBy(thatPromptFileInfos, ['id']).map(
-    (sortedThatPromptFileInfo) => JSON.parse(JSON.stringify(sortedThatPromptFileInfo)))
+    (sortedThatPromptFileInfo) =>
+      JSON.parse(JSON.stringify(sortedThatPromptFileInfo)),
+  )
 
   return isEqual(sortedThisPromptFileInfos, sortedThatPromptFileInfos)
 }
