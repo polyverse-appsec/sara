@@ -83,10 +83,10 @@ export function UserMenu({ user }: UserMenuProps) {
   const saraSession = session.data ? (session.data as SaraSession) : null
 
   const [userGitHubAppInstalled, setUserGitHubAppInstalled] =
-    useState<boolean>(false)
+    useState<boolean>(true)
   const [orgGitHubAppInstalled, setOrgGitHubAppInstalled] =
-    useState<boolean>(false)
-  const [userIsPremium, setUserIsPremium] = useState<boolean>(false)
+    useState<boolean>(true)
+  const [userIsPremium, setUserIsPremium] = useState<boolean>(true)
 
   useEffect(() => {
     const fetchUserStatus = async () => {
