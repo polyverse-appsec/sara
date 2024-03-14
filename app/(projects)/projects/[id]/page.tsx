@@ -41,7 +41,7 @@ const renderHumanReadableHealthStatus = (
 ) => {
   if (readableHealthValue === 'UNHEALTHY') {
     return (
-      <p className="text-red-500">
+      <p>
         Sara is having some trouble learning about your project code and
         architecture. Never fear! She will not give up learning and trying to
         help. Please come back soon when she is ready!
@@ -51,7 +51,7 @@ const renderHumanReadableHealthStatus = (
 
   if (readableHealthValue === 'PARTIALLY_HEALTHY') {
     return (
-      <p className="text-yellow-500">
+      <p>
         Sara is still learning about your project, so she may not have the best
         answers yet. Feel free to ask questions now, or have a cup of tea and
         wait a few minutes for her best answers :D
@@ -61,7 +61,7 @@ const renderHumanReadableHealthStatus = (
 
   if (readableHealthValue === 'HEALTHY') {
     return (
-      <p className="text-green-500">
+      <p>
         Sara has learned about your project code and architecture. She is fully
         up to speed and happy to answer all your architectural and code
         questions!
@@ -106,7 +106,7 @@ const renderChatForGoal = (
     return (
       <div className="flex">
         <h3 className="text-lg font-semibold text-center">
-          Preparing Your Chat
+          Building initial advice for your Goal
         </h3>
         <LoadingSpinner />
       </div>

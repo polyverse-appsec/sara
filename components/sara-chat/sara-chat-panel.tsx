@@ -38,7 +38,7 @@ const renderChatAlert = (projectHealth: ProjectHealthStatusValue) => {
     return (
       <>
         <ExclamationTriangleIcon className="text-yellow-500" />
-        Currently Learning - Chat Results May Vary
+        Sara is still Deep Learning - Your Results Will Improve Over Time
       </>
     )
   }
