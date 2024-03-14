@@ -65,7 +65,6 @@ export default function RootLayout({ children }: RootLayoutProps) {
             {/* @ts-ignore */}
             <main className="flex flex-col flex-1 bg-muted/50">{children}</main>
           </div>
-          <Footer />
         </Providers>
       </body>
     </html>
