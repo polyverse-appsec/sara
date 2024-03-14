@@ -26,6 +26,11 @@ const GoalIndex = ({ params: { id } }: { params: { id: string } }) => {
     })()
   }, [])
 
+  // 03/14/24: We are prepping for a demo and new customer on-boarding next
+  // week. As a result we are cutting the usage of this rendered page for now.
+  // To make sure it renders we just hardcoded `HEALTHY` into the rendering of
+  // the <SaraChat.projectHealth> variable
+
   return (
     <div className="max-h-screen overflow-auto">
       <div className="flex-1 flex-col gap-4 p-10 text-2xl">
