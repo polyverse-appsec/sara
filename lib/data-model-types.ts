@@ -272,6 +272,15 @@ export const projectHealthScalarValuesByReadableValues: ProjectHealthScalarValue
     HEALTHY: 0.0,
   }
 
+// TODO: Test
+export type ProjectHealthConfigurationState =
+  | 'UNKNOWN'
+  | 'VECTOR_DATA_AVAILABLE'
+  | 'LLM_CREATED'
+  | 'VECTOR_DATA_ATTACHED_TO_LLM'
+  | 'VECTOR_DATA_UPDATE_AVAILABLE'
+  | 'CONFIGURED'
+
 export interface ProjectHealth {
   // The ID of the project that the health details are for
   projectId: string
@@ -292,6 +301,16 @@ export interface ProjectHealth {
   // help of support
   scalarValue: number
   readableValue: ProjectHealthStatusValue
+
+  // These are different configuration states for a project that a consumer
+  // of Sara would care about. Note they don't directly correlate to the
+  // different states that the Boost backend could provide.
+  //
+  // As project configuration progresses - and possibly fails at different
+  // points - these states can be provided back to the client to help guide
+  // them on the experience they may receive from Sara at any given point in
+  // configuration.
+  configurationState: ProjectHealthConfigurationState
 
   // Reasoning for the current value of the health
   message: string

@@ -346,9 +346,9 @@ export function AppProvider({ children }: AppProviderProps) {
     // 03/14/24: We saw our Vercel K/V usage spike between 03/10-03/13. We
     // introduced a lot of polling from the UI. This polling here was originally
     // set to run every 10 seconds but for now we are running it every 60
-    // seconds while we review architecture/approaches to satisfying UX moving
-    // forward.
-    const configProjectFrequencyMilliseconds = 60000
+    // seconds once the projects health turns green. We will review the
+    // architecture/approaches to satisfying UX moving forward.
+    let configProjectFrequencyMilliseconds = 10000
 
     const configProject = async () => {
       if (!activeBillingOrg || !projectIdForConfiguration) {
@@ -395,9 +395,21 @@ export function AppProvider({ children }: AppProviderProps) {
         const projectHealth =
           (await fetchProjectHealthRes.json()) as ProjectHealth
 
-        if (projectHealth.readableValue !== 'HEALTHY') {
+        // Our behavior will pivot based on the health of the project.
+        // Once we the project as 'HEALTHY' we will start re-running this
+        // logic once every 60 seconds. If it isn't then we will re-run it
+        // more frequently.
+        if (projectHealth.readableValue === 'HEALTHY') {
+          configProjectFrequencyMilliseconds = 60000
+        } else {
+          configProjectFrequencyMilliseconds = 10000
+        }
+
+        // If we are in an `UNHEALTHY` state we won't even consider creating
+        // the default goal and chat even if one isn't created yet
+        if (projectHealth.readableValue === 'UNHEALTHY') {
           console.debug(
-            `Project '${projectIdForConfiguration}' healths is '${projectHealth.readableValue}' - skipping default goal/chat creation`,
+            `Project '${projectIdForConfiguration}' health is '${projectHealth.readableValue}' in a configuration state of '${projectHealth.configurationState}' - skipping default goal/chat creation`,
           )
 
           if (isMounted) {
@@ -407,6 +419,31 @@ export function AppProvider({ children }: AppProviderProps) {
           return
         }
 
+        // We at least need to have vector data - any - attached to the LLM for
+        // us to provide a chat experience. The configuration states that happen
+        // before it aren't valid states when we are `PARTIALLY_HEALTHY`. Those
+        // states are: `UNKNOWN`, `VECTOR_DATA_AVAILABLE`, and `LLM_CREATED`
+        if (
+          projectHealth.readableValue === 'PARTIALLY_HEALTHY' &&
+          (projectHealth.configurationState === 'UNKNOWN' ||
+            projectHealth.configurationState === 'VECTOR_DATA_AVAILABLE' ||
+            projectHealth.configurationState === 'LLM_CREATED')
+        ) {
+          console.debug(
+            `Project '${projectIdForConfiguration}' health is '${projectHealth.readableValue}' in a configuration state of '${projectHealth.configurationState}' - skipping default goal/chat creation`,
+          )
+
+          if (isMounted) {
+            setTimeout(configProject, configProjectFrequencyMilliseconds)
+          }
+
+          return
+        }
+
+        // At this point our project is either healthy or partially healthy in
+        // some configuration state that can provide some chat experience.
+        // Create the default goal and chat now if needed.
+        //
         // This is a lazy heuristic for determining if the default goal/chat has
         // been created for a project but just check to see if it has any goal
         // IDs associated with it. If not we will create the default goal. In

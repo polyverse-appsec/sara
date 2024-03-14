@@ -14,6 +14,7 @@ import {
   type ProjectDataSourcePartDeux,
   type ProjectHealth,
   type ProjectHealthStatusValue,
+  type ProjectHealthConfigurationState
 } from './../../../../../lib/data-model-types'
 import { getFileInfoPartDeux } from './../../../../../lib/polyverse/backend/backend'
 import getBoostProjectStatus, {
@@ -29,8 +30,9 @@ import {
 const createProjectHealth = (
   projectId: string,
   readableValue: ProjectHealthStatusValue,
+  configurationState: ProjectHealthConfigurationState,
   message: string,
-  actionableRecourse: string | null = null,
+  actionableRecourse: string | null = null
 ) => {
   const scalarValue = projectHealthScalarValuesByReadableValues[readableValue]
 
@@ -40,6 +42,7 @@ const createProjectHealth = (
     readableValue,
     message,
     actionableRecourse,
+    configurationState,
     lastCheckedAt: new Date(),
   }
 
@@ -129,6 +132,17 @@ export const GET = auth(async (req: NextAuthRequest) => {
     // `GET /api/user_project/${billingOrgName}/${projectId}/data_references`
     // 5) The 3 files attached to the OpenAI Assistant are completely processed
     //
+    // If we deem we haven't satisfied any of the requirements for any of the
+    // aforementioned steps then we ought to indicate to the client what state
+    // of configuration the project is in. We ought to indicate the previous
+    // step that we were able to confirm as documented here:
+    // Fail Step 1) -> 'UNKNOWN'
+    // Fail Step 2) -> 'VECTOR_DATA_AVAILABLE'
+    // Fail Step 3) -> 'LLM_CREATED'
+    // Fail Step 4) -> 'VECTOR_DATA_ATTACHED_TO_LLM'
+    // Fail Step 5) -> 'VECTOR_DATA_UPDATE_AVAILABLE'
+    // Pass Step 5) -> 'CONFIGURED'
+    //
     // Note that the OpenAI Assistant can have 3 files attached to it but we
     // need to ensure that the Assistant has the LATEST files attached to it
     // as returned by
@@ -147,17 +161,18 @@ export const GET = auth(async (req: NextAuthRequest) => {
     } catch (error) {
       const errMsg = `Failed to get data references for project '${project.name}' for org '${org.name}' because: ${error}`
 
-      const projectHealth = createProjectHealth(project.id, 'UNHEALTHY', errMsg)
+      const projectHealth = createProjectHealth(project.id, 'UNHEALTHY', 'UNKNOWN', errMsg)
 
       return new Response(JSON.stringify(projectHealth), {
         status: StatusCodes.OK,
       })
     }
 
-    if (!boostFileInfos || boostFileInfos.length === 0) {
+    if (!boostFileInfos || boostFileInfos.length !== 3) {
       const projectHealth = createProjectHealth(
         project.id,
         'UNHEALTHY',
+        'UNKNOWN',
         'Data references not available',
         'Try to get data references again',
       )
@@ -194,7 +209,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
     } catch (error) {
       const errMsg = `Failed to get LLM for project '${project.name}' for org '${org.name}' because: ${error}`
 
-      const projectHealth = createProjectHealth(project.id, 'UNHEALTHY', errMsg)
+      const projectHealth = createProjectHealth(project.id, 'UNHEALTHY', 'UNKNOWN', errMsg)
 
       return new Response(JSON.stringify(projectHealth), {
         status: StatusCodes.OK,
@@ -210,6 +225,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
       const projectHealth = createProjectHealth(
         project.id,
         'PARTIALLY_HEALTHY',
+        'VECTOR_DATA_AVAILABLE',
         `LLM not yet created`,
         `Refresh project`,
       )
@@ -224,6 +240,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
       const projectHealth = createProjectHealth(
         project.id,
         'PARTIALLY_HEALTHY',
+        'LLM_CREATED',
         `LLM missing full file references`,
         `Refresh project`,
       )
@@ -250,6 +267,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
       const projectHealth = createProjectHealth(
         project.id,
         'PARTIALLY_HEALTHY',
+        'VECTOR_DATA_ATTACHED_TO_LLM',
         `File references need to be updated for the LLM`,
         `Refresh project`,
       )
@@ -273,6 +291,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
         const projectHealth = createProjectHealth(
           project.id,
           'PARTIALLY_HEALTHY',
+          'VECTOR_DATA_UPDATE_AVAILABLE',
           `LLM not synchronized`,
           `Refresh project`,
         )
@@ -284,7 +303,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
     } catch (error) {
       const errMsg = `Failed to get LLM status for project '${project.name}' for org '${org.name}' because: ${error}`
 
-      const projectHealth = createProjectHealth(project.id, 'UNHEALTHY', errMsg)
+      const projectHealth = createProjectHealth(project.id, 'UNHEALTHY', 'UNKNOWN',errMsg)
 
       return new Response(JSON.stringify(projectHealth), {
         status: StatusCodes.OK,
@@ -296,6 +315,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
     const projectHealth = createProjectHealth(
       project.id,
       'HEALTHY',
+      'CONFIGURED',
       'Sara LLM configured',
     )
 

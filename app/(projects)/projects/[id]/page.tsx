@@ -10,6 +10,7 @@ import { Button } from './../../../../components/ui/button'
 import {
   type GoalPartDeux,
   type ProjectHealth,
+  type ProjectHealthConfigurationState,
   type ProjectHealthStatusValue,
   type ProjectPartDeux,
 } from './../../../../lib/data-model-types'
@@ -39,10 +40,9 @@ const renderHumanReadableHealthStatus = (
   if (readableHealthValue === 'UNHEALTHY') {
     return (
       <p className="text-red-500">
-        {' '}
         Sara is having some trouble learning about your project code and
         architecture. Never fear! She will not give up learning and trying to
-        help. Please come back soon when she is ready!{' '}
+        help. Please come back soon when she is ready!
       </p>
     )
   }
@@ -52,7 +52,7 @@ const renderHumanReadableHealthStatus = (
       <p className="text-yellow-500">
         Sara is still learning about your project, so she may not have the best
         answers yet. Feel free to ask questions now, or have a cup of tea and
-        wait a few minutes for her best answers :D{' '}
+        wait a few minutes for her best answers :D
       </p>
     )
   }
@@ -70,6 +70,32 @@ const renderHumanReadableHealthStatus = (
   return 'Unknown'
 }
 
+const renderHumanReadableConfigurationState = (
+  configurationState: ProjectHealthConfigurationState,
+) => {
+  switch (configurationState) {
+    case 'UNKNOWN':
+      // Don't return a scary string
+      return 'Configuring'
+    case 'VECTOR_DATA_AVAILABLE':
+      return 'Vector Data Available'
+    case 'LLM_CREATED':
+      return 'LLM Created'
+    case 'VECTOR_DATA_ATTACHED_TO_LLM':
+      return 'Vector Data Attached To LLM'
+    case 'VECTOR_DATA_UPDATE_AVAILABLE':
+      return 'Vector Data Update Available'
+    case 'CONFIGURED':
+      return 'Fully Configured'
+    default:
+      // Well we said we wouldn't return a scary string when it was actually in
+      // the 'UNKNOWN' state. Lets at least return one here presuming we will
+      // never hit it but in the event we haven't handled some state show this
+      // string so it could be reported to us via a bug by a customer.
+      return 'Unknown'
+  }
+}
+
 const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
   const router = useRouter()
   const { setProjectIdForConfiguration } = useAppContext()
@@ -80,6 +106,7 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
 
   const [deleteButtonEnabled, setDeleteButtonEnabled] = useState<boolean>(true)
 
+  // This use effect is to just get the project details...
   useEffect(() => {
     let isMounted = true
     const fetchProjectDeatilsFrequencyMilliseconds = 5000
@@ -152,47 +179,39 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
   setProjectIdForConfiguration(project.id)
 
   return (
-    <div className="flex-1 flex-col gap-4 p-10 text-2xl font-bold">
+    <div className="flex-1 flex-col p-10">
       <div className="bg-white shadow-md rounded-lg p-6">
-        <div className="text-center text-base my-1">
-          <h3 className="text-lg font-bold">Name</h3>
-          <p>{project.name}</p>
+        <div className="grid grid-cols-1 gap-4">
+          <div className="my-1 flex items-center">
+            <h3 className="text-lg font-semibold">Project Name</h3>
+            <p className="mx-2">{project.name}</p>
+          </div>
         </div>
-        <div className="text-center text-base my-1">
-          <h3 className="text-lg font-bold">Description</h3>
-          <p>{project.description}</p>
+        <div className="my-1 flex items-center">
+          <h3 className="text-lg font-semibold">Description</h3>
+          <p className="mx-2">{project.description}</p>
         </div>
-        <div className="text-center text-base my-1">
-          <h3 className="text-lg font-bold">Health Status</h3>
+        <div className="my-1">
           <div className="flex items-center">
-            {renderHealthIcon(health ? health.readableValue : 'UNHEALTHY')}
-            {renderHumanReadableHealthStatus(
-              health ? health.readableValue : 'UNHEALTHY',
-            )}
+            <h3 className="text-lg font-semibold">Health Status</h3>
+            <div className="mx-2">
+              {renderHealthIcon(health ? health.readableValue : 'UNHEALTHY')}
+            </div>
+          </div>
+          {renderHumanReadableHealthStatus(
+            health ? health.readableValue : 'UNHEALTHY',
+          )}
+        </div>
+        <div className="my-1">
+          <div className="flex items-center">
+            <h3 className="text-lg font-semibold">Configuration State</h3>
+            <p className="mx-2">
+              {renderHumanReadableConfigurationState(
+                health ? health.configurationState : 'UNKNOWN',
+              )}
+            </p>
           </div>
         </div>
-        {!goals ? null : (
-          <div className="border border-gray-300 p-2 text-base my-1 rounded-lg flex flex-col items-center justify-center">
-            <h3 className="text-lg font-semibold text-center">Goals</h3>
-            {Object.entries(goals).map(([goalKey, goalValue]) => (
-              <div
-                key={goalValue.id}
-                className="block transform transition rounded-lg"
-              >
-                <Link href={`/goals/${goalValue.id}`}>
-                  <div className="hover:bg-orange-200 border border-gray-300 rounded-lg my-1 p-1">
-                    <h3 className="text-md font-semibold text-center">
-                      Goal {goalKey}: {goalValue.name}
-                    </h3>
-                  </div>
-                </Link>
-              </div>
-            ))}
-            {/* <Button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-2">
-              Create New Goal
-            </Button> */}
-          </div>
-        )}
         <Button
           variant="ghost"
           className="bg-red-500 hover:bg-red-200"
