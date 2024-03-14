@@ -40,6 +40,7 @@ const GoalIndex = ({ params: { id } }: { params: { id: string } }) => {
           </div>
           {goal?.chatId ? (
             <SaraChat
+              projectHealth="HEALTHY"
               chatQueriesUrl={`/api/goals/${goal.id}/chats/${goal.chatId}/chat-queries`}
             />
           ) : null}
