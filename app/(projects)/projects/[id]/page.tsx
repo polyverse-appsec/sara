@@ -98,7 +98,10 @@ const renderHumanReadableConfigurationState = (
   }
 }
 
-const renderChatForGoal = (goal: GoalPartDeux | null) => {
+const renderChatForGoal = (
+  goal: GoalPartDeux | null,
+  projectHealth: ProjectHealthStatusValue,
+) => {
   if (!goal) {
     return (
       <div className="flex">
@@ -112,6 +115,7 @@ const renderChatForGoal = (goal: GoalPartDeux | null) => {
 
   return (
     <SaraChat
+      projectHealth={projectHealth}
       chatQueriesUrl={`/api/goals/${goal.id}/chats/${goal.chatId}/chat-queries`}
     />
   )
@@ -320,7 +324,13 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
             </p>
           </div>
         </div>
-        <div>{renderChatForGoal(goalForChat)}</div>
+        <div>
+          {/* Give the appearance of being healthy if we don't know */}
+          {renderChatForGoal(
+            goalForChat,
+            health ? health.readableValue : 'HEALTHY',
+          )}
+        </div>
       </div>
     </div>
   )

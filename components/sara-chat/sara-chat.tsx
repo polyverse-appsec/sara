@@ -3,7 +3,10 @@
 import React, { useEffect, useState } from 'react'
 import { toast } from 'react-hot-toast'
 
-import { type ChatQueryPartDeux } from './../../lib/data-model-types'
+import {
+  type ChatQueryPartDeux,
+  type ProjectHealthStatusValue,
+} from './../../lib/data-model-types'
 import { cn } from './../../lib/utils'
 import LoadingSpinner from './../loading-spinner'
 import SaraChatList from './sara-chat-list'
@@ -11,9 +14,10 @@ import SaraChatPanel from './sara-chat-panel'
 
 interface SaraChatProps {
   chatQueriesUrl: string
+  projectHealth: ProjectHealthStatusValue
 }
 
-const SaraChat = ({ chatQueriesUrl }: SaraChatProps) => {
+const SaraChat = ({ chatQueriesUrl, projectHealth }: SaraChatProps) => {
   const [chatQueries, setChatQueries] = useState<ChatQueryPartDeux[] | null>(
     null,
   )
@@ -91,6 +95,7 @@ const SaraChat = ({ chatQueriesUrl }: SaraChatProps) => {
         ) : null}
       </div>
       <SaraChatPanel
+        projectHealth={projectHealth}
         chatQueries={chatQueries}
         input={input}
         setInput={setInput}
