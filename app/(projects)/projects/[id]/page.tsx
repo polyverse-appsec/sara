@@ -299,10 +299,12 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
             </Button>
           </div>
         </div>
-        <div className="my-1 flex items-center">
-          <h3 className="text-lg font-semibold">Description</h3>
-          <p className="mx-2">{project.description}</p>
-        </div>
+        {project.description ? (
+          <div className="my-1 flex items-center">
+            <h3 className="text-lg font-semibold">Description</h3>
+            <p className="mx-2">{project.description}</p>
+          </div>
+        ) : null}
         <div className="my-1">
           <div className="flex items-center">
             <h3 className="text-lg font-semibold">Health Status</h3>
