@@ -184,10 +184,12 @@ const ProjectCreate = () => {
 
   const [saveButtonEnabled, setSaveButtonEnabled] = useState<boolean>(true)
   const [userGitHubAppInstalled, setUserGitHubAppInstalled] =
-    useState<boolean>(false)
+    useState<boolean>(true)
   const [orgGithubAppInstalled, setOrgGitHubAppInstalled] =
-    useState<boolean>(false)
-  const [userIsPremium, setUserIsPremium] = useState<boolean>(false)
+    useState<boolean>(true)
+  const [userIsPremium, setUserIsPremium] = useState<boolean>(true)
+
+  const [statusCheckDone, setStatusCheckDone] = useState<boolean>(false)
 
   useEffect(() => {
     const fetchUserStatus = async () => {
@@ -211,7 +213,8 @@ const ProjectCreate = () => {
           activeBillingOrg.id,
           saraSession.id,
         )
-
+        
+        setStatusCheckDone(true)
         setUserGitHubAppInstalled(
           orgUserStatus.gitHubAppInstalled === 'INSTALLED',
         )
@@ -296,9 +299,20 @@ const ProjectCreate = () => {
             </p>
           </div>
         ) : null}
+        {!statusCheckDone ? (
+          <div className="text-left text-base my-1">
+            <p>
+              Verifying permissions...
+            </p>
+          </div>
+        ) : null}
         <Button
           variant="ghost"
-          className="bg-green-500 hover:bg-green-200"
+          className={`${
+            !statusCheckDone
+              ? "bg-gray-500 hover:bg-gray-500 cursor-not-allowed"
+              : "bg-green-500 hover:bg-green-200"
+          } transition duration-300`}
           onClick={async (e) => {
             e.preventDefault()
 
@@ -353,7 +367,8 @@ const ProjectCreate = () => {
             !saveButtonEnabled &&
             !userGitHubAppInstalled &&
             !orgGithubAppInstalled &&
-            !userIsPremium
+            !userIsPremium &&
+            !statusCheckDone
           }
         >
           {saveButtonEnabled ? (
