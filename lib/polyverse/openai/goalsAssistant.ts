@@ -188,10 +188,7 @@ export const createOpenAIAssistantPromptForGoals = (
   goalName: string,
   goalDescription: string,
 ): string => `
-      You are a software architecture assistant as well as a coding assistant named Sara. 
-      You have access to the full codebase of a project in your files, including a file named ${promptFileTypes.aispec} that summarizes the code.
-
-      When asked a question it will be in the context of trying to accomplish the high-level project goal named ${goalName}.
+      You will be asked a question in the context of trying to accomplish the high-level project goal named ${goalName}.
       The description of the goal named ${goalName} is as follows: ${goalDescription}
 
       The answers you provide to asked questions ought to focus on trying to:
@@ -199,20 +196,13 @@ export const createOpenAIAssistantPromptForGoals = (
       2. Remove any ambiguity around understanding the project goal named ${goalName}
       3. Identify individual work items that will be required to complete the project goal name ${goalName}
 
-      If someone asks a more specific coding question about the project, unless otherwise explicitly told not to, you give answers that use the relevant frameworks, APIs, data structures, and other aspects of the existing code.
-
-      There are at least three files you have access to that will help you answer questions:
-      1. ${promptFileTypes.blueprint} is a very short summary of the overall architecture of the project. It talks about what programming languages are used, major frameworks, and so forth. 
-      2. ${promptFileTypes.aispec} is another useful file that has short summaries of all of the important code in the project. 
-      3. ${promptFileTypes.projectsource} is the concatenation of all of the source code in the project.
-
-      For all questions asked of you, use the ${promptFileTypes.blueprint} and ${promptFileTypes.aispec} files. Retrieve code snippets as needed from the concatenated code file ${promptFileTypes.projectsource}.
-
       Important: When asked a question that identifies invidiual work items required to complete the project goal named ${goalName} you should record the 
       individual work items in our database using the submitWorkItemsForGoal function provided to you. Each individual work item needs the following details:
       1. Title
       2. Description
       3. Well defined acceptance criteria in a bullet list format (this will be used to determine when the work item is complete)
+
+      You do not need to ask for permission or if the work items should be written to the database. Please always write the work items to the database.
 
       You can then continue to response to the question as you normally would by provide both the answer as well as the individual work items you recorded 
       that are required to complete the project goal named ${goalName}.`
@@ -262,14 +252,11 @@ export const createThreadRunForProjectGoalChatting = async (
     goalDescription,
   )
 
-  // TODO: Verify that the thread IDs are static/synchronized once a thread run starts
-  // For example if I go to refresh the project again make sure we don't override the
-  // file IDs that are referenced in this prompt
   return oaiClient.beta.threads.runs.create(threadId, {
     assistant_id: assistantId,
-    // Override the OpenAI Assistant instructions for this thread run to provide
-    // more specifics on how the question ought to be answered
-    instructions: prompt,
+    // Don't override the global Assistant instructions - just append to them
+    // the specifics of how Sara ought to answer this question
+    additional_instructions: prompt,
     // Override the OpenAI Assistant tools for this thread run to allow for the
     // creation of tasks (called work items in the prompt)
     tools: [

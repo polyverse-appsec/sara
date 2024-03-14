@@ -33,10 +33,13 @@ import {
   createAssistant,
   findAssistantFromMetadata,
   getVersion,
-  updateAssistantForPromptFileInfos,
+  updateGlobalAssistantPrompt,
   type AssistantMetadata,
 } from './../../../../../lib/polyverse/openai/assistants'
 import { promptFileInfosEqual } from './../../../../../lib/utils'
+
+import getBoostProjectStatus from './../../../../../lib/polyverse/backend/get-boost-project-status'
+
 
 // 03/04/24: We set this max duration to 60 seconds during initial development
 // with no real criteria to use as a starting point for the max duration. We see
@@ -252,6 +255,15 @@ export const POST = auth(async (req: NextAuthRequest) => {
       })
     }
 
+    // Make sure to get the Boost project status which will be used for updating
+    // the global Assistant prompt to allow Sara to provide a level of
+    // confidence in her answers 
+    const boostProjectStatus = await getBoostProjectStatus(
+      user.email,
+      org.name,
+      project.name,
+    )
+
     // Now actually create the Assistant if it doesn't exist or update its
     // prompt if it does. Note that when we update the prompt we make it more
     // generic vs. the prompt we would provide it when processing a goal or a
@@ -261,10 +273,11 @@ export const POST = auth(async (req: NextAuthRequest) => {
       // PromptFileInfo
       await createAssistant(boostFileInfos, assistantMetadata)
     } else {
-      await updateAssistantForPromptFileInfos(
+      await updateGlobalAssistantPrompt(
         shouldUpdateCachedPromptFileInfos
           ? promptFileInfos
           : cachedPromptFileInfos,
+        boostProjectStatus,
         assistantMetadata,
       )
     }

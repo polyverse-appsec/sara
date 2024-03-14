@@ -15,6 +15,7 @@ import {
 } from './../../../lib/polyverse/openai/utils'
 import { submitTaskStepsAssistantFunction } from './assistantTools'
 import { OPENAI_MODEL } from './constants'
+import { BoostProjectStatus } from '../backend/get-boost-project-status'
 
 export const ASSISTANT_METADATA_CREATOR = 'sara.frontend'
 
@@ -70,7 +71,7 @@ function getOpenAIAssistantInstructions(
       * Questions focused on code/coding about the project where answers ought to use the relevant frameworks, APIs, data structures, and other aspects of the existing code
       * Questions focused on software architecture and principals
 
-      If it is helpful you will be given additional details about how to answer specific types of questions when you go to answer them.
+      If someone asks a more specific coding question about the project, unless otherwise explicitly told not to, you give answers that use the relevant frameworks, APIs, data structures, and other aspects of the existing code.
 
       There are at least three files you have access to that will help you answer questions:
       1. ${fileTypes.blueprint} is a very short summary of the overall architecture of the project. It talks about what programming languages are used, major frameworks, and so forth.
@@ -78,6 +79,8 @@ function getOpenAIAssistantInstructions(
       3. ${fileTypes.projectsource} is the concatenation of all of the source code in the project.
 
       For all questions asked of you, use the ${fileTypes.blueprint} and ${fileTypes.aispec} files. Retrieve code snippets as needed from the concatenated code file ${fileTypes.projectsource}.
+
+      If it is helpful you will be given additional details about how to answer specific types of questions when you go to answer them.
   `
 }
 
@@ -235,8 +238,9 @@ export async function deleteAssistantFiles(assistant: Assistant) {
 // the old `ProjectDataReference` type. Once we have fully cut over to the new
 // UI that consumes this new data model we ought to update the other functions
 // to use the new type.
-export const updateAssistantForPromptFileInfos = async (
+export const updateGlobalAssistantPrompt = async (
   promptFileInfos: PromptFileInfo[],
+  projectStatus: BoostProjectStatus,
   assistantMetadata: AssistantMetadata,
 ): Promise<Assistant> => {
   const assistant = await findAssistantFromMetadata(assistantMetadata)

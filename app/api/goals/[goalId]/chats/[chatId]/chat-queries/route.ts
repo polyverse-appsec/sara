@@ -27,7 +27,7 @@ import { createBaseSaraObject } from './../../../../../../../lib/polyverse/db/ut
 import {
   ASSISTANT_METADATA_CREATOR,
   findAssistantFromMetadata,
-  updateAssistantForPromptFileInfos,
+  updateGlobalAssistantPrompt,
   type AssistantMetadata,
 } from './../../../../../../../lib/polyverse/openai/assistants'
 import {
@@ -40,6 +40,7 @@ import {
 } from './../../../../../../../lib/polyverse/openai/goalsAssistant'
 import { mapPromptFileInfosToPromptFileTypes } from './../../../../../../../lib/polyverse/openai/utils'
 import { promptFileInfosEqual } from './../../../../../../../lib/utils'
+import getBoostProjectStatus from './../../../../../../../lib/polyverse/backend/get-boost-project-status'
 
 // 03/04/24: We set this max duration to 60 seconds during initial development
 // with no real criteria to use as a starting point for the max duration. We see
@@ -303,13 +304,23 @@ export const POST = auth(async (req: NextAuthRequest) => {
       promptFileInfos,
     )
 
+    // Make sure to get the Boost project status which will be used for updating
+    // the global Assistant prompt to allow Sara to provide a level of
+    // confidence in her answers 
+    const boostProjectStatus = await getBoostProjectStatus(
+      user.email,
+      org.name,
+      project.name,
+    )
+
     if (shouldUpdateCachedPromptFileInfos) {
       // Since we are updating our cached file infos lets also update the
       // generalized prompt of the OpenAI Assistant. Remember that when we
       // perform a Run on a Thread we will override these generalized
       // instructions with ones more specific to contextualizing goals.
-      assistant = await updateAssistantForPromptFileInfos(
+      assistant = await updateGlobalAssistantPrompt(
         promptFileInfos,
+        boostProjectStatus,
         assistantMetadata,
       )
 
