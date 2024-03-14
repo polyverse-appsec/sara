@@ -89,9 +89,6 @@ export function UserMenu({ user }: UserMenuProps) {
   const [userIsPremium, setUserIsPremium] = useState<boolean>(false)
 
   useEffect(() => {
-    let isMounted = true
-    const fetchUserStatusFrequencyMilliseconds = 5000
-
     const fetchUserStatus = async () => {
       try {
         if (!activeBillingOrg) {
@@ -117,22 +114,12 @@ export function UserMenu({ user }: UserMenuProps) {
         )
         setOrgGitHubAppInstalled(orgStatus.gitHubAppInstalled === 'INSTALLED')
         setUserIsPremium(orgUserStatus.isPremium === 'PREMIUM')
-        if (isMounted) {
-          setTimeout(fetchUserStatus, fetchUserStatusFrequencyMilliseconds)
-        }
       } catch (error) {
         toast.error(`Failed to fetch user status: ${error}`)
-        if (isMounted) {
-          setTimeout(fetchUserStatus, fetchUserStatusFrequencyMilliseconds)
-        }
       }
     }
 
     fetchUserStatus()
-
-    return () => {
-      isMounted = false
-    }
   }, [activeBillingOrg, saraSession])
 
   return (
