@@ -99,6 +99,7 @@ const SaraChatPanel = ({
         </div>
         <div className="px-4 py-2 space-y-4 border-t shadow-lg bg-background sm:rounded-xl sm:border md:py-4">
           <SaraPromptForm
+            projectHealth={projectHealth}
             onQuerySubmit={async (query) => {
               // Check that the last chat query has received a response or
               // isn't in an error state in order to allow a query to take place

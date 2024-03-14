@@ -3,8 +3,10 @@
 import * as React from 'react'
 import { useRouter } from 'next/navigation'
 import { UseChatHelpers } from 'ai/react'
+import { toast } from 'react-hot-toast'
 import Textarea from 'react-textarea-autosize'
 
+import { type ProjectHealthStatusValue } from './../../lib/data-model-types'
 import { useEnterSubmit } from './../../lib/hooks/use-enter-submit'
 import { cn } from './../../lib/utils'
 import { Button, buttonVariants } from './../ui/button'
@@ -15,6 +17,7 @@ export interface SaraPromptFormProps
   extends Pick<UseChatHelpers, 'input' | 'setInput'> {
   onQuerySubmit: (query: string) => void
   saraConfigured: boolean
+  projectHealth: ProjectHealthStatusValue
 }
 
 // TODO: Can I just use the isLoading prop? Where does it come from?
@@ -23,6 +26,7 @@ const SaraPromptForm = ({
   input,
   setInput,
   saraConfigured,
+  projectHealth,
 }: SaraPromptFormProps) => {
   const { formRef, onKeyDown } = useEnterSubmit()
   const inputRef = React.useRef<HTMLTextAreaElement>(null)
@@ -38,6 +42,13 @@ const SaraPromptForm = ({
     <form
       onSubmit={async (e) => {
         e.preventDefault()
+
+        if (projectHealth === 'UNHEALTHY') {
+          toast.error('Unable to submit query while project is unhealthy')
+
+          return
+        }
+
         if (!input?.trim()) {
           return
         }
