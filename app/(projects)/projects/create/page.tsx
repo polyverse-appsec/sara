@@ -167,7 +167,7 @@ const renderButtonText = (
     return 'Upgrade To Premium'
   }
 
-  return saveButtonEnabled ? 'Save' : 'Saving'
+  return saveButtonEnabled ? 'Create Project' : 'Building Project'
 }
 
 const ProjectCreate = () => {

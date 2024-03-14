@@ -37,15 +37,15 @@ const renderHumanReadableHealthStatus = (
   readableHealthValue: ProjectHealthStatusValue,
 ) => {
   if (readableHealthValue === 'UNHEALTHY') {
-    return 'Unhealthy'
+    return <p className="text-red-500"> Sara is having some trouble learning about your project code and architecture. Never fear! She will not give up learning and trying to help. Please come back soon when she is ready! </p>
   }
 
   if (readableHealthValue === 'PARTIALLY_HEALTHY') {
-    return 'Partially Healthy'
+    return <p className="text-yellow-500">Sara is still learning about your project, so she may not have the best answers yet. Feel free to ask questions now, or have a cup of tea and wait a few minutes for her best answers :D </p>
   }
 
   if (readableHealthValue === 'HEALTHY') {
-    return 'Healthy'
+    return <p className="text-green-500">Sara has learned about your project code and architecture. She is fully up to speed and happy to answer all your architectural and code questions!</p>
   }
 
   return 'Unknown'
@@ -136,22 +136,20 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
     <div className="flex-1 flex-col gap-4 p-10 text-2xl font-bold">
       <div className="bg-white shadow-md rounded-lg p-6">
         <div className="text-center text-base my-1">
-          <h3 className="text-lg font-semibold">Name</h3>
+          <h3 className="text-lg font-bold">Name</h3>
           <p>{project.name}</p>
         </div>
         <div className="text-center text-base my-1">
-          <h3 className="text-lg font-semibold">Description</h3>
+          <h3 className="text-lg font-bold">Description</h3>
           <p>{project.description}</p>
         </div>
         <div className="text-center text-base my-1">
-          <h3 className="text-lg font-semibold">Health Status</h3>
+          <h3 className="text-lg font-bold">Health Status</h3>
           <div className="flex items-center">
             {renderHealthIcon(health ? health.readableValue : 'UNHEALTHY')}
-            <p>
               {renderHumanReadableHealthStatus(
                 health ? health.readableValue : 'UNHEALTHY',
               )}
-            </p>
           </div>
         </div>
         {!goals ? null : (
