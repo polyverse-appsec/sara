@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation'
 import { HeartFilledIcon } from '@radix-ui/react-icons'
 import toast from 'react-hot-toast'
 
+import SaraChat from '../../../../components/sara-chat/sara-chat'
+import LoadingSpinner from './../../../../components/loading-spinner'
 import { Button } from './../../../../components/ui/button'
 import {
   type GoalPartDeux,
@@ -96,6 +98,26 @@ const renderHumanReadableConfigurationState = (
   }
 }
 
+const renderChatForGoal = (goal: GoalPartDeux | null) => {
+  if (!goal) {
+    return (
+      <div className="flex">
+        <h3 className="text-lg font-semibold text-center">
+          Preparing Your Chat
+        </h3>
+        <LoadingSpinner />
+      </div>
+    )
+  }
+
+  return (
+    <SaraChat
+      chatQueriesUrl={`/api/goals/${goal.id}/chats/${goal.chatId}/chat-queries`}
+    />
+  )
+  // return
+}
+
 const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
   const router = useRouter()
   const { setProjectIdForConfiguration } = useAppContext()
@@ -103,8 +125,8 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
   const [project, setProject] = useState<ProjectPartDeux | null>(null)
   const [goals, setGoals] = useState<GoalPartDeux[] | null>(null)
   const [health, setHealth] = useState<ProjectHealth | null>(null)
-
   const [deleteButtonEnabled, setDeleteButtonEnabled] = useState<boolean>(true)
+  const [goalForChat, setGoalForChat] = useState<GoalPartDeux | null>(null)
 
   // This use effect is to just get the project details...
   useEffect(() => {
@@ -132,6 +154,17 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
         if (goalsRes.ok) {
           const fetchedGoals = (await goalsRes.json()) as GoalPartDeux[]
           setGoals(fetchedGoals)
+
+          // If we don't have a goal for chat then just take the first goal with
+          // if it has a chat ID. This is making the assumption that the first
+          // goal is the default goal and it has been configured for a chat.
+          if (
+            fetchedGoals &&
+            fetchedGoals.length !== 0 &&
+            fetchedGoals[0].chatId
+          ) {
+            setGoalForChat(fetchedGoals[0])
+          }
         } else {
           console.debug(`Failed to get project goals`)
         }
@@ -212,6 +245,7 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
             </p>
           </div>
         </div>
+        <div>{renderChatForGoal(goalForChat)}</div>
         <Button
           variant="ghost"
           className="bg-red-500 hover:bg-red-200"

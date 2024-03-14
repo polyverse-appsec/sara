@@ -117,9 +117,6 @@ const SaraChat = ({ chatQueriesUrl }: SaraChatProps) => {
             }
 
             const chatQuery = await res.json()
-            console.debug(
-              `***** POST was a success: ${JSON.stringify(chatQuery)}`,
-            )
           } catch (err) {
             console.debug(`Failed to make new chat query: ${err}`)
             toast.error(`Failed to make new chat query`)
