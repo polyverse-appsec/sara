@@ -8,11 +8,9 @@ import {
   type TaskPartDeux,
 } from './../../../lib/data-model-types'
 import createTask from './../../../lib/polyverse/db/create-task'
+import getGoal from './../../../lib/polyverse/db/get-goal'
+import updateGoal from './../../../lib/polyverse/db/update-goal'
 import { createBaseSaraObject } from './../../../lib/polyverse/db/utils'
-import {
-  findAssistantFromMetadata,
-  type AssistantMetadata,
-} from './../../../lib/polyverse/openai/assistants'
 import {
   mapPromptFileInfosToPromptFileTypes,
   type PromptFileTypes,
@@ -75,7 +73,7 @@ export const submitWorkItemsForGoal = async (
   parsedArgsAsWorkItems: SubmitWorkItemsForGoalType,
 ) => {
   if (parsedArgsAsWorkItems) {
-    const createTaskPromises: Promise<void>[] = []
+    const tasksToCreate: TaskPartDeux[] = []
 
     parsedArgsAsWorkItems.workItems.forEach((workItem) => {
       const taskBaseSaraObject = createBaseSaraObject()
@@ -95,8 +93,10 @@ export const submitWorkItemsForGoal = async (
         subTaskIds: [],
       }
 
-      createTaskPromises.push(createTask(task))
+      tasksToCreate.push(task)
     })
+
+    const createTaskPromises = tasksToCreate.map((taskToCreate) => createTask(taskToCreate))
 
     // I'd prefer to not have to await for all of these task creation promises
     // but my understanding is that Vercel doesn't have background processing.
@@ -108,6 +108,14 @@ export const submitWorkItemsForGoal = async (
     )
 
     await Promise.all(createTaskPromises)
+
+    // Now be sure to update the goal with the latest task IDs
+    const createdTaskIds = tasksToCreate.map((createdTask) => createdTask.id)
+
+    const goal = await getGoal(goalId)
+    goal.taskIds.push(...createdTaskIds)
+
+    await updateGoal(goal)
   }
 }
 
