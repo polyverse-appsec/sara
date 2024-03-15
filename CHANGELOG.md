@@ -20,7 +20,7 @@
 
 ### Bug Fixes
 
-- N/A
+- Update list of task IDs for a goal when Sara generates new tasks
 
 ## Version 0.14.0: March 13th, 2024
 
