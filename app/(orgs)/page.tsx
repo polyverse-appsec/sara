@@ -3,8 +3,10 @@
 import { useEffect, useState } from 'react'
 
 import OrgDashboard from './orgs/org-dashboard'
+import { useRouter } from 'next/navigation'
 
 const IndexPage = () => {
+  const router = useRouter()
   const [orgs, setOrgs] = useState([])
 
   useEffect(() => {
@@ -22,6 +24,11 @@ const IndexPage = () => {
       const fetchedOrgs = await res.json()
 
       setOrgs(fetchedOrgs)
+
+      if (fetchedOrgs.length > 0) {
+        console.log(`IN THE NEW ORGS CODE`)
+        router.push(`/orgs/${fetchedOrgs[0].id}`)
+      }
     })()
   }, [])
 
