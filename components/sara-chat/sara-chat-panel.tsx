@@ -29,7 +29,7 @@ const renderChatAlert = (projectHealth: ProjectHealthStatusValue) => {
     return (
       <>
         <ExclamationTriangleIcon className="text-red-500" />
-        Project Unhealthy - Chat Disabled
+        Project Unhealthy - Sara is attempting a fix
       </>
     )
   }

@@ -2,6 +2,22 @@
 
 # Release Notes
 
+## Version 0.15.0: March 14th, 2024
+
+### New Features
+
+- N/A
+
+### Enhancements
+
+- Added advanced project configuration button which includes old checkbox selection menu and project description
+- Changed wording on status texts in UI to clearer represent purposes
+- Cleaned up UI
+
+### Bug Fixes
+
+- N/A
+
 ## Version 0.14.0: March 13th, 2024
 
 ### New Features
