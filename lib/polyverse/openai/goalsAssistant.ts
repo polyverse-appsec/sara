@@ -78,16 +78,6 @@ export const submitWorkItemsForGoal = async (
     const createTaskPromises: Promise<void>[] = []
 
     parsedArgsAsWorkItems.workItems.forEach((workItem) => {
-      // Build up the description as a combination of the description that Sara
-      // generated as well as the acceptance criteria for completing the work
-      // item
-      const description =
-        workItem.description +
-        '\n' +
-        'Acceptance Criteria' +
-        '\n' +
-        workItem.acceptanceCriteria
-
       const taskBaseSaraObject = createBaseSaraObject()
       const task: TaskPartDeux = {
         // BaseSaraObject properties
@@ -96,7 +86,8 @@ export const submitWorkItemsForGoal = async (
         // Task properties
         orgId,
         name: workItem.title,
-        description,
+        description: workItem.description,
+        acceptanceCriteria: workItem.acceptanceCriteria,
         status: 'OPEN',
         chatId: null,
         parentGoalId: goalId,
@@ -115,6 +106,7 @@ export const submitWorkItemsForGoal = async (
     console.debug(
       `Sara generated ${createTaskPromises.length} for goal '${goalId}'`,
     )
+
     await Promise.all(createTaskPromises)
   }
 }

@@ -23,7 +23,7 @@ export const getVersion = () => {
   // TODO: This should only be an env var or something set at runtime - not
   // hardcoded. This needs to always be in sync with the versions listed in
   // the `CHANGELOG.md` and `package.json` files
-  return '0.14.0'
+  return '0.15.0'
 }
 
 interface FileTypes {

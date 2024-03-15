@@ -123,6 +123,11 @@ export interface GoalPartDeux extends BaseSaraObject {
   name: string
   description: string
 
+  // Consider this as an extension or additional instructions to the
+  // description which can be used to determine what needs to be done to
+  // satisfy/complete this goal
+  acceptanceCriteria: string | null
+
   // Right now the only status value we have defined is 'OPEN'
   status: 'OPEN'
 
@@ -142,6 +147,11 @@ export interface TaskPartDeux extends BaseSaraObject {
 
   name: string
   description: string
+
+  // Consider this as an extension or additional instructions to the
+  // description which can be used to determine what needs to be done to
+  // satisfy/complete this task
+  acceptanceCriteria: string | null
 
   // Right now the only status value we have defined is 'OPEN'
   status: 'OPEN'
