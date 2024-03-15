@@ -14,6 +14,8 @@
 - Changed wording on status texts in UI to clearer represent purposes
 - Cleaned up UI
 - whenever user navigates to the main page, it will automatically set the user's org to be the first of the fetched orgs. otherwise it will stay on the create orgs screen
+- Moved organizations button into the user dropdown
+- Updated project creation dates to display in a more understandable manner
 
 ### Bug Fixes
 

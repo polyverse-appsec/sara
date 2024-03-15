@@ -23,6 +23,7 @@ import {
   DropdownMenuTrigger,
 } from './ui/dropdown-menu'
 import { IconExternalLink } from './ui/icons'
+import Link from 'next/link'
 
 export interface UserMenuProps {
   user: Session['user']
@@ -167,6 +168,15 @@ export function UserMenu({ user }: UserMenuProps) {
             <div className="text-xs text-zinc-500">{saraSession?.email}</div>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
+          <DropdownMenuItem asChild>
+            {/* Organizations Button */}
+            <Link
+              href="/orgs"
+              className="w-full text-xs"
+            >
+              <span>Manage Organizations</span>
+            </Link>
+          </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <a
               href="https://billing.stripe.com/p/login/28o9DQ0uKf7o4OkaEE"

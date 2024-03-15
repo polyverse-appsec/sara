@@ -26,7 +26,6 @@ const IndexPage = () => {
       setOrgs(fetchedOrgs)
 
       if (fetchedOrgs.length > 0) {
-        console.log(`IN THE NEW ORGS CODE`)
         router.push(`/orgs/${fetchedOrgs[0].id}`)
       }
     })()
