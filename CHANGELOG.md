@@ -28,6 +28,7 @@
 - UI improvements to login, chat and project creation
 - Added created on date to display for projects
 - Upon log in, user will be redirected to the projects page of their first org if applicable
+- Added project name and project status display to the nav bar
 
 ### Bug Fixes
 

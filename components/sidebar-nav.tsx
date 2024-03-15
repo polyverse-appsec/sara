@@ -1,9 +1,8 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import * as ScrollArea from '@radix-ui/react-scroll-area'
 import { UserMenu } from 'components/user-menu'
 import { motion } from 'framer-motion'
 import toast from 'react-hot-toast'
@@ -11,10 +10,68 @@ import toast from 'react-hot-toast'
 import { useAppContext } from './../lib/hooks/app-context'
 import SaraPortrait from './../public/Sara_Cartoon_Portrait.png'
 import NavResourceLoader from './nav-resource-tree/nav-resource-loader'
+import { ProjectHealth, ProjectHealthStatusValue, ProjectPartDeux } from 'lib/data-model-types'
+import { HeartFilledIcon } from '@radix-ui/react-icons'
+
+const renderHealthIcon = (readableHealthValue: ProjectHealthStatusValue) => {
+  if (readableHealthValue === 'UNHEALTHY') {
+    return <HeartFilledIcon className="w-4 h-4 text-red-500" />
+  }
+
+  if (readableHealthValue === 'PARTIALLY_HEALTHY') {
+    return <HeartFilledIcon className="w-4 h-4 text-yellow-500" />
+  }
+
+  if (readableHealthValue === 'HEALTHY') {
+    return <HeartFilledIcon className="w-4 h-4 text-green-500" />
+  }
+
+  // If we don't know what value it is then render an icon as if it was
+  // unhealthy
+  return <HeartFilledIcon className="w-4 h-4 text-red-500" />
+}
 
 const SidebarNav = () => {
   const router = useRouter()
   const { user, activeBillingOrg, projectIdForConfiguration } = useAppContext()
+  const [ selectedProject, setSelectedProject ] = useState<ProjectPartDeux | null>(null)
+  const [ selectedProjectHealth, setSelectedProjectHealth ] = useState<ProjectHealth | null>(null)
+
+  useEffect(() => {
+    setSelectedProject(null)
+    setSelectedProjectHealth(null)
+    if (projectIdForConfiguration) {
+      const fetchProjectDetails = async () => {
+        try {
+          const projectRes = await fetch(`/api/projects/${projectIdForConfiguration}`)
+  
+          if (!projectRes.ok) {
+            const errText = await projectRes.text()
+  
+            throw new Error(
+              `Failed to get a success response when fetching project '${projectIdForConfiguration}' because: ${errText}`,
+            )
+          }
+  
+          const fetchedProject = (await projectRes.json()) as ProjectPartDeux
+          setSelectedProject(fetchedProject)
+  
+          const healthRes = await fetch(`/api/projects/${projectIdForConfiguration}/health`)
+  
+          if (healthRes.ok) {
+            const fetchedHealth = (await healthRes.json()) as ProjectHealth
+            setSelectedProjectHealth(fetchedHealth)
+          } else {
+            console.debug(`Failed to get project health`)
+          }
+  
+        } catch (err) {
+          console.debug(`Failed to fetch project details because: ${err}`)
+        }
+      }
+      fetchProjectDetails()
+    }
+  }, [projectIdForConfiguration])
 
   return (
     <motion.aside
@@ -45,6 +102,14 @@ const SidebarNav = () => {
       <div className="flex justify-center px-2 py-1 text-base font-medium rounded-lg">
         <p>{activeBillingOrg ? activeBillingOrg.name : 'No org selected'}</p>
       </div>
+      { projectIdForConfiguration ? (
+        <div className="flex justify-center items-center px-2 py-1 text-base font-medium rounded-lg">
+          <div className="">
+            <p>{ selectedProject ? selectedProject.name : null}</p>
+          </div>
+          { selectedProjectHealth ? renderHealthIcon(selectedProjectHealth.readableValue) : null}
+        </div>
+      ) : <p className="flex justify-center px-2 py-1 text-base font-medium rounded-lg">No project selected</p>}
       {/* Buttons section */}
       <nav className="flex flex-col space-y-1">
         {/* Projects Button */}

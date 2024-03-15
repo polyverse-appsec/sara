@@ -10,7 +10,7 @@ import ProjectDashboard from './project-dashboard'
 
 const ProjectIndex = () => {
   const router = useRouter()
-  const { activeBillingOrg } = useAppContext()
+  const { activeBillingOrg, setProjectIdForConfiguration} = useAppContext()
 
   const [projects, setProjects] = useState<ProjectPartDeux[]>([])
 
@@ -20,6 +20,8 @@ const ProjectIndex = () => {
       if (!activeBillingOrg) {
         return
       }
+
+      setProjectIdForConfiguration(null)
 
       const res = await fetch(`/api/orgs/${activeBillingOrg.id}/projects`)
 
