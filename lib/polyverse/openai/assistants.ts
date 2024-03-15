@@ -17,13 +17,13 @@ import { submitTaskStepsAssistantFunction } from './assistantTools'
 import { OPENAI_MODEL } from './constants'
 import { BoostProjectStatus } from '../backend/get-boost-project-status'
 
+import packageInfo from '../../../package.json';
+
 export const ASSISTANT_METADATA_CREATOR = 'sara.frontend'
 
 export const getVersion = () => {
-  // TODO: This should only be an env var or something set at runtime - not
-  // hardcoded. This needs to always be in sync with the versions listed in
-  // the `CHANGELOG.md` and `package.json` files
-  return '0.16.0'
+  // get the version off the runtime package.json
+  return packageInfo.version;
 }
 
 interface FileTypes {

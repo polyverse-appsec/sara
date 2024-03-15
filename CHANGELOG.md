@@ -2,6 +2,20 @@
 
 # Release Notes
 
+## Version 0.16.1: March 15th, 2024
+
+### New Features
+
+- N/A
+
+### Enhancements
+
+- UI improvements to the Sara status messages
+
+### Bug Fixes
+
+- N/A
+
 ## Version 0.16.0: March 15th, 2024
 
 ### New Features

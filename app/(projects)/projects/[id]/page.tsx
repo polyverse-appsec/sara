@@ -78,23 +78,25 @@ const renderHumanReadableConfigurationState = (
   switch (configurationState) {
     case 'UNKNOWN':
       // Don't return a scary string
-      return 'Configuring'
+      return 'Sara has encountered a tear in the fabric of space-time'
+
     case 'VECTOR_DATA_AVAILABLE':
-      return 'Vector Data Available'
+      return 'Sara heard you were look help with your project'
     case 'LLM_CREATED':
-      return 'LLM Created'
+      return 'Sara is ready to learn your project'
     case 'VECTOR_DATA_ATTACHED_TO_LLM':
-      return 'Vector Data Attached To LLM'
+      return 'Sara is learning about your project'
     case 'VECTOR_DATA_UPDATE_AVAILABLE':
-      return 'Vector Data Update Available'
+      return 'Sara is updating her knowledge about your project'
     case 'CONFIGURED':
-      return 'Fully Configured'
+      return 'Sara is fully caught up on your project'
+      
     default:
       // Well we said we wouldn't return a scary string when it was actually in
       // the 'UNKNOWN' state. Lets at least return one here presuming we will
       // never hit it but in the event we haven't handled some state show this
       // string so it could be reported to us via a bug by a customer.
-      return 'Unknown'
+      return 'Sara has crossed the streams... not good'
   }
 }
 
