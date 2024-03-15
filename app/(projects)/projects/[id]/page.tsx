@@ -309,7 +309,7 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
         ) : null}
         <div className="my-1">
           <div className="flex items-center">
-            <h3 className="text-lg font-semibold">Health Status</h3>
+            <h3 className="text-lg font-semibold">Health</h3>
             <div className="mx-2">
               {health ? renderHealthIcon(health.readableValue) : null}
             </div>
@@ -320,7 +320,7 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
         </div>
         <div className="my-1">
           <div className="flex items-center">
-            <h3 className="text-lg font-semibold">Configuration State</h3>
+            <h3 className="text-lg font-semibold">Sara Status:</h3>
             <p className="mx-2">
               {renderHumanReadableConfigurationState(
                 health ? health.configurationState : 'UNKNOWN',
