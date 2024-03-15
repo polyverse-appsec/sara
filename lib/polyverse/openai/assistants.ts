@@ -23,7 +23,7 @@ export const getVersion = () => {
   // TODO: This should only be an env var or something set at runtime - not
   // hardcoded. This needs to always be in sync with the versions listed in
   // the `CHANGELOG.md` and `package.json` files
-  return '0.15.0'
+  return '0.15.1'
 }
 
 interface FileTypes {
@@ -54,6 +54,7 @@ function createAssistantName(metadata: AssistantMetadata): string {
 // update the other functions to use the new type.
 function getOpenAIAssistantInstructions(
   fileTypes: FileTypes | PromptFileTypes,
+  projectStatus?: BoostProjectStatus,
 ): string {
   // This prompt was engineered to guide Sara on what she will be doing
   // overall when she is created as an OpenAI Assistant. When specific questions
@@ -88,13 +89,15 @@ const oaiClient = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 })
 
-function mapFileInfoToPromptAndIDs(fileInfos: ProjectDataReference[]) {
+function mapFileInfoToPromptAndIDs(
+    fileInfos: ProjectDataReference[],
+    boostProjectStatus?: BoostProjectStatus) {
   let fileTypes: FileTypes = { aispec: '', blueprint: '', projectsource: '' }
   fileInfos.map(({ name, type }) => {
     fileTypes[type as keyof FileTypes] = name
   })
 
-  const prompt = getOpenAIAssistantInstructions(fileTypes)
+  const prompt = getOpenAIAssistantInstructions(fileTypes, boostProjectStatus)
 
   const fileIDs = fileInfos.map(({ id }) => id)
   return { prompt, fileIDs }
@@ -103,8 +106,9 @@ function mapFileInfoToPromptAndIDs(fileInfos: ProjectDataReference[]) {
 export async function createAssistant(
   fileInfos: ProjectDataReference[],
   assistantMetadata: AssistantMetadata,
+  boostProjectStatus?: BoostProjectStatus,
 ): Promise<Assistant> {
-  const { prompt, fileIDs } = mapFileInfoToPromptAndIDs(fileInfos)
+  const { prompt, fileIDs } = mapFileInfoToPromptAndIDs(fileInfos, boostProjectStatus)
   const assistantName = createAssistantName(assistantMetadata)
 
   return await oaiClient.beta.assistants.create({
@@ -151,8 +155,9 @@ export async function getAssistant(assistantId: string): Promise<Assistant> {
 export async function updateAssistantPromptAndFiles(
   fileInfos: ProjectDataReference[],
   { id }: { id: string },
+  boostProjectStatus?: BoostProjectStatus
 ): Promise<Assistant> {
-  const { prompt, fileIDs } = mapFileInfoToPromptAndIDs(fileInfos)
+  const { prompt, fileIDs } = mapFileInfoToPromptAndIDs(fileInfos, boostProjectStatus)
 
   return await oaiClient.beta.assistants.update(id, {
     file_ids: fileIDs,
@@ -203,7 +208,7 @@ export async function configAssistant(
   )
 
   if (existingAssistant) {
-    return await updateAssistantPromptAndFiles(fileInfos, existingAssistant)
+    return await updateAssistantPromptAndFiles(fileInfos, existingAssistant, undefined)
   }
 
   const newAssistantMetadata: AssistantMetadata = {
@@ -261,7 +266,7 @@ export const updateGlobalAssistantPrompt = async (
   const identifiedPromptFileTypes =
     mapPromptFileInfosToPromptFileTypes(promptFileInfos)
 
-  const prompt = getOpenAIAssistantInstructions(identifiedPromptFileTypes)
+  const prompt = getOpenAIAssistantInstructions(identifiedPromptFileTypes, projectStatus)
 
   return oaiClient.beta.assistants.update(assistant.id, {
     file_ids: fileIDs,

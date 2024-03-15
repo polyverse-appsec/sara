@@ -2,6 +2,20 @@
 
 # Release Notes
 
+## Version 0.15.1: March 15th, 2024
+
+### New Features
+
+- N/A
+
+### Enhancements
+
+- N/A
+
+### Bug Fixes
+
+- N/A
+
 ## Version 0.15.0: March 14th, 2024
 
 ### New Features

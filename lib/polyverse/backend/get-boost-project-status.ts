@@ -21,11 +21,12 @@ export enum BoostProjectStatuses {
 // Copied from the Boost Node service codebase
 export interface BoostProjectStatus {
   status: BoostProjectStatuses
-  synchronized: boolean
-  activelyUpdating: boolean
-  resourcesState: any[]
-  details: string
-  lastSynchronized: Date
+  synchronized?: boolean
+  activelyUpdating?: boolean
+  resourcesState?: any[]
+  possibleStagesRemaining?: number;
+  details?: string
+  lastSynchronized?: Date
   lastUpdated: Date
 }
 

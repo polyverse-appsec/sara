@@ -271,7 +271,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
     if (!assistant) {
       // TODO: After we switch over to the new UI/UX workflows change this signature to take
       // PromptFileInfo
-      await createAssistant(boostFileInfos, assistantMetadata)
+      await createAssistant(boostFileInfos, assistantMetadata, boostProjectStatus)
     } else {
       await updateGlobalAssistantPrompt(
         shouldUpdateCachedPromptFileInfos
