@@ -79,56 +79,56 @@ function getOpenAIAssistantInstructions(
         assistantPromptInstructions += ` The main GitHub repository for the project is located at: ${project.mainRepository.html_url}`;
     }
     if (project?.referenceRepositories?.length) {
-        assistantPromptInstructions += ` The project also has ${project.referenceRepositories.length} reference repositories:
-        ${project.referenceRepositories.map((repo) => "\t" + repo.html_url).join('\t\n')}
-        
-        `;
+      assistantPromptInstructions += ` The project also has ${project.referenceRepositories.length} reference repositories:
+      ${project.referenceRepositories.map((repo) => "\t" + repo.html_url).join('\t\n')}
+
+      `;
     }
 
     const aiSpecStatus = projectStatus?.resourcesState?.find(
-        (resource) => resource[0] === 'aispec'
-        )?.[1];
+      (resource) => resource[0] === 'aispec'
+      )?.[1];
     const blueprintStatus = projectStatus?.resourcesState?.find(
-        (resource) => resource[0] === 'blueprint'
-        )?.[1];
+      (resource) => resource[0] === 'blueprint'
+      )?.[1];
     const projectsourceStatus = projectStatus?.resourcesState?.find(
-        (resource) => resource[0] === 'projectsource'
-        )?.[1];
+      (resource) => resource[0] === 'projectsource'
+      )?.[1];
 
     // pretty print the last sync date and time in local time zone (note last synchronized is a Unix time in seconds
     const lastSynchronizedProjectDataAt = projectStatus?.lastSynchronized ? new Date(projectStatus.lastSynchronized * 1000).toLocaleString() : '';
     if (projectStatus?.synchronized) {
-        assistantPromptInstructions += `You have fully reviewed the project code and analyzed each file to the best of your abilities.`;
+      assistantPromptInstructions += `You have fully reviewed the project code and analyzed each file to the best of your abilities.`;
     } else if (projectStatus?.activelyUpdating) {
 
-        assistantPromptInstructions += `You are currently updating your understanding of the project code, and have not fully completed your analysis.`;
+      assistantPromptInstructions += `You are currently updating your understanding of the project code, and have not fully completed your analysis.`;
 
-        // TODO: This is somewhat incomplete and speculative since it doesn't track how many files have been already imported or analyzed
+      // TODO: This is somewhat incomplete and speculative since it doesn't track how many files have been already imported or analyzed
 
-        const estimatedFilesToProcess = projectStatus?.possibleStagesRemaining ? projectStatus.possibleStagesRemaining : 0;
-        if (estimatedFilesToProcess > 1000) {
+      const estimatedFilesToProcess = projectStatus?.possibleStagesRemaining ? projectStatus.possibleStagesRemaining : 0;
+      if (estimatedFilesToProcess > 1000) {
         assistantPromptInstructions += `You have a very incomplete and light understanding of the project code and haven't seen most of the code yet.`;
-        } else if (estimatedFilesToProcess > 100) {
+      } else if (estimatedFilesToProcess > 100) {
         assistantPromptInstructions += `You have a basic understanding of the project code. You have seen many files, but lack a deep understanding of the project.`;
-        } else if (estimatedFilesToProcess > 10) {
-        assistantPromptInstructions += `You have a good understanding of the project code. You have seen many files, and are close to a deep understanding of the project.`;
-        }
+      } else if (estimatedFilesToProcess > 10) {
+       assistantPromptInstructions += `You have a good understanding of the project code. You have seen many files, and are close to a deep understanding of the project.`;
+      }
 
-        const numberOfMinutesEstimatedBeforeSynchronization = projectStatus?.possibleStagesRemaining ? Math.ceil(projectStatus.possibleStagesRemaining / 10) : 0;
-        if (numberOfMinutesEstimatedBeforeSynchronization > 0) {
+      const numberOfMinutesEstimatedBeforeSynchronization = projectStatus?.possibleStagesRemaining ? Math.ceil(projectStatus.possibleStagesRemaining / 10) : 0;
+      if (numberOfMinutesEstimatedBeforeSynchronization > 0) {
         assistantPromptInstructions += `You estimate that you will have a more complete understanding of the project in ${numberOfMinutesEstimatedBeforeSynchronization} minutes.`;
-        }
+      }
 
-        assistantPromptInstructions += `When you answer user questions, you should remind the user that you are still researching their code and better answers will be available soon.`;
+      assistantPromptInstructions += `When you answer user questions, you should remind the user that you are still researching their code and better answers will be available soon.`;
 
-        // the project isn't fully synchronized, and there are no active updates at the moment - so we may be in an error state, or we've paused/given up on updating
-        //    temporarily. The backend analysis may resume, but we should be extra cautious about incomplete analysis.
+      // the project isn't fully synchronized, and there are no active updates at the moment - so we may be in an error state, or we've paused/given up on updating
+      //    temporarily. The backend analysis may resume, but we should be extra cautious about incomplete analysis.
     } else {
-        if (aiSpecStatus === 'Error' || blueprintStatus === 'Error' || projectsourceStatus === 'Error') {
-          assistantPromptInstructions += `You are currently having some trouble analyzing the project code. You are investigating the issues impacting your analysis, and will try to resume again. But you should be extra cautious about incomplete analysis.`;
-        } else {
-          assistantPromptInstructions += `You should be extra cautious about incomplete analysis and emphasize that caution to the user asking you questions.`;
-        }
+      if (aiSpecStatus === 'Error' || blueprintStatus === 'Error' || projectsourceStatus === 'Error') {
+        assistantPromptInstructions += `You are currently having some trouble analyzing the project code. You are investigating the issues impacting your analysis, and will try to resume again. But you should be extra cautious about incomplete analysis.`;
+      } else {
+        assistantPromptInstructions += `You should be extra cautious about incomplete analysis and emphasize that caution to the user asking you questions.`;
+      }
     }
 
     if (lastSynchronizedProjectDataAt) {
@@ -136,21 +136,21 @@ function getOpenAIAssistantInstructions(
     }
 
     if (projectsourceStatus === 'Complete' || projectsourceStatus === 'Processing') {
-        assistantPromptInstructions += `
+      assistantPromptInstructions += `
         You have access to the full codebase of project in your files in ${fileTypes.projectsource}.`;
 
         // if the file is in error, we will leave it out of the prompt
     } else {
-        assistantPromptInstructions += `
+      assistantPromptInstructions += `
         You do not have complete access to the full codebase of the project yet. You are still analyzing the codebase and hope to have access to it soon.
         If you are asked questions about specific code, you should remind the user that you are still researching their code and better answers will be available soon.`;
     }
 
     if (aiSpecStatus === 'Complete' || aiSpecStatus === 'Processing' || aiSpecStatus === 'Idle') {
-        assistantPromptInstructions += `
+      assistantPromptInstructions += `
         You have access to a file named ${fileTypes.aispec} that summarizes all of the project code.`;
     } else {
-        assistantPromptInstructions += `
+      assistantPromptInstructions += `
         You are having trouble analyzing the project code to build a good understanding, but you hope to overcome these challenges soon.
         If you are asked questions about structure, dependencies or the relationships between the code, you should remind the user that you are still researching their code and better answers will be available soon.`;
     }
@@ -166,28 +166,28 @@ function getOpenAIAssistantInstructions(
     }`;
 
     assistantPromptInstructions += `
-        There are at least three files you have access to that will help you answer questions:`;
+      There are at least three files you have access to that will help you answer questions:`;
     if (blueprintStatus === 'Complete' || blueprintStatus === 'Processing' || blueprintStatus === 'Idle') {
-        assistantPromptInstructions += `
+      assistantPromptInstructions += `
         1. ${fileTypes.blueprint} is a very short summary of the overall architecture of the project. It talks about what programming languages are used, major frameworks, and so forth.`;
     } else {
-        assistantPromptInstructions += `
+      assistantPromptInstructions += `
         1. ${fileTypes.blueprint} should contain a short architectural summary of the project, but it is having an issue and may not be reliable. You should be extra cautious about incomplete analysis.`;
     }
 
     if (aiSpecStatus === 'Complete' || aiSpecStatus === 'Processing' || aiSpecStatus === 'Idle') {
-        assistantPromptInstructions += `
+      assistantPromptInstructions += `
         2. ${fileTypes.aispec} is another useful file that has short summaries of all of the important code in the project.`;
     } else {
-        assistantPromptInstructions += `
+      assistantPromptInstructions += `
         2. ${fileTypes.aispec} should contain many short summaries of the functions, classes and data in the project code, but it is having an issue and may not be reliable. You should be extra cautious about incomplete architectural analysis.`;
     }
 
     if (projectsourceStatus === 'Complete' || projectsourceStatus === 'Processing' || projectsourceStatus === 'Idle') {
-        assistantPromptInstructions += `
+      assistantPromptInstructions += `
         3. ${fileTypes.projectsource} is the concatenation of all of the source code in the project.`;
     } else {
-        assistantPromptInstructions += `
+      assistantPromptInstructions += `
         3. ${fileTypes.projectsource} should contain all of the source code in the project, but it is having an issue and may not be reliable. You should be extra cautious about citing code from this file.`;
     }
 
