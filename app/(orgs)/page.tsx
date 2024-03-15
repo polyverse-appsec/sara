@@ -4,10 +4,13 @@ import { useEffect, useState } from 'react'
 
 import OrgDashboard from './orgs/org-dashboard'
 import { useRouter } from 'next/navigation'
+import { useAppContext } from 'lib/hooks/app-context'
 
 const IndexPage = () => {
   const router = useRouter()
+  const { setActiveBillingOrg } = useAppContext()
   const [orgs, setOrgs] = useState([])
+  const [isLoadingOrgs, setIsLoadingOrgs] = useState(true)
 
   useEffect(() => {
     ;(async () => {
@@ -20,13 +23,15 @@ const IndexPage = () => {
           `Failed to get a success response when fetching organizations because: ${errText}`,
         )
       }
+      setIsLoadingOrgs(false)
 
       const fetchedOrgs = await res.json()
 
       setOrgs(fetchedOrgs)
 
       if (fetchedOrgs.length > 0) {
-        router.push(`/orgs/${fetchedOrgs[0].id}`)
+        setActiveBillingOrg(fetchedOrgs[0])
+        router.push(`/projects`)
       }
     })()
   }, [])
@@ -34,6 +39,7 @@ const IndexPage = () => {
   return (
     <div className="flex-1 p-10 text-2xl font-bold">
       <OrgDashboard orgs={orgs} />
+      { isLoadingOrgs && <div className="flex justify-center items-center">Loading orgs...</div>}
     </div>
   )
 }

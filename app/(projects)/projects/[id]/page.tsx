@@ -54,7 +54,7 @@ const renderHumanReadableHealthStatus = (
       <p>
         Sara is still learning about your project, so she may not have the best
         answers yet. Feel free to ask questions now, or have a cup of tea and
-        wait a few minutes for her best answers :D
+        wait a few minutes for her best answers 🍵😊
       </p>
     )
   }

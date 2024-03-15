@@ -17,11 +17,16 @@ const ProjectDashboard = ({ projects }: ProjectDashboardProps) => {
         <ProjectCreateTile />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {projects.map(({ id, name, lastUpdatedAt }) => (
+        {projects.map(({ id, name, createdAt, lastUpdatedAt }) => (
           <ProjectDetailsTile
             key={id}
             id={id}
             name={name}
+            createdAt={
+              typeof createdAt === 'string'
+                ? createdAt
+                : createdAt.toDateString()
+            }
             lastUpdatedAt={
               typeof lastUpdatedAt === 'string'
                 ? lastUpdatedAt

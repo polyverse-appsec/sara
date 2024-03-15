@@ -11,20 +11,9 @@
 ### Enhancements
 
 - Significant improvements to the Project Assistant training and guidance based on real-time Project Health and Project and Repo Information
-
-### Bug Fixes
-
-- N/A
-
-## Version 0.15.1: March 15th, 2024
-
-### New Features
-
-- N/A
-
-### Enhancements
-
 - UI improvements to login, chat and project creation
+- Added created on date to display for projects
+- Upon log in, user will be redirected to the projects page of their first org if applicable
 
 ### Bug Fixes
 
