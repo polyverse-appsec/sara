@@ -2,6 +2,20 @@
 
 # Release Notes
 
+## Version 0.16.0: March 15th, 2024
+
+### New Features
+
+- N/A
+
+### Enhancements
+
+- Significant improvements to the Project Assistant training and guidance based on real-time Project Health and Project and Repo Information
+
+### Bug Fixes
+
+- N/A
+
 ## Version 0.15.1: March 15th, 2024
 
 ### New Features
@@ -10,7 +24,7 @@
 
 ### Enhancements
 
-- N/A
+- UI improvements to login, chat and project creation
 
 ### Bug Fixes
 

@@ -26,8 +26,8 @@ export interface BoostProjectStatus {
   resourcesState?: any[]
   possibleStagesRemaining?: number;
   details?: string
-  lastSynchronized?: Date
-  lastUpdated: Date
+  lastSynchronized?: number
+  lastUpdated: number
 }
 
 const getBoostProjectStatus = async (
