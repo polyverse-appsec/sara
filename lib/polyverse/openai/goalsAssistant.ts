@@ -104,7 +104,7 @@ export const submitWorkItemsForGoal = async (
     // tasks are written to the data store I fear Vercel may just drop the
     // work required to write them.
     console.debug(
-      `Sara generated ${createTaskPromises.length} for goal '${goalId}'`,
+      `Sara generated ${createTaskPromises.length} tasks for goal '${goalId}'`,
     )
 
     await Promise.all(createTaskPromises)

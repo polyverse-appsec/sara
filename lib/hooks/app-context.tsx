@@ -249,6 +249,7 @@ interface AppContextType {
   // To only be used to config the project. All individual pages ought to pull
   // the project details from the REST APIs based on the project ID they get in
   // their rendered route slugs
+  projectIdForConfiguration: string | null
   setProjectIdForConfiguration: (projectId: string | null) => void
 }
 

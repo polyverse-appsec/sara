@@ -3,16 +3,18 @@
 import React from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import * as ScrollArea from '@radix-ui/react-scroll-area'
 import { UserMenu } from 'components/user-menu'
 import { motion } from 'framer-motion'
 import toast from 'react-hot-toast'
 
 import { useAppContext } from './../lib/hooks/app-context'
 import SaraPortrait from './../public/Sara_Cartoon_Portrait.png'
+import NavResourceLoader from './nav-resource-tree/nav-resource-loader'
 
 const SidebarNav = () => {
   const router = useRouter()
-  const { user, activeBillingOrg } = useAppContext()
+  const { user, activeBillingOrg, projectIdForConfiguration } = useAppContext()
 
   return (
     <motion.aside
@@ -83,6 +85,9 @@ const SidebarNav = () => {
           <span className="ml-3">Projects</span>
         </button>
       </nav>
+      {projectIdForConfiguration ? (
+        <NavResourceLoader projectId={projectIdForConfiguration} />
+      ) : null}
     </motion.aside>
   )
 }

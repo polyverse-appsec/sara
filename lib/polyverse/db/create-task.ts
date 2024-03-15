@@ -27,7 +27,7 @@ const createTask = async (task: TaskPartDeux): Promise<void> => {
   // Create the new task...
   const itemKey = taskKey(task.id)
 
-  await kv.set(itemKey, task)
+  await kv.hset(itemKey, task)
 
   // Track our new task globally...
   const taskIdsSetKey = globalTaskIdsSetKey()
