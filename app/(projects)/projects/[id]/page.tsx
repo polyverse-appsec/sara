@@ -309,12 +309,12 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
           <div className="flex items-center">
             <h3 className="text-lg font-semibold">Health Status</h3>
             <div className="mx-2">
-              {renderHealthIcon(health ? health.readableValue : 'UNHEALTHY')}
+              {health ? renderHealthIcon(health.readableValue) : null}
             </div>
           </div>
-          {renderHumanReadableHealthStatus(
-            health ? health.readableValue : 'UNHEALTHY',
-          )}
+          {health
+            ? renderHumanReadableHealthStatus(health.readableValue)
+            : 'Sara is checking her vitals...'}
         </div>
         <div className="my-1">
           <div className="flex items-center">
