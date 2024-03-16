@@ -1,7 +1,8 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { ProjectHealth, ProjectHealthStatusValue } from 'lib/data-model-types'
 
 interface ProjectTileProps {
   id: string
@@ -18,6 +19,23 @@ function formatDate(date: Date) {
   }).format(date)
 } 
 
+const renderHealthIcon = (readableHealthValue: ProjectHealthStatusValue) => {
+  if (readableHealthValue === 'UNHEALTHY') {
+    return <p>🛑</p>
+  }
+
+  if (readableHealthValue === 'PARTIALLY_HEALTHY') {
+    return <p>⚠️</p>
+  }
+
+  if (readableHealthValue === 'HEALTHY') {
+    return <p>✅</p>
+  }
+
+  // If we don't know what value it is then render a magnifying glass to signify searching
+  return <p>🔎</p>
+}
+
 export const ProjectDetailsTile = ({
   id,
   createdAt,
@@ -32,15 +50,44 @@ export const ProjectDetailsTile = ({
   const formattedCreateDate = formatDate(createdOnDate);
   const formattedLastUpdatedDate = formatDate(lastedUpdatedDate);
 
+  const [projectHealth, setProjectHealth] = useState<ProjectHealth>()
+
+  useEffect(() => {
+
+    const fetchProjectHealth = async () => {
+      const healthRes = await fetch(`/api/projects/${id}/health`)
+
+        if (healthRes.ok) {
+          const fetchedHealth = (await healthRes.json()) as ProjectHealth
+          setProjectHealth(fetchedHealth)
+        } else {
+          console.debug(`Failed to get project health`)
+        }
+    }
+
+    fetchProjectHealth()
+  }, [])
+
   return (
     <Link
       href={`/projects/${id}`}
       className="block transform transition hover:scale-105"
     >
-      <div className="bg-white shadow-md rounded-lg p-6">
-        <h3 className="text-lg font-semibold">{name}</h3>
-        <p className="text-sm text-gray-600">Created on: {formattedCreateDate}</p>
-        <p className="text-sm text-gray-600">Last Updated: {formattedLastUpdatedDate}</p>
+      <div className="flex justify-between bg-white shadow-md rounded-lg p-6">
+        <div>
+          <h3 className="text-lg font-semibold">{name}</h3>
+          <p className="text-sm text-gray-600">Created on: {formattedCreateDate}</p>
+          <p className="text-sm text-gray-600">Last Updated: {formattedLastUpdatedDate}</p>
+        </div>
+        {projectHealth && 
+        <div className="my-1">
+          <div className="flex items-center">
+            <h3 className="text-lg font-semibold">Health</h3>
+            <div className="mx-2">
+              {renderHealthIcon(projectHealth.readableValue)}
+            </div>
+          </div>
+        </div>}
       </div>
     </Link>
   )

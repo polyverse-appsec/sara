@@ -10,36 +10,86 @@ import toast from 'react-hot-toast'
 import { useAppContext } from './../lib/hooks/app-context'
 import SaraPortrait from './../public/Sara_Cartoon_Portrait.png'
 import NavResourceLoader from './nav-resource-tree/nav-resource-loader'
-import { ProjectHealth, ProjectHealthStatusValue, ProjectPartDeux } from 'lib/data-model-types'
-import { HeartFilledIcon } from '@radix-ui/react-icons'
+import { ProjectHealth, ProjectHealthStatusValue, ProjectPartDeux, UserOrgStatus } from 'lib/data-model-types'
+import { StarFilledIcon } from '@radix-ui/react-icons'
+import { useSession } from 'next-auth/react'
+import { SaraSession } from 'auth'
 
 const renderHealthIcon = (readableHealthValue: ProjectHealthStatusValue) => {
   if (readableHealthValue === 'UNHEALTHY') {
-    return <HeartFilledIcon className="w-4 h-4 text-red-500" />
+    return <p>🛑</p>
   }
 
   if (readableHealthValue === 'PARTIALLY_HEALTHY') {
-    return <HeartFilledIcon className="w-4 h-4 text-yellow-500" />
+    return <p>⚠️</p>
   }
 
   if (readableHealthValue === 'HEALTHY') {
-    return <HeartFilledIcon className="w-4 h-4 text-green-500" />
+    return <p>✅</p>
   }
 
-  // If we don't know what value it is then render an icon as if it was
-  // unhealthy
-  return <HeartFilledIcon className="w-4 h-4 text-red-500" />
+  // If we don't know what value it is then render a magnifying glass to signify searching
+  return <p>🔎</p>
+}
+
+const getOrgUserStatus = async (
+  orgId: string,
+  userId: string,
+): Promise<UserOrgStatus> => {
+  const res = await fetch(`/api/orgs/${orgId}/users/${userId}/status`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+
+  if (!res.ok) {
+    const errText = await res.text()
+    console.debug(`Failed to get User Status because: ${errText}`)
+
+    throw new Error(`Failed to get user status`)
+  }
+
+  const userStatus = (await res.json()) as UserOrgStatus
+  return userStatus
 }
 
 const SidebarNav = () => {
   const router = useRouter()
   const { user, activeBillingOrg, projectIdForConfiguration } = useAppContext()
+  const session = useSession()
+  const saraSession = session.data ? (session.data as SaraSession) : null
+
   const [ selectedProject, setSelectedProject ] = useState<ProjectPartDeux | null>(null)
   const [ selectedProjectHealth, setSelectedProjectHealth ] = useState<ProjectHealth | null>(null)
+  const [ orgIsPremium, setOrgIsPremium ] = useState(false)
 
   useEffect(() => {
     setSelectedProject(null)
     setSelectedProjectHealth(null)
+
+    const fetchPremiumStatus = async () => {
+      try {
+        if (!activeBillingOrg) {
+          return
+        }
+
+        if (!saraSession) {
+          return
+        }
+
+        const orgUserStatus = await getOrgUserStatus(
+          activeBillingOrg.id,
+          saraSession.id,
+        )
+
+        setOrgIsPremium(orgUserStatus.isPremium === 'PREMIUM')
+
+      } catch (err) {
+        console.debug(`Failed to fetch premium status because: ${err}`)
+      }
+    }
+
     if (projectIdForConfiguration) {
       const fetchProjectDetails = async () => {
         try {
@@ -71,7 +121,8 @@ const SidebarNav = () => {
       }
       fetchProjectDetails()
     }
-  }, [projectIdForConfiguration])
+    fetchPremiumStatus()
+  }, [activeBillingOrg, projectIdForConfiguration])
 
   return (
     <motion.aside
@@ -101,15 +152,13 @@ const SidebarNav = () => {
       </div>
       <div className="flex justify-center px-2 py-1 text-base font-medium rounded-lg">
         <p>{activeBillingOrg ? activeBillingOrg.name : 'No org selected'}</p>
+        { orgIsPremium ? 
+          <div title="Premium Plan" className="ml-1">
+            <div className="p-1 border border-yellow-500 rounded-full">
+              <StarFilledIcon className="w-3 h-3 text-yellow-500" /> 
+            </div>
+          </div> : null }
       </div>
-      { projectIdForConfiguration ? (
-        <div className="flex justify-center items-center px-2 py-1 text-base font-medium rounded-lg">
-          <div className="">
-            <p>{ selectedProject ? selectedProject.name : null}</p>
-          </div>
-          { selectedProjectHealth ? renderHealthIcon(selectedProjectHealth.readableValue) : null}
-        </div>
-      ) : <p className="flex justify-center px-2 py-1 text-base font-medium rounded-lg">No project selected</p>}
       {/* Buttons section */}
       <nav className="flex flex-col space-y-1">
         {/* Projects Button */}
@@ -150,6 +199,14 @@ const SidebarNav = () => {
           <span className="ml-3">Projects</span>
         </button>
       </nav>
+      { projectIdForConfiguration ? (
+        <div className="flex justify-center items-center px-2 py-1 text-base font-medium rounded-lg">
+          <div className="">
+            <p>{ selectedProject ? selectedProject.name : null}</p>
+          </div>
+          { selectedProjectHealth ? renderHealthIcon(selectedProjectHealth.readableValue) : null}
+        </div>
+      ) : <p className="flex justify-center px-2 py-1 text-base font-medium rounded-lg">No project selected</p>}
       {projectIdForConfiguration ? (
         <NavResourceLoader projectId={projectIdForConfiguration} />
       ) : null}

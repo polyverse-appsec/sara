@@ -1,9 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { HeartFilledIcon } from '@radix-ui/react-icons'
 import toast from 'react-hot-toast'
 
 import SaraChat from '../../../../components/sara-chat/sara-chat'
@@ -20,20 +18,19 @@ import { useAppContext } from './../../../../lib/hooks/app-context'
 
 const renderHealthIcon = (readableHealthValue: ProjectHealthStatusValue) => {
   if (readableHealthValue === 'UNHEALTHY') {
-    return <HeartFilledIcon className="w-4 h-4 text-red-500" />
+    return <p>🛑</p>
   }
 
   if (readableHealthValue === 'PARTIALLY_HEALTHY') {
-    return <HeartFilledIcon className="w-4 h-4 text-yellow-500" />
+    return <p>⚠️</p>
   }
 
   if (readableHealthValue === 'HEALTHY') {
-    return <HeartFilledIcon className="w-4 h-4 text-green-500" />
+    return <p>✅</p>
   }
 
-  // If we don't know what value it is then render an icon as if it was
-  // unhealthy
-  return <HeartFilledIcon className="w-4 h-4 text-red-500" />
+  // If we don't know what value it is then render a magnifying glass to signify searching
+  return <p>🔎</p>
 }
 
 const renderHumanReadableHealthStatus = (

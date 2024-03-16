@@ -10,7 +10,7 @@ import ProjectDashboard from './project-dashboard'
 
 const ProjectIndex = () => {
   const router = useRouter()
-  const { activeBillingOrg, setProjectIdForConfiguration} = useAppContext()
+  const { activeBillingOrg, setProjectIdForConfiguration } = useAppContext()
 
   const [projects, setProjects] = useState<ProjectPartDeux[]>([])
 

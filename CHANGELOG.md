@@ -2,21 +2,6 @@
 
 # Release Notes
 
-## Version 0.16.1: March 15th, 2024
-
-### New Features
-
-- N/A
-
-### Enhancements
-
-- UI improvements to the Sara status messages
-- Encourage Sara NOT to use the specific vector store filenames in her answers to the user - and instead use more general resource names like "Software Architectural Blueprint" - which are names also in the raw resources uploaded by Backend
-
-### Bug Fixes
-
-- N/A
-
 ## Version 0.16.0: March 15th, 2024
 
 ### New Features
@@ -30,6 +15,11 @@
 - Added created on date to display for projects
 - Upon log in, user will be redirected to the projects page of their first org if applicable
 - Added project name and project status display to the nav bar
+- UI improvements to the Sara status messages
+- Added premium plan logo next to org on nav bar and applicable orgs in billing orgs page
+- Show plan status inside each org page and if the org isn't premium, include link to upgrade
+- Show project health for each of the projects in the projects list page
+- Encourage Sara NOT to use the specific vector store filenames in her answers to the user - and instead use more general resource names like "Software Architectural Blueprint" - which are names also in the raw resources uploaded by Backend
 
 ### Bug Fixes
 
