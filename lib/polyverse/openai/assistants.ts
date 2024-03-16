@@ -192,13 +192,19 @@ function getOpenAIAssistantInstructions(
         3. ${projectsourceId} ${fileTypes.projectsource} is the concatenation of all of the source code in the project.`;
     } else {
       assistantPromptInstructions += `
-        3. ${projectsourceId} ${fileTypes.projectsource} should contain all of the source code in the project, but it is having an issue and may not be reliable. You should be extra cautious about citing code from this file.`;
+        3. ${projectsourceId} is not yet available. You should be extra cautious about citing code from this file.`;
     }
 
     assistantPromptInstructions += `
-        For all questions asked of you, use the contents of ${blueprintId} and ${aispecId} files. Retrieve code snippets as needed from the concatenated code in the file ${projectsourceId}.
+        For all questions asked of you, use the contents of ${blueprintId} and ${aispecId} files.`;
+    if (projectsourceStatus === 'Complete' || projectsourceStatus === 'Processing' || projectsourceStatus === 'Idle') {
+      assistantPromptInstructions += ` Retrieve code snippets as needed from the concatenated code in the file ${projectsourceId}.`;
+    } else {
+        assistantPromptInstructions += ` You should be extra cautious about citing code from ${projectsourceId} since it isn't fully available yet.`;
+    }
 
-        When answering questions, do not mention these specific filename ids to the user: ${fileTypes.blueprint}, ${fileTypes.aispec}, and ${fileTypes.projectsource}. These are dynamically generated and change frequently as you answer questions. Instead, refer to the files by their descriptive names: ${blueprintId}, ${aispecId}, and ${projectsourceId}.
+    assistantPromptInstructions += `
+        When answering questions, do not mention these specific resource ids to the user: ${fileTypes.blueprint}, ${fileTypes.aispec}, and ${fileTypes.projectsource}. These are dynamically generated and change frequently as you answer questions. Instead, refer to the resources by their descriptive names: ${blueprintId}, ${aispecId}, and ${projectsourceId}.
 
         If it is helpful you will be given additional details about how to answer specific types of questions when you go to answer them.
     `;
