@@ -63,6 +63,7 @@ export async function configAssistantForProject(
     orgName: org.login,
     creator: '', // ignore creator for search
     version: '', // ignore version for search
+    stage: process.env.SARA_STAGE || '',
   }
 
   // Start by looking for an existing assistant...
@@ -103,6 +104,7 @@ export async function configAssistantForProject(
     orgName: org.login,
     creator: ASSISTANT_METADATA_CREATOR,
     version: getVersion(),
+    stage: process.env.SARA_STAGE || '',
   }
 
   // Otherwise just create a new assistant now with the file infos and cache
