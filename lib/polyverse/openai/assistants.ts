@@ -95,7 +95,7 @@ function getOpenAIAssistantInstructions(
       (resource) => resource[0] === 'projectsource'
       )?.[1];
 
-    const blueprintId = `"Software Architecture Blueprint"`;
+    const blueprintId = `"Architectural Blueprint Summary"`;
     const aispecId = `"Code and Function Specifications"`;
     const projectsourceId = `"Project Source Code"`;
   
