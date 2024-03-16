@@ -95,6 +95,10 @@ function getOpenAIAssistantInstructions(
       (resource) => resource[0] === 'projectsource'
       )?.[1];
 
+    const blueprintId = `"Software Architecture Blueprint"`;
+    const aispecId = `"Code and Function Specifications"`;
+    const projectsourceId = `"Project Source Code"`;
+  
     // pretty print the last sync date and time in local time zone (note last synchronized is a Unix time in seconds
     const lastSynchronizedProjectDataAt = projectStatus?.lastSynchronized ? new Date(projectStatus.lastSynchronized * 1000).toLocaleString() : '';
     if (projectStatus?.synchronized) {
@@ -137,7 +141,7 @@ function getOpenAIAssistantInstructions(
 
     if (projectsourceStatus === 'Complete' || projectsourceStatus === 'Processing') {
       assistantPromptInstructions += `
-        You have access to the full codebase of project in your files in ${fileTypes.projectsource}.`;
+        You have access to the full codebase of the project in your files in ${projectsourceId}.`;
 
         // if the file is in error, we will leave it out of the prompt
     } else {
@@ -148,7 +152,7 @@ function getOpenAIAssistantInstructions(
 
     if (aiSpecStatus === 'Complete' || aiSpecStatus === 'Processing' || aiSpecStatus === 'Idle') {
       assistantPromptInstructions += `
-        You have access to a file named ${fileTypes.aispec} that summarizes all of the project code.`;
+        You have access to a data file ${aispecId} that summarizes all of the project code.`;
     } else {
       assistantPromptInstructions += `
         You are having trouble analyzing the project code to build a good understanding, but you hope to overcome these challenges soon.
@@ -166,33 +170,35 @@ function getOpenAIAssistantInstructions(
     }`;
 
     assistantPromptInstructions += `
-      There are at least three files you have access to that will help you answer questions:`;
+      There are at least three sets of data resources you have access to that will help you answer questions:`;
     if (blueprintStatus === 'Complete' || blueprintStatus === 'Processing' || blueprintStatus === 'Idle') {
       assistantPromptInstructions += `
-        1. ${fileTypes.blueprint} is a very short summary of the overall architecture of the project. It talks about what programming languages are used, major frameworks, and so forth.`;
+        1. ${blueprintId} ${fileTypes.blueprint} is a very short summary of the overall architecture of the project. It talks about what programming languages are used, major frameworks, and so forth.`;
     } else {
       assistantPromptInstructions += `
-        1. ${fileTypes.blueprint} should contain a short architectural summary of the project, but it is having an issue and may not be reliable. You should be extra cautious about incomplete analysis.`;
+        1. ${blueprintId} ${fileTypes.blueprint} should contain a short architectural summary of the project, but it is having an issue and may not be reliable. You should be extra cautious about incomplete analysis.`;
     }
 
     if (aiSpecStatus === 'Complete' || aiSpecStatus === 'Processing' || aiSpecStatus === 'Idle') {
       assistantPromptInstructions += `
-        2. ${fileTypes.aispec} is another useful file that has short summaries of all of the important code in the project.`;
+        2. ${aispecId} ${fileTypes.aispec} is another useful file that has short summaries of all of the important code in the project.`;
     } else {
       assistantPromptInstructions += `
-        2. ${fileTypes.aispec} should contain many short summaries of the functions, classes and data in the project code, but it is having an issue and may not be reliable. You should be extra cautious about incomplete architectural analysis.`;
+        2. ${aispecId} ${fileTypes.aispec} should contain many short summaries of the functions, classes and data in the project code, but it is having an issue and may not be reliable. You should be extra cautious about incomplete architectural analysis.`;
     }
 
     if (projectsourceStatus === 'Complete' || projectsourceStatus === 'Processing' || projectsourceStatus === 'Idle') {
       assistantPromptInstructions += `
-        3. ${fileTypes.projectsource} is the concatenation of all of the source code in the project.`;
+        3. ${projectsourceId} ${fileTypes.projectsource} is the concatenation of all of the source code in the project.`;
     } else {
       assistantPromptInstructions += `
-        3. ${fileTypes.projectsource} should contain all of the source code in the project, but it is having an issue and may not be reliable. You should be extra cautious about citing code from this file.`;
+        3. ${projectsourceId} ${fileTypes.projectsource} should contain all of the source code in the project, but it is having an issue and may not be reliable. You should be extra cautious about citing code from this file.`;
     }
 
     assistantPromptInstructions += `
-        For all questions asked of you, use the ${fileTypes.blueprint} and ${fileTypes.aispec} files. Retrieve code snippets as needed from the concatenated code file ${fileTypes.projectsource}.
+        For all questions asked of you, use the contents of ${blueprintId} and ${aispecId} files. Retrieve code snippets as needed from the concatenated code in the file ${projectsourceId}.
+
+        When answering questions, do not mention these specific filename ids to the user: ${fileTypes.blueprint}, ${fileTypes.aispec}, and ${fileTypes.projectsource}. These are dynamically generated and change frequently as you answer questions. Instead, refer to the files by their descriptive names: ${blueprintId}, ${aispecId}, and ${projectsourceId}.
 
         If it is helpful you will be given additional details about how to answer specific types of questions when you go to answer them.
     `;
