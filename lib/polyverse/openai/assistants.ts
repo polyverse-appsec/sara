@@ -38,6 +38,7 @@ export interface AssistantMetadata {
   userName: string
   creator: string
   orgName: string
+  stage: string
 }
 
 function createAssistantName(metadata: AssistantMetadata): string {
@@ -359,6 +360,7 @@ export async function configAssistant(
     orgName: billingOrgId,
     creator: '', // ignore this match
     version: '', // ignore this match
+    stage: process.env.SARA_STAGE || '',
   }
 
   const existingAssistant = await findAssistantFromMetadata(
@@ -375,6 +377,7 @@ export async function configAssistant(
     orgName: project.org,
     creator: ASSISTANT_METADATA_CREATOR,
     version: getVersion(),
+    stage: process.env.SARA_STAGE || '',
   }
 
   return await createAssistant(fileInfos, newAssistantMetadata)
