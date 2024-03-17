@@ -1,36 +1,35 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
-import Image from 'next/image'
-import { useRouter } from 'next/navigation'
-import { UserMenu } from 'components/user-menu'
-import { motion } from 'framer-motion'
-import toast from 'react-hot-toast'
+import React, { useEffect, useState } from 'react';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
+import { motion } from 'framer-motion';
 
-import { useAppContext } from './../lib/hooks/app-context'
-import SaraPortrait from './../public/Sara_Cartoon_Portrait.png'
-import NavResourceLoader from './nav-resource-tree/nav-resource-loader'
-import { ProjectHealth, ProjectHealthStatusValue, ProjectPartDeux, UserOrgStatus } from 'lib/data-model-types'
-import { StarFilledIcon } from '@radix-ui/react-icons'
-import { useSession } from 'next-auth/react'
-import { SaraSession } from 'auth'
+import { useAppContext } from './../lib/hooks/app-context';
+import SaraPortrait from './../public/Sara_Cartoon_Portrait.png';
+import NavResourceLoader from './nav-resource-tree/nav-resource-loader';
+import { ProjectHealth, ProjectHealthStatusValue, ProjectPartDeux, UserOrgStatus } from 'lib/data-model-types';
+import { StarFilledIcon } from '@radix-ui/react-icons';
+import { useSession } from 'next-auth/react';
+import { SaraSession } from 'auth';
+import { UserMenu } from 'components/user-menu'; // Update this import based on your project structure
 
 const renderHealthIcon = (readableHealthValue: ProjectHealthStatusValue) => {
   if (readableHealthValue === 'UNHEALTHY') {
-    return <p>🛑</p>
+    return <p>🛑</p>;
   }
 
   if (readableHealthValue === 'PARTIALLY_HEALTHY') {
-    return <p>⚠️</p>
+    return <p>⚠️</p>;
   }
 
   if (readableHealthValue === 'HEALTHY') {
-    return <p>✅</p>
+    return <p>✅</p>;
   }
 
-  // If we don't know what value it is then render a magnifying glass to signify searching
-  return <p>🔎</p>
-}
+  return <p>🔎</p>;
+};
 
 const getOrgUserStatus = async (
   orgId: string,
@@ -41,88 +40,90 @@ const getOrgUserStatus = async (
     headers: {
       'Content-Type': 'application/json',
     },
-  })
+  });
 
   if (!res.ok) {
-    const errText = await res.text()
-    console.debug(`Failed to get User Status because: ${errText}`)
-
-    throw new Error(`Failed to get user status`)
+    const errText = await res.text();
+    console.debug(`Failed to get User Status because: ${errText}`);
+    throw new Error(`Failed to get user status`);
   }
 
-  const userStatus = (await res.json()) as UserOrgStatus
-  return userStatus
-}
+  const userStatus = (await res.json()) as UserOrgStatus;
+  return userStatus;
+};
 
 const SidebarNav = () => {
-  const router = useRouter()
-  const { user, activeBillingOrg, projectIdForConfiguration } = useAppContext()
-  const session = useSession()
-  const saraSession = session.data ? (session.data as SaraSession) : null
+  const router = useRouter();
+  const { user, activeBillingOrg, setActiveBillingOrg, projectIdForConfiguration } = useAppContext();
+  const session = useSession();
+  const saraSession = session.data ? (session.data as SaraSession) : null;
 
-  const [ selectedProject, setSelectedProject ] = useState<ProjectPartDeux | null>(null)
-  const [ selectedProjectHealth, setSelectedProjectHealth ] = useState<ProjectHealth | null>(null)
-  const [ orgIsPremium, setOrgIsPremium ] = useState(false)
+  const [selectedProject, setSelectedProject] = useState<ProjectPartDeux | null>(null);
+  const [selectedProjectHealth, setSelectedProjectHealth] = useState<ProjectHealth | null>(null);
+  const [orgIsPremium, setOrgIsPremium] = useState(false);
 
   useEffect(() => {
-    setSelectedProject(null)
-    setSelectedProjectHealth(null)
+    const fetchAndSetActiveBillingOrg = async () => {
+      if (!activeBillingOrg) {
+        const res = await fetch('/api/orgs/active'); // Adjust this endpoint as needed
+        if (res.ok) {
+          const org = await res.json();
+          setActiveBillingOrg(org);
+        } else {
+          toast.error('Failed to load billing organization. Please set an active organization.');
+          router.push('/settings/organizations'); // Adjust this redirect as needed
+          return;
+        }
+      }
+    };
+
+    fetchAndSetActiveBillingOrg();
 
     const fetchPremiumStatus = async () => {
       try {
-        if (!activeBillingOrg) {
-          return
+        if (!activeBillingOrg || !saraSession) {
+          return;
         }
 
-        if (!saraSession) {
-          return
-        }
+        const orgUserStatus = await getOrgUserStatus(activeBillingOrg.id, saraSession.id);
 
-        const orgUserStatus = await getOrgUserStatus(
-          activeBillingOrg.id,
-          saraSession.id,
-        )
-
-        setOrgIsPremium(orgUserStatus.isPremium === 'PREMIUM')
-
+        setOrgIsPremium(orgUserStatus.isPremium === 'PREMIUM');
       } catch (err) {
-        console.debug(`Failed to fetch premium status because: ${err}`)
+        console.debug(`Failed to fetch premium status because: ${err}`);
       }
-    }
+    };
 
     if (projectIdForConfiguration) {
       const fetchProjectDetails = async () => {
         try {
-          const projectRes = await fetch(`/api/projects/${projectIdForConfiguration}`)
-  
+          const projectRes = await fetch(`/api/projects/${projectIdForConfiguration}`);
+
           if (!projectRes.ok) {
-            const errText = await projectRes.text()
-  
-            throw new Error(
-              `Failed to get a success response when fetching project '${projectIdForConfiguration}' because: ${errText}`,
-            )
+            const errText = await projectRes.text();
+            throw new Error(`Failed to get a success response when fetching project '${projectIdForConfiguration}' because: ${errText}`);
           }
-  
-          const fetchedProject = (await projectRes.json()) as ProjectPartDeux
-          setSelectedProject(fetchedProject)
-  
-          const healthRes = await fetch(`/api/projects/${projectIdForConfiguration}/health`)
-  
+
+          const fetchedProject = (await projectRes.json()) as ProjectPartDeux;
+          setSelectedProject(fetchedProject);
+
+          const healthRes = await fetch(`/api/projects/${projectIdForConfiguration}/health`);
+
           if (healthRes.ok) {
-            const fetchedHealth = (await healthRes.json()) as ProjectHealth
-            setSelectedProjectHealth(fetchedHealth)
+            const fetchedHealth = (await healthRes.json()) as ProjectHealth;
+            setSelectedProjectHealth(fetchedHealth);
           } else {
-            console.debug(`Failed to get project health`)
+            console.debug(`Failed to get project health`);
           }
-  
         } catch (err) {
-          console.debug(`Failed to fetch project details because: ${err}`)
+          console.debug(`Failed to fetch project details because: ${err}`);
         }
-      }
-      fetchProjectDetails()
+      };
+
+      fetchProjectDetails();
     }
-    fetchPremiumStatus()
-  }, [activeBillingOrg, projectIdForConfiguration, saraSession])
+
+    fetchPremiumStatus();
+  }, [activeBillingOrg, setActiveBillingOrg, projectIdForConfiguration, saraSession, router]);
 
   return (
     <motion.aside
