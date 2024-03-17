@@ -78,7 +78,7 @@ const renderHumanReadableConfigurationState = (
       return 'Sara has encountered a tear in the fabric of space-time'
 
     case 'VECTOR_DATA_AVAILABLE':
-      return 'Sara heard you were look help with your project'
+      return 'Your project has been initialized'
     case 'LLM_CREATED':
       return 'Sara is ready to learn your project'
     case 'VECTOR_DATA_ATTACHED_TO_LLM':
