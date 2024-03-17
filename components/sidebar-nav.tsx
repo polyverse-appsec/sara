@@ -17,18 +17,18 @@ import { UserMenu } from 'components/user-menu'; // Update this import based on 
 
 const renderHealthIcon = (readableHealthValue: ProjectHealthStatusValue) => {
   if (readableHealthValue === 'UNHEALTHY') {
-    return <p>🛑</p>;
+      return <p title="Unhealthy: Sara is having some trouble learning about your project.">🛑</p>;
   }
 
   if (readableHealthValue === 'PARTIALLY_HEALTHY') {
-    return <p>⚠️</p>;
+      return <p title="Partially Healthy: Sara is still learning about your project, so answers may not be complete.">⚠️</p>;
   }
 
   if (readableHealthValue === 'HEALTHY') {
-    return <p>✅</p>;
+      return <p title="Healthy: Sara is fully up to speed and ready to assist you with your project.">✅</p>;
   }
 
-  return <p>🔎</p>;
+  return <p title="Unknown Health: Sara is thinking deeply.">🤔</p>;
 };
 
 const getOrgUserStatus = async (
@@ -61,18 +61,27 @@ const SidebarNav = () => {
   const [selectedProject, setSelectedProject] = useState<ProjectPartDeux | null>(null);
   const [selectedProjectHealth, setSelectedProjectHealth] = useState<ProjectHealth | null>(null);
   const [orgIsPremium, setOrgIsPremium] = useState(false);
+  const [ orgs, setOrgs ] = useState([])
 
   useEffect(() => {
     const fetchAndSetActiveBillingOrg = async () => {
       if (!activeBillingOrg) {
-        const res = await fetch('/api/orgs/active'); // Adjust this endpoint as needed
-        if (res.ok) {
-          const org = await res.json();
-          setActiveBillingOrg(org);
-        } else {
-          toast.error('Failed to load billing organization. Please set an active organization.');
-          router.push('/settings/organizations'); // Adjust this redirect as needed
-          return;
+        const res = await fetch('/api/orgs')
+
+        if (!res.ok) {
+          const errText = await res.text()
+  
+          throw new Error(
+            `Failed to get a success response when fetching organizations because: ${errText}`,
+          )
+        }
+
+        const fetchedOrgs = await res.json()
+
+        setOrgs(fetchedOrgs)
+  
+        if (fetchedOrgs.length > 0) {
+          setActiveBillingOrg(fetchedOrgs[0])
         }
       }
     };
