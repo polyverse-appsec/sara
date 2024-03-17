@@ -88,6 +88,7 @@ export const deleteProject = async (
     orgName: orgId,
     creator: '', // ignore creator for search
     version: '', // ignore version for search
+    stage: process.env.SARA_STAGE || '',
   }
 
   const existingAssistant = await findAssistantFromMetadata(
