@@ -1,58 +1,65 @@
-'use client'
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { ProjectPartDeux } from 'lib/data-model-types';
+import toast from 'react-hot-toast';
 
-import React, { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { ProjectPartDeux } from 'lib/data-model-types'
-import toast from 'react-hot-toast'
-
-import { useAppContext } from './../../../lib/hooks/app-context'
-import ProjectDashboard from './project-dashboard'
+import { useAppContext } from './../../../lib/hooks/app-context';
+import ProjectDashboard from './project-dashboard';
 
 const ProjectIndex = () => {
-  const router = useRouter()
-  const { activeBillingOrg, setProjectIdForConfiguration } = useAppContext()
+  const router = useRouter();
+  const { activeBillingOrg, setActiveBillingOrg, setProjectIdForConfiguration } = useAppContext();
 
-  const [projects, setProjects] = useState<ProjectPartDeux[]>([])
+  const [projects, setProjects] = useState<ProjectPartDeux[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    ;(async () => {
-      // Only fetch if we have an active billing org
+    (async () => {
       if (!activeBillingOrg) {
-        return
+        const orgRes = await fetch('/api/orgs/active'); // Adjust this endpoint accordingly.
+        if (orgRes.ok) {
+          const defaultOrg = await orgRes.json();
+          setActiveBillingOrg(defaultOrg);
+          // Ensuring activeBillingOrg is not null before proceeding.
+          if (defaultOrg && defaultOrg.id) {
+            fetchProjects(defaultOrg.id);
+          }
+        } else {
+          toast.error(`Please select a billing organization`);
+          router.push('/orgs');
+          return;
+        }
+      } else {
+        fetchProjects(activeBillingOrg.id);
       }
+    })();
+  }, [activeBillingOrg, setActiveBillingOrg, setProjectIdForConfiguration, router]);
 
-      setProjectIdForConfiguration(null)
+  const fetchProjects = async (orgId: string) => {
+    setIsLoading(true);
+    const res = await fetch(`/api/orgs/${orgId}/projects`);
 
-      const res = await fetch(`/api/orgs/${activeBillingOrg.id}/projects`)
+    if (!res.ok) {
+      const errText = await res.text();
+      toast.error(`Failed to fetch projects: ${errText}`);
+      setIsLoading(false);
+      return;
+    }
 
-      if (!res.ok) {
-        const errText = await res.text()
+    const fetchedProjects = await res.json();
+    setProjects(fetchedProjects);
+    setIsLoading(false);
+  };
 
-        throw new Error(
-          `Failed to get a success response when fetching projects because: ${errText}`,
-        )
-      }
-
-      const fetchedProjects = await res.json()
-
-      setProjects(fetchedProjects)
-    })()
-  }, [activeBillingOrg, setProjectIdForConfiguration])
-
-  // Force a user to select an active billing org first before getting to their
-  // projects
-  if (!activeBillingOrg) {
-    toast.error(`Please select billing organization`)
-    router.push('/orgs')
-
-    return null
+  if (isLoading) {
+    return <div>Loading...</div>;
   }
 
   return (
     <div className="flex-1 p-10 text-2xl font-bold">
       <ProjectDashboard projects={projects} />
     </div>
-  )
-}
+  );
+};
 
-export default ProjectIndex
+export default ProjectIndex;
