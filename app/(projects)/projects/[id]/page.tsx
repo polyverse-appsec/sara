@@ -80,7 +80,7 @@ const renderHumanReadableConfigurationState = (
     case 'VECTOR_DATA_AVAILABLE':
       return 'Your project has been initialized'
     case 'LLM_CREATED':
-      return 'Sara is ready to learn your project'
+      return 'Sara is ready to learn about your project'
     case 'VECTOR_DATA_ATTACHED_TO_LLM':
       return 'Sara is learning about your project'
     case 'VECTOR_DATA_UPDATE_AVAILABLE':
