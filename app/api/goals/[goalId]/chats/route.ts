@@ -152,11 +152,11 @@ export const POST = auth(async (req: NextAuthRequest) => {
     // advantage of refreshing the cached prompt file infos.
     const assistantMetadata: AssistantMetadata = {
       projectId: project.id,
-      userName: user.username,
+      userName: user.email,
       orgName: org.name,
       creator: ASSISTANT_METADATA_CREATOR,
       version: '', // Ignore version for search
-      stage: process.env.SARA_STAGE || '',
+      stage: process.env.SARA_STAGE || 'unknown',
     }
 
     let assistant = await findAssistantFromMetadata(assistantMetadata)

@@ -226,13 +226,13 @@ export const POST = auth(async (req: NextAuthRequest) => {
     let assistant: Assistant | undefined = undefined
     const assistantMetadata: AssistantMetadata = {
       projectId: project.id,
-      userName: user.username,
+      userName: user.email,
       orgName: org.name,
       // Will be ignored when searching
       creator: ASSISTANT_METADATA_CREATOR,
       // Will be ignored when searching
       version: getVersion(),
-      stage: process.env.SARA_STAGE || '',
+      stage: process.env.SARA_STAGE || 'unknown',
     }
 
     try {

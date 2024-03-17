@@ -45,7 +45,8 @@ function createAssistantName(metadata: AssistantMetadata): string {
   // remove spaces and special characters from project-id and create a simple underscore delimited
   // string to use as part of the assistant name
   const projectId = metadata.projectId.replace(/[^a-zA-Z0-9]/g, '_')
-  return `${metadata.creator}-${metadata.version}-${metadata.orgName}-${metadata.userName}-${projectId}`
+  const userName = metadata.userName.replace(/[^a-zA-Z0-9]/g, '_')
+  return `${metadata.creator}-${metadata.version}-${metadata.stage}-${metadata.orgName}-${userName}-${projectId}`
 }
 
 // Note that this function uses the new type `PromptFileTypes` which we have
@@ -293,7 +294,8 @@ export async function findAssistantFromMetadata(
       retrievedMetadata.projectId === metadata.projectId &&
       retrievedMetadata.creator === ASSISTANT_METADATA_CREATOR &&
       retrievedMetadata.userName === metadata.userName &&
-      retrievedMetadata.orgName === metadata.orgName,
+      retrievedMetadata.orgName === metadata.orgName &&
+      retrievedMetadata.stage === metadata.stage
     // We can do version upgrades (e.g. if a major or minor Sara version comes out
     //   we can fail the match on a version compare and then create a new assistant
     //   with the new version of Sara)
@@ -360,7 +362,7 @@ export async function configAssistant(
     orgName: billingOrgId,
     creator: '', // ignore this match
     version: '', // ignore this match
-    stage: process.env.SARA_STAGE || '',
+    stage: process.env.SARA_STAGE || 'unknown',
   }
 
   const existingAssistant = await findAssistantFromMetadata(
@@ -377,7 +379,7 @@ export async function configAssistant(
     orgName: project.org,
     creator: ASSISTANT_METADATA_CREATOR,
     version: getVersion(),
-    stage: process.env.SARA_STAGE || '',
+    stage: process.env.SARA_STAGE || 'unknown',
   }
 
   return await createAssistant(fileInfos, newAssistantMetadata)

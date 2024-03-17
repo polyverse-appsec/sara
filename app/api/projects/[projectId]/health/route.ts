@@ -187,11 +187,11 @@ export const GET = auth(async (req: NextAuthRequest) => {
     try {
       const assistantMetadata: AssistantMetadata = {
         projectId: project.id,
-        userName: user.username,
+        userName: user.email,
         orgName: org.name,
         creator: ASSISTANT_METADATA_CREATOR, // Ignore creator for search
         version: '', // Ignore version for search
-        stage: process.env.SARA_STAGE || '',
+        stage: process.env.SARA_STAGE || 'unknown',
     }
 
       assistant = await findAssistantFromMetadata(assistantMetadata)
