@@ -96,7 +96,9 @@ export const submitWorkItemsForGoal = async (
       tasksToCreate.push(task)
     })
 
-    const createTaskPromises = tasksToCreate.map((taskToCreate) => createTask(taskToCreate))
+    const createTaskPromises = tasksToCreate.map((taskToCreate) =>
+      createTask(taskToCreate),
+    )
 
     // I'd prefer to not have to await for all of these task creation promises
     // but my understanding is that Vercel doesn't have background processing.

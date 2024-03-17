@@ -1,35 +1,52 @@
 'use client'
 
-import React, { useEffect, useState } from 'react';
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import toast from 'react-hot-toast';
-import { motion } from 'framer-motion';
+import React, { useEffect, useState } from 'react'
+import Image from 'next/image'
+import { useRouter } from 'next/navigation'
+import { StarFilledIcon } from '@radix-ui/react-icons'
+import { SaraSession } from 'auth'
+import { UserMenu } from 'components/user-menu' // Update this import based on your project structure
+import { motion } from 'framer-motion'
+import {
+  ProjectHealth,
+  ProjectHealthStatusValue,
+  ProjectPartDeux,
+  UserOrgStatus,
+} from 'lib/data-model-types'
+import { useSession } from 'next-auth/react'
+import toast from 'react-hot-toast'
 
-import { useAppContext } from './../lib/hooks/app-context';
-import SaraPortrait from './../public/Sara_Cartoon_Portrait.png';
-import NavResourceLoader from './nav-resource-tree/nav-resource-loader';
-import { ProjectHealth, ProjectHealthStatusValue, ProjectPartDeux, UserOrgStatus } from 'lib/data-model-types';
-import { StarFilledIcon } from '@radix-ui/react-icons';
-import { useSession } from 'next-auth/react';
-import { SaraSession } from 'auth';
-import { UserMenu } from 'components/user-menu'; // Update this import based on your project structure
+import { useAppContext } from './../lib/hooks/app-context'
+import SaraPortrait from './../public/Sara_Cartoon_Portrait.png'
+import NavResourceLoader from './nav-resource-tree/nav-resource-loader'
 
 const renderHealthIcon = (readableHealthValue: ProjectHealthStatusValue) => {
   if (readableHealthValue === 'UNHEALTHY') {
-      return <p title="Unhealthy: Sara is having some trouble learning about your project.">🛑</p>;
+    return (
+      <p title="Unhealthy: Sara is having some trouble learning about your project.">
+        🛑
+      </p>
+    )
   }
 
   if (readableHealthValue === 'PARTIALLY_HEALTHY') {
-      return <p title="Partially Healthy: Sara is still learning about your project, so answers may not be complete.">⚠️</p>;
+    return (
+      <p title="Partially Healthy: Sara is still learning about your project, so answers may not be complete.">
+        ⚠️
+      </p>
+    )
   }
 
   if (readableHealthValue === 'HEALTHY') {
-      return <p title="Healthy: Sara is fully up to speed and ready to assist you with your project.">✅</p>;
+    return (
+      <p title="Healthy: Sara is fully up to speed and ready to assist you with your project.">
+        ✅
+      </p>
+    )
   }
 
-  return <p title="Unknown Health: Sara is thinking deeply.">🤔</p>;
-};
+  return <p title="Unknown Health: Sara is thinking deeply.">🤔</p>
+}
 
 const getOrgUserStatus = async (
   orgId: string,
@@ -40,28 +57,35 @@ const getOrgUserStatus = async (
     headers: {
       'Content-Type': 'application/json',
     },
-  });
+  })
 
   if (!res.ok) {
-    const errText = await res.text();
-    console.debug(`Failed to get User Status because: ${errText}`);
-    throw new Error(`Failed to get user status`);
+    const errText = await res.text()
+    console.debug(`Failed to get User Status because: ${errText}`)
+    throw new Error(`Failed to get user status`)
   }
 
-  const userStatus = (await res.json()) as UserOrgStatus;
-  return userStatus;
-};
+  const userStatus = (await res.json()) as UserOrgStatus
+  return userStatus
+}
 
 const SidebarNav = () => {
-  const router = useRouter();
-  const { user, activeBillingOrg, setActiveBillingOrg, projectIdForConfiguration } = useAppContext();
-  const session = useSession();
-  const saraSession = session.data ? (session.data as SaraSession) : null;
+  const router = useRouter()
+  const {
+    user,
+    activeBillingOrg,
+    setActiveBillingOrg,
+    projectIdForConfiguration,
+  } = useAppContext()
+  const session = useSession()
+  const saraSession = session.data ? (session.data as SaraSession) : null
 
-  const [selectedProject, setSelectedProject] = useState<ProjectPartDeux | null>(null);
-  const [selectedProjectHealth, setSelectedProjectHealth] = useState<ProjectHealth | null>(null);
-  const [orgIsPremium, setOrgIsPremium] = useState(false);
-  const [ orgs, setOrgs ] = useState([])
+  const [selectedProject, setSelectedProject] =
+    useState<ProjectPartDeux | null>(null)
+  const [selectedProjectHealth, setSelectedProjectHealth] =
+    useState<ProjectHealth | null>(null)
+  const [orgIsPremium, setOrgIsPremium] = useState(false)
+  const [orgs, setOrgs] = useState([])
 
   useEffect(() => {
     const fetchAndSetActiveBillingOrg = async () => {
@@ -70,7 +94,7 @@ const SidebarNav = () => {
 
         if (!res.ok) {
           const errText = await res.text()
-  
+
           throw new Error(
             `Failed to get a success response when fetching organizations because: ${errText}`,
           )
@@ -79,60 +103,75 @@ const SidebarNav = () => {
         const fetchedOrgs = await res.json()
 
         setOrgs(fetchedOrgs)
-  
+
         if (fetchedOrgs.length > 0) {
           setActiveBillingOrg(fetchedOrgs[0])
         }
       }
-    };
+    }
 
-    fetchAndSetActiveBillingOrg();
+    fetchAndSetActiveBillingOrg()
 
     const fetchPremiumStatus = async () => {
       try {
         if (!activeBillingOrg || !saraSession) {
-          return;
+          return
         }
 
-        const orgUserStatus = await getOrgUserStatus(activeBillingOrg.id, saraSession.id);
+        const orgUserStatus = await getOrgUserStatus(
+          activeBillingOrg.id,
+          saraSession.id,
+        )
 
-        setOrgIsPremium(orgUserStatus.isPremium === 'PREMIUM');
+        setOrgIsPremium(orgUserStatus.isPremium === 'PREMIUM')
       } catch (err) {
-        console.debug(`Failed to fetch premium status because: ${err}`);
+        console.debug(`Failed to fetch premium status because: ${err}`)
       }
-    };
+    }
 
     if (projectIdForConfiguration) {
       const fetchProjectDetails = async () => {
         try {
-          const projectRes = await fetch(`/api/projects/${projectIdForConfiguration}`);
+          const projectRes = await fetch(
+            `/api/projects/${projectIdForConfiguration}`,
+          )
 
           if (!projectRes.ok) {
-            const errText = await projectRes.text();
-            throw new Error(`Failed to get a success response when fetching project '${projectIdForConfiguration}' because: ${errText}`);
+            const errText = await projectRes.text()
+            throw new Error(
+              `Failed to get a success response when fetching project '${projectIdForConfiguration}' because: ${errText}`,
+            )
           }
 
-          const fetchedProject = (await projectRes.json()) as ProjectPartDeux;
-          setSelectedProject(fetchedProject);
+          const fetchedProject = (await projectRes.json()) as ProjectPartDeux
+          setSelectedProject(fetchedProject)
 
-          const healthRes = await fetch(`/api/projects/${projectIdForConfiguration}/health`);
+          const healthRes = await fetch(
+            `/api/projects/${projectIdForConfiguration}/health`,
+          )
 
           if (healthRes.ok) {
-            const fetchedHealth = (await healthRes.json()) as ProjectHealth;
-            setSelectedProjectHealth(fetchedHealth);
+            const fetchedHealth = (await healthRes.json()) as ProjectHealth
+            setSelectedProjectHealth(fetchedHealth)
           } else {
-            console.debug(`Failed to get project health`);
+            console.debug(`Failed to get project health`)
           }
         } catch (err) {
-          console.debug(`Failed to fetch project details because: ${err}`);
+          console.debug(`Failed to fetch project details because: ${err}`)
         }
-      };
+      }
 
-      fetchProjectDetails();
+      fetchProjectDetails()
     }
 
-    fetchPremiumStatus();
-  }, [activeBillingOrg, setActiveBillingOrg, projectIdForConfiguration, saraSession, router]);
+    fetchPremiumStatus()
+  }, [
+    activeBillingOrg,
+    setActiveBillingOrg,
+    projectIdForConfiguration,
+    saraSession,
+    router,
+  ])
 
   return (
     <motion.aside
@@ -162,12 +201,13 @@ const SidebarNav = () => {
       </div>
       <div className="flex justify-center px-2 py-1 text-base font-medium rounded-lg">
         <p>{activeBillingOrg ? activeBillingOrg.name : 'No org selected'}</p>
-        { orgIsPremium ? 
+        {orgIsPremium ? (
           <div title="Premium Plan" className="ml-1">
             <div className="p-1 border border-yellow-500 rounded-full">
-              <StarFilledIcon className="w-3 h-3 text-yellow-500" /> 
+              <StarFilledIcon className="w-3 h-3 text-yellow-500" />
             </div>
-          </div> : null }
+          </div>
+        ) : null}
       </div>
       {/* Buttons section */}
       <nav className="flex flex-col space-y-1">
@@ -209,14 +249,20 @@ const SidebarNav = () => {
           <span className="ml-3">Projects</span>
         </button>
       </nav>
-      { projectIdForConfiguration ? (
+      {projectIdForConfiguration ? (
         <div className="flex justify-center items-center px-2 py-1 text-base font-medium rounded-lg">
           <div className="">
-            <p>{ selectedProject ? selectedProject.name : null}</p>
+            <p>{selectedProject ? selectedProject.name : null}</p>
           </div>
-          { selectedProjectHealth ? renderHealthIcon(selectedProjectHealth.readableValue) : null}
+          {selectedProjectHealth
+            ? renderHealthIcon(selectedProjectHealth.readableValue)
+            : null}
         </div>
-      ) : <p className="flex justify-center px-2 py-1 text-base font-medium rounded-lg">No project selected</p>}
+      ) : (
+        <p className="flex justify-center px-2 py-1 text-base font-medium rounded-lg">
+          No project selected
+        </p>
+      )}
       {projectIdForConfiguration ? (
         <NavResourceLoader projectId={projectIdForConfiguration} />
       ) : null}

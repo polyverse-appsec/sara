@@ -49,7 +49,7 @@ export async function configAssistantForProject(
   project: Project,
   fileInfos: ProjectDataReference[],
   user: User,
-  org: Organization | OrgPartDeux
+  org: Organization | OrgPartDeux,
 ): Promise<Assistant> {
   const session = await auth()
 
@@ -88,7 +88,7 @@ export async function configAssistantForProject(
       const updatedAssistant = await updateAssistantPromptAndFiles(
         fileInfos,
         existingAssistant,
-        undefined
+        undefined,
       )
       await setCachedProjectUserFileInfos(project.name, user, fileInfos)
 

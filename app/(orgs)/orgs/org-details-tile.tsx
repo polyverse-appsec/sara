@@ -2,12 +2,12 @@
 
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { useSession } from 'next-auth/react'
+import { StarFilledIcon } from '@radix-ui/react-icons'
 import { SaraSession } from 'auth'
 import { UserOrgStatus } from 'lib/data-model-types'
-import toast from 'react-hot-toast'
-import { StarFilledIcon } from '@radix-ui/react-icons'
 import { useAppContext } from 'lib/hooks/app-context'
+import { useSession } from 'next-auth/react'
+import toast from 'react-hot-toast'
 
 interface OrgDetailsTileProps {
   name: string
@@ -36,13 +36,12 @@ const getOrgUserStatus = async (
   return userStatus
 }
 
-
 export const OrgDetailsTile = ({ name, id }: OrgDetailsTileProps) => {
   const { activeBillingOrg } = useAppContext()
   const session = useSession()
   const saraSession = session.data ? (session.data as SaraSession) : null
 
-  const[ orgIsPremium, setOrgIsPremium ] = useState(false)
+  const [orgIsPremium, setOrgIsPremium] = useState(false)
 
   useEffect(() => {
     const fetchUserStatus = async () => {
@@ -51,13 +50,9 @@ export const OrgDetailsTile = ({ name, id }: OrgDetailsTileProps) => {
           return
         }
 
-        const orgUserStatus = await getOrgUserStatus(
-          id,
-          saraSession.id,
-        )
+        const orgUserStatus = await getOrgUserStatus(id, saraSession.id)
 
         setOrgIsPremium(orgUserStatus.isPremium === 'PREMIUM')
-
       } catch (error) {
         toast.error(`Failed to fetch user status: ${error}`)
       }
@@ -65,7 +60,6 @@ export const OrgDetailsTile = ({ name, id }: OrgDetailsTileProps) => {
 
     fetchUserStatus()
   }, [activeBillingOrg])
-
 
   return (
     <Link
@@ -78,12 +72,13 @@ export const OrgDetailsTile = ({ name, id }: OrgDetailsTileProps) => {
         </div>
         <div className="flex justify-between">
           <h3 className="text-lg font-semibold">{name}</h3>
-          { orgIsPremium ? 
-          <div title="Premium Plan" className="ml-1">
-            <div className="p-1 border border-yellow-500 rounded-full">
-              <StarFilledIcon className="w-3 h-3 text-yellow-500" /> 
+          {orgIsPremium ? (
+            <div title="Premium Plan" className="ml-1">
+              <div className="p-1 border border-yellow-500 rounded-full">
+                <StarFilledIcon className="w-3 h-3 text-yellow-500" />
+              </div>
             </div>
-          </div> : null }
+          ) : null}
         </div>
       </div>
     </Link>

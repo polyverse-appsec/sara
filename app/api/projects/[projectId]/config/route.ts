@@ -4,13 +4,12 @@ import { Assistant } from 'openai/resources/beta/assistants/assistants'
 
 import { auth } from '../../../../../auth'
 import getProjectPromptFileInfoIds from '../../../../../lib/polyverse/db/get-project-prompt-file-info-ids'
-import {
-  type PromptFileInfo,
-} from './../../../../../lib/data-model-types'
+import { type PromptFileInfo } from './../../../../../lib/data-model-types'
 import {
   getBoostOrgUserStatus,
   getFileInfoPartDeux,
 } from './../../../../../lib/polyverse/backend/backend'
+import getBoostProjectStatus from './../../../../../lib/polyverse/backend/get-boost-project-status'
 import createPromptFileInfo from './../../../../../lib/polyverse/db/create-prompt-file-info'
 import deletePromptFileInfo from './../../../../../lib/polyverse/db/delete-prompt-file-info'
 import getOrg from './../../../../../lib/polyverse/db/get-org'
@@ -28,9 +27,6 @@ import {
   type AssistantMetadata,
 } from './../../../../../lib/polyverse/openai/assistants'
 import { promptFileInfosEqual } from './../../../../../lib/utils'
-
-import getBoostProjectStatus from './../../../../../lib/polyverse/backend/get-boost-project-status'
-
 
 // 03/04/24: We set this max duration to 60 seconds during initial development
 // with no real criteria to use as a starting point for the max duration. We see
@@ -249,7 +245,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
 
     // Make sure to get the Boost project status which will be used for updating
     // the global Assistant prompt to allow Sara to provide a level of
-    // confidence in her answers 
+    // confidence in her answers
     const boostProjectStatus = await getBoostProjectStatus(
       user.email,
       org.name,
@@ -263,7 +259,11 @@ export const POST = auth(async (req: NextAuthRequest) => {
     if (!assistant) {
       // TODO: After we switch over to the new UI/UX workflows change this signature to take
       // PromptFileInfo
-      await createAssistant(boostFileInfos, assistantMetadata, boostProjectStatus)
+      await createAssistant(
+        boostFileInfos,
+        assistantMetadata,
+        boostProjectStatus,
+      )
     } else {
       await updateGlobalAssistantPrompt(
         shouldUpdateCachedPromptFileInfos

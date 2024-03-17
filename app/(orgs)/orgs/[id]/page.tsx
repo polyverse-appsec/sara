@@ -1,12 +1,15 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-
-import { UserOrgStatus, type OrgPartDeux } from './../../../../lib/data-model-types'
-import { useAppContext } from './../../../../lib/hooks/app-context'
-import { useSession } from 'next-auth/react'
 import { SaraSession } from 'auth'
 import { IconExternalLink } from 'components/ui/icons'
+import { useSession } from 'next-auth/react'
+
+import {
+  UserOrgStatus,
+  type OrgPartDeux,
+} from './../../../../lib/data-model-types'
+import { useAppContext } from './../../../../lib/hooks/app-context'
 
 const getOrgUserStatus = async (
   orgId: string,
@@ -37,7 +40,7 @@ const OrgIndex = ({ params: { id } }: { params: { id: string } }) => {
   const session = useSession()
   const saraSession = session.data ? (session.data as SaraSession) : null
 
-  const[ orgIsPremium, setOrgIsPremium ] = useState(false)
+  const [orgIsPremium, setOrgIsPremium] = useState(false)
 
   useEffect(() => {
     ;(async () => {
@@ -54,19 +57,15 @@ const OrgIndex = ({ params: { id } }: { params: { id: string } }) => {
       const fetchedOrg = await res.json()
 
       setOrg(fetchedOrg)
-      
+
       // logic for checking if org is premium begins here
       if (!saraSession) {
         return
       }
 
-      const orgUserStatus = await getOrgUserStatus(
-        id,
-        saraSession.id,
-      )
+      const orgUserStatus = await getOrgUserStatus(id, saraSession.id)
 
       setOrgIsPremium(orgUserStatus.isPremium === 'PREMIUM')
-
     })()
   }, [id, saraSession])
 
@@ -82,22 +81,32 @@ const OrgIndex = ({ params: { id } }: { params: { id: string } }) => {
       <div className="bg-background shadow-md rounded-lg p-6">
         <h3 className="text-lg font-semibold">{org.name}</h3>
       </div>
-      { orgIsPremium ? 
+      {orgIsPremium ? (
         <div className="bg-background shadow-md rounded-lg p-6 mt-10">
-          <h3 className="text-lg font-semibold">You have all premium plan permissions for this organization</h3>
+          <h3 className="text-lg font-semibold">
+            You have all premium plan permissions for this organization
+          </h3>
         </div>
-        : 
+      ) : (
         <div className="bg-background shadow-md rounded-lg p-6 mt-10">
-          <h3 className="text-lg font-semibold">You have basic plan permissions for this organization</h3>
+          <h3 className="text-lg font-semibold">
+            You have basic plan permissions for this organization
+          </h3>
           <button
-            onClick={() => window.open('https://buy.stripe.com/8wM9AY9hAe4y5fa000', '_blank', 'noopener,noreferrer')}
+            onClick={() =>
+              window.open(
+                'https://buy.stripe.com/8wM9AY9hAe4y5fa000',
+                '_blank',
+                'noopener,noreferrer',
+              )
+            }
             className="inline-flex items-center text-xs hover:bg-blue-300 transition duration-300 p-2 rounded"
           >
             Upgrade to Premium Subscription
             <IconExternalLink className="w-3 h-3 ml-2" />
           </button>
         </div>
-      }
+      )}
     </div>
   )
 }

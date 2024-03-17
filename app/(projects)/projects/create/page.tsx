@@ -259,7 +259,9 @@ const ProjectCreate = () => {
         <div className="grid grid-cols-1 gap-4">
           <div className="text-base my-1">
             <p>
-              Create a new Software Project for Sara to help you accomplish your Goals - based on her analysis of your code and specs, and AI generated Task lists.
+              Create a new Software Project for Sara to help you accomplish your
+              Goals - based on her analysis of your code and specs, and AI
+              generated Task lists.
             </p>
           </div>
           <div className="my-1">

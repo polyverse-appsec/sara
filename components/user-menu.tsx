@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import {
   ExclamationTriangleIcon,
   HamburgerMenuIcon,
@@ -23,7 +24,6 @@ import {
   DropdownMenuTrigger,
 } from './ui/dropdown-menu'
 import { IconExternalLink } from './ui/icons'
-import Link from 'next/link'
 
 export interface UserMenuProps {
   user: Session['user']
@@ -170,10 +170,7 @@ export function UserMenu({ user }: UserMenuProps) {
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
             {/* Organizations Button */}
-            <Link
-              href="/orgs"
-              className="w-full text-xs"
-            >
+            <Link href="/orgs" className="w-full text-xs">
               <span>Manage Organizations</span>
             </Link>
           </DropdownMenuItem>

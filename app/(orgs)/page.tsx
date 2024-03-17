@@ -1,17 +1,17 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-
-import OrgDashboard from './orgs/org-dashboard'
 import { useRouter } from 'next/navigation'
 import { useAppContext } from 'lib/hooks/app-context'
+
+import OrgDashboard from './orgs/org-dashboard'
 
 const IndexPage = () => {
   const router = useRouter()
   const { setActiveBillingOrg } = useAppContext()
-  const [ orgs, setOrgs ] = useState([])
-  const [ isLoadingOrgs, setIsLoadingOrgs ] = useState(true)
-  const [ isRedirectingToProjects, setIsRedirectingToProjects ] = useState(false)
+  const [orgs, setOrgs] = useState([])
+  const [isLoadingOrgs, setIsLoadingOrgs] = useState(true)
+  const [isRedirectingToProjects, setIsRedirectingToProjects] = useState(false)
 
   useEffect(() => {
     ;(async () => {
@@ -42,8 +42,14 @@ const IndexPage = () => {
   return (
     <div className="flex-1 p-10 text-2xl font-bold">
       <OrgDashboard orgs={orgs} />
-      { isLoadingOrgs && <div className="flex justify-center items-center">Loading orgs...</div>}
-      { isRedirectingToProjects && <div className="flex justify-center items-center pt-20">Loading your Projects...</div>}
+      {isLoadingOrgs && (
+        <div className="flex justify-center items-center">Loading orgs...</div>
+      )}
+      {isRedirectingToProjects && (
+        <div className="flex justify-center items-center pt-20">
+          Loading your Projects...
+        </div>
+      )}
     </div>
   )
 }

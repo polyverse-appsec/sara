@@ -24,7 +24,7 @@ export interface BoostProjectStatus {
   synchronized?: boolean
   activelyUpdating?: boolean
   resourcesState?: any[]
-  possibleStagesRemaining?: number;
+  possibleStagesRemaining?: number
   details?: string
   lastSynchronized?: number
   lastUpdated: number

@@ -12,8 +12,8 @@ import {
   ProjectDataReference,
   projectHealthScalarValuesByReadableValues,
   type ProjectHealth,
+  type ProjectHealthConfigurationState,
   type ProjectHealthStatusValue,
-  type ProjectHealthConfigurationState
 } from './../../../../../lib/data-model-types'
 import { getFileInfoPartDeux } from './../../../../../lib/polyverse/backend/backend'
 import getBoostProjectStatus, {
@@ -31,7 +31,7 @@ const createProjectHealth = (
   readableValue: ProjectHealthStatusValue,
   configurationState: ProjectHealthConfigurationState,
   message: string,
-  actionableRecourse: string | null = null
+  actionableRecourse: string | null = null,
 ) => {
   const scalarValue = projectHealthScalarValuesByReadableValues[readableValue]
 
@@ -160,7 +160,12 @@ export const GET = auth(async (req: NextAuthRequest) => {
     } catch (error) {
       const errMsg = `Failed to get data references for project '${project.name}' for org '${org.name}' because: ${error}`
 
-      const projectHealth = createProjectHealth(project.id, 'UNHEALTHY', 'UNKNOWN', errMsg)
+      const projectHealth = createProjectHealth(
+        project.id,
+        'UNHEALTHY',
+        'UNKNOWN',
+        errMsg,
+      )
 
       return new Response(JSON.stringify(projectHealth), {
         status: StatusCodes.OK,
@@ -192,7 +197,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
         creator: ASSISTANT_METADATA_CREATOR, // Ignore creator for search
         version: '', // Ignore version for search
         stage: process.env.SARA_STAGE || 'unknown',
-    }
+      }
 
       assistant = await findAssistantFromMetadata(assistantMetadata)
 
@@ -209,7 +214,12 @@ export const GET = auth(async (req: NextAuthRequest) => {
     } catch (error) {
       const errMsg = `Failed to get LLM for project '${project.name}' for org '${org.name}' because: ${error}`
 
-      const projectHealth = createProjectHealth(project.id, 'UNHEALTHY', 'UNKNOWN', errMsg)
+      const projectHealth = createProjectHealth(
+        project.id,
+        'UNHEALTHY',
+        'UNKNOWN',
+        errMsg,
+      )
 
       return new Response(JSON.stringify(projectHealth), {
         status: StatusCodes.OK,
@@ -303,7 +313,12 @@ export const GET = auth(async (req: NextAuthRequest) => {
     } catch (error) {
       const errMsg = `Failed to get LLM status for project '${project.name}' for org '${org.name}' because: ${error}`
 
-      const projectHealth = createProjectHealth(project.id, 'UNHEALTHY', 'UNKNOWN',errMsg)
+      const projectHealth = createProjectHealth(
+        project.id,
+        'UNHEALTHY',
+        'UNKNOWN',
+        errMsg,
+      )
 
       return new Response(JSON.stringify(projectHealth), {
         status: StatusCodes.OK,
