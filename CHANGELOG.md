@@ -18,7 +18,7 @@
 
 ### Bug Fixes
 
-- N/A
+- Remove sample text from prompt input text box
 
 ## Version 0.16.0: March 15th, 2024
 

@@ -22,7 +22,7 @@ const SaraChat = ({ chatQueriesUrl, projectHealth }: SaraChatProps) => {
     null,
   )
 
-  const [input, setInput] = useState('Provide your chat query here...')
+  const [input, setInput] = useState('');
 
   useEffect(() => {
     let isMounted = true
