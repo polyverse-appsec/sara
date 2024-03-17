@@ -215,7 +215,7 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
 
   return (
     <div className="flex-1 flex-col p-10">
-      <div className="bg-white shadow-md rounded-lg p-6">
+      <div className="bg-background shadow-md rounded-lg p-6">
         <div className="my-1 flex justify-between w-full">
           <div className="flex items-center">
             <h3 className="text-lg font-semibold">Project Name</h3>

@@ -73,7 +73,7 @@ export const ProjectDetailsTile = ({
       href={`/projects/${id}`}
       className="block transform transition hover:scale-105"
     >
-      <div className="flex justify-between bg-white shadow-md rounded-lg p-6">
+      <div className="flex justify-between bg-background shadow-md rounded-lg p-6">
         <div>
           <h3 className="text-lg font-semibold">{name}</h3>
           <p className="text-sm text-gray-600">Created on: {formattedCreateDate}</p>

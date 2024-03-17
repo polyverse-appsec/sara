@@ -245,7 +245,7 @@ const ProjectCreate = () => {
 
   return (
     <div className="flex-1 flex-col p-10">
-      <div className="bg-white shadow-md rounded-lg p-6">
+      <div className="bg-background shadow-md rounded-lg p-6">
         <div className="grid grid-cols-1 gap-4">
           <div className="text-base my-1">
             <p>

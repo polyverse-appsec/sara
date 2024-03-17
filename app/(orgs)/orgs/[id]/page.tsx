@@ -79,15 +79,15 @@ const OrgIndex = ({ params: { id } }: { params: { id: string } }) => {
 
   return (
     <div className="flex-1 flex-col gap-4 p-10 text-2xl font-bold">
-      <div className="bg-white shadow-md rounded-lg p-6">
+      <div className="bg-background shadow-md rounded-lg p-6">
         <h3 className="text-lg font-semibold">{org.name}</h3>
       </div>
       { orgIsPremium ? 
-        <div className="bg-white shadow-md rounded-lg p-6 mt-10">
+        <div className="bg-background shadow-md rounded-lg p-6 mt-10">
           <h3 className="text-lg font-semibold">You have all premium plan permissions for this organization</h3>
         </div>
         : 
-        <div className="bg-white shadow-md rounded-lg p-6 mt-10">
+        <div className="bg-background shadow-md rounded-lg p-6 mt-10">
           <h3 className="text-lg font-semibold">You have basic plan permissions for this organization</h3>
           <button
             onClick={() => window.open('https://buy.stripe.com/8wM9AY9hAe4y5fa000', '_blank', 'noopener,noreferrer')}

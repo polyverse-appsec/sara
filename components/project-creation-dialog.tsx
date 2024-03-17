@@ -80,7 +80,7 @@ const renderSecondaryDataSources = (
         key={key}
       >
         <Checkbox.Root
-          className="flex items-center justify-center w-5 h-5 bg-white border border-gray-600 rounded-md shadow opacity-95 focus:opacity-100"
+          className="flex items-center justify-center w-5 h-5 bg-background border border-gray-600 rounded-md shadow opacity-95 focus:opacity-100"
           id={copiedDataSource.repo.name}
           checked={copiedDataSource.checked}
           onCheckedChange={(checked) => {

@@ -34,7 +34,7 @@ const GoalIndex = ({ params: { id } }: { params: { id: string } }) => {
   return (
     <div className="max-h-screen overflow-auto">
       <div className="flex-1 flex-col gap-4 p-10 text-2xl">
-        <div className="bg-white shadow-md rounded-lg p-6">
+        <div className="bg-background shadow-md rounded-lg p-6">
           <div className="text-center text-base my-1">
             <h3 className="text-lg font-semibold">Goal Name</h3>
             <p>{goal?.name}</p>
