@@ -368,7 +368,7 @@ export async function configAssistant(
   }
 
   const existingAssistantMetadata: AssistantMetadata = {
-    projectId: project.name,
+    projectId: project.id,
     userName: email,
     orgName: billingOrgId,
     creator: '', // ignore this match
@@ -381,11 +381,12 @@ export async function configAssistant(
   )
 
   if (existingAssistant) {
+    console.debug(`Found existing assistant (${fileInfos}) for ${email} org:${billingOrgId} project: ${project.name} - files ${JSON.stringify(fileInfos)}`)
     return await updateAssistantPromptAndFiles(fileInfos, existingAssistant, undefined)
   }
 
   const newAssistantMetadata: AssistantMetadata = {
-    projectId: project.name,
+    projectId: project.id,
     userName: email,
     orgName: project.org,
     creator: ASSISTANT_METADATA_CREATOR,

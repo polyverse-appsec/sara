@@ -454,7 +454,7 @@ export async function getFileInfoPartDeux(
     if (!res.ok) {
       const errText = await res.text()
       console.error(
-        `Got a failure response while trying to get file IDs for '${billingOrgName}/${projectId} for ${email}' - Status: ${res.status} - Error: ${errText}`,
+        `getFileInfoPartDeux: Got a failure response while trying to get file IDs for '${billingOrgName}/${projectId} for ${email}' - Status: ${res.status} - Error: ${errText}`,
       )
 
       return []
@@ -498,7 +498,7 @@ export async function getFileInfoPartDeux(
     }) as ProjectDataReference[]
   } catch (error) {
     console.error(
-      'Error making a request or parsing a response for project ID: ',
+      'getFileInfoPartDeux: Error making a request or parsing a response for project ID: ',
       error,
     )
   }
