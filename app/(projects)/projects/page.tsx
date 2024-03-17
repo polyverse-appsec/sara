@@ -15,12 +15,14 @@ const ProjectIndex = () => {
 
   useEffect(() => {
     (async () => {
+        // if we hit this page directly, without going through the billing org set logic, we'll need
+        //     to load it again
       if (!activeBillingOrg) {
-        const orgRes = await fetch('/api/orgs/active'); // Adjust this endpoint accordingly.
+        const orgRes = await fetch('/api/orgs/active');
         if (orgRes.ok) {
           const defaultOrg = await orgRes.json();
           setActiveBillingOrg(defaultOrg);
-          // Ensuring activeBillingOrg is not null before proceeding.
+
           if (defaultOrg && defaultOrg.id) {
             fetchProjects(defaultOrg.id);
           }
