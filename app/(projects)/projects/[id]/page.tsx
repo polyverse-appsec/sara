@@ -203,7 +203,7 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
     return () => {
       isMounted = false
     }
-  }, [])
+  }, [id])
 
   if (!project) {
     return null

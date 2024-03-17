@@ -68,7 +68,7 @@ const OrgIndex = ({ params: { id } }: { params: { id: string } }) => {
       setOrgIsPremium(orgUserStatus.isPremium === 'PREMIUM')
 
     })()
-  }, [])
+  }, [id, saraSession])
 
   if (!org) {
     return null
