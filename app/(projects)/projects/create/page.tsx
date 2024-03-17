@@ -2,6 +2,12 @@
 
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@radix-ui/react-dropdown-menu'
 import Joi from 'joi'
 import { useSession } from 'next-auth/react'
 import toast from 'react-hot-toast'
@@ -17,7 +23,6 @@ import {
 } from './../../../../lib/data-model-types'
 import { useAppContext } from './../../../../lib/hooks/app-context'
 import DataSourceSelector from './data-source-selector'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu'
 import SingleDataSourceSelector from './single-data-source-selector'
 
 const titleSchema = Joi.string()
@@ -181,14 +186,19 @@ const ProjectCreate = () => {
 
   const [controlledProjectDataSources, setControlledProjectDataSources] =
     useState<GitHubRepo[]>([])
+
   const [projectName, setProjectName] = useState<string>('')
+
   const [projectDescription, setProjectDescription] = useState<string>('')
 
   const [saveButtonEnabled, setSaveButtonEnabled] = useState<boolean>(true)
+
   const [userGitHubAppInstalled, setUserGitHubAppInstalled] =
     useState<boolean>(true)
+
   const [orgGithubAppInstalled, setOrgGitHubAppInstalled] =
     useState<boolean>(true)
+
   const [userIsPremium, setUserIsPremium] = useState<boolean>(true)
 
   const [statusCheckDone, setStatusCheckDone] = useState<boolean>(false)
@@ -219,7 +229,7 @@ const ProjectCreate = () => {
           activeBillingOrg.id,
           saraSession.id,
         )
-        
+
         setStatusCheckDone(true)
         setUserGitHubAppInstalled(
           orgUserStatus.gitHubAppInstalled === 'INSTALLED',
@@ -259,7 +269,7 @@ const ProjectCreate = () => {
               onChange={(e) => setProjectName(e.target.value)}
             />
           </div>
-          { /* This is the primary data source selector */}
+          {/* This is the primary data source selector */}
           <div className="my-1">
             <h3 className="text-lg font-semibold">
               Select Project Data Sources
@@ -271,30 +281,32 @@ const ProjectCreate = () => {
               }
             />
           </div>
-          { isAdvancedMenuOpen && (
-          <div> 
-            <div className="my-1">
-              <h3 className="text-lg font-semibold">
-                Select Secondary Project Data Sources
-              </h3>
-              {/* Currently this data source selector is only able to select one repo, it's the same one that was used for primary repo select I just 
+          {isAdvancedMenuOpen && (
+            <div>
+              <div className="my-1">
+                <h3 className="text-lg font-semibold">
+                  Select Secondary Project Data Sources
+                </h3>
+                {/* Currently this data source selector is only able to select one repo, it's the same one that was used for primary repo select I just 
               moved it here to replace it with a dropdown menu to signal clearer ui. Once we build multi project functionality we'll need to 
               change this */}
-              <DataSourceSelector
-                orgName={activeBillingOrg.name}
-                setControlledProjectDataSources={(gitHubRepos) =>
-                  setControlledProjectDataSources(gitHubRepos)
-                }
-              />
+                <DataSourceSelector
+                  orgName={activeBillingOrg.name}
+                  setControlledProjectDataSources={(gitHubRepos) =>
+                    setControlledProjectDataSources(gitHubRepos)
+                  }
+                />
+              </div>
+              <div className="my-1">
+                <h3 className="text-lg font-semibold">
+                  Add Project Description
+                </h3>
+                <Input
+                  value={projectDescription}
+                  onChange={(e) => setProjectDescription(e.target.value)}
+                />
+              </div>
             </div>
-            <div className="my-1">
-              <h3 className="text-lg font-semibold">Add Project Description</h3>
-              <Input
-                value={projectDescription}
-                onChange={(e) => setProjectDescription(e.target.value)}
-              />
-            </div>
-          </div>
           )}
         </div>
         {!userGitHubAppInstalled ? (
@@ -322,9 +334,7 @@ const ProjectCreate = () => {
         ) : null}
         {!statusCheckDone ? (
           <div className="text-left text-base my-1">
-            <p>
-              Verifying permissions...
-            </p>
+            <p>Verifying permissions...</p>
           </div>
         ) : null}
         <div className="flex justify-between">
@@ -332,8 +342,8 @@ const ProjectCreate = () => {
             variant="ghost"
             className={`${
               !statusCheckDone
-                ? "bg-gray-500 hover:bg-gray-500 cursor-not-allowed"
-                : "bg-green-500 hover:bg-green-200"
+                ? 'bg-gray-500 hover:bg-gray-500 cursor-not-allowed'
+                : 'bg-green-500 hover:bg-green-200'
             } transition duration-300`}
             onClick={async (e) => {
               e.preventDefault()

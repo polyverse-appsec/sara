@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { toast } from 'react-hot-toast'
 
 import {
+  type ChatPartDeux,
   type ChatQueryPartDeux,
   type ProjectHealthStatusValue,
 } from './../../lib/data-model-types'
@@ -13,16 +14,85 @@ import SaraChatList from './sara-chat-list'
 import SaraChatPanel from './sara-chat-panel'
 
 interface SaraChatProps {
-  chatQueriesUrl: string
   projectHealth: ProjectHealthStatusValue
+  chatableResourceUrl: string
+  existingChatId: string | null
 }
 
-const SaraChat = ({ chatQueriesUrl, projectHealth }: SaraChatProps) => {
+const buildChat = async (
+  query: string,
+  chatableResourceUrl: string,
+): Promise<ChatPartDeux> => {
+  const chatBody = {
+    query,
+  }
+
+  const postChatUrl = chatableResourceUrl.endsWith('/')
+    ? `${chatableResourceUrl}chats`
+    : `${chatableResourceUrl}/chats`
+
+  const postChatRes = await fetch(postChatUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(chatBody),
+  })
+
+  if (!postChatRes.ok) {
+    const resErrText = await postChatRes.text()
+    const errMsg = `Failed to build chat for resource '${chatableResourceUrl}' because: ${resErrText}`
+    console.debug(errMsg)
+    throw new Error(errMsg)
+  }
+
+  const chat = (await postChatRes.json()) as ChatPartDeux
+
+  return chat
+}
+
+const submitQueryToExistingChat = async (
+  query: string,
+  prevChatQueryId: string,
+  chatQueriesUrl: string,
+) => {
+  const reqBody = {
+    prevChatQueryId,
+    query,
+  }
+
+  const postChatQueryRes = await fetch(`${chatQueriesUrl}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(reqBody),
+  })
+
+  if (!postChatQueryRes.ok) {
+    const resErrText = await postChatQueryRes.text()
+    const errMsg = `Failed to make new chat query: ${resErrText}`
+    console.debug(errMsg)
+    throw new Error(errMsg)
+  }
+}
+
+const buildChatQueriesUrl = (chatableResourceUrl: string, chatId: string) =>
+  chatableResourceUrl.endsWith('/')
+    ? `${chatableResourceUrl}chats/${chatId}/chat-queries`
+    : `${chatableResourceUrl}/chats/${chatId}/chat-queries`
+
+const SaraChat = ({
+  projectHealth,
+  chatableResourceUrl,
+  existingChatId = null,
+}: SaraChatProps) => {
   const [chatQueries, setChatQueries] = useState<ChatQueryPartDeux[] | null>(
     null,
   )
 
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState('')
+  const [chatId, setChatId] = useState<string | null>(existingChatId)
 
   useEffect(() => {
     let isMounted = true
@@ -30,12 +100,20 @@ const SaraChat = ({ chatQueriesUrl, projectHealth }: SaraChatProps) => {
 
     const fetchChatQuerires = async () => {
       try {
+        if (!chatId) {
+          if (isMounted) {
+            setTimeout(fetchChatQuerires, fetchChatQueriesFrequencyMilliseconds)
+          }
+
+          return
+        }
+
+        const chatQueriesUrl = buildChatQueriesUrl(chatableResourceUrl, chatId)
         const chatQueriesRes = await fetch(chatQueriesUrl)
 
         if (!chatQueriesRes.ok) {
           const errText = await chatQueriesRes.text()
 
-          // TODO: How do I want to raise this info/visibility to the user
           console.debug(
             `Failed to get a success response when fetching chat queries because: ${errText}`,
           )
@@ -51,16 +129,12 @@ const SaraChat = ({ chatQueriesUrl, projectHealth }: SaraChatProps) => {
           (await chatQueriesRes.json()) as ChatQueryPartDeux[]
 
         setChatQueries(fetchedChatQueries)
-
-        if (isMounted) {
-          setTimeout(fetchChatQuerires, fetchChatQueriesFrequencyMilliseconds)
-        }
       } catch (err) {
         console.debug(`Failed to fetch chat queries because: ${err}`)
+      }
 
-        if (isMounted) {
-          setTimeout(fetchChatQuerires, fetchChatQueriesFrequencyMilliseconds)
-        }
+      if (isMounted) {
+        setTimeout(fetchChatQuerires, fetchChatQueriesFrequencyMilliseconds)
       }
     }
 
@@ -74,16 +148,6 @@ const SaraChat = ({ chatQueriesUrl, projectHealth }: SaraChatProps) => {
   if (!chatQueries) {
     return <LoadingSpinner />
   }
-
-  // TODO: Cut for now this             <ChatScrollAnchor trackVisibility={isLoading} />
-  // TODO: Cut the below for now
-  // (
-  //   <EmptyScreen
-  //     id={chat.id}
-  //     append={updateAssistantAndAppend}
-  //     setInput={setInput}
-  //   />
-  // )
 
   return (
     <>
@@ -100,31 +164,39 @@ const SaraChat = ({ chatQueriesUrl, projectHealth }: SaraChatProps) => {
         input={input}
         setInput={setInput}
         onQuerySubmit={async (query: string) => {
-          const reqBody = {
-            prevChatQueryId: chatQueries[chatQueries.length - 1].id,
-            query,
-          }
-
           try {
-            const res = await fetch(`${chatQueriesUrl}`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(reqBody),
-            })
+            // Check to see if we have a chat in the first place...
+            if (!chatId) {
+              const chat = await buildChat(query, chatableResourceUrl)
 
-            if (!res.ok) {
-              const errText = await res.text()
-              console.debug(`Failed to make new chat query: ${errText}`)
-              toast.error(`Failed to make new chat query`)
+              // Once we build our chat which includes our intial chat query be
+              // sure to flag that we shouldn't try to build it again and return
+              // so we don't try to make a query to an existing chat
+              setChatId(chat.id)
               return
             }
 
-            const chatQuery = await res.json()
-          } catch (err) {
-            console.debug(`Failed to make new chat query: ${err}`)
-            toast.error(`Failed to make new chat query`)
+            if (!chatQueries) {
+              toast.error(
+                `Previous chat query unknown and required for chat submission`,
+              )
+              return
+            }
+
+            const chatQueriesUrl = buildChatQueriesUrl(
+              chatableResourceUrl,
+              chatId,
+            )
+
+            const prevChatQueryId = chatQueries[chatQueries.length - 1].id
+
+            await submitQueryToExistingChat(
+              query,
+              prevChatQueryId,
+              chatQueriesUrl,
+            )
+          } catch (error) {
+            toast.error(`Failed to make chat query because: ${error}`)
           }
         }}
       />

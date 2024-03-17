@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 import {
   TaskPartDeux,
@@ -73,6 +74,8 @@ interface NavResource {
 }
 
 const NavResourceLoader = ({ projectId }: NavResourceLoaderProps) => {
+  const router = useRouter()
+
   const [selectedResource, setSelectedResource] = useState<string | null>(null)
 
   const [navResourcesByGoalId, setNavResourcesByGoalId] = useState<
@@ -135,6 +138,17 @@ const NavResourceLoader = ({ projectId }: NavResourceLoaderProps) => {
       value={selectedResource}
       onChange={(resource: string) => {
         console.log(`***** selected resource changed to: ${resource}`)
+
+        // This is a hack for a demo we are having 03/19/24. Our TreeView
+        // component is poor in that it can't render any ReactNodes as
+        // children - just more TreeViewNodes. What we would like to do is
+        // pass a <Link> with a <Label> for the nodes. Since we can't do
+        // that we pass the route for the goal as the ID and when an
+        // element is clicked we will route to it if it contains the
+        // `/goals` URL.
+        if (resource.includes(`goals`)) {
+          router.push(resource)
+        }
       }}
       className="h-full"
     >
@@ -147,7 +161,14 @@ const NavResourceLoader = ({ projectId }: NavResourceLoaderProps) => {
         return (
           <Treeview.Node
             node={{
-              id: navResource.goal.id,
+              // This is a hack for a demo we are having 03/19/24. Our TreeView
+              // component is poor in that it can't render any ReactNodes as
+              // children - just more TreeViewNodes. What we would like to do is
+              // pass a <Link> with a <Label> for the nodes. Since we can't do
+              // that we pass the route for the goal as the ID and when an
+              // element is clicked we will route to it if it contains the
+              // `/goals` URL.
+              id: `/goals/${navResource.goal.id}`,
               content: navResource.goal.description,
               children: taskNodes,
             }}

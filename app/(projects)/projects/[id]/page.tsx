@@ -87,7 +87,7 @@ const renderHumanReadableConfigurationState = (
       return 'Sara is updating her knowledge about your project'
     case 'CONFIGURED':
       return 'Sara is fully caught up on your project'
-      
+
     default:
       // Well we said we wouldn't return a scary string when it was actually in
       // the 'UNKNOWN' state. Lets at least return one here presuming we will
@@ -115,7 +115,8 @@ const renderChatForGoal = (
   return (
     <SaraChat
       projectHealth={projectHealth}
-      chatQueriesUrl={`/api/goals/${goal.id}/chats/${goal.chatId}/chat-queries`}
+      chatableResourceUrl={`/api/goals/${goal.id}`}
+      existingChatId={goal.chatId}
     />
   )
 }
@@ -125,7 +126,6 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
   const { setProjectIdForConfiguration } = useAppContext()
 
   const [project, setProject] = useState<ProjectPartDeux | null>(null)
-  const [goals, setGoals] = useState<GoalPartDeux[] | null>(null)
   const [health, setHealth] = useState<ProjectHealth | null>(null)
   const [deleteButtonEnabled, setDeleteButtonEnabled] = useState<boolean>(true)
   const [goalForChat, setGoalForChat] = useState<GoalPartDeux | null>(null)
@@ -155,7 +155,6 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
 
         if (goalsRes.ok) {
           const fetchedGoals = (await goalsRes.json()) as GoalPartDeux[]
-          setGoals(fetchedGoals)
 
           // If we don't have a goal for chat then just take the first goal with
           // if it has a chat ID. This is making the assumption that the first
