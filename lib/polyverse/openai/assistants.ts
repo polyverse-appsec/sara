@@ -65,8 +65,8 @@ function getOpenAIAssistantInstructions(
   // question by performing a Thread Run each Thread Run ought to override the
   // instructions if it will help Sara focus on the type of answer she ought to
   // provide.
-  let assistantPromptInstructions = `
-      You are a software architecture assistant as well as a coding assistant named Sara.
+  let assistantPromptInstructions =
+    `You are a software architecture assistant as well as a coding assistant named Sara.
       `;
 
   try {
@@ -288,7 +288,7 @@ export async function findAssistantFromMetadata(
   const assistants = await oaiClient.beta.assistants.list()
 
   // API Assistant object reference: https://platform.openai.com/docs/api-reference/assistants/object
-  return assistants?.data?.find(
+  const foundMatchedAssistant = assistants?.data?.find(
     ({ metadata: retrievedMetadata }) =>
       isRecord(retrievedMetadata) &&
       retrievedMetadata.projectId === metadata.projectId &&
@@ -300,6 +300,17 @@ export async function findAssistantFromMetadata(
     //   we can fail the match on a version compare and then create a new assistant
     //   with the new version of Sara)
   )
+
+  if (!foundMatchedAssistant) {
+    console.debug(
+      `Failed to find an assistant when searching for one using the following metadata: ${JSON.stringify(
+        metadata,
+      )}`,
+    )
+    return undefined
+  }
+
+  return foundMatchedAssistant
 }
 
 export async function getAssistant(assistantId: string): Promise<Assistant> {
