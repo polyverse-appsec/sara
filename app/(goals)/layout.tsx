@@ -12,7 +12,7 @@ interface GoalLayoutProps {
 const GoalLayout = ({ children }: GoalLayoutProps) => {
   return (
     <>
-      <div className="flex h-screen bg-gray-200">
+      <div className="flex h-screen bg-background">
         <SidebarNav />
         {children}
       </div>

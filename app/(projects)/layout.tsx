@@ -12,7 +12,7 @@ interface ProjectLayoutProps {
 const ProjectLayout = ({ children }: ProjectLayoutProps) => {
   return (
     <>
-      <div className="flex h-screen bg-gray-200">
+      <div className="flex h-screenb bg-background">
         <SidebarNav />
         {children}
       </div>

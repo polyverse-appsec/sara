@@ -12,7 +12,7 @@ interface OrgLayoutProps {
 const OrgLayout = ({ children }: OrgLayoutProps) => {
   return (
     <>
-      <div className="flex h-screen bg-gray-200">
+      <div className="flex h-screen bg-background">
         <SidebarNav />
         {children}
       </div>

@@ -128,7 +128,7 @@ const DataSourceSelector = ({
       </ScrollArea.Viewport>
       {/* Use select-none to ensure that no selection can be done of text*/}
       <ScrollArea.Scrollbar
-        className="flex select-none p-2 bg-gray-200 transition ease-in-out delay-150 hover:bg-gray-600"
+        className="flex select-none p-2 bg-background transition ease-in-out delay-150 hover:bg-gray-600"
         orientation="vertical"
       >
         <ScrollArea.Thumb />

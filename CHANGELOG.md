@@ -14,6 +14,7 @@
 - UI improvements to the Sara status messages
 - Encourage Sara NOT to use the specific vector store filenames in her answers to the user - and instead use more general resource names like "Software Architectural Blueprint" - which are names also in the raw resources uploaded by Backend
 - Set the Sara "Deployment" stage in the Assistant id for separation of data
+- Enable Dark Mode support in the Sara UI
 
 ### Bug Fixes
 
