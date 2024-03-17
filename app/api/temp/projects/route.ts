@@ -28,7 +28,7 @@ async function getFileInfoWithRetry(
 ): Promise<ProjectDataReference[]> {
   return new Promise((resolve, reject) => {
     let attempt = 0
-    const maxAttempts = 10 // Limit the number of retries to prevent infinite loops
+    const maxAttempts = 6 // Limit the number of retries to prevent infinite loops
 
     const makeAttempt = async () => {
       try {
@@ -40,7 +40,7 @@ async function getFileInfoWithRetry(
           attempt++
           if (attempt < maxAttempts) {
             // Schedule the next attempt in 2 seconds
-            setTimeout(makeAttempt, 2000)
+            setTimeout(makeAttempt, 5000)
           } else {
             reject(new Error('Max attempts reached without success')) // Failed too many times
           }
