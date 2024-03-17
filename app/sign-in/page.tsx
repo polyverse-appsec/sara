@@ -35,10 +35,10 @@ export default async function SignInPage() {
       <LoginButton />
       <h2 className="text-xl text-blue-600 mt-8">What Superpowers Sara</h2>
       <div className="w-1/2 border-t-2 border-blue-600 my-2"></div>
-      <div className="mt-4 p-4 border-2 border-blue-600 rounded-lg text-base text-center text-gray-700 max-w-md w-full mx-auto">
-      Sara leverages advanced Polyvser Boost AI to analyze your codebase and workflows, providing real-time, customized task plans and direct assistance. Whether writing documentation, updating specs, coding, or creating tests, Sara partners with you to accelerate development and deliver high-quality features faster.
+      <div className="mt-4 p-4 border-2 border-blue-600 rounded-lg text-base text-center text-gray-700 w-1/2 mx-auto">
+        Sara leverages advanced Polyvser Boost AI to analyze your codebase and workflows, providing real-time, customized task plans and direct assistance. Whether writing documentation, updating specs, coding, or creating tests, Sara partners with you to accelerate development and deliver high-quality features faster.
 
-      Sara learns about you and your team - your skills, strengths and challenges - to help you deliver your best work, and accelerate your roadmap and business goals.
+        Sara learns about you and your team - your skills, strengths and challenges - to help you deliver your best work, and accelerate your roadmap and business goals.
       </div>
     </div>
   )
