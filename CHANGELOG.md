@@ -19,6 +19,7 @@
 ### Bug Fixes
 
 - Remove sample text from prompt input text box
+- Load the Billing Organization for the Project Chat Page - avoid Select Billing Organization error popup
 
 ## Version 0.16.0: March 15th, 2024
 
