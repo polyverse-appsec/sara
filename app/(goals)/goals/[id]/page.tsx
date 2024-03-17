@@ -24,7 +24,7 @@ const GoalIndex = ({ params: { id } }: { params: { id: string } }) => {
 
       setGoal(fetchedGoal)
     })()
-  }, [])
+  }, [id])
 
   // 03/14/24: We are prepping for a demo and new customer on-boarding next
   // week. As a result we are cutting the usage of this rendered page for now.

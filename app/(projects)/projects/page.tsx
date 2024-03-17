@@ -37,7 +37,7 @@ const ProjectIndex = () => {
 
       setProjects(fetchedProjects)
     })()
-  }, [])
+  }, [activeBillingOrg, setProjectIdForConfiguration])
 
   // Force a user to select an active billing org first before getting to their
   // projects
