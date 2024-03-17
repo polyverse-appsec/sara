@@ -122,11 +122,11 @@ const SidebarNav = () => {
       fetchProjectDetails()
     }
     fetchPremiumStatus()
-  }, [activeBillingOrg, projectIdForConfiguration])
+  }, [activeBillingOrg, projectIdForConfiguration, saraSession])
 
   return (
     <motion.aside
-      className="absolute inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition duration-200 ease-in-out"
+      className="absolute inset-y-0 left-0 -translate-x-full md:relative md:translate-x-0 transition duration-200 ease-in-out"
       initial={{ width: 0 }}
       animate={{ width: 250 }}
       exit={{ width: 0 }}
