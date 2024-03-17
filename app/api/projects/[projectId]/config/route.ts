@@ -5,27 +5,18 @@ import { Assistant } from 'openai/resources/beta/assistants/assistants'
 import { auth } from '../../../../../auth'
 import getProjectPromptFileInfoIds from '../../../../../lib/polyverse/db/get-project-prompt-file-info-ids'
 import {
-  type GitHubRepo,
-  type ProjectDataReference,
-  type ProjectDataSourcePartDeux,
-  type ProjectPartDeux,
   type PromptFileInfo,
-  type Repository,
 } from './../../../../../lib/data-model-types'
 import {
-  createProject as createProjectOnBoost,
   getBoostOrgUserStatus,
   getFileInfoPartDeux,
 } from './../../../../../lib/polyverse/backend/backend'
-import createProject from './../../../../../lib/polyverse/db/create-project'
-import createProjectDataSource from './../../../../../lib/polyverse/db/create-project-data-source'
 import createPromptFileInfo from './../../../../../lib/polyverse/db/create-prompt-file-info'
 import deletePromptFileInfo from './../../../../../lib/polyverse/db/delete-prompt-file-info'
 import getOrg from './../../../../../lib/polyverse/db/get-org'
 import getProject from './../../../../../lib/polyverse/db/get-project'
 import getPromptFileInfo from './../../../../../lib/polyverse/db/get-prompt-file-info'
 import getUser from './../../../../../lib/polyverse/db/get-user'
-import updateOrg from './../../../../../lib/polyverse/db/update-org'
 import updateProject from './../../../../../lib/polyverse/db/update-project'
 import { createBaseSaraObject } from './../../../../../lib/polyverse/db/utils'
 import {
@@ -241,6 +232,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
       creator: ASSISTANT_METADATA_CREATOR,
       // Will be ignored when searching
       version: getVersion(),
+      stage: process.env.SARA_STAGE || '',
     }
 
     try {

@@ -11,7 +11,6 @@ import getUser from '../../../../../lib/polyverse/db/get-user'
 import {
   ProjectDataReference,
   projectHealthScalarValuesByReadableValues,
-  type ProjectDataSourcePartDeux,
   type ProjectHealth,
   type ProjectHealthStatusValue,
   type ProjectHealthConfigurationState
@@ -192,7 +191,8 @@ export const GET = auth(async (req: NextAuthRequest) => {
         orgName: org.name,
         creator: ASSISTANT_METADATA_CREATOR, // Ignore creator for search
         version: '', // Ignore version for search
-      }
+        stage: process.env.SARA_STAGE || '',
+    }
 
       assistant = await findAssistantFromMetadata(assistantMetadata)
 

@@ -129,6 +129,7 @@ export const DELETE = auth(async (req: NextAuthRequest) => {
       orgName: org.name,
       creator: '', // Ignore creator for search
       version: '', // Ignore version for search
+      stage: process.env.SARA_STAGE || '',
     }
 
     const assistant = await findAssistantFromMetadata(assistantMetadata)

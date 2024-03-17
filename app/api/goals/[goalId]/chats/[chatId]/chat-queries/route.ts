@@ -233,6 +233,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
       orgName: org.name,
       creator: ASSISTANT_METADATA_CREATOR, // Ignore creator for search
       version: '', // Ignore version for search
+      stage: process.env.SARA_STAGE || '',
     }
 
     let assistant = await findAssistantFromMetadata(assistantMetadata)
