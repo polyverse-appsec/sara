@@ -43,7 +43,7 @@ const IndexPage = () => {
     <div className="flex-1 p-10 text-2xl font-bold">
       <OrgDashboard orgs={orgs} />
       { isLoadingOrgs && <div className="flex justify-center items-center">Loading orgs...</div>}
-      { isRedirectingToProjects && <div className="flex justify-center items-center pt-20">Redirecting to projects...</div>}
+      { isRedirectingToProjects && <div className="flex justify-center items-center pt-20">Loading your Projects...</div>}
     </div>
   )
 }
