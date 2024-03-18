@@ -9,6 +9,7 @@ import { MemoizedReactMarkdown } from '../markdown'
 import { CodeBlock } from '../ui/codeblock'
 import { IconUser } from '../ui/icons'
 import Sara32x32 from './../../public/Sara_Cartoon_Portrait-32x32.png'
+import { SaraSession } from 'auth'
 
 export interface SaraChatQueryContentProps {
   content: string
@@ -19,11 +20,13 @@ export interface SaraChatQueryContentProps {
    * Required or else we will always so a loading spinner.
    */
   shouldRenderLoadingSpinner: boolean
+  saraSession: SaraSession
 }
 
 function renderAvatarAndLoadingSpinner(
   contentType: 'QUERY' | 'RESPONSE',
   shouldRenderLoadingSpinner: boolean,
+  saraSession: SaraSession
 ) {
   return (
     <div className={'flex flex-col items-center'}>
@@ -35,13 +38,10 @@ function renderAvatarAndLoadingSpinner(
             : 'bg-primary text-primary-foreground',
         )}
       >
-        {contentType === 'QUERY' ? (
-          <IconUser />
+        {contentType === 'QUERY' && saraSession.picture ? (
+          <Image src={saraSession.picture} alt={saraSession.name} width={32} height={32} className="rounded-full" />
         ) : (
-          <>
-            <Image src={Sara32x32} alt="Sara Architecture Assistant" />
-            {/* Assuming the spinner should only show when there's a status to indicate */}
-          </>
+          <IconUser />
         )}
       </div>
       {shouldRenderLoadingSpinner ? (
@@ -70,6 +70,7 @@ const SaraChatQueryContent = ({
   content,
   contentType,
   shouldRenderLoadingSpinner,
+  saraSession,
   ...props
 }: SaraChatQueryContentProps) => {
   // TODO: Cut this out for the moment        <ChatMessageActions message={message} />
@@ -79,7 +80,7 @@ const SaraChatQueryContent = ({
       className={cn('group relative mb-4 flex items-start md:-ml-12')}
       {...props}
     >
-      {renderAvatarAndLoadingSpinner(contentType, shouldRenderLoadingSpinner)}
+      {renderAvatarAndLoadingSpinner(contentType, shouldRenderLoadingSpinner, saraSession)}
       <div className="flex-1 px-1 ml-4 space-y-2 overflow-hidden">
         <MemoizedReactMarkdown
           className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0"

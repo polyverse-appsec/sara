@@ -1,5 +1,6 @@
 'use client'
 
+import { SaraSession } from 'auth'
 import { ChatQueryPartDeux } from './../../lib/data-model-types'
 import { Separator } from './../ui/separator'
 import SaraChatQueryContent from './sara-chat-query-content'
@@ -11,9 +12,10 @@ export interface SaraChatListProps {
    * Indicates whether we are currently in the midst of a chat with OpenAI.
    */
   isLoading: boolean
+  saraSession: SaraSession
 }
 
-const SaraChatList = ({ chatQueries, isLoading }: SaraChatListProps) => {
+const SaraChatList = ({ chatQueries, isLoading, saraSession  }: SaraChatListProps) => {
   if (!chatQueries.length) {
     return null
   }
@@ -34,6 +36,7 @@ const SaraChatList = ({ chatQueries, isLoading }: SaraChatListProps) => {
               shouldRenderLoadingSpinner={
                 chatQuery.status === 'QUERY_SUBMITTED'
               }
+              saraSession={saraSession}
             />
             <Separator className="my-4 md:my-8" />
             {chatQuery.response ? (
@@ -41,6 +44,7 @@ const SaraChatList = ({ chatQueries, isLoading }: SaraChatListProps) => {
                 content={chatQuery.response}
                 contentType="RESPONSE"
                 shouldRenderLoadingSpinner={false}
+                saraSession={saraSession}
               />
             ) : null}
           </div>

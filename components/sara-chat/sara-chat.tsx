@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { toast } from 'react-hot-toast'
+import { useSession } from 'next-auth/react';
 
 import {
   type ChatPartDeux,
@@ -12,6 +13,7 @@ import { cn } from './../../lib/utils'
 import LoadingSpinner from './../loading-spinner'
 import SaraChatList from './sara-chat-list'
 import SaraChatPanel from './sara-chat-panel'
+import { type SaraSession } from 'auth'; // Ensure this is correctly imported
 
 interface SaraChatProps {
   projectHealth: ProjectHealthStatusValue
@@ -86,122 +88,113 @@ const SaraChat = ({
   projectHealth,
   chatableResourceUrl,
   existingChatId = null,
-}: SaraChatProps) => {
-  const [chatQueries, setChatQueries] = useState<ChatQueryPartDeux[] | null>(
-    null,
-  )
-
-  const [input, setInput] = useState('')
-  const [chatId, setChatId] = useState<string | null>(existingChatId)
-
+  }: SaraChatProps) => {
+  const [chatQueries, setChatQueries] = useState<ChatQueryPartDeux[] | null>(null);
+  const [input, setInput] = useState('');
+  const [chatId, setChatId] = useState<string | null>(existingChatId);
+  const { data: session } = useSession();
+  const saraSession = session as SaraSession | null; // Handling session data properly
+  
   useEffect(() => {
-    let isMounted = true
-    const fetchChatQueriesFrequencyMilliseconds = 5000
+    let isMounted = true;
+    const fetchChatQueriesFrequencyMilliseconds = 5000;
 
-    const fetchChatQuerires = async () => {
-      try {
-        if (!chatId) {
-          if (isMounted) {
-            setTimeout(fetchChatQuerires, fetchChatQueriesFrequencyMilliseconds)
-          }
-
-          return
+    const fetchChatQueries = async () => {
+      if (!chatId) {
+        if (isMounted) {
+          setTimeout(fetchChatQueries, fetchChatQueriesFrequencyMilliseconds);
         }
+        return;
+      }
 
-        const chatQueriesUrl = buildChatQueriesUrl(chatableResourceUrl, chatId)
-        const chatQueriesRes = await fetch(chatQueriesUrl)
+      const chatQueriesUrl = buildChatQueriesUrl(chatableResourceUrl, chatId);
+      try {
+        const chatQueriesRes = await fetch(chatQueriesUrl);
 
         if (!chatQueriesRes.ok) {
-          const errText = await chatQueriesRes.text()
-
-          console.debug(
-            `Failed to get a success response when fetching chat queries because: ${errText}`,
-          )
-
-          if (isMounted) {
-            setTimeout(fetchChatQuerires, fetchChatQueriesFrequencyMilliseconds)
-          }
-
-          return
+          const errText = await chatQueriesRes.text();
+          console.debug(`Failed to get a success response when fetching chat queries because: ${errText}`);
+          return;
         }
 
-        const fetchedChatQueries =
-          (await chatQueriesRes.json()) as ChatQueryPartDeux[]
-
-        setChatQueries(fetchedChatQueries)
+        const fetchedChatQueries = await chatQueriesRes.json() as ChatQueryPartDeux[];
+        if (isMounted) {
+          setChatQueries(fetchedChatQueries);
+        }
       } catch (err) {
-        console.debug(`Failed to fetch chat queries because: ${err}`)
+        console.debug(`Failed to fetch chat queries because: ${err}`);
+      } finally {
+        if (isMounted) {
+          setTimeout(fetchChatQueries, fetchChatQueriesFrequencyMilliseconds);
+        }
       }
+    };
 
-      if (isMounted) {
-        setTimeout(fetchChatQuerires, fetchChatQueriesFrequencyMilliseconds)
-      }
-    }
-
-    fetchChatQuerires()
+    fetchChatQueries();
 
     return () => {
-      isMounted = false
-    }
-  }, [])
-
+      isMounted = false;
+      };
+    }, [chatableResourceUrl, chatId]);
+  
   if (!chatQueries) {
-    return <LoadingSpinner />
+    return <LoadingSpinner />;
   }
-
+  if (!saraSession) {
+    return null;
+  }
+  
   return (
     <>
-      <div className={cn('pb-[200px] pt-4 md:pt-10')}>
+    <div className={cn('pb-[200px] pt-4 md:pt-10')}>
         {chatQueries.length ? (
-          <>
-            <SaraChatList chatQueries={chatQueries} isLoading={true} />
-          </>
+        <SaraChatList chatQueries={chatQueries} isLoading={true} saraSession={saraSession} />
         ) : null}
-      </div>
-      <SaraChatPanel
-        projectHealth={projectHealth}
-        chatQueries={chatQueries}
-        input={input}
-        setInput={setInput}
-        onQuerySubmit={async (query: string) => {
-          try {
-            // Check to see if we have a chat in the first place...
-            if (!chatId) {
-              const chat = await buildChat(query, chatableResourceUrl)
+    </div>
+    <SaraChatPanel
+      projectHealth={projectHealth}
+      chatQueries={chatQueries}
+      input={input}
+      setInput={setInput}
+      onQuerySubmit={async (query: string) => {
+      try {
+          // Check to see if we have a chat in the first place...
+          if (!chatId) {
+            const chat = await buildChat(query, chatableResourceUrl)
 
-              // Once we build our chat which includes our intial chat query be
-              // sure to flag that we shouldn't try to build it again and return
-              // so we don't try to make a query to an existing chat
-              setChatId(chat.id)
-              return
-            }
-
-            if (!chatQueries) {
-              toast.error(
-                `Previous chat query unknown and required for chat submission`,
-              )
-              return
-            }
-
-            const chatQueriesUrl = buildChatQueriesUrl(
-              chatableResourceUrl,
-              chatId,
-            )
-
-            const prevChatQueryId = chatQueries[chatQueries.length - 1].id
-
-            await submitQueryToExistingChat(
-              query,
-              prevChatQueryId,
-              chatQueriesUrl,
-            )
-          } catch (error) {
-            toast.error(`Failed to make chat query because: ${error}`)
+            // Once we build our chat which includes our intial chat query be
+            // sure to flag that we shouldn't try to build it again and return
+            // so we don't try to make a query to an existing chat
+            setChatId(chat.id)
+            return
           }
-        }}
-      />
-    </>
-  )
-}
 
-export default SaraChat
+          if (!chatQueries) {
+            toast.error(
+              `Previous chat query unknown and required for chat submission`,
+            )
+            return
+          }
+
+          const chatQueriesUrl = buildChatQueriesUrl(
+            chatableResourceUrl,
+            chatId,
+          )
+
+          const prevChatQueryId = chatQueries[chatQueries.length - 1].id
+
+          await submitQueryToExistingChat(
+            query,
+            prevChatQueryId,
+            chatQueriesUrl,
+          )
+        } catch (error) {
+          toast.error(`Failed to make chat query because: ${error}`)
+        }
+      }}
+    />
+    </>
+  );
+  };
+  
+  export default SaraChat;
