@@ -151,9 +151,11 @@ const NavResourceLoader = ({ projectId }: NavResourceLoaderProps) => {
       className="h-full"
     >
       {Object.values(navResourcesByGoalId).map((navResource) => {
-        const taskNodes = navResource.tasks.map((task) => ({
+        const taskNodes = navResource.tasks.map((task, index) => ({
           id: task.id,
-          content: task.description,
+          // We number each task in the tree view so add 1 to the index so that
+          // we start numbering at 1
+          content: `${index + 1}: ${task.description}`,
         }))
 
         return (
