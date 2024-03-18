@@ -23,19 +23,25 @@ import NavResourceLoader from './nav-resource-tree/nav-resource-loader'
 const renderHealthIcon = (readableHealthValue: ProjectHealthStatusValue) => {
   if (readableHealthValue === 'UNHEALTHY') {
     return (
-      <p title="Unhealthy: Sara is having some trouble learning about your project.">🛑</p>
+      <p title="Unhealthy: Sara is having some trouble learning about your project.">
+        🛑
+      </p>
     )
   }
 
   if (readableHealthValue === 'PARTIALLY_HEALTHY') {
     return (
-      <p title="Partially Healthy: Sara is still learning about your project, so answers may not be complete.">⚠️</p>
+      <p title="Partially Healthy: Sara is still learning about your project, so answers may not be complete.">
+        ⚠️
+      </p>
     )
   }
 
   if (readableHealthValue === 'HEALTHY') {
     return (
-      <p title="Healthy: Sara is fully up to speed and ready to assist you with your project.">✅</p>
+      <p title="Healthy: Sara is fully up to speed and ready to assist you with your project.">
+        ✅
+      </p>
     )
   }
 
@@ -123,38 +129,38 @@ const SidebarNav = () => {
       }
     }
 
-    if (projectIdForConfiguration) {
-      const fetchProjectDetails = async () => {
-        try {
-          const projectRes = await fetch(
-            `/api/projects/${projectIdForConfiguration}`,
+    const fetchProjectDetails = async () => {
+      try {
+        const projectRes = await fetch(
+          `/api/projects/${projectIdForConfiguration}`,
+        )
+
+        if (!projectRes.ok) {
+          const errText = await projectRes.text()
+          throw new Error(
+            `Failed to get a success response when fetching project '${projectIdForConfiguration}' because: ${errText}`,
           )
-
-          if (!projectRes.ok) {
-            const errText = await projectRes.text()
-            throw new Error(
-              `Failed to get a success response when fetching project '${projectIdForConfiguration}' because: ${errText}`,
-            )
-          }
-
-          const fetchedProject = (await projectRes.json()) as ProjectPartDeux
-          setSelectedProject(fetchedProject)
-
-          const healthRes = await fetch(
-            `/api/projects/${projectIdForConfiguration}/health`,
-          )
-
-          if (healthRes.ok) {
-            const fetchedHealth = (await healthRes.json()) as ProjectHealth
-            setSelectedProjectHealth(fetchedHealth)
-          } else {
-            console.debug(`Failed to get project health`)
-          }
-        } catch (err) {
-          console.debug(`Failed to fetch project details because: ${err}`)
         }
-      }
 
+        const fetchedProject = (await projectRes.json()) as ProjectPartDeux
+        setSelectedProject(fetchedProject)
+
+        const healthRes = await fetch(
+          `/api/projects/${projectIdForConfiguration}/health`,
+        )
+
+        if (healthRes.ok) {
+          const fetchedHealth = (await healthRes.json()) as ProjectHealth
+          setSelectedProjectHealth(fetchedHealth)
+        } else {
+          console.debug(`Failed to get project health`)
+        }
+      } catch (err) {
+        console.debug(`Failed to fetch project details because: ${err}`)
+      }
+    }
+
+    if (projectIdForConfiguration) {
       fetchProjectDetails()
     }
 
