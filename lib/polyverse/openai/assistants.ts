@@ -69,11 +69,14 @@ function getOpenAIAssistantInstructions(
   try {
     if (project.name) {
       assistantPromptInstructions += `
-        You are advising a software engineer with the project named ${project.name}.`
+        You are advising a software engineer with the project named ${project.name}.
+        `
     }
 
     if (project.description) {
-      assistantPromptInstructions += ` The project description is: ${project.description}`
+      assistantPromptInstructions += `
+        The project description is: ${project.description}
+        `
     }
 
     const aiSpecStatus = projectStatus?.resourcesState?.find(
