@@ -137,8 +137,6 @@ const NavResourceLoader = ({ projectId }: NavResourceLoaderProps) => {
     <Treeview.Root
       value={selectedResource}
       onChange={(resource: string) => {
-        console.log(`***** selected resource changed to: ${resource}`)
-
         // This is a hack for a demo we are having 03/19/24. Our TreeView
         // component is poor in that it can't render any ReactNodes as
         // children - just more TreeViewNodes. What we would like to do is
@@ -169,7 +167,7 @@ const NavResourceLoader = ({ projectId }: NavResourceLoaderProps) => {
               // element is clicked we will route to it if it contains the
               // `/goals` URL.
               id: `/goals/${navResource.goal.id}`,
-              content: navResource.goal.description,
+              content: `Goal: ${navResource.goal.description}`,
               children: taskNodes,
             }}
             key={navResource.goal.id}
