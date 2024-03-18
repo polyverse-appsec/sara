@@ -35,7 +35,7 @@ const renderHealthIcon = (readableHealthValue: ProjectHealthStatusValue) => {
 
   if (readableHealthValue === 'HEALTHY') {
     return (
-      <p title="Healthy: Sara is fully up to speed and ready to assist you with your project.">✅ d</p>
+      <p title="Healthy: Sara is fully up to speed and ready to assist you with your project.">✅</p>
     )
   }
 
