@@ -120,10 +120,11 @@ function getOpenAIAssistantInstructions(
           ? Math.ceil(projectStatus.possibleStagesRemaining / 10)
           : 0
 
-      if (numberOfMinutesEstimatedBeforeSynchronization > 1) {
-        assistantPromptInstructions += `You estimate that you will have a more complete understanding of the project in ${numberOfMinutesEstimatedBeforeSynchronization} minutes.`
-      } else {
-        assistantPromptInstructions += `You estimate that you will have a more complete understanding of the project in 1 minute.`
+        // only show estimated time if we have an estimate - otherwise we don't want to imply we'll be done in 0 mins
+      if (numberOfMinutesEstimatedBeforeSynchronization > 0) {
+        assistantPromptInstructions += `You estimate that you will have a more complete understanding of the project in ` +
+        (numberOfMinutesEstimatedBeforeSynchronization > 1 ? `${numberOfMinutesEstimatedBeforeSynchronization} minutes`:`${numberOfMinutesEstimatedBeforeSynchronization} minute`) +
+        `.`;
       }
 
       assistantPromptInstructions += `When you answer user questions, you should remind the user that you are still researching their code and better answers will be available soon.`

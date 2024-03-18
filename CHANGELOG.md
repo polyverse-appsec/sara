@@ -14,7 +14,7 @@
 
 ### Bug Fixes
 
-- N/A
+- Fix issue in Assistant prompt implying synchronization will complete immediately when it will take mins or hours or never
 
 ## Version 0.16.1: March 18th, 2024
 
