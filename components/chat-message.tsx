@@ -41,7 +41,7 @@ function renderAvatarAndLoadingSpinner(
           <IconUser />
         ) : (
           <>
-            <Image src={Sara32x32} alt="Sara Architecture Assistant" />
+            <Image src={Sara32x32} alt="Sara Architecture Assistant" title="Sara Architecture Assistant" />
             {/* Assuming the spinner should only show when there's a status to indicate */}
           </>
         )}

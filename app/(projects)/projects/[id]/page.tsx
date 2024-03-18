@@ -18,15 +18,15 @@ import { useAppContext } from './../../../../lib/hooks/app-context'
 
 const renderHealthIcon = (readableHealthValue: ProjectHealthStatusValue) => {
   if (readableHealthValue === 'UNHEALTHY') {
-    return <p>🛑</p>
+    return <p title="Unhealthy: Sara is having some trouble learning about your project.">🛑</p>
   }
 
   if (readableHealthValue === 'PARTIALLY_HEALTHY') {
-    return <p>⚠️</p>
+    return <p title="Partially Healthy: Sara is still learning about your project, so answers may not be complete.">⚠️</p>
   }
 
   if (readableHealthValue === 'HEALTHY') {
-    return <p>✅</p>
+    return <p title="Healthy: Sara has learned about your project code and architecture.">✅</p>
   }
 
   // If we don't know what value it is then render a magnifying glass to signify searching

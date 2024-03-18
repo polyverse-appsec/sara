@@ -23,25 +23,19 @@ import NavResourceLoader from './nav-resource-tree/nav-resource-loader'
 const renderHealthIcon = (readableHealthValue: ProjectHealthStatusValue) => {
   if (readableHealthValue === 'UNHEALTHY') {
     return (
-      <p title="Unhealthy: Sara is having some trouble learning about your project.">
-        🛑
-      </p>
+      <p title="Unhealthy: Sara is having some trouble learning about your project.">🛑</p>
     )
   }
 
   if (readableHealthValue === 'PARTIALLY_HEALTHY') {
     return (
-      <p title="Partially Healthy: Sara is still learning about your project, so answers may not be complete.">
-        ⚠️
-      </p>
+      <p title="Partially Healthy: Sara is still learning about your project, so answers may not be complete.">⚠️</p>
     )
   }
 
   if (readableHealthValue === 'HEALTHY') {
     return (
-      <p title="Healthy: Sara is fully up to speed and ready to assist you with your project.">
-        ✅
-      </p>
+      <p title="Healthy: Sara is fully up to speed and ready to assist you with your project.">✅ d</p>
     )
   }
 
@@ -193,7 +187,8 @@ const SidebarNav = () => {
       <div className="flex flex-col items-center p-4 ">
         <Image
           src={SaraPortrait} // Adjust the path to your image
-          alt="Sara's Portrait"
+          alt="Sara's AI Assistant"
+          title="Sara's AI Assistant"
           width={100} // Adjust the width as needed
           height={100} // Adjust the height as needed
         />

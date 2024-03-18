@@ -35,6 +35,7 @@ export function EmptyScreen({ id, setInput, append }: EmptyScreenProps) {
           <Image
             src="/Sara_Cartoon_Portrait.png" // Adjust the path to your image
             alt="Sara's Portrait"
+            title="Sara AI Assistant"
             width={100} // Adjust the width as needed
             height={100} // Adjust the height as needed
           />

@@ -16,7 +16,8 @@ export default async function SignInPage() {
     <div className="flex flex-col items-center justify-center p-4">
       <Image
         src={SaraPortrait}
-        alt="Sara's Portrait"
+        alt="Sara AI Assistant"
+        title="Sara AI Assistant"
         width={200}
         height={200}
       />
@@ -30,6 +31,7 @@ export default async function SignInPage() {
         <Image
           src={PolyverseLogo}
           alt="Polyverse Logo"
+          title="Polyverse"
           width={200}
           height={200}
         />

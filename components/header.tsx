@@ -27,7 +27,7 @@ async function UserOrLogin() {
         </>
       ) : (
         <Link href="/" target="_self" rel="nofollow">
-          <Image src={Sara32x32} alt="Sara Architecture Assistant" />
+          <Image src={Sara32x32} alt="Sara Architecture Assistant" title="Sara Archiecture Assistant" />
         </Link>
       )}
       <div className="flex items-center">
@@ -56,6 +56,7 @@ export function Header() {
         <Image
           src={BoostLogo} // Adjust the path to your boost.jpg
           alt="Boost"
+          title="Boost"
           width={100} // Adjust the width as needed
           height={50} // Adjust the height as needed
         />

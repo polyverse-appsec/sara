@@ -16,6 +16,7 @@
 - Set the Sara "Deployment" stage in the Assistant id for separation of data
 - Enable Dark Mode support in the Sara UI
 - Add User picture + Name to the Chat threads
+- Add Titles / Hover Text to all UI images
 
 ### Bug Fixes
 

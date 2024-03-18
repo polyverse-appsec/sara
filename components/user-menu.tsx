@@ -135,6 +135,7 @@ export function UserMenu({ user }: UserMenuProps) {
                 className="w-6 h-6 transition-opacity duration-300 rounded-full select-none ring-1 ring-zinc-100/10 hover:opacity-80"
                 src={saraSession.picture ? `${saraSession.picture}&s=60` : ''}
                 alt={saraSession.name ?? 'Avatar'}
+                title={saraSession.name ?? 'Avatar'}
                 height={48}
                 width={48}
               />
