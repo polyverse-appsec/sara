@@ -727,7 +727,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
     })
   } catch (error) {
     console.error(
-      `Failed fetching chat queries for '${auth.user.username}' because: ${error}`,
+      `Failed fetching chat queries for '${auth.user.email}' because: ${error}`,
     )
 
     return new Response('Failed to fetch chat queries', {
