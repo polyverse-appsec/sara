@@ -63,7 +63,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
     })
   } catch (error) {
     console.error(
-      `Failed fetching orgs for '${auth.user.name}' because: ${error}`,
+      `Failed fetching orgs for '${auth.user.email}' because: ${error}`,
     )
 
     return new Response('Failed to fetch organizations', {
