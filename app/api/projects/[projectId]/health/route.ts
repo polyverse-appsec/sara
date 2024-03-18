@@ -340,10 +340,10 @@ export const GET = auth(async (req: NextAuthRequest) => {
     })
   } catch (error) {
     console.error(
-      `Failed fetching goals for '${auth.user.email}' because: ${error}`,
+      `Failed fetching project health for '${auth.user.email}' because: ${error}`,
     )
 
-    return new Response('Failed to fetch goals', {
+    return new Response('Failed to fetch project health', {
       status: StatusCodes.INTERNAL_SERVER_ERROR,
     })
   }

@@ -10,28 +10,7 @@ import {
   type OrgPartDeux,
 } from './../../../../lib/data-model-types'
 import { useAppContext } from './../../../../lib/hooks/app-context'
-
-const getOrgUserStatus = async (
-  orgId: string,
-  userId: string,
-): Promise<UserOrgStatus> => {
-  const res = await fetch(`/api/orgs/${orgId}/users/${userId}/status`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-
-  if (!res.ok) {
-    const errText = await res.text()
-    console.debug(`Failed to get User Status because: ${errText}`)
-
-    throw new Error(`Failed to get user status`)
-  }
-
-  const userStatus = await res.json()
-  return userStatus
-}
+import { getOrgUserStatus } from 'app/react-utils'
 
 const OrgIndex = ({ params: { id } }: { params: { id: string } }) => {
   const { setActiveBillingOrg } = useAppContext()

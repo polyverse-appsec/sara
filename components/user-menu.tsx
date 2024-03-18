@@ -24,6 +24,7 @@ import {
   DropdownMenuTrigger,
 } from './ui/dropdown-menu'
 import { IconExternalLink } from './ui/icons'
+import { getOrgStatus, getOrgUserStatus } from 'app/react-utils'
 
 export interface UserMenuProps {
   user: Session['user']
@@ -32,50 +33,6 @@ export interface UserMenuProps {
 function getUserInitials(name: string) {
   const [firstName, lastName] = name.split(' ')
   return lastName ? `${firstName[0]}${lastName[0]}` : firstName.slice(0, 2)
-}
-
-const getOrgUserStatus = async (
-  orgId: string,
-  userId: string,
-): Promise<UserOrgStatus> => {
-  const res = await fetch(`/api/orgs/${orgId}/users/${userId}/status`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-
-  if (!res.ok) {
-    const errText = await res.text()
-    console.debug(`Failed to get User Status because: ${errText}`)
-
-    throw new Error(`Failed to get user status`)
-  }
-
-  const userStatus = await res.json()
-  return userStatus
-}
-
-const getOrgStatus = async (
-  orgId: string,
-  userId: string,
-): Promise<UserOrgStatus> => {
-  const res = await fetch(`/api/orgs/${orgId}/status`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-
-  if (!res.ok) {
-    const errText = await res.text()
-    console.debug(`Failed to get org Status because: ${errText}`)
-
-    throw new Error(`Failed to get org status`)
-  }
-
-  const orgStatus = await res.json()
-  return orgStatus
 }
 
 export function UserMenu({ user }: UserMenuProps) {
@@ -132,7 +89,7 @@ export function UserMenu({ user }: UserMenuProps) {
               <LoadingCircle />
             ) : saraSession.picture ? (
               <Image
-                className="w-6 h-6 transition-opacity duration-300 rounded-full select-none ring-1 ring-zinc-100/10 hover:opacity-80"
+                className="w-8 h-8 transition-opacity duration-300 rounded-full select-none ring-1 ring-zinc-100/10 hover:opacity-80"
                 src={saraSession.picture ? `${saraSession.picture}&s=60` : ''}
                 alt={saraSession.name ?? 'Avatar'}
                 title={saraSession.name ?? 'Avatar'}

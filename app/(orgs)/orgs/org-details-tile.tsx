@@ -8,32 +8,11 @@ import { UserOrgStatus } from 'lib/data-model-types'
 import { useAppContext } from 'lib/hooks/app-context'
 import { useSession } from 'next-auth/react'
 import toast from 'react-hot-toast'
+import { getOrgUserStatus } from 'app/react-utils'
 
 interface OrgDetailsTileProps {
   name: string
   id: string
-}
-
-const getOrgUserStatus = async (
-  orgId: string,
-  userId: string,
-): Promise<UserOrgStatus> => {
-  const res = await fetch(`/api/orgs/${orgId}/users/${userId}/status`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-
-  if (!res.ok) {
-    const errText = await res.text()
-    console.debug(`Failed to get User Status because: ${errText}`)
-
-    throw new Error(`Failed to get user status`)
-  }
-
-  const userStatus = await res.json()
-  return userStatus
 }
 
 export const OrgDetailsTile = ({ name, id }: OrgDetailsTileProps) => {

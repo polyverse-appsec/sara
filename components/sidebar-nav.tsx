@@ -19,6 +19,7 @@ import toast from 'react-hot-toast'
 import { useAppContext } from './../lib/hooks/app-context'
 import SaraPortrait from './../public/Sara_Cartoon_Portrait.png'
 import NavResourceLoader from './nav-resource-tree/nav-resource-loader'
+import { getOrgUserStatus } from './../app/react-utils'
 
 const renderHealthIcon = (readableHealthValue: ProjectHealthStatusValue) => {
   if (readableHealthValue === 'UNHEALTHY') {
@@ -48,27 +49,6 @@ const renderHealthIcon = (readableHealthValue: ProjectHealthStatusValue) => {
   return <p title="Unknown Health: Sara is thinking deeply.">🤔</p>
 }
 
-const getOrgUserStatus = async (
-  orgId: string,
-  userId: string,
-): Promise<UserOrgStatus> => {
-  const res = await fetch(`/api/orgs/${orgId}/users/${userId}/status`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-
-  if (!res.ok) {
-    const errText = await res.text()
-    console.debug(`Failed to get User Status because: ${errText}`)
-    throw new Error(`Failed to get user status`)
-  }
-
-  const userStatus = (await res.json()) as UserOrgStatus
-  return userStatus
-}
-
 const SidebarNav = () => {
   const router = useRouter()
   const {
@@ -88,6 +68,7 @@ const SidebarNav = () => {
   const [orgs, setOrgs] = useState([])
 
   useEffect(() => {
+    setSelectedProjectHealth(null)
     const fetchAndSetActiveBillingOrg = async () => {
       if (!activeBillingOrg) {
         const res = await fetch('/api/orgs')
@@ -190,14 +171,18 @@ const SidebarNav = () => {
       }}
     >
       {/* Logo section */}
-      <div className="flex flex-col items-center p-4 ">
-        <Image
-          src={SaraPortrait} // Adjust the path to your image
-          alt="Sara's AI Assistant"
-          title="Sara's AI Assistant"
-          width={100} // Adjust the width as needed
-          height={100} // Adjust the height as needed
-        />
+      <div className="flex flex-col items-center p-4">
+        <div className="flex flex-col items-center border-2 border-blue-500 border-md rounded-lg p-1 mb-5">
+          <Image
+            src={SaraPortrait} // Adjust the path to your image
+            alt="Sara's AI Assistant"
+            title="Sara's AI Assistant"
+            width={100} // Adjust the width as needed
+            height={100} // Adjust the height as needed
+          />
+          <p className="text-lg">Sara</p>
+          <p className="text-sm italic">AI Assistant</p>
+        </div>
         <UserMenu user={user} />
       </div>
       <div className="flex justify-center px-2 py-1 text-base font-medium rounded-lg">
