@@ -33,9 +33,9 @@ export interface BoostProjectStatus {
 const getBoostProjectStatus = async (
   email: string,
   orgName: string,
-  projectName: string,
+  projectId: string,
 ): Promise<BoostProjectStatus> => {
-  const boostServiceUrl = `${USER_SERVICE_URI}/api/user_project/${orgName}/${projectName}/status`
+  const boostServiceUrl = `${USER_SERVICE_URI}/api/user_project/${orgName}/${projectId}/status`
 
   const signedHeader = createSignedHeader(email)
   const res = await fetch(boostServiceUrl, {
@@ -47,7 +47,7 @@ const getBoostProjectStatus = async (
 
   if (!res.ok) {
     const errResMsg = await res.text()
-    const errLogMsg = `Got a failure response while trying to get project status for '${orgName}/${projectName}' - Status: ${res.status} - Message: ${errResMsg}`
+    const errLogMsg = `Got a failure response while trying to get project status for '${orgName}/${projectId}' - Status: ${res.status} - Message: ${errResMsg}`
 
     console.error(`${errLogMsg}`)
 

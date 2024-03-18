@@ -177,7 +177,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
     // TODO: Rename to getBoostFileInfo
     const boostFileInfos = await getFileInfoPartDeux(
       org.name,
-      project.name,
+      project.id,
       user.email,
     )
 
@@ -235,7 +235,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
     const boostProjectStatus = await getBoostProjectStatus(
       user.email,
       org.name,
-      project.name,
+      project.id,
     )
 
     if (shouldUpdateCachedPromptFileInfos) {

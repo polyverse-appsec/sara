@@ -251,7 +251,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
     // info from the Boost backend for the project we just created
     const boostFileInfos = await getFileInfoPartDeux(
       org.name,
-      project.name,
+      project.id,
       user.email,
     )
 
@@ -309,7 +309,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
     const boostProjectStatus = await getBoostProjectStatus(
       user.email,
       org.name,
-      project.name,
+      project.id,
     )
 
     if (shouldUpdateCachedPromptFileInfos) {

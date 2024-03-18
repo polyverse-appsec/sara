@@ -157,14 +157,14 @@ export async function postFileInfoToGetFileInfo(
 }
 
 export async function createProject(
-  projectName: string,
+  projectId: string,
   orgId: string,
   primaryDataSource: Repository,
   secondaryDataSources: Repository[],
   email: string,
 ): Promise<string> {
   console.debug(`Invoking backend call createProject`)
-  const url = `${USER_SERVICE_URI}/api/user_project/${orgId}/${projectName}`
+  const url = `${USER_SERVICE_URI}/api/user_project/${orgId}/${projectId}`
 
   try {
     // For now the Boost backend doesn't support specifying primary data sources
@@ -188,7 +188,7 @@ export async function createProject(
       console.error(
         `Got a failure response while trying to start project for '${
           primaryDataSource.orgId
-        }/${projectName} for ${email}' - Status: ${
+        }/${projectId} for ${email}' - Status: ${
           res.status
         } - Error: ${await res.text()}`,
       )
@@ -216,29 +216,12 @@ export async function createProject(
   return ''
 }
 
-export async function getProject(repo: Repository, email: string) {
-  const url = `${USER_SERVICE_URI}/api/user_project/${repo.orgId}/${repo.name}`
-
-  try {
-    const signedHeader = createSignedHeader(email)
-    const res = await fetch(url, {
-      headers: {
-        ...signedHeader,
-      },
-    })
-
-    if (res.status !== 200) {
-      console.debug(`Failed to get a success response when trying to retrieve `)
-    }
-  } catch (err) {}
-}
-
 export async function deleteProject(
   orgId: string,
-  projectName: string,
+  projectId: string,
   email: string,
 ): Promise<void> {
-  const url = `${USER_SERVICE_URI}/api/user_project/${orgId}/${projectName}`
+  const url = `${USER_SERVICE_URI}/api/user_project/${orgId}/${projectId}`
 
   try {
     const signedHeader = createSignedHeader(email)
@@ -252,7 +235,7 @@ export async function deleteProject(
 
     if (!res.ok) {
       console.error(
-        `Got a failure response while trying to delete project for '${orgId}/${projectName} for ${email}' - Status: ${res.status}`,
+        `Got a failure response while trying to delete project for '${orgId}/${projectId} for ${email}' - Status: ${res.status}`,
       )
 
       return
@@ -262,7 +245,7 @@ export async function deleteProject(
     // // TODO: Properly type the return of this
     // const deletedProject = await res.json()
   } catch (error) {
-    const errMsg = `Error while trying to delete project for '${orgId}/${projectName} for ${email}' - ${error}`
+    const errMsg = `Error while trying to delete project for '${orgId}/${projectId} for ${email}' - ${error}`
 
     console.error(errMsg)
 

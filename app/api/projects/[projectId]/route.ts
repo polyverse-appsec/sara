@@ -166,7 +166,7 @@ export const DELETE = auth(async (req: NextAuthRequest) => {
     await Promise.all(deleteProjectDataSourcePromises)
 
     // Finally delete the project on the Boost backend
-    await deleteProjectOnBoost(org.name, project.name, auth.user.email)
+    await deleteProjectOnBoost(org.name, project.id, auth.user.email)
 
     return new Response(null, {
       status: 200,

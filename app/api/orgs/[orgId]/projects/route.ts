@@ -101,25 +101,6 @@ export const POST = auth(async (req: NextAuthRequest) => {
 
     // TODO: Add more rigourous validation of the data that we receive
 
-    const projectPromises = org.projectIds.map((projectId) =>
-      getProject(projectId),
-    )
-
-    const projects = await Promise.all(projectPromises)
-
-    const duplicateProject = projects.find(
-      (project) => project.name === reqBody.name,
-    )
-
-    if (duplicateProject) {
-      return new Response(
-        `Project with a name of '${reqBody.name}' already exists`,
-        {
-          status: StatusCodes.BAD_REQUEST,
-        },
-      )
-    }
-
     // 03/12/24: For now we are blocking project creation unless you have the
     // GitHub App installed for the org you are trying to create a project under
     // and you are a premium user. In the future we will more intelligently
@@ -188,14 +169,6 @@ export const POST = auth(async (req: NextAuthRequest) => {
         ? oldTypedProjectDataSources.slice(1)
         : []
 
-    await createProjectOnBoost(
-      reqBody.name,
-      org.name,
-      oldTypedProjectDataSources[0],
-      secondaryDataSources,
-      user.email,
-    )
-
     // Start by building up the objects we will create in the DB.
     // Make sure to cross-reference the Project and the Project Data Source
     // IDs that we will be persisting to the DB.
@@ -237,11 +210,22 @@ export const POST = auth(async (req: NextAuthRequest) => {
         }) as ProjectDataSourcePartDeux,
     )
 
+    // Start now by creating the project on Boost. We wait til here since we
+    // pass the project ID to the Boost backend.
+    await createProjectOnBoost(
+      project.id,
+      org.name,
+      oldTypedProjectDataSources[0],
+      secondaryDataSources,
+      user.email,
+    )
+
     // Write the new objects to the DB. Start with the child objects first.
     const createProjectDataSourcePromises = projectDataSources.map(
       (projectDataSource) => createProjectDataSource(projectDataSource),
     )
 
+    // Now create the project in our Sara K/V
     await Promise.all(createProjectDataSourcePromises)
     await createProject(project)
 

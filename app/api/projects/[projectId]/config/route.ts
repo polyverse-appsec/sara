@@ -154,7 +154,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
     // source) then fail as we won't refresh the project without them.
     const boostFileInfos = await getFileInfoPartDeux(
       org.name,
-      project.name,
+      project.id,
       user.email,
     )
 
@@ -249,7 +249,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
     const boostProjectStatus = await getBoostProjectStatus(
       user.email,
       org.name,
-      project.name,
+      project.id,
     )
 
     // Now actually create the Assistant if it doesn't exist or update its

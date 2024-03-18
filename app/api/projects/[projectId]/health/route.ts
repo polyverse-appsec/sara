@@ -154,11 +154,11 @@ export const GET = auth(async (req: NextAuthRequest) => {
     try {
       boostFileInfos = await getFileInfoPartDeux(
         org.name,
-        project.name,
+        project.id,
         user.email,
       )
     } catch (error) {
-      const errMsg = `Failed to get data references for project '${project.name}' for org '${org.name}' because: ${error}`
+      const errMsg = `Failed to get data references for project '${project.id}' for org '${org.name}' because: ${error}`
 
       const projectHealth = createProjectHealth(
         project.id,
@@ -212,7 +212,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
         assistant = await getAssistant(assistant.id)
       }
     } catch (error) {
-      const errMsg = `Failed to get LLM for project '${project.name}' for org '${org.name}' because: ${error}`
+      const errMsg = `Failed to get LLM for project '${project.id}' for org '${org.name}' because: ${error}`
 
       const projectHealth = createProjectHealth(
         project.id,
@@ -292,7 +292,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
       const boostProjectStatus = await getBoostProjectStatus(
         user.email,
         org.name,
-        project.name,
+        project.id,
       )
 
       // Rather than check all of the file states just check that the project is
@@ -311,7 +311,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
         })
       }
     } catch (error) {
-      const errMsg = `Failed to get LLM status for project '${project.name}' for org '${org.name}' because: ${error}`
+      const errMsg = `Failed to get LLM status for project '${project.id}' for org '${org.name}' because: ${error}`
 
       const projectHealth = createProjectHealth(
         project.id,
