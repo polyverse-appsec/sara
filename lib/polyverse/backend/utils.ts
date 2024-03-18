@@ -27,6 +27,9 @@ interface SignedHeader {
 
 export const createSignedHeader = (email: string): SignedHeader => {
   const privateSaraClientKey = process.env.SARA_CLIENT_PRIVATE_KEY
+  if (!privateSaraClientKey) {
+    throw new Error('SARA_CLIENT_PRIVATE_KEY is not set in the environment.')
+  }
   const signedIdentityHeader = sign(
     { email },
     privateSaraClientKey as jsonwebtoken.Secret,
