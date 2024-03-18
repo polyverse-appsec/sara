@@ -7,15 +7,14 @@ import {
   ProjectDataReference,
   Repository,
   type PromptFileInfo,
+  ProjectPartDeux,
 } from '../../data-model-types'
-import { getFileInfo } from '../backend/backend'
 import { BoostProjectStatus } from '../backend/get-boost-project-status'
 import { isRecord } from '../typescript/helpers'
 import {
   mapPromptFileInfosToPromptFileTypes,
   type PromptFileTypes,
 } from './../../../lib/polyverse/openai/utils'
-import { submitTaskStepsAssistantFunction } from './assistantTools'
 import { OPENAI_MODEL } from './constants'
 
 export const ASSISTANT_METADATA_CREATOR = 'sara.frontend'
@@ -55,8 +54,8 @@ function createAssistantName(metadata: AssistantMetadata): string {
 // update the other functions to use the new type.
 function getOpenAIAssistantInstructions(
   fileTypes: FileTypes | PromptFileTypes,
+  project: ProjectPartDeux,
   projectStatus?: BoostProjectStatus,
-  project?: Project, // TODO: need project info (e.g. name, description, etc) - this is never passed in
 ): string {
   // This prompt was engineered to guide Sara on what she will be doing
   // overall when she is created as an OpenAI Assistant. When specific questions
@@ -68,33 +67,23 @@ function getOpenAIAssistantInstructions(
       `
 
   try {
-    if (project?.name) {
+    if (project.name) {
       assistantPromptInstructions += `
         You are advising a software engineer with the project named ${project.name}.`
     }
-    if (project?.description) {
-      assistantPromptInstructions += ` The project description is: ${project.description}`
-    }
-    if (project?.mainRepository?.html_url) {
-      assistantPromptInstructions += ` The main GitHub repository for the project is located at: ${project.mainRepository.html_url}`
-    }
-    if (project?.referenceRepositories?.length) {
-      assistantPromptInstructions += ` The project also has ${
-        project.referenceRepositories.length
-      } reference repositories:
-      ${project.referenceRepositories
-        .map((repo) => '\t' + repo.html_url)
-        .join('\t\n')}
 
-      `
+    if (project.description) {
+      assistantPromptInstructions += ` The project description is: ${project.description}`
     }
 
     const aiSpecStatus = projectStatus?.resourcesState?.find(
       (resource) => resource[0] === 'aispec',
     )?.[1]
+
     const blueprintStatus = projectStatus?.resourcesState?.find(
       (resource) => resource[0] === 'blueprint',
     )?.[1]
+
     const projectsourceStatus = projectStatus?.resourcesState?.find(
       (resource) => resource[0] === 'projectsource',
     )?.[1]
@@ -107,6 +96,7 @@ function getOpenAIAssistantInstructions(
     const lastSynchronizedProjectDataAt = projectStatus?.lastSynchronized
       ? new Date(projectStatus.lastSynchronized * 1000).toLocaleString()
       : ''
+
     if (projectStatus?.synchronized) {
       assistantPromptInstructions += `You have fully reviewed the project code and analyzed each file to the best of your abilities.`
     } else if (projectStatus?.activelyUpdating) {
@@ -129,8 +119,11 @@ function getOpenAIAssistantInstructions(
         projectStatus?.possibleStagesRemaining
           ? Math.ceil(projectStatus.possibleStagesRemaining / 10)
           : 0
-      if (numberOfMinutesEstimatedBeforeSynchronization > 0) {
+
+      if (numberOfMinutesEstimatedBeforeSynchronization > 1) {
         assistantPromptInstructions += `You estimate that you will have a more complete understanding of the project in ${numberOfMinutesEstimatedBeforeSynchronization} minutes.`
+      } else {
+        assistantPromptInstructions += `You estimate that you will have a more complete understanding of the project in 1 minute.`
       }
 
       assistantPromptInstructions += `When you answer user questions, you should remind the user that you are still researching their code and better answers will be available soon.`
@@ -188,7 +181,7 @@ function getOpenAIAssistantInstructions(
         * Questions focused on software architecture and principals
 
         If someone asks a more specific coding question about the project, unless otherwise explicitly told not to, you give answers that use the relevant frameworks, APIs, data structures, and other aspects of the existing code.
-    }`
+    `
 
     assistantPromptInstructions += `
       There are at least three sets of data resources you have access to that will help you answer questions:`
@@ -291,8 +284,15 @@ const oaiClient = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 })
 
-function mapFileInfoToPromptAndIDs(
+// Note that the parameter `invalidProject` is - as the name implies - invalid.
+// We pass in this parameter which has data values which aren't correct as this
+// method ultimately will get a prompt for the assistant that relies on the new
+// data model types. Since this method is used in the old UI/actions based UX
+// and doesn't use the new data model types we just pass something to get this
+// to compile while trying to maintain two code paths.
+function mapProjectDetailsToPrompt(
   fileInfos: ProjectDataReference[],
+  invalidProject: ProjectPartDeux,
   boostProjectStatus?: BoostProjectStatus,
 ) {
   let fileTypes: FileTypes = { aispec: '', blueprint: '', projectsource: '' }
@@ -300,7 +300,10 @@ function mapFileInfoToPromptAndIDs(
     fileTypes[type as keyof FileTypes] = name
   })
 
-  const prompt = getOpenAIAssistantInstructions(fileTypes, boostProjectStatus)
+  const prompt = getOpenAIAssistantInstructions(
+    fileTypes,
+    invalidProject,
+    boostProjectStatus)
 
   const fileIDs = fileInfos.map(({ id }) => id)
   return { prompt, fileIDs }
@@ -309,12 +312,19 @@ function mapFileInfoToPromptAndIDs(
 export async function createAssistant(
   fileInfos: ProjectDataReference[],
   assistantMetadata: AssistantMetadata,
+  project: ProjectPartDeux,
   boostProjectStatus?: BoostProjectStatus,
 ): Promise<Assistant> {
-  const { prompt, fileIDs } = mapFileInfoToPromptAndIDs(
-    fileInfos,
-    boostProjectStatus,
-  )
+
+  const promptFileTypes: FileTypes = { aispec: '', blueprint: '', projectsource: '' }
+
+  fileInfos.map(({ name, type }) => {
+    promptFileTypes[type as keyof FileTypes] = name
+  })
+
+  const prompt = getOpenAIAssistantInstructions(promptFileTypes, project, boostProjectStatus)
+
+  const fileIDs = fileInfos.map(({ id }) => id)
   const assistantName = createAssistantName(assistantMetadata)
 
   return await oaiClient.beta.assistants.create({
@@ -363,20 +373,22 @@ export async function getAssistant(assistantId: string): Promise<Assistant> {
   return oaiClient.beta.assistants.retrieve(assistantId)
 }
 
-/**
- * Updates the file IDs for an existing OpenAI assistant.
- *
- * @param {string[]} fileIDs Array of file IDs to associated with the existing OepnAI assistant.
- * @param {Assistant} assistant Existing OpenAI assistant with the 'id' field filled out
- * @returns Promise<Assistant> asdf
- */
+// Note that the parameter `invalidProject` is - as the name implies - invalid.
+// We pass in this parameter which has data values which aren't correct as this
+// method ultimately will get a prompt for the assistant that relies on the new
+// data model types. Since this method is used in the old UI/actions based UX
+// and doesn't use the new data model types we just pass something to get this
+// to compile while trying to maintain two code paths.
 export async function updateAssistantPromptAndFiles(
   fileInfos: ProjectDataReference[],
   { id }: { id: string },
+  invalidProject: ProjectPartDeux,
   boostProjectStatus?: BoostProjectStatus,
 ): Promise<Assistant> {
-  const { prompt, fileIDs } = mapFileInfoToPromptAndIDs(
+
+  const { prompt, fileIDs } = mapProjectDetailsToPrompt(
     fileInfos,
+    invalidProject,
     boostProjectStatus,
   )
 
@@ -384,74 +396,6 @@ export async function updateAssistantPromptAndFiles(
     file_ids: fileIDs,
     instructions: prompt,
   })
-}
-
-// An OpenAI Assistant is the logical representation of an AI assistant we have
-// built for our own application - in this case Sara.
-//
-// Sara has instructions and can leverage models, tools, and knowledge to
-// respond to any user queries she gets.
-//
-// The workflow to use an assistant is:
-// 1. Create OpenAI Assistant object providing instructions and a model
-// 2. Create a OpenAI Thread for any user initiated conversations
-// 3. Add OpenAI Messages to the Thread as user asks questions
-// 4. Run the Assistant on Thread to trigger responses (tooling automatically invoked)
-
-export async function configAssistant(
-  project: Project,
-  repos: Repository[],
-  email: string,
-  billingOrgId: string,
-): Promise<Assistant> {
-  // Get the file IDs associated with the repo first since we will end up
-  // using them whether we need to create a new OpenAI assistant or there is
-  // one already existing that we have its file IDs updated.
-
-  //build the array of fileInfos by looping through the repos
-  //and getting the fileInfo for each repo
-  let fileInfos: ProjectDataReference[] = []
-  for (const repo of repos) {
-    const fileInfo = await getFileInfo(project.name, billingOrgId, email)
-    fileInfos = fileInfos.concat(fileInfo)
-  }
-
-  const existingAssistantMetadata: AssistantMetadata = {
-    projectId: project.id,
-    userName: email,
-    orgName: billingOrgId,
-    creator: '', // ignore this match
-    version: '', // ignore this match
-    stage: process.env.SARA_STAGE || 'unknown',
-  }
-
-  const existingAssistant = await findAssistantFromMetadata(
-    existingAssistantMetadata,
-  )
-
-  if (existingAssistant) {
-    console.debug(
-      `Found existing assistant (${fileInfos}) for ${email} org:${billingOrgId} project: ${
-        project.name
-      } - files ${JSON.stringify(fileInfos)}`,
-    )
-    return await updateAssistantPromptAndFiles(
-      fileInfos,
-      existingAssistant,
-      undefined,
-    )
-  }
-
-  const newAssistantMetadata: AssistantMetadata = {
-    projectId: project.id,
-    userName: email,
-    orgName: project.org,
-    creator: ASSISTANT_METADATA_CREATOR,
-    version: getVersion(),
-    stage: process.env.SARA_STAGE || 'unknown',
-  }
-
-  return await createAssistant(fileInfos, newAssistantMetadata)
 }
 
 export async function deleteAssistant(assistantId: string) {
@@ -477,8 +421,9 @@ export async function deleteAssistantFiles(assistant: Assistant) {
 // to use the new type.
 export const updateGlobalAssistantPrompt = async (
   promptFileInfos: PromptFileInfo[],
-  projectStatus: BoostProjectStatus,
   assistantMetadata: AssistantMetadata,
+  project: ProjectPartDeux,
+  projectStatus: BoostProjectStatus,
 ): Promise<Assistant> => {
   const assistant = await findAssistantFromMetadata(assistantMetadata)
 
@@ -494,14 +439,16 @@ export const updateGlobalAssistantPrompt = async (
     )
   }
 
-  const fileIDs = promptFileInfos.map(({ id }) => id)
   const identifiedPromptFileTypes =
     mapPromptFileInfosToPromptFileTypes(promptFileInfos)
 
   const prompt = getOpenAIAssistantInstructions(
     identifiedPromptFileTypes,
+    project,
     projectStatus,
   )
+
+  const fileIDs = promptFileInfos.map(({ id }) => id)
 
   return oaiClient.beta.assistants.update(assistant.id, {
     file_ids: fileIDs,
@@ -509,7 +456,6 @@ export const updateGlobalAssistantPrompt = async (
     tools: [
       { type: 'code_interpreter' },
       { type: 'retrieval' },
-      submitTaskStepsAssistantFunction,
     ],
   })
 }

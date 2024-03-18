@@ -262,6 +262,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
       await createAssistant(
         boostFileInfos,
         assistantMetadata,
+        project,
         boostProjectStatus,
       )
     } else {
@@ -269,8 +270,9 @@ export const POST = auth(async (req: NextAuthRequest) => {
         shouldUpdateCachedPromptFileInfos
           ? promptFileInfos
           : cachedPromptFileInfos,
-        boostProjectStatus,
         assistantMetadata,
+        project,
+        boostProjectStatus,
       )
     }
 

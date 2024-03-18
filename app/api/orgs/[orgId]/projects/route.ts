@@ -1,19 +1,17 @@
 import { ReasonPhrases, StatusCodes } from 'http-status-codes'
 import { NextAuthRequest } from 'next-auth/lib'
+import Joi from 'joi'
 
 import { auth } from '../../../../../auth'
 import {
   type GitHubRepo,
-  type ProjectDataReference,
   type ProjectDataSourcePartDeux,
   type ProjectPartDeux,
-  type PromptFileInfo,
   type Repository,
 } from './../../../../../lib/data-model-types'
 import {
   createProject as createProjectOnBoost,
-  getBoostOrgUserStatus,
-  getFileInfoPartDeux,
+  getBoostOrgUserStatus
 } from './../../../../../lib/polyverse/backend/backend'
 import createProject from './../../../../../lib/polyverse/db/create-project'
 import createProjectDataSource from './../../../../../lib/polyverse/db/create-project-data-source'
@@ -22,12 +20,6 @@ import getProject from './../../../../../lib/polyverse/db/get-project'
 import getUser from './../../../../../lib/polyverse/db/get-user'
 import updateOrg from './../../../../../lib/polyverse/db/update-org'
 import { createBaseSaraObject } from './../../../../../lib/polyverse/db/utils'
-import {
-  ASSISTANT_METADATA_CREATOR,
-  createAssistant,
-  getVersion,
-  type AssistantMetadata,
-} from './../../../../../lib/polyverse/openai/assistants'
 
 // 03/04/24: We set this max duration to 60 seconds during initial development
 // with no real criteria to use as a starting point for the max duration. We see
@@ -36,49 +28,6 @@ import {
 // setting the max duration and measuring response times/latency on routes and
 // adjust them accordingly.
 export const maxDuration = 60
-
-const getFileInfoPartDeuxWithRetry = async (
-  orgName: string,
-  projectName: string,
-  userEmail: string,
-): Promise<ProjectDataReference[]> => {
-  return new Promise((resolve, reject) => {
-    let retryAttempt = 0
-    const maxRetryAttempts = 10
-
-    const attemptToGetFileInfoPartDeux = async () => {
-      try {
-        const boostFileInfos = await getFileInfoPartDeux(
-          orgName,
-          projectName,
-          userEmail,
-        )
-
-        if (boostFileInfos && boostFileInfos.length === 3) {
-          resolve(boostFileInfos)
-          return
-        }
-
-        retryAttempt++
-
-        if (retryAttempt < maxRetryAttempts) {
-          setTimeout(attemptToGetFileInfoPartDeux, 2000)
-          return
-        }
-
-        reject(
-          `Max attempts reached when trying to get file infos for project creation`,
-        )
-      } catch (error) {
-        const errMsg = `Error while attemping to get file infos for project creation in a loop: ${error}`
-        console.debug(errMsg)
-        reject(errMsg)
-      }
-    }
-
-    attemptToGetFileInfoPartDeux()
-  })
-}
 
 export const POST = auth(async (req: NextAuthRequest) => {
   const { auth } = req
@@ -139,6 +88,15 @@ export const POST = auth(async (req: NextAuthRequest) => {
       name: string
       description: string
       projectDataSources: GitHubRepo[]
+    }
+
+    if (
+      !reqBody.name ||
+      Joi.string().required().validate(reqBody.name).error
+    ) {
+      return new Response(`Request body is missing 'name'`, {
+        status: StatusCodes.BAD_REQUEST,
+      })
     }
 
     // TODO: Add more rigourous validation of the data that we receive

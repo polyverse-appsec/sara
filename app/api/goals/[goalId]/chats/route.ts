@@ -245,8 +245,9 @@ export const POST = auth(async (req: NextAuthRequest) => {
       // instructions with ones more specific to contextualizing goals.
       assistant = await updateGlobalAssistantPrompt(
         promptFileInfos,
-        boostProjectStatus,
         assistantMetadata,
+        project,
+        boostProjectStatus,
       )
 
       // If we need to update our prompt start by updating the cache of our

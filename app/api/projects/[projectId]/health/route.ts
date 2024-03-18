@@ -340,7 +340,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
     })
   } catch (error) {
     console.error(
-      `Failed fetching goals for '${auth.user.username}' because: ${error}`,
+      `Failed fetching goals for '${auth.user.email}' because: ${error}`,
     )
 
     return new Response('Failed to fetch goals', {
