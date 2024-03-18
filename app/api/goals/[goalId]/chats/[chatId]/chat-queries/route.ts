@@ -33,13 +33,11 @@ import {
 } from './../../../../../../../lib/polyverse/openai/assistants'
 import {
   addQueryToThreadForProjectGoalChatting,
-  createOpenAIAssistantPromptForGoals,
   createThreadRunForProjectGoalChatting,
   getChatQueryResponseFromThread,
   getThreadRunForProjectGoalChatting,
   handleRequiresActionStatusForProjectGoalChatting,
 } from './../../../../../../../lib/polyverse/openai/goalsAssistant'
-import { mapPromptFileInfosToPromptFileTypes } from './../../../../../../../lib/polyverse/openai/utils'
 import { promptFileInfosEqual } from './../../../../../../../lib/utils'
 
 // 03/04/24: We set this max duration to 60 seconds during initial development
