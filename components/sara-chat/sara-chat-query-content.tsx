@@ -38,11 +38,17 @@ function renderAvatarAndLoadingSpinner(
             : 'bg-primary text-primary-foreground',
         )}
       >
-        {contentType === 'QUERY' && saraSession.picture ? (
+        {contentType === 'QUERY' ? (saraSession.picture ? (
           <Image src={saraSession.picture} alt={saraSession.name} width={32} height={32} className="rounded-full" />
         ) : (
           <IconUser />
-        )}
+        )) : (
+          <>
+            <Image src={Sara32x32} alt="Sara Architecture Assistant" />
+            {/* Assuming the spinner should only show when there's a status to indicate */}
+          </>
+          )
+        }
       </div>
       {shouldRenderLoadingSpinner ? (
         <svg
