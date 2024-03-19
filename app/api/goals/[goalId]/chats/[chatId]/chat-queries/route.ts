@@ -348,7 +348,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
     console.debug(
       `Updated assistant for project goal contextualization with a goal ID of '${
         goal.id
-      }': ${JSON.stringify(assistant)}`,
+      }'`,
     )
 
     // Don't forget to indicate that we refreshed the project
