@@ -113,27 +113,6 @@ const postChatForDefaultGoal = async (goalId: string, query: string) => {
   }
 }
 
-const renderButtonText = (
-  userGitHubAppInstalled: boolean,
-  orgGithubAppInstalled: boolean,
-  userIsPremium: boolean,
-  saveButtonEnabled: boolean,
-) => {
-  if (!userGitHubAppInstalled) {
-    return 'Install GitHub App for user'
-  }
-
-  if (!orgGithubAppInstalled) {
-    return 'Install GitHub App for org'
-  }
-
-  if (!userIsPremium) {
-    return 'Upgrade To Premium'
-  }
-
-  return saveButtonEnabled ? 'Create Project' : 'Building Project'
-}
-
 const ProjectCreate = () => {
   const router = useRouter()
   const session = useSession()
@@ -299,8 +278,12 @@ const ProjectCreate = () => {
           <Button
             variant="ghost"
             className={`${
-              !statusCheckDone
-                ? 'bg-gray-500 hover:bg-gray-500 cursor-not-allowed'
+              !saveButtonEnabled ||
+              !userGitHubAppInstalled ||
+              !orgGithubAppInstalled ||
+              !userIsPremium ||
+              !statusCheckDone 
+                ? 'bg-gray-500'
                 : 'bg-green-500 hover:bg-green-200'
             } transition duration-300`}
             onClick={async (e) => {
@@ -354,28 +337,15 @@ const ProjectCreate = () => {
               }
             }}
             disabled={
-              !saveButtonEnabled &&
-              !userGitHubAppInstalled &&
-              !orgGithubAppInstalled &&
-              !userIsPremium &&
+              !saveButtonEnabled ||
+              !userGitHubAppInstalled ||
+              !orgGithubAppInstalled ||
+              !userIsPremium ||
               !statusCheckDone
             }
           >
             {saveButtonEnabled ? (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="m4.5 12.75 6 6 9-13.5"
-                />
-              </svg>
+              null
             ) : (
               <svg
                 aria-hidden="true"
@@ -394,12 +364,7 @@ const ProjectCreate = () => {
                 />
               </svg>
             )}
-            {renderButtonText(
-              userGitHubAppInstalled,
-              orgGithubAppInstalled,
-              userIsPremium,
-              saveButtonEnabled,
-            )}
+            {saveButtonEnabled ? 'Create Project' : 'Building Project'}
           </Button>
           <button
             onClick={toggleDropdown}

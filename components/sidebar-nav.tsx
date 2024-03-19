@@ -56,6 +56,7 @@ const SidebarNav = () => {
     activeBillingOrg,
     setActiveBillingOrg,
     projectIdForConfiguration,
+    setProjectIdForConfiguration,
   } = useAppContext()
   const session = useSession()
   const saraSession = session.data ? (session.data as SaraSession) : null
@@ -186,6 +187,7 @@ const SidebarNav = () => {
               toast.error(`Please select billing organization`)
               return
             }
+            setProjectIdForConfiguration(null)
             router.push('/projects')
           }}
         >
@@ -230,7 +232,7 @@ const SidebarNav = () => {
       ) : null}
 
       {/* Bottom Section */}
-      <div className="mt-auto w-full">
+      <div className="flex flex-col items-center mt-auto w-full">
         {/* User Menu */}
         <UserMenu user={user} />
 

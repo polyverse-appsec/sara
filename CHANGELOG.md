@@ -24,7 +24,8 @@
 
 ### Enhancements
 
-- N/A
+- Distinguished sara logo from user dropdown better
+- Create project page submit UX is less confusing
 
 ### Bug Fixes
 
