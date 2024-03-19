@@ -69,7 +69,6 @@ const SidebarNav = () => {
   const [orgs, setOrgs] = useState([])
 
   useEffect(() => {
-    setSelectedProjectHealth(null)
     const fetchAndSetActiveBillingOrg = async () => {
       if (!activeBillingOrg) {
         const res = await fetch('/api/orgs')

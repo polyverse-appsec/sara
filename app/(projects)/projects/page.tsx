@@ -23,6 +23,7 @@ const ProjectIndex = () => {
     ;(async () => {
       // if we hit this page directly, without going through the billing org set logic, we'll need
       //     to load it again
+      setProjectIdForConfiguration(null)
       if (!activeBillingOrg) {
         const orgRes = await fetch('/api/orgs/active')
         if (orgRes.ok) {
