@@ -326,11 +326,16 @@ export const getChatQueryResponseFromThread = async (
   // recent message as the first index in the array returned take a slice of the
   // responses up to our user query.
   const assistantMessages = messages.slice(0, chatQueryIndex)
-  const chatQueryResponse = assistantMessages
-    .reduce((concatenatedMessage, assistantMessage) => {
+  const chatQueryResponse = (await assistantMessages
+    .reduce(async (concatenatedMessagePromise, assistantMessage) => {
+      let concatenatedMessage = await concatenatedMessagePromise
+
       const { content: contents } = assistantMessage
 
-      contents.forEach((content) => {
+      // Use `for` loop as `Array#forEach` doesn't support async/await
+      for (let contentIndex = 0; contentIndex < contents.length; contentIndex++) {
+        const content = contents[contentIndex]
+
         if (content.type !== 'text') {
           throw new Error(
             `Tried to process unrecognized content type '${content.type}' for chat query with an ID of '${chatQueryId}'`,
@@ -343,11 +348,14 @@ export const getChatQueryResponseFromThread = async (
         const annotations = textContent.annotations
         const citations: string[] = []
 
-        annotations.forEach(async (annotation, index) => {
+        // Use `for` loop as `Array#forEach` doesn't support async/await
+        for (let annotationIndex = 0; annotationIndex < annotations.length; annotationIndex++) {
+          const annotation = annotations[annotationIndex]
+
           // Replace the text with a footnote
           textContent.value = textContent.value.replace(
             annotation.text,
-            ` [${index}]`,
+            ` [${annotationIndex}]`,
           )
 
           if (
@@ -369,7 +377,7 @@ export const getChatQueryResponseFromThread = async (
             )
 
             citations.push(
-              `[${index}] ${annotation.file_citation.quote} from ${citedFile.filename}`,
+              `[${annotationIndex}] ${citedFile.filename}`,
             )
           }
 
@@ -381,21 +389,21 @@ export const getChatQueryResponseFromThread = async (
             )
 
             citations.push(
-              `[${index}] Click <here> to download ${citedFile.filename}`,
+              `[${annotationIndex}] Click <here> to download ${citedFile.filename}`,
             )
           }
 
           // Note: Actual file download link or mechanism to trigger downloads not implemented
-        })
+        }
 
         textContent.value += '\n' + citations.join('\n')
 
         concatenatedMessage += textContent.value
         concatenatedMessage += '\n'
-      })
+      }
 
       return concatenatedMessage
-    }, '')
+    }, Promise.resolve('')))
     .trim()
 
   return chatQueryResponse
