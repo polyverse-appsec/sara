@@ -90,13 +90,17 @@ const SaraChatPanel = ({
   //   )
   // )}
 
+  const alertContent = renderChatAlert(projectHealth)
+
   return (
-    <div className="fixed inset-x-0 bottom-[75px] w-full bg-gradient-to-b from-[var(--chat-panel-bg-start)] to-[var(--chat-panel-bg-end)] animate-in duration-300 ease-in-out peer-[[data-state=open]]:group-[]:lg:pl-[250px] peer-[[data-state=open]]:group-[]:xl:pl-[300px]">
+    <div className="fixed bottom-[15px] left-[250px] right-0  animate-in duration-300 ease-in-out">
       <ButtonScrollToBottom />
       <div className="mx-auto sm:max-w-2xl sm:px-4">
-        <div className="flex items-center justify-center h-12">
-          {renderChatAlert(projectHealth)}
-        </div>
+        {alertContent && (
+          <div className="flex items-center justify-center h-12">
+            {alertContent}
+          </div>
+        )}
         <div className="px-4 py-2 space-y-4 border-t shadow-lg bg-background sm:rounded-xl sm:border md:py-4">
           <SaraPromptForm
             projectHealth={projectHealth}

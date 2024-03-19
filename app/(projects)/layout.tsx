@@ -9,13 +9,14 @@ interface ProjectLayoutProps {
 }
 
 // Define the RootLayout component that encapsulates the page structure
+//TODO: need to handle mobile
 const ProjectLayout = ({ children }: ProjectLayoutProps) => {
   return (
     <>
-      <div className="flex h-screenb bg-background">
+      <div className="w-[250px] fixed h-full overflow-y-auto">
         <SidebarNav />
-        {children}
       </div>
+      <div className="flex-1 ml-[250px] overflow-auto">{children}</div>
     </>
   )
 }
