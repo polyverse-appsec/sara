@@ -8,6 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@radix-ui/react-dropdown-menu'
+import { getOrgStatus, getOrgUserStatus } from 'app/react-utils'
 import Joi from 'joi'
 import { useSession } from 'next-auth/react'
 import toast from 'react-hot-toast'
@@ -24,7 +25,6 @@ import {
 import { useAppContext } from './../../../../lib/hooks/app-context'
 import DataSourceSelector from './data-source-selector'
 import SingleDataSourceSelector from './single-data-source-selector'
-import { getOrgStatus, getOrgUserStatus } from 'app/react-utils'
 
 const titleSchema = Joi.string()
   .pattern(/^[A-Za-z0-9](?:[A-Za-z0-9-_]*[A-Za-z0-9])?$/)
@@ -205,7 +205,6 @@ const ProjectCreate = () => {
   // a project
   if (!activeBillingOrg) {
     toast.error(`Please select billing organization`)
-    router.push('/orgs')
 
     return null
   }
