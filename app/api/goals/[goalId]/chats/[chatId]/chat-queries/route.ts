@@ -255,6 +255,16 @@ export const POST = auth(async (req: NextAuthRequest) => {
       user.email,
     )
 
+    if (!boostFileInfos || boostFileInfos.length !== 3) {
+      console.debug(
+        `Failing refresh for project '${project.id}' because failed to get the 3 requisite file infos`,
+      )
+
+      return new Response(ReasonPhrases.INTERNAL_SERVER_ERROR, {
+        status: StatusCodes.INTERNAL_SERVER_ERROR,
+      })
+    }
+
     // For now we need to convert the file info we get from Boost into instances
     // of `PromptFileInfo` since we rely on persisting data that first has a
     // basic structure based off of `BaseSaraObject` types.
