@@ -15,6 +15,7 @@
 ### Bug Fixes
 
 - Fix issue where OpenAI Assistants could be created/updated with more than 3 files
+- Fix issue where we don't guard against getting 3 file infos before config/updating Assistant
 
 ## Version 0.16.2: March 18th, 2024
 
