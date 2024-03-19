@@ -1,6 +1,7 @@
 'use client'
 
 import { SaraSession } from 'auth'
+
 import { ChatQueryPartDeux } from './../../lib/data-model-types'
 import { Separator } from './../ui/separator'
 import SaraChatQueryContent from './sara-chat-query-content'
@@ -15,7 +16,11 @@ export interface SaraChatListProps {
   saraSession: SaraSession
 }
 
-const SaraChatList = ({ chatQueries, isLoading, saraSession  }: SaraChatListProps) => {
+const SaraChatList = ({
+  chatQueries,
+  isLoading,
+  saraSession,
+}: SaraChatListProps) => {
   if (!chatQueries.length) {
     return null
   }
@@ -30,6 +35,7 @@ const SaraChatList = ({ chatQueries, isLoading, saraSession  }: SaraChatListProp
       {chatQueries.map((chatQuery, index) => {
         return (
           <div key={index}>
+            <Separator className="my-4 md:my-8" />
             <SaraChatQueryContent
               content={chatQuery.query}
               contentType="QUERY"
@@ -38,14 +44,16 @@ const SaraChatList = ({ chatQueries, isLoading, saraSession  }: SaraChatListProp
               }
               saraSession={saraSession}
             />
-            <Separator className="my-4 md:my-8" />
+            <br></br>
             {chatQuery.response ? (
-              <SaraChatQueryContent
-                content={chatQuery.response}
-                contentType="RESPONSE"
-                shouldRenderLoadingSpinner={false}
-                saraSession={saraSession}
-              />
+              <>
+                <SaraChatQueryContent
+                  content={chatQuery.response}
+                  contentType="RESPONSE"
+                  shouldRenderLoadingSpinner={false}
+                  saraSession={saraSession}
+                />
+              </>
             ) : null}
           </div>
         )
