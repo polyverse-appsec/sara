@@ -6,10 +6,7 @@ import { Toaster } from 'react-hot-toast'
 // our routes
 import './globals.css'
 
-import { Footer } from './../components/footer'
-import { Header } from './../components/header'
 import { Providers } from './../components/providers'
-import { TailwindIndicator } from './../components/tailwind-indicator'
 import { cn } from './../lib/utils'
 
 export const metadata = {

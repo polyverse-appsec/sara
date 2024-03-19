@@ -5,9 +5,8 @@
  */
 
 import { kv } from '@vercel/kv'
-import { configAssistantForProject } from 'app/_actions/config-assistant-for-project'
 
-import { Organization, Project, Repository, User } from '../../data-model-types'
+import { type Project, type Repository, type User } from '../../data-model-types'
 import { userProjectIdsSetKey, userProjectKey } from '../db/keys'
 import { createDefaultProjectTask } from './../task/task'
 
