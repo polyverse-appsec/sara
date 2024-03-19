@@ -18,15 +18,27 @@ import { useAppContext } from './../../../../lib/hooks/app-context'
 
 const renderHealthIcon = (readableHealthValue: ProjectHealthStatusValue) => {
   if (readableHealthValue === 'UNHEALTHY') {
-    return <p title="Unhealthy: Sara is having some trouble learning about your project.">🛑</p>
+    return (
+      <p title="Unhealthy: Sara is having some trouble learning about your project.">
+        🛑
+      </p>
+    )
   }
 
   if (readableHealthValue === 'PARTIALLY_HEALTHY') {
-    return <p title="Partially Healthy: Sara is still learning about your project, so answers may not be complete.">⚠️</p>
+    return (
+      <p title="Partially Healthy: Sara is still learning about your project, so answers may not be complete.">
+        ⚠️
+      </p>
+    )
   }
 
   if (readableHealthValue === 'HEALTHY') {
-    return <p title="Healthy: Sara has learned about your project code and architecture.">✅</p>
+    return (
+      <p title="Healthy: Sara has learned about your project code and architecture.">
+        ✅
+      </p>
+    )
   }
 
   // If we don't know what value it is then render a magnifying glass to signify searching
@@ -223,7 +235,7 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
           <div>
             <Button
               variant="ghost"
-              className="bg-red-500 hover:bg-red-200"
+              className=" hover:bg-red-200"
               onClick={async (e) => {
                 e.preventDefault()
 
