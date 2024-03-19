@@ -2,6 +2,20 @@
 
 # Release Notes
 
+## Version 0.16.3: March 19th, 2024
+
+### New Features
+
+- N/A
+
+### Enhancements
+
+- N/A
+
+### Bug Fixes
+
+- Fix issue where OpenAI Assistants could be created/updated with more than 3 files
+
 ## Version 0.16.2: March 18th, 2024
 
 ### New Features

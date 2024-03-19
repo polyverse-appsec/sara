@@ -320,6 +320,10 @@ export async function createAssistant(
   boostProjectStatus?: BoostProjectStatus,
 ): Promise<Assistant> {
 
+  if (fileInfos.length > 3) {
+    throw new Error(`Unable to create assistant - received a total of '${fileInfos.length}' assistant files when only allowed 3`)
+  }
+
   const promptFileTypes: FileTypes = { aispec: '', blueprint: '', projectsource: '' }
 
   fileInfos.map(({ name, type }) => {
@@ -327,9 +331,8 @@ export async function createAssistant(
   })
 
   const prompt = getOpenAIAssistantInstructions(promptFileTypes, project, boostProjectStatus)
-
-  const fileIDs = fileInfos.map(({ id }) => id)
   const assistantName = createAssistantName(assistantMetadata)
+  const fileIDs = fileInfos.map(({ id }) => id)
 
   return await oaiClient.beta.assistants.create({
     model: OPENAI_MODEL,
@@ -429,6 +432,10 @@ export const updateGlobalAssistantPrompt = async (
   project: ProjectPartDeux,
   projectStatus: BoostProjectStatus,
 ): Promise<Assistant> => {
+  if (promptFileInfos.length > 3) {
+    throw new Error(`Unable to update assistant - received a total of '${promptFileInfos.length}' assistant files when only allowed 3`)
+  }
+
   const assistant = await findAssistantFromMetadata(assistantMetadata)
 
   if (!assistant) {
