@@ -56,21 +56,8 @@ export async function getFileInfo(
         ...fileInfo,
       } as any
 
-      // Map any snaked_cased data members to camelCased data members.
-      //
-      // Currently the call to
-      // `GET /api/user_project/orgId/projectName/data_references` returns
-      // `last_updated` as a Unix timestamp in seconds. Lets convert it to
-      // milliseconds.
-      //
-      // Note we conditionally delete `last_updated` now as we made changes
-      // in the Boost Node backend service in commit `80ba0a` to move to
-      // camelCase. Now we are just protecting some backwards functionality in
-      // the event any day does come snake_cased.
-      if (mappedFileInfo.last_updated) {
-        delete mappedFileInfo.last_updated
-        mappedFileInfo.lastUpdatedAt = new Date(fileInfo.last_updated * 1000)
-      } else if (mappedFileInfo.lastUpdated) {
+      // rename the last updated field to lastUpdatedAt
+      if (mappedFileInfo.lastUpdated) {
         delete mappedFileInfo.lastUpdated
         mappedFileInfo.lastUpdatedAt = new Date(fileInfo.lastUpdated * 1000)
       }
