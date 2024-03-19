@@ -396,7 +396,7 @@ export const getChatQueryResponseFromThread = async (
           // Note: Actual file download link or mechanism to trigger downloads not implemented
         }
 
-        textContent.value += '\n' + citations.join('\n')
+        textContent.value += '\n\n' + citations.join('\n')
 
         concatenatedMessage += textContent.value
         concatenatedMessage += '\n'
