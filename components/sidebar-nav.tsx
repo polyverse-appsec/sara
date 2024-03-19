@@ -16,10 +16,10 @@ import {
 import { useSession } from 'next-auth/react'
 import toast from 'react-hot-toast'
 
+import { getOrgUserStatus } from './../app/react-utils'
 import { useAppContext } from './../lib/hooks/app-context'
 import SaraPortrait from './../public/Sara_Cartoon_Portrait.png'
 import NavResourceLoader from './nav-resource-tree/nav-resource-loader'
-import { getOrgUserStatus } from './../app/react-utils'
 
 const renderHealthIcon = (readableHealthValue: ProjectHealthStatusValue) => {
   if (readableHealthValue === 'UNHEALTHY') {
@@ -156,65 +156,36 @@ const SidebarNav = () => {
 
   return (
     <motion.aside
-      className="absolute inset-y-0 left-0 -translate-x-full md:relative md:translate-x-0 transition duration-200 ease-in-out"
+      className="flex flex-col h-screen absolute inset-y-0 left-0 -translate-x-full md:relative md:translate-x-0 transition duration-200 ease-in-out"
       initial={{ width: 0 }}
       animate={{ width: 250 }}
       exit={{ width: 0 }}
       transition={{ type: 'spring', bounce: 0 }}
-      style={{
-        backgroundColor: 'var(--primary)',
-        color: 'var(--primary-foreground)',
-        paddingTop: '1.75rem', // py-7
-        paddingLeft: '0.5rem', // px-2
-        paddingRight: '0.5rem', // px-2
-        width: '16rem', // w-64
-      }}
     >
       {/* Logo section */}
-      <div className="flex flex-col items-center p-4">
-        <div className="flex flex-col items-center border-2 border-blue-500 border-md rounded-lg p-1 mb-5">
-          <Image
-            src={SaraPortrait} // Adjust the path to your image
-            alt="Sara's AI Assistant"
-            title="Sara's AI Assistant"
-            width={100} // Adjust the width as needed
-            height={100} // Adjust the height as needed
-          />
-          <p className="text-lg">Sara</p>
-          <p className="text-sm italic">AI Assistant</p>
-        </div>
-        <UserMenu user={user} />
+      <div className="flex flex-col items-center p-4 m-5">
+        <Image
+          src={SaraPortrait}
+          alt="Sara's AI Assistant"
+          title="Sara's AI Assistant"
+          width={100}
+          height={100}
+          className="rounded-full"
+        />
+        <p className="text-lg mt-2">Sara</p>
+        <p className="text-sm italic">AI Assistant</p>
       </div>
-      <div className="flex justify-center px-2 py-1 text-base font-medium rounded-lg">
-        <p>{activeBillingOrg ? activeBillingOrg.name : 'No org selected'}</p>
-        {orgIsPremium ? (
-          <div title="Premium Plan" className="ml-1">
-            <div className="p-1 border border-yellow-500 rounded-full">
-              <StarFilledIcon className="w-3 h-3 text-yellow-500" />
-            </div>
-          </div>
-        ) : null}
-      </div>
-      {/* Buttons section */}
-      <nav className="flex flex-col space-y-1">
+
+      {/* Navigation Buttons */}
+      <nav className="flex flex-col space-y-1 p-2">
         {/* Projects Button */}
         <button
-          className="flex items-center px-2 py-1 text-base font-medium rounded-lg hover:bg-secondary"
-          style={{
-            color: 'var(--secondary-foreground)',
-            backgroundColor: 'var(--secondary)',
-            borderWidth: '1px',
-            borderColor: 'var(--border)',
-            borderRadius: 'var(--radius)',
-          }}
-          onClick={(event) => {
-            event.preventDefault()
-
+          className="flex items-center px-4 py-2 rounded-lg hover:bg-secondary hover:text-secondary-foreground transition-colors"
+          onClick={() => {
             if (!activeBillingOrg) {
               toast.error(`Please select billing organization`)
               return
             }
-
             router.push('/projects')
           }}
         >
@@ -234,9 +205,12 @@ const SidebarNav = () => {
           </svg>
           <span className="ml-3">Projects</span>
         </button>
+        {/* ...other buttons */}
       </nav>
+
+      {/* Current Project Info */}
       {projectIdForConfiguration ? (
-        <div className="flex justify-center items-center px-2 py-1 text-base font-medium rounded-lg">
+        <div className="flex justify-center items-center px-4 py-2 rounded-lg bg-secondary text-secondary-foreground my-2">
           <div className="">
             <p>{selectedProject ? selectedProject.name : null}</p>
           </div>
@@ -249,9 +223,35 @@ const SidebarNav = () => {
           No project selected
         </p>
       )}
+
+      {/* Resource Loader */}
       {projectIdForConfiguration ? (
         <NavResourceLoader projectId={projectIdForConfiguration} />
       ) : null}
+
+      {/* Bottom Section */}
+      <div className="mt-auto w-full">
+        {/* User Menu */}
+        <UserMenu user={user} />
+
+        {/* Organization Info */}
+        <div className="px-4 py-2 rounded-lg mb-2">
+          <p className="text-xs">Current Billing Organization:</p>
+          <div className="flex items-center mt-1">
+            {orgIsPremium && (
+              <div
+                title="Premium Plan"
+                className="flex items-center justify-center mr-2 p-1 border border-yellow-500 rounded-full"
+              >
+                <StarFilledIcon className="w-2 h-2 text-yellow-500" />
+              </div>
+            )}
+            <span className="text-xs truncate">
+              {activeBillingOrg ? activeBillingOrg.name : 'No org selected'}
+            </span>
+          </div>
+        </div>
+      </div>
     </motion.aside>
   )
 }
