@@ -2,13 +2,15 @@
 
 import * as ScrollArea from '@radix-ui/react-scroll-area'
 
-const ScrollableResourceList = () => {
+interface ScrollableResourceListProps {
+  children: React.ReactNode
+}
+
+const ScrollableResourceList = ({ children }: ScrollableResourceListProps) => {
   return (
-    <ScrollArea.Root>
-      <ScrollArea.Viewport>
-        <div>Resource 1</div>
-        <div>Resource 2</div>
-      </ScrollArea.Viewport>
+    <ScrollArea.Root className="h-32 overflow-auto">
+      <ScrollArea.Viewport>{children}</ScrollArea.Viewport>
+      <ScrollArea.Scrollbar orientation="vertical" />
     </ScrollArea.Root>
   )
 }

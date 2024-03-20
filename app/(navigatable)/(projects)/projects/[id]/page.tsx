@@ -2,13 +2,13 @@
 
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import GoalsManager from 'components/goals/goals-manager'
 import toast from 'react-hot-toast'
 
 import SaraChat from '../../../../../components/sara-chat/sara-chat'
 import LoadingSpinner from './../../../../../components/loading-spinner'
 import RenderableResource from './../../../../../components/renderable-resource/renderable-resource'
 import RenderableResourceContent from './../../../../../components/renderable-resource/renderable-resource-content'
-import ScrollableResourceList from './../../../../../components/scrollable-resource-list/scrollable-resource-list'
 import { Button } from './../../../../../components/ui/button'
 import {
   type GoalPartDeux,
@@ -143,6 +143,7 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
   const [project, setProject] = useState<ProjectPartDeux | null>(null)
   const [health, setHealth] = useState<ProjectHealth | null>(null)
   const [deleteButtonEnabled, setDeleteButtonEnabled] = useState<boolean>(true)
+  const [goals, setGoals] = useState<GoalPartDeux[]>([])
   const [goalForChat, setGoalForChat] = useState<GoalPartDeux | null>(null)
 
   // This use effect is to just get the project details...
@@ -181,6 +182,8 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
           ) {
             setGoalForChat(fetchedGoals[0])
           }
+
+          setGoals(fetchedGoals)
         } else {
           console.debug(`Failed to get project goals`)
         }
@@ -341,7 +344,7 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
         </div>
       </RenderableResourceContent>
       <RenderableResourceContent>
-        <ScrollableResourceList />
+        <GoalsManager projectId={id} goals={goals} />
       </RenderableResourceContent>
       <RenderableResourceContent>
         {/* Give the appearance of being healthy if we don't know */}
