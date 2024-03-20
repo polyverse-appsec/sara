@@ -144,6 +144,10 @@ const NavResourceLoader = ({ projectId }: NavResourceLoaderProps) => {
         // that we pass the route for the goal as the ID and when an
         // element is clicked we will route to it if it contains the
         // `/goals` URL.
+        //
+        // 03/18/24: Disabled routing while trying to figure out how to keep
+        // tree up on routing
+        console.log(`***** tree view resource changed to: ${resource}`)
         if (resource.includes(`goals`)) {
           router.push(resource)
         }
