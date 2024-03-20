@@ -4,13 +4,12 @@ import React, { Suspense, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
 
-import LoadingSpinner from './../../../../components/loading-spinner'
-import { Button } from './../../../../components/ui/button'
+import { Button } from './../../../../../components/ui/button'
 import {
   type GitHubOrg,
   type OrgPartDeux,
-} from './../../../../lib/data-model-types'
-import { useAppContext } from './../../../../lib/hooks/app-context'
+} from './../../../../../lib/data-model-types'
+import { useAppContext } from './../../../../../lib/hooks/app-context'
 import OrgSelector from './github-org-selector'
 
 const OrgCreate = () => {

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { ProjectPartDeux } from 'lib/data-model-types'
 import toast from 'react-hot-toast'
 
-import { useAppContext } from './../../../lib/hooks/app-context'
+import { useAppContext } from './../../../../lib/hooks/app-context'
 import ProjectDashboard from './project-dashboard'
 
 const ProjectIndex = () => {

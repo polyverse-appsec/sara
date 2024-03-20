@@ -2,7 +2,7 @@
 
 import React from 'react'
 
-import SidebarNav from './../../components/sidebar-nav'
+import SidebarNav from './../../../components/sidebar-nav'
 
 interface ProjectLayoutProps {
   children: React.ReactNode

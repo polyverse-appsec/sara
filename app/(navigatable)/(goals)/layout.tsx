@@ -2,15 +2,13 @@
 
 import React from 'react'
 
-import SidebarNav from './../../components/sidebar-nav'
-
-interface OrgLayoutProps {
+interface GoalLayoutProps {
   children: React.ReactNode
 }
 
 // Define the RootLayout component that encapsulates the page structure
-const OrgLayout = ({ children }: OrgLayoutProps) => {
+const GoalLayout = ({ children }: GoalLayoutProps) => {
   return children
 }
 
-export default OrgLayout
+export default GoalLayout

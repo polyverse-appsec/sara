@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState } from 'react'
 
-import SaraChat from '../../../../components/sara-chat/sara-chat'
-import { type GoalPartDeux } from './../../../../lib/data-model-types'
+import SaraChat from '../../../../../components/sara-chat/sara-chat'
+import { type GoalPartDeux } from './../../../../../lib/data-model-types'
 
 const GoalIndex = ({ params: { id } }: { params: { id: string } }) => {
   const [goal, setGoal] = useState<GoalPartDeux | null>(null)

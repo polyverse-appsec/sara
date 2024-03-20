@@ -2,7 +2,7 @@
 
 import React from 'react'
 
-import { type OrgPartDeux } from './../../../lib/data-model-types'
+import { type OrgPartDeux } from './../../../../lib/data-model-types'
 import { OrgCreateTile } from './org-create-tile'
 import { OrgDetailsTile } from './org-details-tile'
 

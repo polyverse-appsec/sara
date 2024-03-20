@@ -8,9 +8,9 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '../../../../components/ui/dropdown-menu'
-import LoadingSpinner from './../../../../components/loading-spinner'
-import { type GitHubRepo } from './../../../../lib/data-model-types'
+} from '../../../../../components/ui/dropdown-menu'
+import LoadingSpinner from './../../../../../components/loading-spinner'
+import { type GitHubRepo } from './../../../../../lib/data-model-types'
 
 interface DataSourceSelectorProps {
   orgName: string

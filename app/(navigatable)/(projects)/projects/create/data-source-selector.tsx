@@ -5,8 +5,8 @@ import * as Checkbox from '@radix-ui/react-checkbox'
 import { CheckIcon } from '@radix-ui/react-icons'
 import * as ScrollArea from '@radix-ui/react-scroll-area'
 
-import LoadingSpinner from './../../../../components/loading-spinner'
-import { type GitHubRepo } from './../../../../lib/data-model-types'
+import LoadingSpinner from './../../../../../components/loading-spinner'
+import { type GitHubRepo } from './../../../../../lib/data-model-types'
 
 interface DataSourceCheckboxState {
   checked: boolean

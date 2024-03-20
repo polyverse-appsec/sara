@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
+import { getOrgUserStatus } from 'app/react-utils'
 import { SaraSession } from 'auth'
 import { IconExternalLink } from 'components/ui/icons'
 import { useSession } from 'next-auth/react'
@@ -8,9 +9,8 @@ import { useSession } from 'next-auth/react'
 import {
   UserOrgStatus,
   type OrgPartDeux,
-} from './../../../../lib/data-model-types'
-import { useAppContext } from './../../../../lib/hooks/app-context'
-import { getOrgUserStatus } from 'app/react-utils'
+} from './../../../../../lib/data-model-types'
+import { useAppContext } from './../../../../../lib/hooks/app-context'
 
 const OrgIndex = ({ params: { id } }: { params: { id: string } }) => {
   const { setActiveBillingOrg } = useAppContext()

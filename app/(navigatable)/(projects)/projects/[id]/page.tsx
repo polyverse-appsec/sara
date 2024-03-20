@@ -4,20 +4,20 @@ import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
 
-import SaraChat from '../../../../components/sara-chat/sara-chat'
-import LoadingSpinner from './../../../../components/loading-spinner'
-import RenderableResource from './../../../../components/renderable-resource/renderable-resource'
-import RenderableResourceContent from './../../../../components/renderable-resource/renderable-resource-content'
-import ScrollableResourceList from './../../../../components/scrollable-resource-list/scrollable-resource-list'
-import { Button } from './../../../../components/ui/button'
+import SaraChat from '../../../../../components/sara-chat/sara-chat'
+import LoadingSpinner from './../../../../../components/loading-spinner'
+import RenderableResource from './../../../../../components/renderable-resource/renderable-resource'
+import RenderableResourceContent from './../../../../../components/renderable-resource/renderable-resource-content'
+import ScrollableResourceList from './../../../../../components/scrollable-resource-list/scrollable-resource-list'
+import { Button } from './../../../../../components/ui/button'
 import {
   type GoalPartDeux,
   type ProjectHealth,
   type ProjectHealthConfigurationState,
   type ProjectHealthStatusValue,
   type ProjectPartDeux,
-} from './../../../../lib/data-model-types'
-import { useAppContext } from './../../../../lib/hooks/app-context'
+} from './../../../../../lib/data-model-types'
+import { useAppContext } from './../../../../../lib/hooks/app-context'
 
 const renderHealthIcon = (readableHealthValue: ProjectHealthStatusValue) => {
   if (readableHealthValue === 'UNHEALTHY') {
