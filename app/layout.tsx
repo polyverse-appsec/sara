@@ -7,6 +7,7 @@ import { Toaster } from 'react-hot-toast'
 import './globals.css'
 
 import { Providers } from './../components/providers'
+import SidebarNav from './../components/sidebar-nav'
 import { cn } from './../lib/utils'
 
 export const metadata = {
@@ -35,6 +36,17 @@ interface RootLayoutProps {
   children: React.ReactNode
 }
 
+const renderTailwindStyledRootLayout = (children: React.ReactNode) => {
+  return (
+    <>
+      <div className="w-[250px] fixed h-full overflow-y-auto">
+        <SidebarNav />
+      </div>
+      <div className="flex-1 ml-[250px] overflow-auto">{children}</div>
+    </>
+  )
+}
+
 // In NextJS layouts are shared UI between multiple pages. On navigation,
 // layouts preserve state, remain interactive, and do not re-render. Layouts
 // can also be nested.
@@ -58,7 +70,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           enableSystem
           disableTransitionOnChange
         >
-          <main>{children}</main>
+          <main>{renderTailwindStyledRootLayout(children)}</main>
         </Providers>
       </body>
     </html>

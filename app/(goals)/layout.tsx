@@ -10,14 +10,7 @@ interface GoalLayoutProps {
 
 // Define the RootLayout component that encapsulates the page structure
 const GoalLayout = ({ children }: GoalLayoutProps) => {
-  return (
-    <>
-      <div className="flex h-screen bg-background">
-        <SidebarNav />
-        {children}
-      </div>
-    </>
-  )
+  return children
 }
 
 export default GoalLayout

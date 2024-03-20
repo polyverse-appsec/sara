@@ -10,14 +10,7 @@ interface OrgLayoutProps {
 
 // Define the RootLayout component that encapsulates the page structure
 const OrgLayout = ({ children }: OrgLayoutProps) => {
-  return (
-    <>
-      <div className="flex h-screen bg-background">
-        <SidebarNav />
-        {children}
-      </div>
-    </>
-  )
+  return children
 }
 
 export default OrgLayout
