@@ -20,11 +20,11 @@ const CollapsibleRenderableResourceContent = ({
     <div className="bg-background shadow-md rounded-lg p-6 border mb-4">
       {/* Title section that can be clicked to toggle the dropdown */}
       <div
-        className="flex cursor-pointer justify-between"
+        className="flex cursor-pointer items-center justify-between w-full"
         onClick={toggleDropdown}
       >
-        {title}
-        <ChevronDownIcon />
+        <span className="text-center flex-1">{title}</span>
+        <ChevronDownIcon className="flex-shrink-0" />
       </div>
 
       {/* Conditional rendering of children based on `isOpen` state */}
