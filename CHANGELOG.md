@@ -2,6 +2,20 @@
 
 # Release Notes
 
+## Version 0.16.4: March 20th, 2024
+
+### New Features
+
+- N/A
+
+### Enhancements
+
+- N/A
+
+### Bug Fixes
+
+- Fix issue where nav bar would flicker and re-render as it wasn't part of the `<RootLayout>` component/layout
+
 ## Version 0.16.3: March 19th, 2024
 
 ### New Features
