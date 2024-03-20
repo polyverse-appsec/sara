@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { ProjectHealth, ProjectHealthStatusValue } from 'lib/data-model-types'
+import { renderHealthIcon } from 'app/react-utils'
 
 interface ProjectTileProps {
   id: string
@@ -17,23 +18,6 @@ function formatDate(date: Date) {
     month: 'long',
     day: '2-digit',
   }).format(date)
-}
-
-const renderHealthIcon = (readableHealthValue: ProjectHealthStatusValue) => {
-  if (readableHealthValue === 'UNHEALTHY') {
-    return <p>🛑</p>
-  }
-
-  if (readableHealthValue === 'PARTIALLY_HEALTHY') {
-    return <p>⚠️</p>
-  }
-
-  if (readableHealthValue === 'HEALTHY') {
-    return <p>✅</p>
-  }
-
-  // If we don't know what value it is then render a magnifying glass to signify searching
-  return <p>🔎</p>
 }
 
 export const ProjectDetailsTile = ({

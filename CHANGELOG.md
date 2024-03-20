@@ -14,6 +14,7 @@
 - Projects page now renders routable list of goals associated with project
 - Goals can be created now via the UI
 - Updated goal page to display more goal relevant information
+- Reduced code redundancy for project health checks
 
 ### Bug Fixes
 

@@ -16,38 +16,10 @@ import {
 import { useSession } from 'next-auth/react'
 import toast from 'react-hot-toast'
 
-import { getOrgUserStatus } from './../app/react-utils'
+import { getOrgUserStatus, renderHealthIcon } from './../app/react-utils'
 import { useAppContext } from './../lib/hooks/app-context'
 import SaraPortrait from './../public/Sara_Cartoon_Portrait.png'
 import NavResourceLoader from './nav-resource-tree/nav-resource-loader'
-
-const renderHealthIcon = (readableHealthValue: ProjectHealthStatusValue) => {
-  if (readableHealthValue === 'UNHEALTHY') {
-    return (
-      <p title="Unhealthy: Sara is having some trouble learning about your project.">
-        🛑
-      </p>
-    )
-  }
-
-  if (readableHealthValue === 'PARTIALLY_HEALTHY') {
-    return (
-      <p title="Partially Healthy: Sara is still learning about your project, so answers may not be complete.">
-        ⚠️
-      </p>
-    )
-  }
-
-  if (readableHealthValue === 'HEALTHY') {
-    return (
-      <p title="Healthy: Sara is fully up to speed and ready to assist you with your project.">
-        ✅
-      </p>
-    )
-  }
-
-  return <p title="Unknown Health: Sara is thinking deeply.">🤔</p>
-}
 
 const SidebarNav = () => {
   const router = useRouter()
@@ -211,7 +183,7 @@ const SidebarNav = () => {
 
       {/* Current Project Info */}
       {projectIdForConfiguration ? (
-        <div className="flex justify-center items-center px-4 py-2 rounded-lg bg-secondary text-secondary-foreground my-2">
+        <div className="flex justify-center items-center px-4 py-2 rounded-lg bg-secondary text-secondary-foreground my-2 ml-4">
           <div className="">
             <p>{selectedProject ? selectedProject.name : null}</p>
           </div>
