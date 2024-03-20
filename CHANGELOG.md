@@ -15,6 +15,7 @@
 ### Bug Fixes
 
 - Fix issue where the time a response from the LLM was received wasn't being recorded
+- Fix content spacing separation/border issues on Project Resource page
 
 ## Version 0.16.4: March 20th, 2024
 
