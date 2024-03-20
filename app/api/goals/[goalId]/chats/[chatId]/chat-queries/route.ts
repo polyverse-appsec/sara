@@ -720,7 +720,9 @@ export const GET = auth(async (req: NextAuthRequest) => {
       chat.openAiThreadId,
       chat.tailChatQueryId,
     )
+
     tailChatQuery.response = chatQueryResponse
+    tailChatQuery.responseReceivedAt = new Date()
     tailChatQuery.status = 'RESPONSE_RECEIVED'
 
     await updateChatQuery(tailChatQuery)

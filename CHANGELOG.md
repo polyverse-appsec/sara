@@ -2,6 +2,20 @@
 
 # Release Notes
 
+## Version 0.16.5: March 20th, 2024
+
+### New Features
+
+- N/A
+
+### Enhancements
+
+- N/A
+
+### Bug Fixes
+
+- Fix issue where the time a response from the LLM was received wasn't being recorded
+
 ## Version 0.16.4: March 20th, 2024
 
 ### New Features
