@@ -14,6 +14,7 @@ import Sara32x32 from './../../public/Sara_Cartoon_Portrait-32x32.png'
 export interface SaraChatQueryContentProps {
   content: string
   contentType: 'QUERY' | 'RESPONSE'
+  timestamp: Date | null
 
   /**
    * Indicates whether we are currently in the midst of a chat with OpenAI.
@@ -23,13 +24,14 @@ export interface SaraChatQueryContentProps {
   saraSession: SaraSession
 }
 
-function renderAvatarAndLoadingSpinner(
+function renderSideChatDetails(
   contentType: 'QUERY' | 'RESPONSE',
+  timestamp: Date | null,
   shouldRenderLoadingSpinner: boolean,
   saraSession: SaraSession,
 ) {
   return (
-    <div className={'flex flex-col items-center'}>
+    <div className={'flex flex-col items-start'}>
       <div
         className={cn(
           'flex h-8 w-8 shrink-0 select-none items-center justify-center rounded-md border shadow',
@@ -79,6 +81,13 @@ function renderAvatarAndLoadingSpinner(
           />
         </svg>
       ) : null}
+      {timestamp ? (
+        <div className="prose">
+          {new Date(timestamp).toLocaleDateString()}
+          <br />
+          {new Date(timestamp).toLocaleTimeString()}
+        </div>
+      ) : null}
     </div>
   )
 }
@@ -86,19 +95,16 @@ function renderAvatarAndLoadingSpinner(
 const SaraChatQueryContent = ({
   content,
   contentType,
+  timestamp,
   shouldRenderLoadingSpinner,
   saraSession,
   ...props
 }: SaraChatQueryContentProps) => {
-  // TODO: Cut this out for the moment        <ChatMessageActions message={message} />
-
   return (
-    <div
-      className={cn('group relative mb-4 flex items-start md:-ml-12')}
-      {...props}
-    >
-      {renderAvatarAndLoadingSpinner(
+    <div className={cn('group relative mb-4 flex items-start')} {...props}>
+      {renderSideChatDetails(
         contentType,
+        timestamp,
         shouldRenderLoadingSpinner,
         saraSession,
       )}

@@ -2,7 +2,7 @@
 
 # Release Notes
 
-## Version 0.16.5: March 20th, 2024
+## Version 0.17.0: March 20th, 2024
 
 ### New Features
 
@@ -10,7 +10,7 @@
 
 ### Enhancements
 
-- N/A
+- Timestamps are now rendered on chat queries and chat responses
 
 ### Bug Fixes
 

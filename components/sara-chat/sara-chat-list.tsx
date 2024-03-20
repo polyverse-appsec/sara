@@ -25,20 +25,16 @@ const SaraChatList = ({
     return null
   }
 
-  // TODO: Cut the below for now from the original
-  //   {index < messages.length - 1 && (
-  //     <Separator className="my-4 md:my-8" />
-  //   )}
-
   return (
-    <div className="relative mx-auto max-w-2xl px-4">
+    <div className="relative mx-auto max-w-4xl px-4">
       {chatQueries.map((chatQuery, index) => {
         return (
           <div key={index}>
-            <Separator className="my-4 md:my-8" />
+            <Separator className="my-4" />
             <SaraChatQueryContent
               content={chatQuery.query}
               contentType="QUERY"
+              timestamp={chatQuery.querySubmittedAt}
               shouldRenderLoadingSpinner={
                 chatQuery.status === 'QUERY_SUBMITTED'
               }
@@ -50,6 +46,7 @@ const SaraChatList = ({
                 <SaraChatQueryContent
                   content={chatQuery.response}
                   contentType="RESPONSE"
+                  timestamp={chatQuery.responseReceivedAt}
                   shouldRenderLoadingSpinner={false}
                   saraSession={saraSession}
                 />

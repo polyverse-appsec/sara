@@ -152,7 +152,7 @@ const SaraChat = ({
 
   return (
     <>
-      <div className={cn('pb-[200px] pt-4 md:pt-10')}>
+      <div className={cn('pb-[200px] pt-4')}>
         {chatQueries.length ? (
           <>
             <SaraChatList
