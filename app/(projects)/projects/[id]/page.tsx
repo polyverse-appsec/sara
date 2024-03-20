@@ -6,6 +6,8 @@ import toast from 'react-hot-toast'
 
 import SaraChat from '../../../../components/sara-chat/sara-chat'
 import LoadingSpinner from './../../../../components/loading-spinner'
+import RenderableResource from './../../../../components/renderable-resource/renderable-resource'
+import RenderableResourceContent from './../../../../components/renderable-resource/renderable-resource-content'
 import ScrollableResourceList from './../../../../components/scrollable-resource-list/scrollable-resource-list'
 import { Button } from './../../../../components/ui/button'
 import {
@@ -226,8 +228,8 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
   setProjectIdForConfiguration(project.id)
 
   return (
-    <div className="flex-1 flex-col p-10">
-      <div className="bg-background shadow-md rounded-lg p-6 border">
+    <RenderableResource>
+      <RenderableResourceContent>
         <div className="my-1 flex justify-between w-full">
           <div className="flex items-center">
             <h3 className="text-lg font-semibold">Project:</h3>
@@ -337,18 +339,18 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
             </p>
           </div>
         </div>
-      </div>
-      <div className="bg-background shadow-md rounded-lg p-6 border my-4">
+      </RenderableResourceContent>
+      <RenderableResourceContent>
         <ScrollableResourceList />
-      </div>
-      <div className="bg-background shadow-md rounded-lg p-6 border my-4">
+      </RenderableResourceContent>
+      <RenderableResourceContent>
         {/* Give the appearance of being healthy if we don't know */}
         {renderChatForGoal(
           goalForChat,
           health ? health.readableValue : 'HEALTHY',
         )}
-      </div>
-    </div>
+      </RenderableResourceContent>
+    </RenderableResource>
   )
 }
 
