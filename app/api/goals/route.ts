@@ -17,6 +17,7 @@ interface POSTGoalReqBody {
   orgId?: string
   name?: string
   description?: string
+  acceptanceCriteria?: string
   parentProjectId?: string
 }
 
@@ -50,7 +51,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
 
     // Crucial to helping Sara contextualize the goal (i.e. used for prompt
     // engineering)
-    if (!reqBody.name || reqBody.name.length === 0) {
+    if (!reqBody.name || reqBody.name.trim().length === 0) {
       return new Response(`Request body is missing 'name'`, {
         status: StatusCodes.BAD_REQUEST,
       })
@@ -58,7 +59,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
 
     // Crucial to helping Sara contextualize the goal (i.e. used for prompt
     // engineering)
-    if (!reqBody.description || reqBody.description.length === 0) {
+    if (!reqBody.description || reqBody.description.trim().length === 0) {
       return new Response(`Request body is missing 'description'`, {
         status: StatusCodes.BAD_REQUEST,
       })
@@ -117,6 +118,11 @@ export const POST = auth(async (req: NextAuthRequest) => {
       })
     }
 
+    // Prep details from the request for our goal that we will write to the K/V
+    const name = reqBody.name.trim()
+    const description = reqBody.description.trim()
+    const acceptanceCriteria = reqBody.acceptanceCriteria ? reqBody.acceptanceCriteria.trim() : null
+
     // Write a goal to our K/V
     const goalBaseSaraObject = createBaseSaraObject()
     const goal: GoalPartDeux = {
@@ -125,9 +131,9 @@ export const POST = auth(async (req: NextAuthRequest) => {
 
       // Goal properties
       orgId: org.id,
-      name: reqBody.name,
-      description: reqBody.description,
-      acceptanceCriteria: null,
+      name,
+      description,
+      acceptanceCriteria,
       // Right now the only status value we have defined is 'OPEN'
       status: 'OPEN',
       chatId: null,

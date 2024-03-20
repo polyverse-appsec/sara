@@ -59,7 +59,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
     })
   } catch (error) {
     console.error(
-      `Failed fetching project for '${auth.user.username}' because: ${error}`,
+      `Failed fetching project for '${auth.user.email}' because: ${error}`,
     )
 
     return new Response('Failed to fetch project', {
@@ -173,7 +173,7 @@ export const DELETE = auth(async (req: NextAuthRequest) => {
     })
   } catch (error) {
     console.error(
-      `Failed fetching project for '${auth.user.username}' because: ${error}`,
+      `Failed deleting project for '${auth.user.email}' because: ${error}`,
     )
 
     return new Response('Failed to fetch project', {

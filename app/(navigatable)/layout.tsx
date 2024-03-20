@@ -1,5 +1,9 @@
 'use client'
 
+import '@radix-ui/themes/styles.css'
+
+import { Theme } from '@radix-ui/themes'
+
 import SidebarNav from './../../components/sidebar-nav'
 
 interface NavigatableLayoutProps {
@@ -9,10 +13,12 @@ interface NavigatableLayoutProps {
 const NavigatableLayout = ({ children }: NavigatableLayoutProps) => {
   return (
     <>
-      <div className="w-[250px] fixed h-full overflow-y-auto">
-        <SidebarNav />
-      </div>
-      <div className="flex-1 ml-[250px] overflow-auto">{children}</div>
+      <Theme>
+        <div className="w-[250px] fixed h-full overflow-y-auto">
+          <SidebarNav />
+        </div>
+        <div className="flex-1 ml-[250px] overflow-auto">{children}</div>
+      </Theme>
     </>
   )
 }

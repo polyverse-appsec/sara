@@ -11,6 +11,8 @@
 ### Enhancements
 
 - Timestamps are now rendered on chat queries and chat responses
+- Projects page now renders routable list of goals associated with project
+- Goals can be created now via the UI
 
 ### Bug Fixes
 

@@ -29,9 +29,13 @@ const GoalsManager = ({ projectId, goals }: GoalsManagerProps) => {
         </Button>
       </div>
       <ScrollableResourceList>
-        {goals.map((goal) => (
-          <Link href={`/goals/${goal.id}`}>{goal.name}</Link>
-        ))}
+        <div className="flex flex-col">
+          {goals.map((goal) => (
+            <>
+              <Link href={`/goals/${goal.id}`}>{goal.name}</Link>
+            </>
+          ))}
+        </div>
       </ScrollableResourceList>
     </>
   )
