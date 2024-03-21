@@ -380,31 +380,6 @@ export async function getAssistant(assistantId: string): Promise<Assistant> {
   return oaiClient.beta.assistants.retrieve(assistantId)
 }
 
-// Note that the parameter `invalidProject` is - as the name implies - invalid.
-// We pass in this parameter which has data values which aren't correct as this
-// method ultimately will get a prompt for the assistant that relies on the new
-// data model types. Since this method is used in the old UI/actions based UX
-// and doesn't use the new data model types we just pass something to get this
-// to compile while trying to maintain two code paths.
-export async function updateAssistantPromptAndFiles(
-  fileInfos: ProjectDataReference[],
-  { id }: { id: string },
-  invalidProject: ProjectPartDeux,
-  boostProjectStatus?: BoostProjectStatus,
-): Promise<Assistant> {
-
-  const { prompt, fileIDs } = mapProjectDetailsToPrompt(
-    fileInfos,
-    invalidProject,
-    boostProjectStatus,
-  )
-
-  return await oaiClient.beta.assistants.update(id, {
-    file_ids: fileIDs,
-    instructions: prompt,
-  })
-}
-
 export async function deleteAssistant(assistantId: string) {
   await oaiClient.beta.assistants.del(assistantId)
 }
