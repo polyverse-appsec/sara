@@ -1,14 +1,13 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import Link from 'next/link'
+import { NodeRendererProps, Tree } from 'react-arborist'
 
 import {
-  TaskPartDeux,
   type GoalPartDeux,
-  type ProjectPartDeux,
+  type TaskPartDeux,
 } from '../../lib/data-model-types'
-import { Treeview, type TreeNodeType } from './../../components/ui/treeview'
 
 interface NavResourceLoaderProps {
   projectId: string
@@ -68,19 +67,92 @@ const getTasks = (goalId: string): Promise<TaskPartDeux[]> =>
     }
   })
 
-interface NavResource {
-  goal: GoalPartDeux
-  tasks: TaskPartDeux[]
+type NavigatableResourceTypes = 'GOAL' | 'TASK'
+
+interface NavigatableResource {
+  id: string
+  name: string
+  type: NavigatableResourceTypes
+  children?: NavigatableResource[]
+}
+
+const renderGoalIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke-width="1.5"
+    stroke="currentColor"
+    className="w-6 h-6"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"
+    />
+  </svg>
+)
+
+const renderTaskIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke-width="1.5"
+    stroke="currentColor"
+    className="w-6 h-6"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z"
+    />
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      d="M6 6h.008v.008H6V6Z"
+    />
+  </svg>
+)
+
+const renderNodeLink = (navigatableResource: NavigatableResource) =>
+  navigatableResource.type === 'GOAL' ? (
+    <Link href={`/goals/${navigatableResource.id}`}>
+      {navigatableResource.name}
+    </Link>
+  ) : (
+    navigatableResource.name
+  )
+
+const renderNode = ({
+  node,
+  style,
+  dragHandle,
+}: NodeRendererProps<NavigatableResource>) => {
+  return (
+    <div
+      style={{
+        ...style,
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+      }}
+      ref={dragHandle}
+    >
+      <div className="flex">
+        <span>
+          {node.data.type === 'GOAL' ? renderGoalIcon() : renderTaskIcon()}
+        </span>
+        <span>{renderNodeLink(node.data)}</span>
+      </div>
+    </div>
+  )
 }
 
 const NavResourceLoader = ({ projectId }: NavResourceLoaderProps) => {
-  const router = useRouter()
-
-  const [selectedResource, setSelectedResource] = useState<string | null>(null)
-
-  const [navResourcesByGoalId, setNavResourcesByGoalId] = useState<
-    Record<string, NavResource>
-  >({})
+  const [navResourceTree, setNavResourceTree] = useState<NavigatableResource[]>(
+    [],
+  )
 
   useEffect(() => {
     let isMounted = true
@@ -90,26 +162,28 @@ const NavResourceLoader = ({ projectId }: NavResourceLoaderProps) => {
       try {
         const goals = await getGoals(projectId)
 
-        const navResourcesByGoalId = goals.reduce(
-          (accumulator, goal) => {
-            accumulator[goal.id] = {
-              goal,
-              tasks: [],
-            }
-
-            return accumulator
-          },
-          {} as Record<string, NavResource>,
-        )
-
-        const mapTasksToNavResourcesPromises = goals.map(async (goal) => {
+        const mapNavResourceTreePromises = goals.map(async (goal) => {
           const tasks = await getTasks(goal.id)
-          navResourcesByGoalId[goal.id].tasks = tasks
+
+          return {
+            id: goal.id,
+            name: goal.name,
+            type: 'GOAL',
+            children: tasks.map(
+              (task) =>
+                ({
+                  id: task.id,
+                  name: task.name,
+                  type: 'TASK',
+                  children: [],
+                }) as NavigatableResource,
+            ),
+          } as NavigatableResource
         })
 
-        await Promise.all(mapTasksToNavResourcesPromises)
+        const navResourceTree = await Promise.all(mapNavResourceTreePromises)
 
-        setNavResourcesByGoalId(navResourcesByGoalId)
+        setNavResourceTree(navResourceTree)
       } catch (error) {
         console.debug(
           `Failed to load resources for project ${projectId} because: ${error}`,
@@ -129,59 +203,10 @@ const NavResourceLoader = ({ projectId }: NavResourceLoaderProps) => {
     }
   }, [])
 
-  if (Object.entries(navResourcesByGoalId).length === 0) {
-    return null
-  }
-
-  return (
-    <Treeview.Root
-      value={selectedResource}
-      onChange={(resource: string) => {
-        // This is a hack for a demo we are having 03/19/24. Our TreeView
-        // component is poor in that it can't render any ReactNodes as
-        // children - just more TreeViewNodes. What we would like to do is
-        // pass a <Link> with a <Label> for the nodes. Since we can't do
-        // that we pass the route for the goal as the ID and when an
-        // element is clicked we will route to it if it contains the
-        // `/goals` URL.
-        //
-        // 03/18/24: Disabled routing while trying to figure out how to keep
-        // tree up on routing
-        console.log(`***** tree view resource changed to: ${resource}`)
-        if (resource.includes(`goals`)) {
-          router.push(resource)
-        }
-      }}
-      className="h-full"
-    >
-      {Object.values(navResourcesByGoalId).map((navResource) => {
-        const taskNodes = navResource.tasks.map((task, index) => ({
-          id: task.id,
-          // We number each task in the tree view so add 1 to the index so that
-          // we start numbering at 1
-          content: `${index + 1}: ${task.description}`,
-        }))
-
-        return (
-          <Treeview.Node
-            node={{
-              // This is a hack for a demo we are having 03/19/24. Our TreeView
-              // component is poor in that it can't render any ReactNodes as
-              // children - just more TreeViewNodes. What we would like to do is
-              // pass a <Link> with a <Label> for the nodes. Since we can't do
-              // that we pass the route for the goal as the ID and when an
-              // element is clicked we will route to it if it contains the
-              // `/goals` URL.
-              id: `/goals/${navResource.goal.id}`,
-              content: `Goal: ${navResource.goal.description}`,
-              children: taskNodes,
-            }}
-            key={navResource.goal.id}
-          />
-        )
-      })}
-    </Treeview.Root>
-  )
+  // Note that our `<Tree>` is a controlled component since we pass our goals
+  // and tasks in through `data`. We need to eventually add handlers to it if
+  // we want to enable any of its functionality.
+  return <Tree data={navResourceTree}>{renderNode}</Tree>
 }
 
 export default NavResourceLoader

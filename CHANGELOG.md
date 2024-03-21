@@ -2,6 +2,20 @@
 
 # Release Notes
 
+## Version 0.18.0: March 21st, 2024
+
+### New Features
+
+- N/A
+
+### Enhancements
+
+- Refactor resource tree to provide consistent styling and not have overlapping text
+
+### Bug Fixes
+
+- N/A
+
 ## Version 0.17.0: March 20th, 2024
 
 ### New Features
