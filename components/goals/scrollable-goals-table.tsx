@@ -6,7 +6,7 @@ import { Table } from '@radix-ui/themes'
 
 import { type GoalPartDeux } from './../../lib/data-model-types'
 
-interface ScrollableResourceListProps {
+interface ScrollableGoalsTableProps {
   goals: GoalPartDeux[]
 }
 
@@ -31,7 +31,7 @@ const renderGoals = (goals: GoalPartDeux[]) => {
   })
 }
 
-const ScrollableResourceList = ({ goals }: ScrollableResourceListProps) => {
+const ScrollableGoalsTable = ({ goals }: ScrollableGoalsTableProps) => {
   return (
     <ScrollArea.Root className="h-40 overflow-auto">
       <ScrollArea.Viewport>
@@ -53,4 +53,4 @@ const ScrollableResourceList = ({ goals }: ScrollableResourceListProps) => {
   )
 }
 
-export default ScrollableResourceList
+export default ScrollableGoalsTable

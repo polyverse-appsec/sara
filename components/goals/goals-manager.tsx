@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 
-import ScrollableResourceList from './../../components/scrollable-resource-list/scrollable-resource-list'
+import ScrollableGoalsTable from './../../components/goals/scrollable-goals-table'
 import { Button } from './../../components/ui/button'
 import { type GoalPartDeux } from './../../lib/data-model-types'
 
@@ -28,7 +28,7 @@ const GoalsManager = ({ projectId, goals }: GoalsManagerProps) => {
           </Link>
         </Button>
       </div>
-      <ScrollableResourceList goals={goals} />
+      <ScrollableGoalsTable goals={goals} />
     </>
   )
 }
