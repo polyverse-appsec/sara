@@ -2,12 +2,6 @@
 
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@radix-ui/react-dropdown-menu'
 import { getOrgStatus, getOrgUserStatus } from 'app/react-utils'
 import Joi from 'joi'
 import { useSession } from 'next-auth/react'
@@ -20,15 +14,11 @@ import {
   type GitHubRepo,
   type GoalPartDeux,
   type ProjectPartDeux,
-  type UserOrgStatus,
 } from './../../../../../lib/data-model-types'
 import { useAppContext } from './../../../../../lib/hooks/app-context'
+import { projectNameSchema } from './../../../../../lib/polyverse/db/validators'
 import DataSourceSelector from './data-source-selector'
 import SingleDataSourceSelector from './single-data-source-selector'
-
-const titleSchema = Joi.string()
-  .pattern(/^[A-Za-z0-9](?:[A-Za-z0-9-_]*[A-Za-z0-9])?$/)
-  .required()
 
 const postProject = async (
   billingOrgId: string,
@@ -297,9 +287,11 @@ const ProjectCreate = () => {
                 return
               }
 
-              if (titleSchema.validate(projectName).error) {
+              const trimmedProjectName = projectName.trim()
+
+              if (projectNameSchema.validate(trimmedProjectName).error) {
                 toast.error(
-                  `Project name can only be alphanumerics, -, and _ with alphanumerics at the beginning and end`,
+                  `Project name can only be alphanumerics - _ . and spaces`,
                 )
                 setSaveButtonEnabled(true)
                 return
@@ -318,7 +310,7 @@ const ProjectCreate = () => {
                 // First create the project for the user...
                 const project = await postProject(
                   activeBillingOrg.id,
-                  projectName,
+                  trimmedProjectName,
                   projectDescription,
                   controlledProjectDataSources,
                 )

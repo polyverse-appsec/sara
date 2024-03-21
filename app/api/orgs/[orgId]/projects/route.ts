@@ -20,6 +20,7 @@ import getProject from './../../../../../lib/polyverse/db/get-project'
 import getUser from './../../../../../lib/polyverse/db/get-user'
 import updateOrg from './../../../../../lib/polyverse/db/update-org'
 import { createBaseSaraObject } from './../../../../../lib/polyverse/db/utils'
+import { projectNameSchema } from './../../../../../lib/polyverse/db/validators'
 
 // 03/04/24: We set this max duration to 60 seconds during initial development
 // with no real criteria to use as a starting point for the max duration. We see
@@ -92,6 +93,12 @@ export const POST = auth(async (req: NextAuthRequest) => {
 
     if (!reqBody.name || Joi.string().required().validate(reqBody.name).error) {
       return new Response(`Request body is missing 'name'`, {
+        status: StatusCodes.BAD_REQUEST,
+      })
+    }
+
+    if (projectNameSchema.validate(reqBody.name).error) {
+      return new Response(`'name' can only be alphanumerics - _ . and spaces`, {
         status: StatusCodes.BAD_REQUEST,
       })
     }
