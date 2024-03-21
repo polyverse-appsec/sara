@@ -146,6 +146,8 @@ export async function postFileInfoToGetFileInfo(
 export async function createProject(
   projectId: string,
   orgId: string,
+  name: string,
+  description: string,
   primaryDataSource: Repository,
   secondaryDataSources: Repository[],
   email: string,
@@ -168,7 +170,11 @@ export async function createProject(
         'Content-Type': 'application/json',
         ...signedHeader,
       },
-      body: JSON.stringify({ resources }),
+      body: JSON.stringify({
+        resources,
+        title: name,
+        description
+      }),
     })
 
     if (!res.ok) {

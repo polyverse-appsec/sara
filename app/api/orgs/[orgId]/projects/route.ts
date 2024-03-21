@@ -212,6 +212,8 @@ export const POST = auth(async (req: NextAuthRequest) => {
     await createProjectOnBoost(
       project.id,
       org.name,
+      project.name,
+      project.description,
       oldTypedProjectDataSources[0],
       secondaryDataSources,
       user.email,
