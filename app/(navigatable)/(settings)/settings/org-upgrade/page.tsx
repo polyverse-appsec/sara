@@ -39,7 +39,7 @@ const SettingsOrgUpgrade = () => {
                 <OrgDetailsTile key={id} name={name} id={id} />
                 ))}
             </div>
-            <p className="mt-4">Once you select an org to upgrade, you will be redirected to it's page where you can proceed with upgrading it</p>
+            <p className="mt-4">Once you select an org to upgrade, you will be redirected to the page where you can proceed with upgrading it</p>
             <p className="mt-2">If you do not see your org here, you need to add it in the manage organizations settings page</p>
           </RenderableResourceContent>
         </div>

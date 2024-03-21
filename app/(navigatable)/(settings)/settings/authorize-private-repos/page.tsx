@@ -86,7 +86,7 @@ const SettingsGithubAppInstall = () => {
 
     return (
         <div className="flex flex-col items-center p-10">
-          <p className="text-2xl font-bold">Authorize Sara's Private Repo Access</p>
+          <p className="text-2xl font-bold">Authorize Private Repo Access</p>
           <div className="w-1/2 border-t-2 border-blue-600 my-2"></div>
           <RenderableResourceContent>
             <div className="flex flex-col items-center text-center">
