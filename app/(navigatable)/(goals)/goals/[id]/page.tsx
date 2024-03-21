@@ -1,14 +1,18 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-
-import SaraChat from '../../../../../components/sara-chat/sara-chat'
-import { ProjectHealthStatusValue, type GoalPartDeux, ProjectHealth } from './../../../../../lib/data-model-types'
 import LoadingSpinner from 'components/loading-spinner'
+import CollapsibleRenderableResourceContent from 'components/renderable-resource/collapsible-renderable-resource-content'
 import RenderableResource from 'components/renderable-resource/renderable-resource'
 import RenderableResourceContent from 'components/renderable-resource/renderable-resource-content'
 import { useAppContext } from 'lib/hooks/app-context'
-import CollapsibleRenderableResourceContent from 'components/renderable-resource/collapsible-renderable-resource-content'
+
+import SaraChat from '../../../../../components/sara-chat/sara-chat'
+import {
+  ProjectHealth,
+  ProjectHealthStatusValue,
+  type GoalPartDeux,
+} from './../../../../../lib/data-model-types'
 
 const renderChatForGoal = (
   goal: GoalPartDeux | null,
@@ -55,7 +59,9 @@ const GoalIndex = ({ params: { id } }: { params: { id: string } }) => {
 
       setGoal(fetchedGoal)
 
-      const healthRes = await fetch(`/api/projects/${projectIdForConfiguration}/health`)
+      const healthRes = await fetch(
+        `/api/projects/${projectIdForConfiguration}/health`,
+      )
 
       if (healthRes.ok) {
         const fetchedHealth = (await healthRes.json()) as ProjectHealth
@@ -63,7 +69,6 @@ const GoalIndex = ({ params: { id } }: { params: { id: string } }) => {
       } else {
         console.debug(`Failed to get project health`)
       }
-
     })()
   }, [id])
 
@@ -87,31 +92,28 @@ const GoalIndex = ({ params: { id } }: { params: { id: string } }) => {
             </div>
           ) : null}
         </div>
-        </RenderableResourceContent>
-        <CollapsibleRenderableResourceContent title={'Goal Information'}>
-          <div className="my-1">
-            <div className="flex items-center">
-              <h3 className="text-lg font-semibold">Acceptance Criteria</h3>
-              <div className="mx-2">
-                {goal?.acceptanceCriteria ? goal.acceptanceCriteria : 'None specified'}
-              </div>
+      </RenderableResourceContent>
+      <CollapsibleRenderableResourceContent title={'Goal Information'}>
+        <div className="my-1">
+          <div className="flex items-center">
+            <h3 className="text-lg font-semibold">Acceptance Criteria</h3>
+            <div className="mx-2">
+              {goal?.acceptanceCriteria
+                ? goal.acceptanceCriteria
+                : 'None specified'}
             </div>
           </div>
-          <div className="my-1">
-            <div className="flex items-center">
-              <h3 className="text-lg font-semibold">Number of tasks</h3>
-              <p className="mx-2">
-                {goal?.taskIds ? goal.taskIds.length : 0}
-              </p>
-            </div>
+        </div>
+        <div className="my-1">
+          <div className="flex items-center">
+            <h3 className="text-lg font-semibold">Number of tasks</h3>
+            <p className="mx-2">{goal?.taskIds ? goal.taskIds.length : 0}</p>
           </div>
+        </div>
       </CollapsibleRenderableResourceContent>
       <RenderableResourceContent>
         {/* Give the appearance of being healthy if we don't know */}
-        {renderChatForGoal(
-          goal,
-          health ? health.readableValue : 'HEALTHY',
-        )}
+        {renderChatForGoal(goal, health ? health.readableValue : 'HEALTHY')}
       </RenderableResourceContent>
     </RenderableResource>
   )

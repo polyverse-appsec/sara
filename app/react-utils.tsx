@@ -1,8 +1,14 @@
 'use client'
 
-import { ProjectHealthConfigurationState, ProjectHealthStatusValue, UserOrgStatus } from "lib/data-model-types"
+import {
+  ProjectHealthConfigurationState,
+  ProjectHealthStatusValue,
+  UserOrgStatus,
+} from 'lib/data-model-types'
 
-export const renderHealthIcon = (readableHealthValue: ProjectHealthStatusValue) => {
+export const renderHealthIcon = (
+  readableHealthValue: ProjectHealthStatusValue,
+) => {
   if (readableHealthValue === 'UNHEALTHY') {
     return (
       <p title="Unhealthy: Sara is having some trouble learning about your project.">
@@ -96,25 +102,25 @@ export const renderHumanReadableConfigurationState = (
 }
 
 export const getOrgUserStatus = async (
-    orgId: string,
-    userId: string,
-  ): Promise<UserOrgStatus> => {
-    const res = await fetch(`/api/orgs/${orgId}/users/${userId}/status`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-  
-    if (!res.ok) {
-      const errText = await res.text()
-      console.debug(`Failed to get User Status because: ${errText}`)
-      throw new Error(`Failed to get user status`)
-    }
-  
-    const userStatus = (await res.json()) as UserOrgStatus
-    return userStatus
+  orgId: string,
+  userId: string,
+): Promise<UserOrgStatus> => {
+  const res = await fetch(`/api/orgs/${orgId}/users/${userId}/status`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+
+  if (!res.ok) {
+    const errText = await res.text()
+    console.debug(`Failed to get User Status because: ${errText}`)
+    throw new Error(`Failed to get user status`)
   }
+
+  const userStatus = (await res.json()) as UserOrgStatus
+  return userStatus
+}
 
 export const getOrgStatus = async (
   orgId: string,

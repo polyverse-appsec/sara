@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { ProjectHealth, ProjectHealthStatusValue } from 'lib/data-model-types'
 import { renderHealthIcon } from 'app/react-utils'
+import { ProjectHealth, ProjectHealthStatusValue } from 'lib/data-model-types'
 
 interface ProjectTileProps {
   id: string

@@ -326,85 +326,94 @@ export const getChatQueryResponseFromThread = async (
   // recent message as the first index in the array returned take a slice of the
   // responses up to our user query.
   const assistantMessages = messages.slice(0, chatQueryIndex)
-  const chatQueryResponse = (await assistantMessages
-    .reduce(async (concatenatedMessagePromise, assistantMessage) => {
-      let concatenatedMessage = await concatenatedMessagePromise
+  const chatQueryResponse = (
+    await assistantMessages.reduce(
+      async (concatenatedMessagePromise, assistantMessage) => {
+        let concatenatedMessage = await concatenatedMessagePromise
 
-      const { content: contents } = assistantMessage
-
-      // Use `for` loop as `Array#forEach` doesn't support async/await
-      for (let contentIndex = 0; contentIndex < contents.length; contentIndex++) {
-        const content = contents[contentIndex]
-
-        if (content.type !== 'text') {
-          throw new Error(
-            `Tried to process unrecognized content type '${content.type}' for chat query with an ID of '${chatQueryId}'`,
-          )
-        }
-
-        const textContent = content.text
-
-        // Handle citations to files the assistant included in the message
-        const annotations = textContent.annotations
-        const citations: string[] = []
+        const { content: contents } = assistantMessage
 
         // Use `for` loop as `Array#forEach` doesn't support async/await
-        for (let annotationIndex = 0; annotationIndex < annotations.length; annotationIndex++) {
-          const annotation = annotations[annotationIndex]
+        for (
+          let contentIndex = 0;
+          contentIndex < contents.length;
+          contentIndex++
+        ) {
+          const content = contents[contentIndex]
 
-          // Replace the text with a footnote
-          textContent.value = textContent.value.replace(
-            annotation.text,
-            ` [${annotationIndex}]`,
-          )
-
-          if (
-            annotation.type !== 'file_citation' &&
-            annotation.type !== 'file_path'
-          ) {
+          if (content.type !== 'text') {
             throw new Error(
-              `Tried to process unrecognized annotation type for chat query with an ID of '${chatQueryId}'`,
+              `Tried to process unrecognized content type '${content.type}' for chat query with an ID of '${chatQueryId}'`,
             )
           }
 
-          // Handle citations within a message that points to a specific quote
-          // from a specific file associated with the assistant or message. This
-          // citation is generated when the assistant uses the 'retrieval' tool to
-          // search files.
-          if (annotation.type === 'file_citation') {
-            const citedFile = await oaiClient.files.retrieve(
-              annotation.file_citation.file_id,
+          const textContent = content.text
+
+          // Handle citations to files the assistant included in the message
+          const annotations = textContent.annotations
+          const citations: string[] = []
+
+          // Use `for` loop as `Array#forEach` doesn't support async/await
+          for (
+            let annotationIndex = 0;
+            annotationIndex < annotations.length;
+            annotationIndex++
+          ) {
+            const annotation = annotations[annotationIndex]
+
+            // Replace the text with a footnote
+            textContent.value = textContent.value.replace(
+              annotation.text,
+              ` [${annotationIndex}]`,
             )
 
-            citations.push(
-              `[${annotationIndex}] ${citedFile.filename}`,
-            )
+            if (
+              annotation.type !== 'file_citation' &&
+              annotation.type !== 'file_path'
+            ) {
+              throw new Error(
+                `Tried to process unrecognized annotation type for chat query with an ID of '${chatQueryId}'`,
+              )
+            }
+
+            // Handle citations within a message that points to a specific quote
+            // from a specific file associated with the assistant or message. This
+            // citation is generated when the assistant uses the 'retrieval' tool to
+            // search files.
+            if (annotation.type === 'file_citation') {
+              const citedFile = await oaiClient.files.retrieve(
+                annotation.file_citation.file_id,
+              )
+
+              citations.push(`[${annotationIndex}] ${citedFile.filename}`)
+            }
+
+            // Handle citation within a message that generated a URL for the file
+            // the assistant used the 'code_interpreter' tool to generate a file.
+            if (annotation.type === 'file_path') {
+              const citedFile = await oaiClient.files.retrieve(
+                annotation.file_path.file_id,
+              )
+
+              citations.push(
+                `[${annotationIndex}] Click <here> to download ${citedFile.filename}`,
+              )
+            }
+
+            // Note: Actual file download link or mechanism to trigger downloads not implemented
           }
 
-          // Handle citation within a message that generated a URL for the file
-          // the assistant used the 'code_interpreter' tool to generate a file.
-          if (annotation.type === 'file_path') {
-            const citedFile = await oaiClient.files.retrieve(
-              annotation.file_path.file_id,
-            )
+          textContent.value += '\n\n' + citations.join('\n')
 
-            citations.push(
-              `[${annotationIndex}] Click <here> to download ${citedFile.filename}`,
-            )
-          }
-
-          // Note: Actual file download link or mechanism to trigger downloads not implemented
+          concatenatedMessage += textContent.value
+          concatenatedMessage += '\n'
         }
 
-        textContent.value += '\n\n' + citations.join('\n')
-
-        concatenatedMessage += textContent.value
-        concatenatedMessage += '\n'
-      }
-
-      return concatenatedMessage
-    }, Promise.resolve('')))
-    .trim()
+        return concatenatedMessage
+      },
+      Promise.resolve(''),
+    )
+  ).trim()
 
   return chatQueryResponse
 }

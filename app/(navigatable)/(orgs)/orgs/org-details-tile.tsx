@@ -3,12 +3,12 @@
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { StarFilledIcon } from '@radix-ui/react-icons'
+import { getOrgUserStatus } from 'app/react-utils'
 import { SaraSession } from 'auth'
 import { UserOrgStatus } from 'lib/data-model-types'
 import { useAppContext } from 'lib/hooks/app-context'
 import { useSession } from 'next-auth/react'
 import toast from 'react-hot-toast'
-import { getOrgUserStatus } from 'app/react-utils'
 
 interface OrgDetailsTileProps {
   name: string

@@ -5,9 +5,9 @@ import packageInfo from '../../../package.json'
 import {
   Project,
   ProjectDataReference,
+  ProjectPartDeux,
   Repository,
   type PromptFileInfo,
-  ProjectPartDeux,
 } from '../../data-model-types'
 import { BoostProjectStatus } from '../backend/get-boost-project-status'
 import { isRecord } from '../typescript/helpers'
@@ -123,11 +123,14 @@ function getOpenAIAssistantInstructions(
           ? Math.ceil(projectStatus.possibleStagesRemaining / 10)
           : 0
 
-        // only show estimated time if we have an estimate - otherwise we don't want to imply we'll be done in 0 mins
+      // only show estimated time if we have an estimate - otherwise we don't want to imply we'll be done in 0 mins
       if (numberOfMinutesEstimatedBeforeSynchronization > 0) {
-        assistantPromptInstructions += `You estimate that you will have a more complete understanding of the project in ` +
-        (numberOfMinutesEstimatedBeforeSynchronization > 1 ? `${numberOfMinutesEstimatedBeforeSynchronization} minutes`:`${numberOfMinutesEstimatedBeforeSynchronization} minute`) +
-        `.`;
+        assistantPromptInstructions +=
+          `You estimate that you will have a more complete understanding of the project in ` +
+          (numberOfMinutesEstimatedBeforeSynchronization > 1
+            ? `${numberOfMinutesEstimatedBeforeSynchronization} minutes`
+            : `${numberOfMinutesEstimatedBeforeSynchronization} minute`) +
+          `.`
       }
 
       assistantPromptInstructions += `When you answer user questions, you should remind the user that you are still researching their code and better answers will be available soon.`
@@ -307,7 +310,8 @@ function mapProjectDetailsToPrompt(
   const prompt = getOpenAIAssistantInstructions(
     fileTypes,
     invalidProject,
-    boostProjectStatus)
+    boostProjectStatus,
+  )
 
   const fileIDs = fileInfos.map(({ id }) => id)
   return { prompt, fileIDs }
@@ -319,18 +323,27 @@ export async function createAssistant(
   project: ProjectPartDeux,
   boostProjectStatus?: BoostProjectStatus,
 ): Promise<Assistant> {
-
   if (fileInfos.length > 3) {
-    throw new Error(`Unable to create assistant - received a total of '${fileInfos.length}' assistant files when only allowed 3`)
+    throw new Error(
+      `Unable to create assistant - received a total of '${fileInfos.length}' assistant files when only allowed 3`,
+    )
   }
 
-  const promptFileTypes: FileTypes = { aispec: '', blueprint: '', projectsource: '' }
+  const promptFileTypes: FileTypes = {
+    aispec: '',
+    blueprint: '',
+    projectsource: '',
+  }
 
   fileInfos.map(({ name, type }) => {
     promptFileTypes[type as keyof FileTypes] = name
   })
 
-  const prompt = getOpenAIAssistantInstructions(promptFileTypes, project, boostProjectStatus)
+  const prompt = getOpenAIAssistantInstructions(
+    promptFileTypes,
+    project,
+    boostProjectStatus,
+  )
   const assistantName = createAssistantName(assistantMetadata)
   const fileIDs = fileInfos.map(({ id }) => id)
 
@@ -408,7 +421,9 @@ export const updateGlobalAssistantPrompt = async (
   projectStatus: BoostProjectStatus,
 ): Promise<Assistant> => {
   if (promptFileInfos.length > 3) {
-    throw new Error(`Unable to update assistant - received a total of '${promptFileInfos.length}' assistant files when only allowed 3`)
+    throw new Error(
+      `Unable to update assistant - received a total of '${promptFileInfos.length}' assistant files when only allowed 3`,
+    )
   }
 
   const assistant = await findAssistantFromMetadata(assistantMetadata)
@@ -439,9 +454,6 @@ export const updateGlobalAssistantPrompt = async (
   return oaiClient.beta.assistants.update(assistant.id, {
     file_ids: fileIDs,
     instructions: prompt,
-    tools: [
-      { type: 'code_interpreter' },
-      { type: 'retrieval' },
-    ],
+    tools: [{ type: 'code_interpreter' }, { type: 'retrieval' }],
   })
 }

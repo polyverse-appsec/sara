@@ -256,9 +256,14 @@ export const POST = auth(async (req: NextAuthRequest) => {
     )
 
     if (!boostFileInfos || boostFileInfos.length !== 3) {
-      const logMsg = boostFileInfos.length < 3 ?
-        `Failing refresh for project '${project.id}' because got less than the 3 requisite file infos - total received: '${boostFileInfos.length}'` :
-        `Failing refresh for project '${project.id}' because got more than the 3 requisite file infos - total received: '${boostFileInfos.length}' - file info dump: ${JSON.stringify(boostFileInfos)}`
+      const logMsg =
+        boostFileInfos.length < 3
+          ? `Failing refresh for project '${project.id}' because got less than the 3 requisite file infos - total received: '${boostFileInfos.length}'`
+          : `Failing refresh for project '${
+              project.id
+            }' because got more than the 3 requisite file infos - total received: '${
+              boostFileInfos.length
+            }' - file info dump: ${JSON.stringify(boostFileInfos)}`
 
       // Getting more than 3 file infos is concerning - make sure to log it out as an error
       if (boostFileInfos.length > 3) {
@@ -361,9 +366,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
     }
 
     console.debug(
-      `Updated assistant for project goal contextualization with a goal ID of '${
-        goal.id
-      }'`,
+      `Updated assistant for project goal contextualization with a goal ID of '${goal.id}'`,
     )
 
     // Don't forget to indicate that we refreshed the project

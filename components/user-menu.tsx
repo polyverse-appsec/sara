@@ -7,6 +7,7 @@ import {
   ExclamationTriangleIcon,
   HamburgerMenuIcon,
 } from '@radix-ui/react-icons'
+import { getOrgStatus, getOrgUserStatus } from 'app/react-utils'
 import { type SaraSession } from 'auth'
 import { UserOrgStatus } from 'lib/data-model-types'
 import { useAppContext } from 'lib/hooks/app-context'
@@ -24,7 +25,6 @@ import {
   DropdownMenuTrigger,
 } from './ui/dropdown-menu'
 import { IconExternalLink } from './ui/icons'
-import { getOrgStatus, getOrgUserStatus } from 'app/react-utils'
 
 export interface UserMenuProps {
   user: Session['user']

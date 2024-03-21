@@ -3,8 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { StarFilledIcon } from '@radix-ui/react-icons'
-import { GearIcon } from '@radix-ui/react-icons'
+import { GearIcon, StarFilledIcon } from '@radix-ui/react-icons'
 import { SaraSession } from 'auth'
 import { UserMenu } from 'components/user-menu' // Update this import based on your project structure
 import { motion } from 'framer-motion'
@@ -208,7 +207,7 @@ const SidebarNav = () => {
         <div className="flex items-center">
           {/* User Menu */}
           <UserMenu user={user} />
-          <GearIcon 
+          <GearIcon
             className="w-6 h-6 transition-opacity duration-300 rounded-full select-none ring-1 ring-zinc-100/10 hover:opacity-50 ml-2"
             onClick={() => {
               setProjectIdForConfiguration(null)

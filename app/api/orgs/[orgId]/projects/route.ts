@@ -1,6 +1,6 @@
 import { ReasonPhrases, StatusCodes } from 'http-status-codes'
-import { NextAuthRequest } from 'next-auth/lib'
 import Joi from 'joi'
+import { NextAuthRequest } from 'next-auth/lib'
 
 import { auth } from '../../../../../auth'
 import {
@@ -11,7 +11,7 @@ import {
 } from './../../../../../lib/data-model-types'
 import {
   createProject as createProjectOnBoost,
-  getBoostOrgUserStatus
+  getBoostOrgUserStatus,
 } from './../../../../../lib/polyverse/backend/backend'
 import createProject from './../../../../../lib/polyverse/db/create-project'
 import createProjectDataSource from './../../../../../lib/polyverse/db/create-project-data-source'
@@ -90,10 +90,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
       projectDataSources: GitHubRepo[]
     }
 
-    if (
-      !reqBody.name ||
-      Joi.string().required().validate(reqBody.name).error
-    ) {
+    if (!reqBody.name || Joi.string().required().validate(reqBody.name).error) {
       return new Response(`Request body is missing 'name'`, {
         status: StatusCodes.BAD_REQUEST,
       })

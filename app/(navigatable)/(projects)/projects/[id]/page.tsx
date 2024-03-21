@@ -2,6 +2,11 @@
 
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import {
+  renderHealthIcon,
+  renderHumanReadableConfigurationState,
+  renderHumanReadableHealthStatus,
+} from 'app/react-utils'
 import GoalsManager from 'components/goals/goals-manager'
 import toast from 'react-hot-toast'
 
@@ -13,12 +18,10 @@ import { Button } from './../../../../../components/ui/button'
 import {
   type GoalPartDeux,
   type ProjectHealth,
-  type ProjectHealthConfigurationState,
   type ProjectHealthStatusValue,
   type ProjectPartDeux,
 } from './../../../../../lib/data-model-types'
 import { useAppContext } from './../../../../../lib/hooks/app-context'
-import { renderHealthIcon, renderHumanReadableConfigurationState, renderHumanReadableHealthStatus } from 'app/react-utils'
 
 const renderChatForGoal = (
   goal: GoalPartDeux | null,
