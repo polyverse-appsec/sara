@@ -6,7 +6,7 @@
 
 ### New Features
 
-- N/A
+- Added a new settings page with more detailed/streamlined walkthrough of account setup
 
 ### Enhancements
 
