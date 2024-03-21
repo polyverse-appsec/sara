@@ -253,6 +253,18 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
             </p>
           </div>
         </div>
+        <div className="my-1">
+          <div className="flex items-center">
+            <h3 className="text-lg font-semibold">Last Synced At:</h3>
+            <p className="mx-2">
+              {`${new Date(
+                project.lastRefreshedAt,
+              ).toLocaleDateString()} ${new Date(
+                project.lastRefreshedAt,
+              ).toLocaleTimeString()}`}
+            </p>
+          </div>
+        </div>
       </RenderableResourceContent>
       <RenderableResourceContent>
         <GoalsManager projectId={id} goals={goals} />
