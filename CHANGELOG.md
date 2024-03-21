@@ -11,6 +11,7 @@
 ### Enhancements
 
 - Refactor resource tree to provide consistent styling and not have overlapping text
+- Goals on project page now rendered as a table
 
 ### Bug Fixes
 
