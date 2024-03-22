@@ -15,7 +15,7 @@ import {
   type ProjectHealthConfigurationState,
   type ProjectHealthStatusValue,
 } from './../../../../../lib/data-model-types'
-import { getFileInfoPartDeux } from './../../../../../lib/polyverse/backend/backend'
+import { getProjectAssistantFileInfo } from './../../../../../lib/polyverse/backend/backend'
 import getBoostProjectStatus, {
   BoostProjectStatuses,
 } from './../../../../../lib/polyverse/backend/get-boost-project-status'
@@ -152,7 +152,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
     let boostFileInfos: ProjectDataReference[] | null = null
 
     try {
-      boostFileInfos = await getFileInfoPartDeux(
+      boostFileInfos = await getProjectAssistantFileInfo(
         org.name,
         project.id,
         user.email,

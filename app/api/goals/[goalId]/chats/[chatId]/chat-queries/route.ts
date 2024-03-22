@@ -10,7 +10,7 @@ import {
   type ChatQueryPartDeux,
   type PromptFileInfo,
 } from './../../../../../../../lib/data-model-types'
-import { getFileInfoPartDeux } from './../../../../../../../lib/polyverse/backend/backend'
+import { getProjectAssistantFileInfo } from './../../../../../../../lib/polyverse/backend/backend'
 import getBoostProjectStatus from './../../../../../../../lib/polyverse/backend/get-boost-project-status'
 import createPromptFileInfo from './../../../../../../../lib/polyverse/db/create-prompt-file-info'
 import deletePromptFileInfo from './../../../../../../../lib/polyverse/db/delete-prompt-file-info'
@@ -249,7 +249,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
     // Update the prompt file infos that we have cached if necessary
     // Prepare to build the OpenAI Assistant for the project by getting the file
     // info from the Boost backend for the project we just created
-    const boostFileInfos = await getFileInfoPartDeux(
+    const boostFileInfos = await getProjectAssistantFileInfo(
       org.name,
       project.id,
       user.email,

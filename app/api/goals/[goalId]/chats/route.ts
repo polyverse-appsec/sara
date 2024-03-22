@@ -9,7 +9,7 @@ import {
   type ChatQueryPartDeux,
   type PromptFileInfo,
 } from './../../../../../lib/data-model-types'
-import { getFileInfoPartDeux } from './../../../../../lib/polyverse/backend/backend'
+import { getProjectAssistantFileInfo } from './../../../../../lib/polyverse/backend/backend'
 import getBoostProjectStatus from './../../../../../lib/polyverse/backend/get-boost-project-status'
 import createChat from './../../../../../lib/polyverse/db/create-chat'
 import createChatQuery from './../../../../../lib/polyverse/db/create-chat-query'
@@ -175,7 +175,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
     // TODO: We really ought to be passing in the `ID` of the `project` instance
     // but need to build more support out for using generic IDs in the backend
     // TODO: Rename to getBoostFileInfo
-    const boostFileInfos = await getFileInfoPartDeux(
+    const boostFileInfos = await getProjectAssistantFileInfo(
       org.name,
       project.id,
       user.email,

@@ -16,63 +16,65 @@ export interface BoostUserOrgStatusResponse {
   github_username?: string
 }
 
-export async function getFileInfo(
-  projectName: string,
-  orgId: string,
-  email: string,
-): Promise<ProjectDataReference[]> {
-  const url = `${USER_SERVICE_URI}/api/user_project/${orgId}/${projectName}/data_references`
+export async function getProjectAssistantFileInfo(
+    billingOrgName: string,
+    projectId: string,
+    email: string,
+  ): Promise<ProjectDataReference[]> {
+  const url = `${USER_SERVICE_URI}/api/user_project/${billingOrgName}/${projectId}/data_references`
 
   try {
-    const signedHeader = createSignedHeader(email)
-    const res = await fetch(url, {
+      const signedHeader = createSignedHeader(email)
+      const res = await fetch(url, {
       method: 'GET',
       headers: {
-        ...signedHeader,
+          ...signedHeader,
       },
-    })
+      })
 
-    if (!res.ok) {
+      if (!res.ok) {
       const errText = await res.text()
       console.error(
-        `${orgId}/${projectName} for ${email}' - Status: ${res.status} - Error: ${errText}`,
+          `getProjectAssistantFileInfo: Got a failure response while trying to get file IDs for '${billingOrgName}/${projectId} for ${email}' - Status: ${res.status} - Error: ${errText}`,
       )
 
       return []
-    }
+      }
 
-    const jsonRes = await res.json()
+      const jsonRes = await res.json()
 
-    if (!jsonRes.body) {
+      if (!jsonRes.body) {
       throw new Error(`Response to GET ${url} doesn't have the 'body' property`)
-    }
+      }
 
-    const fileInfos = JSON.parse(jsonRes.body)
+      const fileInfos = JSON.parse(jsonRes.body)
 
-    // Convert the response format from the Boost Node backend to what we expect
-    // for consumption in Sara
-    return fileInfos.map((fileInfo: any) => {
+      // Convert the response format from the Boost Node backend to what we expect
+      // for consumption in Sara
+      return fileInfos.map((fileInfo: any) => {
       const mappedFileInfo = {
-        ...fileInfo,
+          ...fileInfo,
       } as any
 
-      // rename the last updated field to lastUpdatedAt
+      // `GET /api/user_project/orgId/projectName/data_references` returns
+      // `lastUpdated` as a Unix timestamp in seconds. Lets convert it to
+      // milliseconds.
       if (mappedFileInfo.lastUpdated) {
-        delete mappedFileInfo.lastUpdated
-        mappedFileInfo.lastUpdatedAt = new Date(fileInfo.lastUpdated * 1000)
+          delete mappedFileInfo.lastUpdated
+          mappedFileInfo.lastUpdatedAt = new Date(fileInfo.lastUpdated * 1000)
       }
 
       return mappedFileInfo as ProjectDataReference
-    }) as ProjectDataReference[]
+      }) as ProjectDataReference[]
   } catch (error) {
-    console.error(
-      'Error making a request or parsing a response for project ID: ',
+      console.error(
+      'getProjectAssistantFileInfo: Error making a request or parsing a response for project ID: ',
       error,
-    )
+      )
   }
   return []
 }
-
+  
 export async function createProject(
   projectId: string,
   orgId: string,
@@ -302,111 +304,3 @@ export async function getBoostOrgStatus(
   return userStatus as BoostUserOrgStatusResponse
 }
 
-/**
- * Helper method that creates a shallow copy of the given object with all properties
- * that evaluate to undefined removed. This does not modify the original object.
- *
- * This is useful to invoke on objects before you hash them in Redis. Failure to do
- * so can result in errors such as:
- * ⨯ UpstashError: ERR unsupported arg type: %!q(<nil>): <nil>
- *
- * @param {object} objectToStrip Object from which undefined properties will be stripped.
- * @returns {Record<string, any>} A new object with undefined properties removed.
- */
-export function stripUndefinedObjectProperties(
-  objectToStrip: any,
-): Record<string, any> {
-  // Guard against `null` as it is considered an object in JS
-  if (typeof objectToStrip !== 'object' || objectToStrip === null) {
-    return objectToStrip
-  }
-
-  const strippedObject: Record<string, any> = {}
-  Object.keys(objectToStrip).forEach((key) => {
-    if (objectToStrip[key] !== undefined) {
-      strippedObject[key] = objectToStrip[key]
-    } else {
-      console.log(`Stripping key '${key}' from object`)
-      console.log(
-        'BUGBUGBUBUGBUG: WE SHOULD NEVER GET HERE!! SOMETHING IS WRONG',
-      )
-    }
-  })
-
-  return strippedObject
-}
-
-//////////////////////////////////////////////////////////////////
-// New Backend Calls The Support Updated Data Model
-// Updated Data Model Not Complete Yet - Leave Existing Calls
-//////////////////////////////////////////////////////////////////
-
-export async function getFileInfoPartDeux(
-  billingOrgName: string,
-  projectId: string,
-  email: string,
-): Promise<ProjectDataReference[]> {
-  const url = `${USER_SERVICE_URI}/api/user_project/${billingOrgName}/${projectId}/data_references`
-
-  try {
-    const signedHeader = createSignedHeader(email)
-    const res = await fetch(url, {
-      method: 'GET',
-      headers: {
-        ...signedHeader,
-      },
-    })
-
-    if (!res.ok) {
-      const errText = await res.text()
-      console.error(
-        `getFileInfoPartDeux: Got a failure response while trying to get file IDs for '${billingOrgName}/${projectId} for ${email}' - Status: ${res.status} - Error: ${errText}`,
-      )
-
-      return []
-    }
-
-    const jsonRes = await res.json()
-
-    if (!jsonRes.body) {
-      throw new Error(`Response to GET ${url} doesn't have the 'body' property`)
-    }
-
-    const fileInfos = JSON.parse(jsonRes.body)
-
-    // Convert the response format from the Boost Node backend to what we expect
-    // for consumption in Sara
-    return fileInfos.map((fileInfo: any) => {
-      const mappedFileInfo = {
-        ...fileInfo,
-      } as any
-
-      // Map any snaked_cased data members to camelCased data members.
-      //
-      // Currently the call to
-      // `GET /api/user_project/orgId/projectName/data_references` returns
-      // `last_updated` as a Unix timestamp in seconds. Lets convert it to
-      // milliseconds.
-      //
-      // Note we conditionally delete `last_updated` now as we made changes
-      // in the Boost Node backend service in commit `80ba0a` to move to
-      // camelCase. Now we are just protecting some backwards functionality in
-      // the event any day does come snake_cased.
-      if (mappedFileInfo.last_updated) {
-        delete mappedFileInfo.last_updated
-        mappedFileInfo.lastUpdatedAt = new Date(fileInfo.last_updated * 1000)
-      } else if (mappedFileInfo.lastUpdated) {
-        delete mappedFileInfo.lastUpdated
-        mappedFileInfo.lastUpdatedAt = new Date(fileInfo.lastUpdated * 1000)
-      }
-
-      return mappedFileInfo as ProjectDataReference
-    }) as ProjectDataReference[]
-  } catch (error) {
-    console.error(
-      'getFileInfoPartDeux: Error making a request or parsing a response for project ID: ',
-      error,
-    )
-  }
-  return []
-}

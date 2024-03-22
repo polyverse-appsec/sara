@@ -7,7 +7,7 @@ import getProjectPromptFileInfoIds from '../../../../../lib/polyverse/db/get-pro
 import { type PromptFileInfo } from './../../../../../lib/data-model-types'
 import {
   getBoostOrgUserStatus,
-  getFileInfoPartDeux,
+  getProjectAssistantFileInfo,
 } from './../../../../../lib/polyverse/backend/backend'
 import getBoostProjectStatus from './../../../../../lib/polyverse/backend/get-boost-project-status'
 import createPromptFileInfo from './../../../../../lib/polyverse/db/create-prompt-file-info'
@@ -152,7 +152,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
     // Start by gathering the file info for the project. If for some reason we
     // don't have the 3 file infos for the project (blueprint, AI spec, project
     // source) then fail as we won't refresh the project without them.
-    const boostFileInfos = await getFileInfoPartDeux(
+    const boostFileInfos = await getProjectAssistantFileInfo(
       org.name,
       project.id,
       user.email,
