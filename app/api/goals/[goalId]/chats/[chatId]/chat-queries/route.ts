@@ -434,9 +434,6 @@ export const POST = auth(async (req: NextAuthRequest) => {
 
     // Now start a run on the thread for the query we just added
     const threadRun = await createThreadRunForProjectGoalChatting(
-      shouldUpdateCachedPromptFileInfos
-        ? promptFileInfos
-        : cachedPromptFileInfos,
       goal.name,
       goal.description,
       assistant.id,
