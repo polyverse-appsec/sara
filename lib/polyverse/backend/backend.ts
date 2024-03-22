@@ -73,66 +73,6 @@ export async function getFileInfo(
   return []
 }
 
-export async function postFileInfoToGetFileInfo(
-  projectName: string,
-  primaryDataSource: Repository,
-  email: string,
-): Promise<ProjectDataReference[]> {
-  const url = `${USER_SERVICE_URI}/api/user_project/${primaryDataSource.orgId}/${projectName}/data_references`
-
-  try {
-    const signedHeader = createSignedHeader(email)
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: {
-        ...signedHeader,
-      },
-    })
-
-    if (!res.ok) {
-      const errText = await res.text()
-      console.error(
-        `${primaryDataSource.orgId}/${primaryDataSource.name} for ${email}' - Status: ${res.status} - Error: ${errText}`,
-      )
-
-      return []
-    }
-
-    const jsonRes = await res.json()
-
-    if (!jsonRes.body) {
-      throw new Error(`Response to GET ${url} doesn't have the 'body' property`)
-    }
-
-    const fileInfos = JSON.parse(jsonRes.body)
-
-    // Convert the response format from the Boost Node backend to what we expect
-    // for consumption in Sara
-    return fileInfos.map((fileInfo: any) => {
-      const mappedFileInfo = {
-        ...fileInfo,
-      } as any
-
-      // Currently the call to
-      // `POST /api/user_project/orgId/projectName/data_references` returns
-      // `lastUpdated` as a Unix timestamp in seconds. Lets convert it to
-      // milliseconds.
-      if (mappedFileInfo.lastUpdated) {
-        delete mappedFileInfo.lastUpdated
-        mappedFileInfo.lastUpdatedAt = new Date(fileInfo.lastUpdated * 1000)
-      }
-
-      return mappedFileInfo as ProjectDataReference
-    }) as ProjectDataReference[]
-  } catch (error) {
-    console.error(
-      'Error making a request or parsing a response for project ID: ',
-      error,
-    )
-  }
-  return []
-}
-
 export async function createProject(
   projectId: string,
   orgId: string,
