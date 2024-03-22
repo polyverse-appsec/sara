@@ -11,6 +11,7 @@
 ### Enhancements
 
 - Refactor projects on nav bar to be a tree
+- Edited appearnce of settings page to include checkboxes and configuration details
 
 ### Bug Fixes
 

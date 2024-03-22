@@ -59,42 +59,59 @@ const SettingsIndex = () => {
     <div className="flex flex-col items-center p-10 font-bold space-y-4">
         <p className="text-2xl font-bold">Account Settings</p>
         <div className="w-1/2 border-t-2 border-blue-600 my-2"></div>
-        <Link 
-            href="/orgs"
-            className="w-3/4">
-            <div className="bg-blue-600 shadow-md rounded-lg p-6 block transform transition hover:scale-105 cursor-pointer">
-                <h3 className="text-lg font-semibold text-center text-white">
-                Switch User Context
-                </h3>
+        <Link href="/orgs" className="w-3/4">
+          <div className="bg-blue-600 shadow-md rounded-lg p-4 block transform transition hover:scale-105 cursor-pointer">
+            <div className="flex items-center justify-center text-white">
+              <h3 className="text-lg font-semibold flex-1 text-center">
+                Switch User Context: {activeBillingOrg ? activeBillingOrg.name : 'No selected billing org'}
+              </h3>
+              {activeBillingOrg && 
+                <div className="flex-shrink-0 ml-4">
+                  <p>✅</p>
+                </div>
+              }
             </div>
+          </div>
         </Link>
         <Link 
             href="settings/billing-status"
             className="w-3/4">
-            <div className="bg-blue-600 shadow-md rounded-lg p-6 block transform transition hover:scale-105 cursor-pointer">
-                <h3 className="text-lg font-semibold text-center text-white">
-                Billing Status
+            <div className="bg-blue-600 shadow-md rounded-lg p-4 block transform transition hover:scale-105 cursor-pointer">
+              <div className="flex items-center justify-center text-white">
+                <h3 className="text-lg font-semibold flex-1 text-center">
+                Billing Status: {orgIsPremium ? 'Premium Plan' : 'Free Plan'}
                 </h3>
+                {!userGitHubAppInstalled ? (
+                  <div title="No Premium Plan Configured." className="flex-shrink-0">
+                    <ExclamationTriangleIcon className="w-8 h-8 text-red-500" />
+                    </div>
+                ) : <p className="flex-shrink-0">✅</p>}
+              </div>
             </div>
         </Link>
         <Link href="/settings/authorize-private-repos"
             className="w-3/4">
-            <div className="bg-blue-600 shadow-md rounded-lg p-6 block transform transition hover:scale-105 cursor-pointer">
-                <div className="flex items-center justify-between w-full">
-                    <h3 className="flex-1 text-lg font-semibold text-center text-white">
-                    Authorize Github Access
-                    </h3>
-                    {!userGitHubAppInstalled ? (
-                        <div title="The User GitHub App has not been installed." className="flex-shrink-0">
-                        <ExclamationTriangleIcon className="w-8 h-8 text-red-500" />
-                        </div>
-                    ) : null}
-                    {!orgGitHubAppInstalled ? (
-                        <div title="The Organization GitHub App has not been installed." className="flex-shrink-0">
-                        <ExclamationTriangleIcon className="w-8 h-8 text-red-500" />
-                        </div>
-                    ) : null}
+            <div className="bg-blue-600 shadow-md rounded-lg p-4 block transform transition hover:scale-105 cursor-pointer">
+              <div className="flex items-center justify-center text-white">
+                <h3 className="text-lg font-semibold flex-1 text-center">
+                Authorize Github Access: {userGitHubAppInstalled && orgGitHubAppInstalled ? 'Access Configured' : 'Access Not Configured'}
+                </h3>
+                {!userGitHubAppInstalled ? (
+                    <div title="The User GitHub App has not been installed." className="flex-shrink-0">
+                    <ExclamationTriangleIcon className="w-8 h-8 text-red-500" />
+                    </div>
+                ) : null}
+                {!orgGitHubAppInstalled ? (
+                    <div title="The Organization GitHub App has not been installed." className="flex-shrink-0">
+                    <ExclamationTriangleIcon className="w-8 h-8 text-red-500" />
+                    </div>
+                ) : null}
+                {(userGitHubAppInstalled && orgGitHubAppInstalled) && 
+                <div className="flex-shrink-0 ml-4">
+                  <p>✅</p>
                 </div>
+              }
+              </div>
             </div>
         </Link>
         <Button 

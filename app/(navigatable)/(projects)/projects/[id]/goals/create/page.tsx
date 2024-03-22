@@ -132,7 +132,7 @@ const ProjectGoalCreate = ({ params: { id } }: { params: { id: string } }) => {
               fill="currentColor"
               fill-rule="evenodd"
               clip-rule="evenodd"
-            ></path>
+            />
           </svg>
           Create Goal
         </Button>

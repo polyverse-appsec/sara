@@ -18,7 +18,7 @@ const GoalsManager = ({ projectId, goals }: GoalsManagerProps) => {
         <h3 className="text-lg font-semibold">Goals</h3>
         <Button
           variant="ghost"
-          className=" bg-green-200"
+          className=" bg-green-500 hover:bg-green-200"
           onClick={async (e) => {
             e.preventDefault()
           }}
