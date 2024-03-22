@@ -10,18 +10,18 @@ import React, {
 import { useSession } from 'next-auth/react'
 
 import {
-  Chat,
-  Organization,
-  Project,
-  ProjectPartDeux,
-  Repository,
-  Task,
-  User,
   type GoalPartDeux,
   type OrgPartDeux,
   type ProjectHealth,
+  type ProjectPartDeux,
+  type Repository,
+  type User,
 } from '../data-model-types'
 import { getOrCreateUserFromSession } from './../../app/_actions/get-or-create-user-from-session'
+
+interface UserSessionData {
+  activeProjectId: string | null
+}
 
 interface AppContextType {
   /////////////////////////////////////////////////////////////////////////////

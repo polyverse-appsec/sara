@@ -23,6 +23,7 @@ import { useAppContext } from './../lib/hooks/app-context'
 import SaraPortrait from './../public/Sara_Cartoon_Portrait.png'
 import GoalsTaskNavTree from './goals-tasks-nav-tree'
 import LoadingCircle from './loading-spinner'
+import ProjectsNavTree from './projects-nav-tree'
 
 function getUserInitials(name: string) {
   const [firstName, lastName] = name.split(' ')
@@ -170,54 +171,7 @@ const SidebarNav = () => {
         <p className="text-sm italic">AI Assistant</p>
       </div>
 
-      {/* Navigation Buttons */}
-      <nav className="flex flex-col space-y-1 p-2">
-        {/* Projects Button */}
-        <button
-          className="flex items-center justify-center px-4 py-2 rounded-lg hover:bg-secondary hover:text-secondary-foreground transition-colors"
-          onClick={() => {
-            if (!activeBillingOrg) {
-              toast.error(`Please select billing organization`)
-              return
-            }
-            setProjectIdForConfiguration(null)
-            router.push('/projects')
-          }}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="1.5"
-            stroke="currentColor"
-            className="w-6 h-6"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z"
-            />
-          </svg>
-          <span className="ml-3">Projects</span>
-        </button>
-        {/* ...other buttons */}
-      </nav>
-
-      {/* Current Project Info */}
-      {projectIdForConfiguration ? (
-        <div className="flex justify-center items-center px-4 py-2 rounded-lg bg-secondary text-secondary-foreground my-2 ml-4">
-          <div className="">
-            <p>{selectedProject ? selectedProject.name : null}</p>
-          </div>
-          {selectedProjectHealth
-            ? renderHealthIcon(selectedProjectHealth.readableValue)
-            : null}
-        </div>
-      ) : (
-        <p className="flex justify-center px-2 py-1 text-base font-medium rounded-lg">
-          No project selected
-        </p>
-      )}
+      <ProjectsNavTree />
 
       {/* Resource Loader */}
       {projectIdForConfiguration ? (

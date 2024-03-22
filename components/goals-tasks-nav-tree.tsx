@@ -2,14 +2,12 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import * as Label from '@radix-ui/react-label'
 import { NodeRendererProps, Tree } from 'react-arborist'
 
-import {
-  type GoalPartDeux,
-  type TaskPartDeux,
-} from '../../lib/data-model-types'
+import { type GoalPartDeux, type TaskPartDeux } from '../lib/data-model-types'
 
-interface NavResourceLoaderProps {
+interface GoalsTaskNavTreeProps {
   projectId: string
 }
 
@@ -69,11 +67,11 @@ const getTasks = (goalId: string): Promise<TaskPartDeux[]> =>
 
 type NavigatableResourceTypes = 'GOAL' | 'TASK'
 
-interface NavigatableResource {
+interface NavigatableGoalOrTaskResource {
   id: string
   name: string
   type: NavigatableResourceTypes
-  children?: NavigatableResource[]
+  children?: NavigatableGoalOrTaskResource[]
 }
 
 const renderGoalIcon = () => (
@@ -115,7 +113,7 @@ const renderTaskIcon = () => (
   </svg>
 )
 
-const renderNodeLink = (navigatableResource: NavigatableResource) =>
+const renderNodeLink = (navigatableResource: NavigatableGoalOrTaskResource) =>
   navigatableResource.type === 'GOAL' ? (
     <Link href={`/goals/${navigatableResource.id}`}>
       {navigatableResource.name}
@@ -124,11 +122,11 @@ const renderNodeLink = (navigatableResource: NavigatableResource) =>
     navigatableResource.name
   )
 
-const renderNode = ({
+const renderGoalOrTaskNode = ({
   node,
   style,
   dragHandle,
-}: NodeRendererProps<NavigatableResource>) => {
+}: NodeRendererProps<NavigatableGoalOrTaskResource>) => {
   return (
     <div
       style={{
@@ -149,10 +147,10 @@ const renderNode = ({
   )
 }
 
-const NavResourceLoader = ({ projectId }: NavResourceLoaderProps) => {
-  const [navResourceTree, setNavResourceTree] = useState<NavigatableResource[]>(
-    [],
-  )
+const GoalsTaskNavTree = ({ projectId }: GoalsTaskNavTreeProps) => {
+  const [goalsTasksTreeData, setGoalsTasksTreeData] = useState<
+    NavigatableGoalOrTaskResource[]
+  >([])
 
   useEffect(() => {
     let isMounted = true
@@ -176,14 +174,14 @@ const NavResourceLoader = ({ projectId }: NavResourceLoaderProps) => {
                   name: task.name,
                   type: 'TASK',
                   children: [],
-                }) as NavigatableResource,
+                }) as NavigatableGoalOrTaskResource,
             ),
-          } as NavigatableResource
+          } as NavigatableGoalOrTaskResource
         })
 
         const navResourceTree = await Promise.all(mapNavResourceTreePromises)
 
-        setNavResourceTree(navResourceTree)
+        setGoalsTasksTreeData(navResourceTree)
       } catch (error) {
         console.debug(
           `Failed to load resources for project ${projectId} because: ${error}`,
@@ -206,7 +204,15 @@ const NavResourceLoader = ({ projectId }: NavResourceLoaderProps) => {
   // Note that our `<Tree>` is a controlled component since we pass our goals
   // and tasks in through `data`. We need to eventually add handlers to it if
   // we want to enable any of its functionality.
-  return <Tree data={navResourceTree}>{renderNode}</Tree>
+  return (
+    <>
+      <div className="flex flex-col items-center">
+        <Label.Root>Goals & Tasks Explorer</Label.Root>
+      </div>
+      <br />
+      <Tree data={goalsTasksTreeData}>{renderGoalOrTaskNode}</Tree>
+    </>
+  )
 }
 
-export default NavResourceLoader
+export default GoalsTaskNavTree

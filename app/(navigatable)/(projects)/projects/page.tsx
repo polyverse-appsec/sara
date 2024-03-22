@@ -6,6 +6,7 @@ import { ProjectPartDeux } from 'lib/data-model-types'
 import toast from 'react-hot-toast'
 
 import { useAppContext } from './../../../../lib/hooks/app-context'
+import getOrgProjects from './../../../rest-requests/get-org-projects'
 import ProjectDashboard from './project-dashboard'
 
 const ProjectIndex = () => {
@@ -24,8 +25,10 @@ const ProjectIndex = () => {
       // if we hit this page directly, without going through the billing org set logic, we'll need
       //     to load it again
       setProjectIdForConfiguration(null)
+
       if (!activeBillingOrg) {
         const orgRes = await fetch('/api/orgs/active')
+
         if (orgRes.ok) {
           const defaultOrg = await orgRes.json()
           setActiveBillingOrg(defaultOrg)
