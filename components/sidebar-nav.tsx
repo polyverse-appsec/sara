@@ -255,7 +255,7 @@ const SidebarNav = () => {
 
         {/* Organization Info */}
         <div className="px-4 py-2 rounded-lg mb-2">
-          <div className="text-xs text-zinc-500">{saraSession?.email}</div>
+          <div className="text-sm text-zinc-500">{saraSession?.email}</div>
           <div className="flex items-center mt-1">
             {orgIsPremium && (
               <div
@@ -265,7 +265,7 @@ const SidebarNav = () => {
                 <StarFilledIcon className="w-2 h-2 text-yellow-500" />
               </div>
             )}
-            <span className="text-xs truncate">
+            <span className="text-sm truncate">
               {activeBillingOrg ? activeBillingOrg.name : 'No org selected'}
             </span>
           </div>

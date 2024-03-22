@@ -79,11 +79,8 @@ const GoalIndex = ({ params: { id } }: { params: { id: string } }) => {
 
   return (
     <RenderableResource>
-      <RenderableResourceContent>
+      <CollapsibleRenderableResourceContent title={goal ? goal.name : '[No Goal Title]'}>
         <div className="flex flex-col items-center">
-          <div className="my-1 flex text-center">
-            <p className="text-lg font-semibold">Goal: {goal?.name}</p>
-          </div>
           <div className="w-1/2 border-t-2 border-blue-600 my-2"></div>
           {goal?.description ? (
             <div className="my-1 flex text-center">
@@ -92,8 +89,6 @@ const GoalIndex = ({ params: { id } }: { params: { id: string } }) => {
             </div>
           ) : null}
         </div>
-      </RenderableResourceContent>
-      <CollapsibleRenderableResourceContent title={'Goal Information'}>
         <div className="my-1">
           <div className="flex items-center">
             <h3 className="text-lg font-semibold">Acceptance Criteria</h3>
