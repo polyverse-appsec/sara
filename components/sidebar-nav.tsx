@@ -3,7 +3,9 @@
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { GearIcon, StarFilledIcon } from '@radix-ui/react-icons'
+import { ExclamationTriangleIcon, StarFilledIcon } from '@radix-ui/react-icons'
+import { GearIcon } from '@radix-ui/react-icons'
+import LoadingCircle from './loading-spinner'
 import { SaraSession } from 'auth'
 import { UserMenu } from 'components/user-menu' // Update this import based on your project structure
 import { motion } from 'framer-motion'
@@ -16,10 +18,15 @@ import {
 import { useSession } from 'next-auth/react'
 import toast from 'react-hot-toast'
 
-import { getOrgUserStatus, renderHealthIcon } from './../app/react-utils'
+import { getOrgStatus, getOrgUserStatus, renderHealthIcon } from './../app/react-utils'
 import { useAppContext } from './../lib/hooks/app-context'
 import SaraPortrait from './../public/Sara_Cartoon_Portrait.png'
 import NavResourceLoader from './nav-resource-tree/nav-resource-loader'
+
+function getUserInitials(name: string) {
+  const [firstName, lastName] = name.split(' ')
+  return lastName ? `${firstName[0]}${lastName[0]}` : firstName.slice(0, 2)
+}
 
 const SidebarNav = () => {
   const router = useRouter()
@@ -37,7 +44,11 @@ const SidebarNav = () => {
     useState<ProjectPartDeux | null>(null)
   const [selectedProjectHealth, setSelectedProjectHealth] =
     useState<ProjectHealth | null>(null)
-  const [orgIsPremium, setOrgIsPremium] = useState(false)
+  const [orgIsPremium, setOrgIsPremium] = useState(true)
+  const [userGitHubAppInstalled, setUserGitHubAppInstalled] =
+    useState<boolean>(true)
+  const [orgGitHubAppInstalled, setOrgGitHubAppInstalled] =
+    useState<boolean>(true)
   const [orgs, setOrgs] = useState([])
 
   useEffect(() => {
@@ -65,7 +76,7 @@ const SidebarNav = () => {
 
     fetchAndSetActiveBillingOrg()
 
-    const fetchPremiumStatus = async () => {
+    const fetchGithubAppAndPremiumStatus = async () => {
       try {
         if (!activeBillingOrg || !saraSession) {
           return
@@ -75,6 +86,16 @@ const SidebarNav = () => {
           activeBillingOrg.id,
           saraSession.id,
         )
+
+        const orgStatus = await getOrgStatus(
+          activeBillingOrg.id,
+          saraSession.id,
+        )
+
+        setUserGitHubAppInstalled(
+          orgUserStatus.gitHubAppInstalled === 'INSTALLED',
+        )
+        setOrgGitHubAppInstalled(orgStatus.gitHubAppInstalled === 'INSTALLED')
 
         setOrgIsPremium(orgUserStatus.isPremium === 'PREMIUM')
       } catch (err) {
@@ -117,7 +138,7 @@ const SidebarNav = () => {
       fetchProjectDetails()
     }
 
-    fetchPremiumStatus()
+    fetchGithubAppAndPremiumStatus()
   }, [
     activeBillingOrg,
     setActiveBillingOrg,
@@ -152,7 +173,7 @@ const SidebarNav = () => {
       <nav className="flex flex-col space-y-1 p-2">
         {/* Projects Button */}
         <button
-          className="flex items-center px-4 py-2 rounded-lg hover:bg-secondary hover:text-secondary-foreground transition-colors"
+          className="flex items-center justify-center px-4 py-2 rounded-lg hover:bg-secondary hover:text-secondary-foreground transition-colors"
           onClick={() => {
             if (!activeBillingOrg) {
               toast.error(`Please select billing organization`)
@@ -205,20 +226,46 @@ const SidebarNav = () => {
       {/* Bottom Section */}
       <div className="flex flex-col items-center mt-auto w-full">
         <div className="flex items-center">
-          {/* User Menu */}
-          <UserMenu user={user} />
-          <GearIcon
-            className="w-6 h-6 transition-opacity duration-300 rounded-full select-none ring-1 ring-zinc-100/10 hover:opacity-50 ml-2"
-            onClick={() => {
-              setProjectIdForConfiguration(null)
-              router.push('/settings')
-            }}
-          />
+          {/* Github User Info */}
+          {!saraSession ? (
+              <LoadingCircle />
+            ) : saraSession.picture ? (
+              <Image
+                className="w-8 h-8 transition-opacity duration-300 rounded-full select-none ring-1 ring-zinc-100/10 hover:opacity-80"
+                src={saraSession.picture ? `${saraSession.picture}&s=60` : ''}
+                alt={saraSession.name ?? 'Avatar'}
+                title={saraSession.name ?? 'Avatar'}
+                height={48}
+                width={48}
+              />
+            ) : (
+              <div className="flex items-center justify-center text-xs font-medium uppercase rounded-full select-none h-7 w-7 shrink-0 bg-muted/50 text-muted-foreground">
+                {saraSession.name ? getUserInitials(saraSession.name) : null}
+              </div>
+            )}
+          <span className="ml-2">{saraSession?.name}</span>
+          <div className="relative w-5 h-5 ml-2">
+            <GearIcon
+              className="w-full h-full transition-opacity duration-300 rounded-full select-none ring-1 ring-zinc-100/10 hover:opacity-50"
+              onClick={() => {
+                setProjectIdForConfiguration(null)
+                router.push('/settings')
+              }}
+            />
+            { (!orgIsPremium || !userGitHubAppInstalled || !orgGitHubAppInstalled) && (
+              <span className="absolute top-0 right-0 block w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+            )}
+          </div>
+          { (!orgIsPremium || !userGitHubAppInstalled || !orgGitHubAppInstalled) && (
+              <div title="Sara not properly configured" className="ml-2">
+                <ExclamationTriangleIcon className="w-4 h-4 text-red-500"/>
+              </div>
+            )}
         </div>
 
         {/* Organization Info */}
         <div className="px-4 py-2 rounded-lg mb-2">
-          <p className="text-xs">Current Billing Organization:</p>
+          <div className="text-xs text-zinc-500">{saraSession?.email}</div>
           <div className="flex items-center mt-1">
             {orgIsPremium && (
               <div

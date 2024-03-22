@@ -12,6 +12,11 @@
 
 - Refactor resource tree to provide consistent styling and not have overlapping text
 - Goals on project page now rendered as a table
+- Reworked settings page UX
+- Removed hamburger user menu, replaced with settings page
+- Orgs will now display if they are active (selected)
+- Reworded some texts in UI
+- Image instructions for authorizing github user app
 
 ### Bug Fixes
 

@@ -21,10 +21,15 @@ export const OrgDetailsTile = ({ name, id }: OrgDetailsTileProps) => {
   const saraSession = session.data ? (session.data as SaraSession) : null
 
   const [orgIsPremium, setOrgIsPremium] = useState(false)
+  const [orgIsSelected, setOrgIsSelected] = useState(false)
 
   useEffect(() => {
     const fetchUserStatus = async () => {
       try {
+        if (!activeBillingOrg) {
+          return
+        }
+
         if (!saraSession) {
           return
         }
@@ -32,6 +37,8 @@ export const OrgDetailsTile = ({ name, id }: OrgDetailsTileProps) => {
         const orgUserStatus = await getOrgUserStatus(id, saraSession.id)
 
         setOrgIsPremium(orgUserStatus.isPremium === 'PREMIUM')
+
+        setOrgIsSelected(activeBillingOrg.id === id)
       } catch (error) {
         toast.error(`Failed to fetch user status: ${error}`)
       }
@@ -59,6 +66,7 @@ export const OrgDetailsTile = ({ name, id }: OrgDetailsTileProps) => {
             </div>
           ) : null}
         </div>
+        {orgIsSelected && <p className="text-xs text-blue-600">Active</p>}
       </div>
     </Link>
   )

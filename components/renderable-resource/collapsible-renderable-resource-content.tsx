@@ -23,7 +23,7 @@ const CollapsibleRenderableResourceContent = ({
         className="flex cursor-pointer items-center justify-between w-full"
         onClick={toggleDropdown}
       >
-        <span className="text-center flex-1 text-bold">{title}</span>
+        <span className="text-center flex-1 font-bold">{title}</span>
         <ChevronDownIcon className="flex-shrink-0" />
       </div>
 
