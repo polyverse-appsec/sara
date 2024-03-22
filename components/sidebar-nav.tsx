@@ -3,25 +3,26 @@
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { ExclamationTriangleIcon, StarFilledIcon } from '@radix-ui/react-icons'
-import { GearIcon } from '@radix-ui/react-icons'
-import LoadingCircle from './loading-spinner'
-import { SaraSession } from 'auth'
-import { UserMenu } from 'components/user-menu' // Update this import based on your project structure
-import { motion } from 'framer-motion'
 import {
-  ProjectHealth,
-  ProjectHealthStatusValue,
-  ProjectPartDeux,
-  UserOrgStatus,
-} from 'lib/data-model-types'
+  ExclamationTriangleIcon,
+  GearIcon,
+  StarFilledIcon,
+} from '@radix-ui/react-icons'
+import { SaraSession } from 'auth'
+import { motion } from 'framer-motion'
+import { type ProjectHealth, type ProjectPartDeux } from 'lib/data-model-types'
 import { useSession } from 'next-auth/react'
 import toast from 'react-hot-toast'
 
-import { getOrgStatus, getOrgUserStatus, renderHealthIcon } from './../app/react-utils'
+import {
+  getOrgStatus,
+  getOrgUserStatus,
+  renderHealthIcon,
+} from './../app/react-utils'
 import { useAppContext } from './../lib/hooks/app-context'
 import SaraPortrait from './../public/Sara_Cartoon_Portrait.png'
-import NavResourceLoader from './nav-resource-tree/nav-resource-loader'
+import GoalsTaskNavTree from './goals-tasks-nav-tree'
+import LoadingCircle from './loading-spinner'
 
 function getUserInitials(name: string) {
   const [firstName, lastName] = name.split(' ')
@@ -220,7 +221,7 @@ const SidebarNav = () => {
 
       {/* Resource Loader */}
       {projectIdForConfiguration ? (
-        <NavResourceLoader projectId={projectIdForConfiguration} />
+        <GoalsTaskNavTree projectId={projectIdForConfiguration} />
       ) : null}
 
       {/* Bottom Section */}
@@ -228,21 +229,21 @@ const SidebarNav = () => {
         <div className="flex items-center">
           {/* Github User Info */}
           {!saraSession ? (
-              <LoadingCircle />
-            ) : saraSession.picture ? (
-              <Image
-                className="w-8 h-8 transition-opacity duration-300 rounded-full select-none ring-1 ring-zinc-100/10 hover:opacity-80"
-                src={saraSession.picture ? `${saraSession.picture}&s=60` : ''}
-                alt={saraSession.name ?? 'Avatar'}
-                title={saraSession.name ?? 'Avatar'}
-                height={48}
-                width={48}
-              />
-            ) : (
-              <div className="flex items-center justify-center text-xs font-medium uppercase rounded-full select-none h-7 w-7 shrink-0 bg-muted/50 text-muted-foreground">
-                {saraSession.name ? getUserInitials(saraSession.name) : null}
-              </div>
-            )}
+            <LoadingCircle />
+          ) : saraSession.picture ? (
+            <Image
+              className="w-8 h-8 transition-opacity duration-300 rounded-full select-none ring-1 ring-zinc-100/10 hover:opacity-80"
+              src={saraSession.picture ? `${saraSession.picture}&s=60` : ''}
+              alt={saraSession.name ?? 'Avatar'}
+              title={saraSession.name ?? 'Avatar'}
+              height={48}
+              width={48}
+            />
+          ) : (
+            <div className="flex items-center justify-center text-xs font-medium uppercase rounded-full select-none h-7 w-7 shrink-0 bg-muted/50 text-muted-foreground">
+              {saraSession.name ? getUserInitials(saraSession.name) : null}
+            </div>
+          )}
           <span className="ml-2">{saraSession?.name}</span>
           <div className="relative w-5 h-5 ml-2">
             <GearIcon
@@ -252,15 +253,19 @@ const SidebarNav = () => {
                 router.push('/settings')
               }}
             />
-            { (!orgIsPremium || !userGitHubAppInstalled || !orgGitHubAppInstalled) && (
+            {(!orgIsPremium ||
+              !userGitHubAppInstalled ||
+              !orgGitHubAppInstalled) && (
               <span className="absolute top-0 right-0 block w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
             )}
           </div>
-          { (!orgIsPremium || !userGitHubAppInstalled || !orgGitHubAppInstalled) && (
-              <div title="Sara not properly configured" className="ml-2">
-                <ExclamationTriangleIcon className="w-4 h-4 text-red-500"/>
-              </div>
-            )}
+          {(!orgIsPremium ||
+            !userGitHubAppInstalled ||
+            !orgGitHubAppInstalled) && (
+            <div title="Sara not properly configured" className="ml-2">
+              <ExclamationTriangleIcon className="w-4 h-4 text-red-500" />
+            </div>
+          )}
         </div>
 
         {/* Organization Info */}
