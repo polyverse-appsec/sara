@@ -2,6 +2,20 @@
 
 # Release Notes
 
+## Version 0.19.0: March 22nd, 2024
+
+### New Features
+
+- N/A
+
+### Enhancements
+
+- Refactor projects on nav bar to be a tree
+
+### Bug Fixes
+
+- N/A
+
 ## Version 0.18.0: March 21st, 2024
 
 ### New Features

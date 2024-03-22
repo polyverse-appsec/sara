@@ -8,9 +8,9 @@ import { ProjectPartDeux } from 'lib/data-model-types'
 import { useAppContext } from 'lib/hooks/app-context'
 import { NodeRendererProps, Tree } from 'react-arborist'
 
-// TODO: Can I use this pattern of extending on the other resource tree?
 interface NavigatableProjectResource extends ProjectPartDeux {
   children?: NavigatableProjectResource[]
+  isActive: boolean
 }
 
 const renderProjectIcon = (isActiveProject: boolean) => {
@@ -52,45 +52,38 @@ const renderProjectIcon = (isActiveProject: boolean) => {
   )
 }
 
-const renderProjectNode = (activeProjectId: string | null) => {
-  // TODO: When rendering the active project show the opened folder icon
-
-  return ({
-    node,
-    style,
-    dragHandle,
-  }: NodeRendererProps<NavigatableProjectResource>) => (
-    <div
-      style={{
-        ...style,
-        textOverflow: 'ellipsis',
-        whiteSpace: 'nowrap',
-        overflow: 'hidden',
-      }}
-      ref={dragHandle}
-    >
-      <div className="flex">
-        <span>{renderProjectIcon(node.data.id === activeProjectId)}</span>
-        <span>
-          <Link href={`/projects/${node.data.id}`}>
-            {node.data.id === activeProjectId ? (
-              <div className="text-green-500">{node.data.name}</div>
-            ) : (
-              node.data.name
-            )}
-          </Link>
-        </span>
-      </div>
+const renderProjectNode = ({
+  node,
+  style,
+  dragHandle,
+}: NodeRendererProps<NavigatableProjectResource>) => (
+  <div
+    style={{
+      ...style,
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+    }}
+    ref={dragHandle}
+  >
+    <div className="flex">
+      <span>{renderProjectIcon(node.data.isActive)}</span>
+      <span>
+        <Link href={`/projects/${node.data.id}`}>
+          {node.data.isActive ? (
+            <div className="text-green-500">{node.data.name}</div>
+          ) : (
+            node.data.name
+          )}
+        </Link>
+      </span>
     </div>
-  )
-}
+  </div>
+)
 
 const ProjectsNavTree = () => {
   const { activeBillingOrg, projectIdForConfiguration } = useAppContext()
-
-  const [projectsTreeData, setProjectsTreeData] = useState<
-    NavigatableProjectResource[]
-  >([])
+  const [projects, setProjects] = useState<ProjectPartDeux[]>([])
 
   useEffect(() => {
     let isMounted = true
@@ -99,7 +92,7 @@ const ProjectsNavTree = () => {
     const loadOrgProjects = async () => {
       if (!activeBillingOrg) {
         // Make sure to clear our projects if there aren't any to render
-        setProjectsTreeData([])
+        setProjects([])
 
         if (isMounted) {
           setTimeout(loadOrgProjects, loadOrgProjectsFrequencyMilliseconds)
@@ -110,16 +103,7 @@ const ProjectsNavTree = () => {
 
       try {
         const projects = await getOrgProjects(activeBillingOrg.id)
-
-        const projectsTreeData = projects.map(
-          (project) =>
-            ({
-              ...project,
-              children: [],
-            }) as NavigatableProjectResource,
-        )
-
-        setProjectsTreeData(projectsTreeData)
+        setProjects(projects)
       } catch (error) {
         console.log(`Failed to sync org level details because: ${error}`)
       }
@@ -134,13 +118,25 @@ const ProjectsNavTree = () => {
     return () => {
       // If we are cleaning up as a result of changed dependencies make sure
       // that we clear our projects so we no longer render the old projects
-      setProjectsTreeData([])
+      setProjects([])
       isMounted = false
     }
   }, [activeBillingOrg])
 
-  // TODO: If there are no projects display a little message stating we are waiting for active project to be selected
-  // TODO: Add a create project button
+  const projectsTreeData = projects.map(
+    (project) =>
+      ({
+        ...project,
+        children: [],
+        // We set this here rather than in `useEffect` as setting it in
+        // `useEffect` requires it to be a reactive value as becomes a local
+        // closure around it. This creates a lag/flickering between the old
+        // old rendered values as this is an async function and can be in
+        // flight from the old project we are configuring for even though
+        // the user selected a different one.
+        isActive: project.id === projectIdForConfiguration,
+      }) as NavigatableProjectResource,
+  )
 
   // Note that our `<Tree>` is a controlled component since we pass our goals
   // and tasks in through `data`. We need to eventually add handlers to it if
@@ -151,9 +147,7 @@ const ProjectsNavTree = () => {
         <Label.Root>Project Explorer</Label.Root>
       </div>
       <br />
-      <Tree data={projectsTreeData}>
-        {renderProjectNode(projectIdForConfiguration)}
-      </Tree>
+      <Tree data={projectsTreeData}>{renderProjectNode}</Tree>
     </>
   )
 }
