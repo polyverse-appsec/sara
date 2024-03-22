@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { renderHealthIcon } from 'app/react-utils'
+import ProjectStatusCard from 'components/project-status/project-status-card'
 import { ProjectHealth, ProjectHealthStatusValue } from 'lib/data-model-types'
 
 interface ProjectTileProps {
@@ -69,10 +70,10 @@ export const ProjectDetailsTile = ({
         {projectHealth && (
           <div className="my-1">
             <div className="flex items-center">
-              <h3 className="text-lg font-semibold">Health</h3>
-              <div className="mx-2">
-                {renderHealthIcon(projectHealth.readableValue)}
-              </div>
+              <ProjectStatusCard
+                health={projectHealth}
+                lastRefreshedAt={lastedUpdatedDate}
+              />
             </div>
           </div>
         )}
