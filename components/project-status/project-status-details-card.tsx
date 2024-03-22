@@ -38,11 +38,13 @@ const renderDetailedHealthMessage = (
     }
     case 'UNHEALTHY': {
       return (
-        <Text size="2">
-          Sara is having some trouble learning about your project code and
-          architecture. Never fear! She will not give up learning and trying to
-          help. Please come back soon when she is ready!
-        </Text>
+        <div className="max-w-64">
+          <Text size="2">
+            Sara is having some trouble learning about your project code and
+            architecture. Never fear! She will not give up learning and trying
+            to help. Please come back soon when she is ready!
+          </Text>
+        </div>
       )
     }
     case 'UNKNOWN': {
