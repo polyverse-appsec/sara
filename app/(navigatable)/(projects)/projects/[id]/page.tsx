@@ -2,12 +2,8 @@
 
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import {
-  renderHealthIcon,
-  renderHumanReadableConfigurationState,
-  renderHumanReadableHealthStatus,
-} from 'app/react-utils'
 import GoalsManager from 'components/goals/goals-manager'
+import ProjectStatusCard from 'components/project-status/project-status-card'
 import toast from 'react-hot-toast'
 
 import SaraChat from '../../../../../components/sara-chat/sara-chat'
@@ -149,7 +145,13 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
             <h3 className="text-lg font-semibold">Project:</h3>
             <p className="mx-2">{project.name}</p>
           </div>
-          <div>
+          <div className="flex flex-col">
+            <div className="mb-3">
+              <ProjectStatusCard
+                health={health}
+                lastRefreshedAt={project.lastRefreshedAt}
+              />
+            </div>
             <Button
               variant="ghost"
               className=" hover:bg-red-200"
@@ -226,45 +228,16 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
             </Button>
           </div>
         </div>
+        <div className="my-1 flex items-center">
+          <h3 className="text-lg font-semibold">ID</h3>
+          <p className="mx-2">{project.id}</p>
+        </div>
         {project.description ? (
           <div className="my-1 flex items-center">
             <h3 className="text-lg font-semibold">Description</h3>
             <p className="mx-2">{project.description}</p>
           </div>
         ) : null}
-        <div className="my-1">
-          <div className="flex items-center">
-            <h3 className="text-lg font-semibold">Health</h3>
-            <div className="mx-2">
-              {health ? renderHealthIcon(health.readableValue) : null}
-            </div>
-          </div>
-          {health
-            ? renderHumanReadableHealthStatus(health.readableValue)
-            : 'Sara is checking her vitals...'}
-        </div>
-        <div className="my-1">
-          <div className="flex items-center">
-            <h3 className="text-lg font-semibold">Sara Tracker:</h3>
-            <p className="mx-2">
-              {renderHumanReadableConfigurationState(
-                health ? health.configurationState : 'UNKNOWN',
-              )}
-            </p>
-          </div>
-        </div>
-        <div className="my-1">
-          <div className="flex items-center">
-            <h3 className="text-lg font-semibold">Last Synced At:</h3>
-            <p className="mx-2">
-              {`${new Date(
-                project.lastRefreshedAt,
-              ).toLocaleDateString()} ${new Date(
-                project.lastRefreshedAt,
-              ).toLocaleTimeString()}`}
-            </p>
-          </div>
-        </div>
       </RenderableResourceContent>
       <RenderableResourceContent>
         <GoalsManager projectId={id} goals={goals} />

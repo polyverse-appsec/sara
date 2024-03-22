@@ -1,105 +1,19 @@
 'use client'
 
+import { Text } from '@radix-ui/themes'
 import {
   ProjectHealthConfigurationState,
   ProjectHealthStatusValue,
   UserOrgStatus,
 } from 'lib/data-model-types'
 
-export const renderHealthIcon = (
-  readableHealthValue: ProjectHealthStatusValue,
-) => {
-  if (readableHealthValue === 'UNHEALTHY') {
-    return (
-      <p title="Unhealthy: Sara is having some trouble learning about your project.">
-        🛑
-      </p>
-    )
-  }
+export type RenderableProjectHealthStatusValue =
+  | ProjectHealthStatusValue
+  | 'UNKNOWN'
 
-  if (readableHealthValue === 'PARTIALLY_HEALTHY') {
-    return (
-      <p title="Partially Healthy: Sara is still learning about your project, so answers may not be complete.">
-        ⚠️
-      </p>
-    )
-  }
-
-  if (readableHealthValue === 'HEALTHY') {
-    return (
-      <p title="Healthy: Sara has learned about your project code and architecture.">
-        ✅
-      </p>
-    )
-  }
-
-  // If we don't know what value it is then render a magnifying glass to signify searching
-  return <p>🔎</p>
-}
-
-export const renderHumanReadableHealthStatus = (
-  readableHealthValue: ProjectHealthStatusValue,
-) => {
-  if (readableHealthValue === 'UNHEALTHY') {
-    return (
-      <p>
-        Sara is having some trouble learning about your project code and
-        architecture. Never fear! She will not give up learning and trying to
-        help. Please come back soon when she is ready!
-      </p>
-    )
-  }
-
-  if (readableHealthValue === 'PARTIALLY_HEALTHY') {
-    return (
-      <p>
-        Sara is still learning about your project, so she may not have the best
-        answers yet. Feel free to ask questions now, or have a cup of tea and
-        wait a few minutes for her best answers 🍵😊
-      </p>
-    )
-  }
-
-  if (readableHealthValue === 'HEALTHY') {
-    return (
-      <p>
-        Sara has learned about your project code and architecture. She is fully
-        up to speed and happy to answer all your architectural and code
-        questions!
-      </p>
-    )
-  }
-
-  return 'Unknown'
-}
-
-export const renderHumanReadableConfigurationState = (
-  configurationState: ProjectHealthConfigurationState,
-) => {
-  switch (configurationState) {
-    case 'UNKNOWN':
-      // Don't return a scary string
-      return 'Sara has encountered a tear in the fabric of space-time'
-
-    case 'VECTOR_DATA_AVAILABLE':
-      return 'Your project has been initialized'
-    case 'LLM_CREATED':
-      return 'Sara is ready to learn about your project'
-    case 'VECTOR_DATA_ATTACHED_TO_LLM':
-      return 'Sara is learning about your project'
-    case 'VECTOR_DATA_UPDATE_AVAILABLE':
-      return 'Sara is updating her knowledge about your project'
-    case 'CONFIGURED':
-      return 'Sara is fully caught up on your project'
-
-    default:
-      // Well we said we wouldn't return a scary string when it was actually in
-      // the 'UNKNOWN' state. Lets at least return one here presuming we will
-      // never hit it but in the event we haven't handled some state show this
-      // string so it could be reported to us via a bug by a customer.
-      return 'Sara has crossed the streams... not good'
-  }
-}
+export type RenderableProjectHealthConfigurationState =
+  | ProjectHealthConfigurationState
+  | 'UNKNOWN'
 
 export const getOrgUserStatus = async (
   orgId: string,
@@ -142,4 +56,160 @@ export const getOrgStatus = async (
 
   const orgStatus = await res.json()
   return orgStatus
+}
+
+export const renderReadableHealthValue = (
+  readableHealthValue: RenderableProjectHealthStatusValue,
+) => {
+  switch (readableHealthValue) {
+    case 'HEALTHY': {
+      return (
+        <div>
+          <Text size="2" weight="bold">
+            {'Status: '}
+          </Text>
+          <Text size="2" className="text-green-500">
+            Healthy
+          </Text>
+        </div>
+      )
+    }
+    case 'PARTIALLY_HEALTHY': {
+      return (
+        <div>
+          <Text size="2" weight="bold">
+            {'Status: '}
+          </Text>
+          <Text size="2" className="text-yellow-500">
+            Becoming Healthy
+          </Text>
+        </div>
+      )
+    }
+    case 'UNHEALTHY': {
+      return (
+        <div>
+          <Text size="2" weight="bold">
+            {'Status: '}
+          </Text>
+          <Text size="2" className="text-red-500">
+            Unhealthy
+          </Text>
+        </div>
+      )
+    }
+    case 'UNKNOWN': {
+      return (
+        <div>
+          <Text size="2" weight="bold">
+            {'Status: '}
+          </Text>
+          <Text size="2" className="text-blue-500">
+            Unknown
+          </Text>
+        </div>
+      )
+    }
+    default: {
+      // Return the unknown name
+      return (
+        <div>
+          <Text size="2" weight="bold">
+            {'Status: '}
+          </Text>
+          <Text size="2" className="text-blue-500">
+            Healthy
+          </Text>
+        </div>
+      )
+    }
+  }
+}
+
+export const renderHealthIcon = (
+  readableHealthValue: RenderableProjectHealthStatusValue,
+) => {
+  switch (readableHealthValue) {
+    case 'HEALTHY': {
+      return (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          className="w-6 h-6 fill-green-500"
+        >
+          <path
+            fillRule="evenodd"
+            d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z"
+            clipRule="evenodd"
+          />
+        </svg>
+      )
+    }
+    case 'PARTIALLY_HEALTHY': {
+      return (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          className="w-6 h-6 fill-yellow-500"
+        >
+          <path
+            fillRule="evenodd"
+            d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm3 10.5a.75.75 0 0 0 0-1.5H9a.75.75 0 0 0 0 1.5h6Z"
+            clipRule="evenodd"
+          />
+        </svg>
+      )
+    }
+    case 'UNHEALTHY': {
+      return (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          className="w-6 h-6 fill-red-500"
+        >
+          <path
+            fillRule="evenodd"
+            d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z"
+            clipRule="evenodd"
+          />
+        </svg>
+      )
+    }
+    case 'UNKNOWN': {
+      return (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          className="w-6 h-6 fill-blue-500"
+        >
+          <path
+            fillRule="evenodd"
+            d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm11.378-3.917c-.89-.777-2.366-.777-3.255 0a.75.75 0 0 1-.988-1.129c1.454-1.272 3.776-1.272 5.23 0 1.513 1.324 1.513 3.518 0 4.842a3.75 3.75 0 0 1-.837.552c-.676.328-1.028.774-1.028 1.152v.75a.75.75 0 0 1-1.5 0v-.75c0-1.279 1.06-2.107 1.875-2.502.182-.088.351-.199.503-.331.83-.727.83-1.857 0-2.584ZM12 18a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"
+            clipRule="evenodd"
+          />
+        </svg>
+      )
+    }
+    default: {
+      // Return the unknown SVG
+      return (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          className="w-6 h-6 fill-blue-500"
+        >
+          <path
+            fillRule="evenodd"
+            d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm11.378-3.917c-.89-.777-2.366-.777-3.255 0a.75.75 0 0 1-.988-1.129c1.454-1.272 3.776-1.272 5.23 0 1.513 1.324 1.513 3.518 0 4.842a3.75 3.75 0 0 1-.837.552c-.676.328-1.028.774-1.028 1.152v.75a.75.75 0 0 1-1.5 0v-.75c0-1.279 1.06-2.107 1.875-2.502.182-.088.351-.199.503-.331.83-.727.83-1.857 0-2.584ZM12 18a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"
+            clipRule="evenodd"
+          />
+        </svg>
+      )
+    }
+  }
 }

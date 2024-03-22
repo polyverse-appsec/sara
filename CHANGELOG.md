@@ -12,6 +12,7 @@
 
 - Refactor projects on nav bar to be a tree
 - Edited appearnce of settings page to include checkboxes and configuration details
+- Refactor project status/health into a Radix UI `<Card>` and `<HoverCard>`
 
 ### Bug Fixes
 
