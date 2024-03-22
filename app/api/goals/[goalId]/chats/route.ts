@@ -376,9 +376,6 @@ export const POST = auth(async (req: NextAuthRequest) => {
 
     // Now start a run on the thread we just created with our assistant
     const threadRun = await createThreadRunForProjectGoalChatting(
-      shouldUpdateCachedPromptFileInfos
-        ? promptFileInfos
-        : cachedPromptFileInfos,
       goal.name,
       goal.description,
       assistant.id,
