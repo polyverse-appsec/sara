@@ -15,6 +15,7 @@
 - Refactor project status/health into a Radix UI `<Card>` and `<HoverCard>`
 - creating project will redirect to auto submitted goals page instead of to the projects page
 - Project tiles now display time, upgrade premium button disabled if org is premium
+- Add back to project button from goals page
 
 ### Bug Fixes
 

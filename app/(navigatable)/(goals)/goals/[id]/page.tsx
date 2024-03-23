@@ -13,6 +13,9 @@ import {
   ProjectHealthStatusValue,
   type GoalPartDeux,
 } from './../../../../../lib/data-model-types'
+import { Button } from 'components/ui/button'
+import { useRouter } from 'next/navigation'
+import { ArrowLeftIcon } from '@radix-ui/react-icons'
 
 const renderChatForGoal = (
   goal: GoalPartDeux | null,
@@ -39,6 +42,7 @@ const renderChatForGoal = (
 }
 
 const GoalIndex = ({ params: { id } }: { params: { id: string } }) => {
+  const router = useRouter()
   const { projectIdForConfiguration } = useAppContext()
   const [goal, setGoal] = useState<GoalPartDeux | null>(null)
   const [health, setHealth] = useState<ProjectHealth | null>(null)
@@ -56,7 +60,6 @@ const GoalIndex = ({ params: { id } }: { params: { id: string } }) => {
       }
 
       const fetchedGoal = (await goalRes.json()) as GoalPartDeux
-
       setGoal(fetchedGoal)
 
       const healthRes = await fetch(
@@ -79,6 +82,15 @@ const GoalIndex = ({ params: { id } }: { params: { id: string } }) => {
 
   return (
     <RenderableResource>
+      <Button 
+        onClick={() =>
+          router.push(`/projects/${projectIdForConfiguration}/`)
+        }
+        className="flex items-center text-lg bg-blue-600 p-2 mb-2"
+      >
+        <ArrowLeftIcon className="mr-2" /> {/* Adjust margin and size as needed */}
+        Back to Project
+      </Button>
       <CollapsibleRenderableResourceContent title={goal ? goal.name : '[No Goal Title]'}>
         <div className="flex flex-col items-center">
           <div className="w-1/2 border-t-2 border-blue-600 my-2"></div>

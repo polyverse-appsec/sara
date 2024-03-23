@@ -203,6 +203,14 @@ const SidebarNav = () => {
         </button>
         {/* ...other buttons */}
       </nav>
+      
+      <div className="flex flex-col items-center mb-5">
+        <div className="w-1/2 border-t-2 border-blue-600 my-2"></div>
+        { projectIdForConfiguration ? 
+            <p className="font-semibold">{selectedProject?.name}</p>
+        : <p>No Project Selected</p>}
+        <div className="w-1/2 border-t-2 border-blue-600 my-2"></div>
+      </div>
 
       {/* Resource Loader */}
       {projectIdForConfiguration ? (
