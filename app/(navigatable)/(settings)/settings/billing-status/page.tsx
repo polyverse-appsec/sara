@@ -90,17 +90,26 @@ const SettingsOrgUpgrade = () => {
                 </div> 
               </RenderableResourceContent>
             </div>
-            <Link
-              href="https://buy.stripe.com/8wM9AY9hAe4y5fa000"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-between w-full text-sm"
-              >
-              <div className="flex justify-between items-center w-full font-semibold bg-white-600 shadow-md rounded-lg p-2 transform transition hover:scale-105 cursor-pointer">
-                <p>Upgrade to premium plan for {activeBillingOrg?.name}</p>
-                <IconExternalLink className="w-4 h-4 ml-auto" />
+            {orgIsPremium ? (
+              <div className="inline-flex items-center justify-between w-full text-sm">
+                <div className="flex justify-between items-center w-full font-semibold bg-white-600 shadow-md rounded-lg p-2 cursor-not-allowed opacity-50">
+                  <p>{activeBillingOrg?.name} is already on premium plan</p>
+                  <IconExternalLink className="w-4 h-4 ml-auto" />
+                </div>
               </div>
-            </Link>
+            ) : (
+              <Link
+                href="https://buy.stripe.com/8wM9AY9hAe4y5fa000"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-between w-full text-sm"
+              >
+                <div className="flex justify-between items-center w-full font-semibold bg-white-600 shadow-md rounded-lg p-2 transform transition hover:scale-105 cursor-pointer">
+                  <p>Upgrade to premium plan for {activeBillingOrg?.name}</p>
+                  <IconExternalLink className="w-4 h-4 ml-auto" />
+                </div>
+              </Link>
+            )}
             <p className="text-xs text-blue-600 mt-2">Note, this will redirect you to Stripe</p>
            </RenderableResourceContent>
         </div>

@@ -18,7 +18,10 @@ function formatDate(date: Date) {
     year: 'numeric',
     month: 'long',
     day: '2-digit',
-  }).format(date)
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+  }).format(date);
 }
 
 export const ProjectDetailsTile = ({
