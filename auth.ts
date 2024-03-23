@@ -99,6 +99,9 @@ export const {
           retrievedUser.lastSignedInAt = new Date()
           await updateUser(retrievedUser)
 
+          // Update the backend user info - email, login time, OAuth token, etc.
+          // await updateBackendUser(account, retrievedUser)
+
           token = {
             // Don't forget to copy over any of the other original token props
             ...token,

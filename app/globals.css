@@ -7,8 +7,8 @@
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
 
-    --chat-panel-bg-start: #ffffff; /* Example light color start */
-    --chat-panel-bg-end: #f0f0f0; /* Example light color end */
+    --panel-bg-start: #ffffff;
+    --panel-bg-end: #f0f0f0;
 
     --muted: 240 4.8% 95.9%;
     --muted-foreground: 240 3.8% 46.1%;
@@ -43,8 +43,8 @@
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
 
-    --chat-panel-bg-start: #333333; /* Example dark color start */
-    --chat-panel-bg-end: #1a1a1a; /* Example dark color end */
+    --panel-bg-start: #333333;
+    --panel-bg-end: #1a1a1a;
 
     --muted: 240 3.7% 15.9%;
     --muted-foreground: 240 5% 64.9%;
