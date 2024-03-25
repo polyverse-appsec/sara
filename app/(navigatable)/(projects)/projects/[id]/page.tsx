@@ -242,6 +242,13 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
       <RenderableResourceContent>
         <GoalsManager projectId={id} goals={goals} />
       </RenderableResourceContent>
+      <RenderableResourceContent>
+        {/* Give the appearance of being healthy if we don't know */}
+        {renderChatForGoal(
+          goalForChat,
+          health ? health.readableValue : 'HEALTHY',
+        )}
+      </RenderableResourceContent>
     </RenderableResource>
   )
 }
