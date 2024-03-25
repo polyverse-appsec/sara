@@ -8,9 +8,10 @@ import { ProjectDetailsTile } from './project-details-tile'
 
 interface ProjectDashboardProps {
   projects: ProjectPartDeux[]
+  onDelete: () => void
 }
 
-const ProjectDashboard = ({ projects }: ProjectDashboardProps) => {
+const ProjectDashboard = ({ projects, onDelete }: ProjectDashboardProps) => {
   return (
     <div>
       <div className="mb-10">
@@ -32,6 +33,7 @@ const ProjectDashboard = ({ projects }: ProjectDashboardProps) => {
                 ? lastUpdatedAt
                 : lastUpdatedAt.toDateString()
             }
+            refreshProjects={onDelete}
           />
         ))}
       </div>

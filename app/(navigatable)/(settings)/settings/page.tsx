@@ -59,7 +59,7 @@ const SettingsIndex = () => {
     <div className="flex flex-col items-center p-10 font-bold space-y-4">
         <p className="text-2xl font-bold">Account Settings</p>
         <div className="w-1/2 border-t-2 border-blue-600 my-2"></div>
-        <Link href="/orgs" className="w-3/4">
+        <Link href="/orgs" className="w-1/2">
           <div className="bg-blue-600 shadow-md rounded-lg p-4 block transform transition hover:scale-105 cursor-pointer">
             <div className="flex items-center justify-center text-white">
               <h3 className="text-lg font-semibold flex-1 text-center">
@@ -75,7 +75,7 @@ const SettingsIndex = () => {
         </Link>
         <Link 
             href="settings/billing-status"
-            className="w-3/4">
+            className="w-1/2">
             <div className="bg-blue-600 shadow-md rounded-lg p-4 block transform transition hover:scale-105 cursor-pointer">
               <div className="flex items-center justify-center text-white">
                 <h3 className="text-lg font-semibold flex-1 text-center">
@@ -90,7 +90,7 @@ const SettingsIndex = () => {
             </div>
         </Link>
         <Link href="/settings/authorize-private-repos"
-            className="w-3/4">
+            className="w-1/2">
             <div className="bg-blue-600 shadow-md rounded-lg p-4 block transform transition hover:scale-105 cursor-pointer">
               <div className="flex items-center justify-center text-white">
                 <h3 className="text-lg font-semibold flex-1 text-center">

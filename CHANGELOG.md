@@ -12,10 +12,12 @@
 
 - Enable support for private GitHub email authorization for Sara account creation
 - Created separate DB instances for Vercel `preview` and `prod`
+- Added delete button to project tiles in /projects
+- Reduced settings button sizes
 
 ### Bug Fixes
 
-- N/A
+- Create project will more consistently redirect to auto submitted goal, otherwise redirect to project page
 
 ## Version 0.19.0: March 22nd, 2024
 

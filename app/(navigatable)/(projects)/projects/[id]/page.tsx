@@ -179,6 +179,7 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
                   }
 
                   setProjectIdForConfiguration(null)
+                  toast.success(`Project deleted successfully`)
                   router.push(`/projects`)
                 } catch (err) {
                   console.debug(

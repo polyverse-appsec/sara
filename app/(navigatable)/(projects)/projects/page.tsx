@@ -26,24 +26,7 @@ const ProjectIndex = () => {
       //     to load it again
       setProjectIdForConfiguration(null)
 
-      if (!activeBillingOrg) {
-        const orgRes = await fetch('/api/orgs/active')
-
-        if (orgRes.ok) {
-          const defaultOrg = await orgRes.json()
-          setActiveBillingOrg(defaultOrg)
-
-          if (defaultOrg && defaultOrg.id) {
-            fetchProjects(defaultOrg.id)
-          }
-        } else {
-          toast.error(`Please select a billing organization`)
-          router.push('/orgs')
-          return
-        }
-      } else {
-        fetchProjects(activeBillingOrg.id)
-      }
+      refreshProjects()
     })()
   }, [
     activeBillingOrg,
@@ -68,13 +51,35 @@ const ProjectIndex = () => {
     setIsLoading(false)
   }
 
+  const refreshProjects = async () => {
+    if (!activeBillingOrg) {
+      const orgRes = await fetch('/api/orgs/active')
+
+      if (orgRes.ok) {
+        const defaultOrg = await orgRes.json()
+        setActiveBillingOrg(defaultOrg)
+
+        if (defaultOrg && defaultOrg.id) {
+          fetchProjects(defaultOrg.id)
+        }
+      } else {
+        toast.error(`Please select a billing organization`)
+        router.push('/orgs')
+        return
+      }
+    } else {
+      fetchProjects(activeBillingOrg.id)
+    }
+  }
+
+
   if (isLoading) {
     return <div>Loading...</div>
   }
 
   return (
     <div className="flex-1 p-10 text-2xl font-bold">
-      <ProjectDashboard projects={projects} />
+      <ProjectDashboard projects={projects} onDelete={refreshProjects} />
     </div>
   )
 }

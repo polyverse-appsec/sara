@@ -134,7 +134,7 @@ const ProjectCreate = () => {
   const toggleDropdown = () => setIsAdvancedMenuOpen(!isAdvancedMenuOpen)
 
   
- async function fetchGoalsWithRetry(projectId: any, maxAttempts = 5, delay = 2000, currentAttempt = 1) {
+ async function fetchGoalsWithRetry(projectId: any, maxAttempts = 60, delay = 5000, currentAttempt = 1) {
   const goalsRes = await fetch(`/api/projects/${projectId}/goals`);
   if (goalsRes.ok) {
     const fetchedGoals = await goalsRes.json();
@@ -148,6 +148,7 @@ const ProjectCreate = () => {
     }
   } else {
     console.log('Failed to fetch goals:', goalsRes.statusText);
+    router.push(`/projects/${projectId}`);
   }
 }
 
