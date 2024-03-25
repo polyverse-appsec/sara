@@ -22,6 +22,8 @@ export async function getProjectAssistantFileInfo(
     projectId: string,
     email: string,
   ): Promise<ProjectDataReference[]> {
+    console.debug(`***** USER_SERVICE_URI: ${USER_SERVICE_URI}`)
+
   const url = `${USER_SERVICE_URI}/api/user_project/${billingOrgName}/${projectId}/data_references`
 
   try {
