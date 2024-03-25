@@ -11,6 +11,7 @@
 ### Enhancements
 
 - Enable support for private GitHub email authorization for Sara account creation
+- Created separate DB instances for Vercel `preview` and `prod`
 
 ### Bug Fixes
 
