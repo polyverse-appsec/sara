@@ -89,9 +89,30 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Get version from package.json
+        id: package_version
+        run: echo "::set-output name=VERSION::$(node -p "require('./package.json').version")"
+      
+      - name: Get changelog excerpt
+        id: changelog_excerpt
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          CHANGELOG=$(sed -n "/## Version ${VERSION}/,/## Version/p" CHANGELOG.md)
+          CHANGELOG=${CHANGELOG%$'## Version'*}
+          echo "::set-output name=EXCERPT::${CHANGELOG}"
+      
       - name: Merge preview into prod as fast-forward
         run: |
           git fetch origin
           git checkout -b prod --track origin/prod
           git merge --ff-only origin/preview
+          # List of integrated commits
+          COMMITS=$(git log --oneline origin/prod..origin/preview)
+          # Amend the merge commit message
+          git commit --amend -m "Merge Preview to Prod: v${{ steps.package_version.outputs.VERSION }}
+
+          ${{ steps.changelog_excerpt.outputs.EXCERPT }}
+
+          Integrated commits:
+          ${COMMITS}"
           git push origin prod

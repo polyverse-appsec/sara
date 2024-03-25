@@ -85,9 +85,33 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Extract Version Number
+        id: version_number
+        run: |
+          echo "::set-output name=VERSION::$(jq -r .version package.json)"
+      
+      - name: Extract Changelog Entries
+        id: changelog
+        run: |
+          version=$(jq -r .version package.json)
+          changelog=$(awk "/## Version $version/,/## Version /{if (!/## Version $version/)print}" CHANGELOG | head -n -1)
+          echo "::set-output name=CHANGELOG::${changelog//%/%25}"
+        
+      - name: Retrieve Commit Logs
+        id: commit_logs
+        run: |
+          # Assuming 'main' and 'preview' are branch names
+          logs=$(git log --oneline preview..main)
+          echo "::set-output name=LOGS::${logs//%/%25}"
+          
       - name: Merge main into preview as fast-forward
         run: |
           git fetch origin
           git checkout -b preview --track origin/preview
           git merge --ff-only origin/main
+          # Amend the commit to include version, changelog, and commit logs
+          git commit --amend -m "Merge main into preview: v${{ steps.version_number.outputs.VERSION }} - ${{ steps.changelog.outputs.CHANGELOG }}
+          
+          Integrated commits:
+          ${{ steps.commit_logs.outputs.LOGS }}"
           git push origin preview
