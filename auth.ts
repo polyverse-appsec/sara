@@ -7,6 +7,7 @@ import createUser from './lib/polyverse/db/create-user'
 import getUser, { createUserNotFoundErrorString } from './lib/polyverse/db/get-user'
 import updateUser from 'lib/polyverse/db/update-user'
 import { Session } from 'next-auth/types'
+import { updateBoostOrgUserStatus } from 'lib/polyverse/backend/backend'
 
 export const {
   handlers: { GET, POST },
@@ -100,7 +101,14 @@ export const {
           await updateUser(retrievedUser)
 
           // Update the backend user info - email, login time, OAuth token, etc.
-          // await updateBackendUser(account, retrievedUser)
+          try {
+            // we don't need an org to update the username, since login is tied to email, but we'll pass an org (or email as org)
+            //      for now, since the backend requires it for all user APIs
+            const orgName = retrievedUser.orgIds.length > 0 ? retrievedUser.orgIds[0] : profile.email
+            await updateBoostOrgUserStatus(orgName, profile.email, profile.login as string)
+          } catch (error) {
+            console.error(`Failed to update Boost org user status for ${profile.email} to ${profile.login} on sign in:`, error)
+          }
 
           token = {
             // Don't forget to copy over any of the other original token props
@@ -125,6 +133,14 @@ export const {
             }
 
             await createUser(newUser)
+
+            // Update the backend user info - email, login time, OAuth token, etc.
+            try {
+                const orgName = profile.email // placeholder since we don't know the org yet, and login is tied to email only
+                await updateBoostOrgUserStatus(orgName, profile.email, profile.login as string)
+            } catch (error) {
+                console.error(`Failed to update Boost org user status for ${profile.email} to ${profile.login} on sign in:`, error)
+            }
 
             token = {
                 // Don't forget to copy over any of the other original token props

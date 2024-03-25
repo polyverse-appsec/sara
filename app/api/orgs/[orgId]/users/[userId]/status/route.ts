@@ -71,8 +71,8 @@ export const GET = auth(async (req: NextAuthRequest) => {
       // If the `username` data member shows up on the user status that means
       // the user has the GitHub app installed.
       gitHubAppInstalled:
-        boostOrgUserStatus.github_username &&
-        boostOrgUserStatus.github_username.length > 0
+        boostOrgUserStatus.backgroundAnalysisAuthorized !== undefined &&
+        boostOrgUserStatus.backgroundAnalysisAuthorized
           ? 'INSTALLED'
           : 'UNKNOWN',
 

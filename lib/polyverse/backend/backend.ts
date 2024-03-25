@@ -1,3 +1,4 @@
+import { userInfo } from 'os'
 import {
   Project,
   ProjectDataReference,
@@ -11,9 +12,9 @@ export interface BoostUserOrgStatusResponse {
   status?: string
   // TODO: What could the values of these be?
   plan?: string
-  saas_client?: boolean
-  portal_url?: string | null
-  github_username?: string
+  billingUrl?: string | null
+  githubUsername?: string
+  backgroundAnalysisAuthorized?: boolean
 }
 
 export async function getProjectAssistantFileInfo(
@@ -266,6 +267,37 @@ export async function getBoostOrgUserStatus(
   const userStatus = JSON.parse(jsonRes.body) as BoostUserOrgStatusResponse
 
   return userStatus as BoostUserOrgStatusResponse
+}
+
+
+export async function updateBoostOrgUserStatus(
+  orgName: string,
+  email: string,
+  githubUsername: string
+): Promise<void> {
+  const url = `${USER_SERVICE_URI}/api/user/${orgName}/account`
+
+  const usernameInfo = {
+    githubUsername,
+  } as BoostUserOrgStatusResponse;
+
+  const signedHeader = createSignedHeader(email)
+  const res = await fetch(url, {
+    method: 'PATCH',
+    headers: {
+      ...signedHeader,
+    },
+    body: JSON.stringify(usernameInfo),
+  })
+
+  if (!res.ok) {
+    const errResMsg = await res.text()
+    const errLogMsg = `Got a failure response while trying to update GitHub username for '${orgName}' - '${email}' - '${githubUsername}' - Status: ${res.status} - Message: ${errResMsg}`
+
+    console.error(`${errLogMsg}`)
+
+    throw new Error(errLogMsg)
+  }
 }
 
 export async function getBoostOrgStatus(

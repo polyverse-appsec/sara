@@ -2,6 +2,20 @@
 
 # Release Notes
 
+## Version 0.20.0: March 25th, 2024
+
+### New Features
+
+- N/A
+
+### Enhancements
+
+- Enable support for private GitHub email authorization for Sara account creation
+
+### Bug Fixes
+
+- N/A
+
 ## Version 0.19.0: March 22nd, 2024
 
 ### New Features
