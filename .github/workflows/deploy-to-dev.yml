@@ -62,7 +62,11 @@ jobs:
       # `preview` env vars by default when running.
       - name: Deploy Project Artifacts to Vercel
         run: |
+          export KV_REST_API_TOKEN=$(grep '^KV_REST_API_TOKEN=' .env.local | cut -d '=' -f2)
+          export KV_REST_API_URL=$(grep '^KV_REST_API_URL=' .env.local | cut -d '=' -f2)
           vercel deploy --env NEXTAUTH_URL="https://dev.boost.polyverse.com/" \
             --env AUTH_REDIRECT_PROXY_URL="https://dev.boost.polyverse.com/api/auth" \
             --env SARA_STAGE="dev" \
+            --env KV_REST_API_TOKEN=$KV_REST_API_TOKEN \
+            --env KV_REST_API_URL=$KV_REST_API_URL \
             --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
