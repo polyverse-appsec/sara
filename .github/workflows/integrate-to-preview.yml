@@ -1,4 +1,4 @@
-name: "CI: Integrate Main to Preview"
+name: 'CI: Integrate Main to Preview'
 
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
@@ -85,28 +85,9 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Extract Version Number
-        id: package_version
-        run: echo "VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
-
-      - name: Extract Changelog Entries
-        run: |
-          CHANGELOG_CONTENT="$(awk '/# Release Notes/{flag=1; next} /## Version/{flag=0} flag' CHANGELOG.md)"
-          echo "CHANGELOG_CONTENT<<EOF" >> $GITHUB_ENV
-          echo "$CHANGELOG_CONTENT" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
-          
       - name: Merge main into preview as fast-forward
         run: |
           git fetch origin
-          git checkout preview
+          git checkout -b preview --track origin/preview
           git merge --ff-only origin/main
-
-          # Configure Git user to allow commit operation
-          git config user.name "Sara Automated GitHub Actions"
-          git config user.email "sara.github.actions@polytest.ai"
-
-          # Amend the commit to include version, changelog, and commit logs
-          git commit --amend -m "Merge main into preview: v${{ env.VERSION }} - ${{ env.CHANGELOG_CONTENT }}"
           git push origin preview
-          
