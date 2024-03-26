@@ -8,13 +8,20 @@ import {
   GearIcon,
   StarFilledIcon,
 } from '@radix-ui/react-icons'
+import { Box, Card, Flex, HoverCard, Inset, Text } from '@radix-ui/themes'
 import { SaraSession } from 'auth'
+import ProjectStatusDetailsHoverCard from 'components/project-status/project-status-details-card'
 import { motion } from 'framer-motion'
-import { type ProjectHealth, type ProjectPartDeux } from 'lib/data-model-types'
+import {
+  OrgPartDeux,
+  type ProjectHealth,
+  type ProjectPartDeux,
+} from 'lib/data-model-types'
 import { useSession } from 'next-auth/react'
 import toast from 'react-hot-toast'
 
 import { getOrgStatus, getOrgUserStatus } from './../app/react-utils'
+import { getResource } from './../app/saraClient'
 import { useAppContext } from './../lib/hooks/app-context'
 import SaraPortrait from './../public/Sara_Cartoon_Portrait.png'
 import GoalsTaskNavTree from './goals-tasks-nav-tree'
@@ -32,47 +39,32 @@ const SidebarNav = () => {
     setActiveBillingOrg,
     projectIdForConfiguration,
     setProjectIdForConfiguration,
+    activeProjectDetails,
   } = useAppContext()
+
   const session = useSession()
   const saraSession = session.data ? (session.data as SaraSession) : null
 
-  const [selectedProject, setSelectedProject] =
-    useState<ProjectPartDeux | null>(null)
-  const [selectedProjectHealth, setSelectedProjectHealth] =
-    useState<ProjectHealth | null>(null)
   const [orgIsPremium, setOrgIsPremium] = useState(true)
   const [userGitHubAppInstalled, setUserGitHubAppInstalled] =
     useState<boolean>(true)
   const [orgGitHubAppInstalled, setOrgGitHubAppInstalled] =
     useState<boolean>(true)
-  const [orgs, setOrgs] = useState([])
 
   useEffect(() => {
     const fetchAndSetActiveBillingOrg = async () => {
       if (!activeBillingOrg) {
-        const res = await fetch('/api/orgs')
+        const orgs = await getResource<OrgPartDeux[]>(`/orgs`)
 
-        if (!res.ok) {
-          const errText = await res.text()
-
-          throw new Error(
-            `Failed to get a success response when fetching organizations because: ${errText}`,
-          )
-        }
-
-        const fetchedOrgs = await res.json()
-
-        setOrgs(fetchedOrgs)
-
-        if (fetchedOrgs.length > 0) {
-          setActiveBillingOrg(fetchedOrgs[0])
+        if (orgs.length > 0) {
+          setActiveBillingOrg(orgs[0])
         }
       }
     }
 
     fetchAndSetActiveBillingOrg()
 
-    const fetchGithubAppAndPremiumStatus = async () => {
+    const fetchGitHubAppAndPremiumStatus = async () => {
       try {
         if (!activeBillingOrg || !saraSession) {
           return
@@ -99,42 +91,7 @@ const SidebarNav = () => {
       }
     }
 
-    const fetchProjectDetails = async () => {
-      try {
-        const projectRes = await fetch(
-          `/api/projects/${projectIdForConfiguration}`,
-        )
-
-        if (!projectRes.ok) {
-          const errText = await projectRes.text()
-          throw new Error(
-            `Failed to get a success response when fetching project '${projectIdForConfiguration}' because: ${errText}`,
-          )
-        }
-
-        const fetchedProject = (await projectRes.json()) as ProjectPartDeux
-        setSelectedProject(fetchedProject)
-
-        const healthRes = await fetch(
-          `/api/projects/${projectIdForConfiguration}/health`,
-        )
-
-        if (healthRes.ok) {
-          const fetchedHealth = (await healthRes.json()) as ProjectHealth
-          setSelectedProjectHealth(fetchedHealth)
-        } else {
-          console.debug(`Failed to get project health`)
-        }
-      } catch (err) {
-        console.debug(`Failed to fetch project details because: ${err}`)
-      }
-    }
-
-    if (projectIdForConfiguration) {
-      fetchProjectDetails()
-    }
-
-    fetchGithubAppAndPremiumStatus()
+    fetchGitHubAppAndPremiumStatus()
   }, [
     activeBillingOrg,
     setActiveBillingOrg,
@@ -198,17 +155,39 @@ const SidebarNav = () => {
         {/* ...other buttons */}
       </nav>
 
-      <div className="flex flex-col items-center mb-5">
+      <Flex direction="column" align="center">
         <div className="w-1/2 border-t-2 rounded-xl border-blue-600 my-2"></div>
-        {projectIdForConfiguration ? (
-          <p className="text-orange-500 font-semibold">
-            {selectedProject?.name}
-          </p>
-        ) : (
-          <p>No Project Selected</p>
-        )}
+      </Flex>
+      <HoverCard.Root>
+        <HoverCard.Trigger>
+          <Flex gap="2" align="center" direction="column">
+            {activeProjectDetails ? (
+              <>
+                <Text size="2" weight="bold">
+                  Active Project:
+                </Text>
+                <Text size="2">{activeProjectDetails.project.name}</Text>
+                <Text size="2">(Hover For Details)</Text>
+              </>
+            ) : (
+              <Text size="2">No Project Selected</Text>
+            )}
+          </Flex>
+        </HoverCard.Trigger>
+        {activeProjectDetails ? (
+          <HoverCard.Content>
+            <Inset>
+              <ProjectStatusDetailsHoverCard
+                health={activeProjectDetails.health}
+                lastRefreshedAt={activeProjectDetails.project.lastRefreshedAt}
+              />
+            </Inset>
+          </HoverCard.Content>
+        ) : null}
+      </HoverCard.Root>
+      <Flex direction="column" align="center">
         <div className="w-1/2 border-t-2 rounded-xl border-blue-600 my-2"></div>
-      </div>
+      </Flex>
 
       <div className="flex-grow overflow-y-auto no-scrollbar m-2">
         {/* Resource Loader */}

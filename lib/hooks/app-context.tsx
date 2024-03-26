@@ -13,16 +13,25 @@ import {
   type OrgPartDeux,
   type ProjectHealth,
   type ProjectPartDeux,
-  type Repository,
 } from '../data-model-types'
+import {
+  createResource,
+  createResourceNoResponseBody,
+  createResourceWithoutRequestBody,
+  getResource,
+} from './../../app/saraClient'
 
-interface UserSessionData {
-  activeProjectId: string | null
+interface ActiveProjectDetails {
+  id: string
+  project: ProjectPartDeux
+  health: ProjectHealth
 }
 
 interface AppContextType {
   activeBillingOrg: OrgPartDeux | null
   setActiveBillingOrg: (org: OrgPartDeux) => void
+
+  activeProjectDetails: ActiveProjectDetails | null
 
   // To only be used to config the project. All individual pages ought to pull
   // the project details from the REST APIs based on the project ID they get in
@@ -48,22 +57,21 @@ interface AppProviderProps {
 }
 
 export function AppProvider({ children }: AppProviderProps) {
-  const [selectedProjectRepositories, setSelectedProjectRepositories] =
-    useState<Repository[] | null>(null)
-
   const [activeBillingOrg, setActiveBillingOrg] = useState<OrgPartDeux | null>(
     null,
   )
+
+  const [activeProjectDetails, setActiveProjectDetails] =
+    useState<ActiveProjectDetails | null>(null)
 
   const [projectIdForConfiguration, setProjectIdForConfiguration] = useState<
     string | null
   >(null)
 
   const value = {
-    selectedProjectRepositories,
-    setSelectedProjectRepositories,
     activeBillingOrg,
     setActiveBillingOrg,
+    activeProjectDetails,
     projectIdForConfiguration,
     setProjectIdForConfiguration,
   }
@@ -91,40 +99,35 @@ export function AppProvider({ children }: AppProviderProps) {
       }
 
       try {
-        // Start by just confing the project as we care about this request
-        // not being short-circuited if the order of requests were different to
-        // ensure that at least there is an attempt to config the project.
-        const configRes = await fetch(
-          `/api/projects/${projectIdForConfiguration}/config`,
-          {
-            method: 'POST',
-          },
+        const project = await getResource<ProjectPartDeux>(
+          `/projects/${projectIdForConfiguration}`,
+          `Failed to get project data for '${projectIdForConfiguration}'`,
         )
 
-        if (!configRes.ok) {
-          const resErrText = await configRes.text()
-          const errMsg = `Request configuring project '${projectIdForConfiguration}' failed because: ${resErrText}`
-
-          console.debug(errMsg)
-          throw new Error(errMsg)
-        }
+        // Start by just configuring the project as we care about this request
+        // not being short-circuited if the order of requests were different to
+        // ensure that at least there is an attempt to config the project.
+        await createResourceWithoutRequestBody(
+          `/projects/${projectIdForConfiguration}/config`,
+          `Failed to configure project '${projectIdForConfiguration}'`,
+        )
 
         // Now check the health of the project. If it is healthy then submit the
         // default chat question for the project if it hasn't been already
-        const fetchProjectHealthRes = await fetch(
-          `/api/projects/${projectIdForConfiguration}/health`,
+        const projectHealth = await getResource<ProjectHealth>(
+          `/projects/${projectIdForConfiguration}/health`,
+          `Failed to get project health for '${projectIdForConfiguration}'`,
         )
 
-        if (!fetchProjectHealthRes.ok) {
-          const resErrText = await fetchProjectHealthRes.text()
-          const errMsg = `Request for projects '${projectIdForConfiguration}' health failed because: ${resErrText}`
-
-          console.debug(errMsg)
-          throw new Error(errMsg)
+        // Make sure to update our app wide details about the project we are
+        // actively providing details for as well
+        const newActiveProjectDetails: ActiveProjectDetails = {
+          id: projectIdForConfiguration,
+          project,
+          health: projectHealth,
         }
 
-        const projectHealth =
-          (await fetchProjectHealthRes.json()) as ProjectHealth
+        setActiveProjectDetails(newActiveProjectDetails)
 
         // Our behavior will pivot based on the health of the project.
         // Once we the project as 'HEALTHY' we will start re-running this
@@ -181,20 +184,7 @@ export function AppProvider({ children }: AppProviderProps) {
         // the future we can improve on this. Note this has the downside of
         // always creating a default goal if the user has deleted all of their
         // goals at any one point.
-        const fetchProjectRes = await fetch(
-          `/api/projects/${projectIdForConfiguration}`,
-        )
-
-        if (!fetchProjectRes.ok) {
-          const resErrText = await fetchProjectRes.text()
-          const errMsg = `Request for project '${projectIdForConfiguration}' details failed because: ${resErrText}`
-
-          console.debug(errMsg)
-          throw new Error(errMsg)
-        }
-
-        const project = (await fetchProjectRes.json()) as ProjectPartDeux
-
+        //
         // Create the default goal if we don't find any goal IDs associated with
         // the project
         if (project.goalIds.length === 0) {
@@ -208,48 +198,22 @@ export function AppProvider({ children }: AppProviderProps) {
               'Provide details that will help me learn about my project. This includes details about the code in my project as well as the software packages/libraries it consumes.',
           }
 
-          const createDefeaultGoalRes = await fetch(`/api/goals`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(goalBody),
-          })
-
-          if (!createDefeaultGoalRes.ok) {
-            const resErrText = await createDefeaultGoalRes.text()
-            const errMsg = `Failed to POST default goal for project '${projectIdForConfiguration}' because: ${resErrText}`
-
-            console.debug(errMsg)
-            throw new Error(errMsg)
-          }
-
-          const defaultGoal =
-            (await createDefeaultGoalRes.json()) as GoalPartDeux
+          const defaultGoal = await createResource<GoalPartDeux>(
+            `/goals`,
+            goalBody,
+            `Failed to create default goal for project '${projectIdForConfiguration}'`,
+          )
 
           // Now create the chat for the default goal.
           const chatBody = {
             query: defaultGoal.description,
           }
 
-          const createDefeaultGoalChatRes = await fetch(
-            `/api/goals/${defaultGoal.id}/chats`,
-            {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(chatBody),
-            },
+          await createResourceNoResponseBody(
+            `/goals/${defaultGoal.id}/chats`,
+            chatBody,
+            `Failed to create chat for default goal for project '${projectIdForConfiguration}'`,
           )
-
-          if (!createDefeaultGoalChatRes.ok) {
-            const resErrText = await createDefeaultGoalChatRes.text()
-            const errMsg = `Failed to POST chat for default goal for project '${projectIdForConfiguration}' because: ${resErrText}`
-
-            console.debug(errMsg)
-            throw new Error(errMsg)
-          }
         }
 
         // Restart it all over again...
@@ -261,6 +225,8 @@ export function AppProvider({ children }: AppProviderProps) {
           `Failed to config project '${projectIdForConfiguration}' because: ${error}`,
         )
 
+        setActiveProjectDetails(null)
+
         if (isMounted) {
           setTimeout(configProject, configProjectFrequencyMilliseconds)
         }
@@ -271,6 +237,7 @@ export function AppProvider({ children }: AppProviderProps) {
 
     return () => {
       isMounted = false
+      setActiveProjectDetails(null)
     }
   }, [activeBillingOrg, projectIdForConfiguration])
 
