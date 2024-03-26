@@ -102,19 +102,21 @@ jobs:
           # Ensure 'main' and 'preview' are up-to-date in the local repo
           git fetch origin main:refs/remotes/origin/main
           git fetch origin preview:refs/remotes/origin/preview
-          # Now, retrieve the commit logs
-          logs=$(git log --oneline origin/preview..origin/main)
+          # Now, retrieve the commit logs and encode them in Base64
+          logs=$(git log --oneline origin/preview..origin/main | base64)
           echo "LOGS=${logs}" >> $GITHUB_ENV
-  
+          
       - name: Merge main into preview as fast-forward
         run: |
           git fetch origin
-          git checkout -b preview --track origin/preview
+          git checkout preview
           git merge --ff-only origin/main
+          # Decode the Base64 encoded logs
+          logs=$(echo ${{ env.LOGS }} | base64 --decode)
           # Amend the commit to include version, changelog, and commit logs
-          git commit --amend -m "Merge main into preview: v${VERSION} - ${CHANGELOG_CONTENT}
+          git commit --amend -m "Merge main into preview: v${{ env.VERSION }} - ${{ env.CHANGELOG_CONTENT }}
           
           Integrated commits:
-          ${LOGS}"
+          ${logs}"
           git push origin preview
-  
+          
