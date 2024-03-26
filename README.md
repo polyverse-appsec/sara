@@ -8,6 +8,7 @@
     - [Running Locally (First Time Usage)](#Running-Locally-First-Time-Usage)
     - [Running With DB Containers (Docker)](#Running-With-DB-Containers-Docker)
   - [Development](#Development)
+    - [Coding Patterns: Use Sara REST Client](#Coding-Patterns-Use-Sara-REST-Client)
     - [Trunk Based Development](#Trunk-Based-Development)
     - [Debugging The Frontend](#Debugging-The-Frontend)
     - [Debugging The Backend](#Debugging-The-Backend)
@@ -57,12 +58,12 @@ Your app template should now be running on [localhost:3000](http://localhost:300
 
 ## Design & Technical Docs
 
-* [Class Diagrams](tech-docs/class-diagram-data-model.md)
-* [Sequence Diagrams](tech-docs/sequence-diagrams.md)
+- [Class Diagrams](tech-docs/class-diagram-data-model.md)
+- [Sequence Diagrams](tech-docs/sequence-diagrams.md)
 
 ## Ops Docs
 
-* [CI/CD Workflow](ops-docs/ci-cd-workflow.md)
+- [CI/CD Workflow](ops-docs/ci-cd-workflow.md)
 
 ## Running
 
@@ -83,6 +84,39 @@ Your app template should now be running on [localhost:3000](http://localhost:300
 If you would like to run against a local instance of Redis for testing/development purposes you can use the Docker Compose file to do so. To do so simply run `pnpm run dev-docker`. This will start the Docker Compose deployment in the background as well as start the `Sara` development server with configuration allowing `Sara` to communicate with the local Redis containers.
 
 ## Development
+
+### Coding Patterns: Use Sara REST Client
+
+Sara exposes a REST interface that is consumed by both the UI and in the future our agents. A common pattern from the UI is to use the native `fetch` function to work with the REST resources like so:
+
+```typescript
+const projectRes = await fetch(`/api/projects/${projectId}`)
+
+if (!projectRes.ok) {
+  const errText = await projectRes.text()
+
+  throw new Error(
+    `Failed to get a success response when fetching project '${projectId}' because: ${errText}`,
+  )
+}
+
+const fetchedProject = (await projectRes.json()) as ProjectPartDeux
+```
+
+This pattern can be replaced and simplified by using the lightweight REST client found at `app/saraClient.ts`. You can now re-write the logic as:
+
+```typescript
+const goal = await getResource<GoalPartDeux>(
+  `/goals/${id}`,
+  `Failed to get a success response when fetching goal '${id}'`,
+)
+```
+
+The REST client exposes generic TypeScript functions to work with REST resources. Additionally it supports:
+
+- Prefixing a REST resource URI path with `/api` if not already prefixed
+- Optionally providing a more informative error message
+  - The caught error will be appended to the informative error message like so: `${informativeErrorMessage} - ${caughtErrorText}`
 
 ### Trunk Based Development
 
@@ -126,9 +160,9 @@ Currently the team is operating with less processes, procedures, and tooling tha
 
 This works well to increase our velocity when we are a small team and tight team but requires trust. We work on the honor system here so while you are free to commit code to `main` please consider these items before you do so:
 
-* Run the tests before checking into `main`
-* If you believe the set of changes you have are high risk then quickly ask someone in [Engineering on Slack](https://polyverse.slack.com/archives/C0501S5LWNA) for a live code review
-* We typically don't do feature branches here at the moment but if you believe you have a large set of changes that are going to be very disruptive while working on them it might be worth considering (e.g. changing the whole data model)
+- Run the tests before checking into `main`
+- If you believe the set of changes you have are high risk then quickly ask someone in [Engineering on Slack](https://polyverse.slack.com/archives/C0501S5LWNA) for a live code review
+- We typically don't do feature branches here at the moment but if you believe you have a large set of changes that are going to be very disruptive while working on them it might be worth considering (e.g. changing the whole data model)
 
 #### Make It Pretty :sparkles:
 
@@ -187,12 +221,14 @@ This can be fixed by importing the whole default export and then desctructuring 
 // import { sign } from 'jsonwebtoken' <----- Causes an error since it is a CommonJS module
 
 import jsonwebtoken from 'jsonwebtoken'
+
 const { sign } = jsonwebtoken
 ```
 
 While this works it could be problematic and might not be the ideal solution longterm:
-* https://stackoverflow.com/questions/70605320/named-export-types-not-found-the-requested-module-mongoose-is-a-commonjs-mo
-* https://stackoverflow.com/questions/74690087/what-is-the-problem-of-mixing-require-and-import-in-the-same-typescript-file
+
+- https://stackoverflow.com/questions/70605320/named-export-types-not-found-the-requested-module-mongoose-is-a-commonjs-mo
+- https://stackoverflow.com/questions/74690087/what-is-the-problem-of-mixing-require-and-import-in-the-same-typescript-file
 
 ### Testing With `node-boost-api` Service
 
@@ -200,11 +236,11 @@ The [`node-boost-api`](https://github.com/polyverse-appsec/boost-node-api) proje
 
 The [`node-boost-api`](https://github.com/polyverse-appsec/boost-node-api) also initiates file uploads of a users repo for introspection purposes. At the time of writing (1/13/24) the file upload logic isn't yet implemented but a manual path for initiating the file upload does exist:
 
-* Navigate to the `scripts` directory and install any required Python dependencies: `pip install -r requirements.txt`
-* Copy the script located at `scripts/create_project.py` into the root directory of the project/repo you wish to upload for `Sara`
-* The script as of writing (1/18/24) creates a project using the specified parameters, starts file generators that generates and uploads projectsource, aispec, and blueprint files of the project/repo, and uploads those files to
-openAI, it prints out the file IDs that have been stored in openAI's vector store.
-* Run the following command:
+- Navigate to the `scripts` directory and install any required Python dependencies: `pip install -r requirements.txt`
+- Copy the script located at `scripts/create_project.py` into the root directory of the project/repo you wish to upload for `Sara`
+- The script as of writing (1/18/24) creates a project using the specified parameters, starts file generators that generates and uploads projectsource, aispec, and blueprint files of the project/repo, and uploads those files to
+  openAI, it prints out the file IDs that have been stored in openAI's vector store.
+- Run the following command:
 
 ```
 python create_project.py --email [YOUR_GITHUB_EMAIL] --organization [ORGANIZATION_NAME] --github_uri [URI_OF_GITHUB_PROJ] --project_name [PROJ_NAME]
@@ -216,20 +252,21 @@ Example usage:
 python create_project.py --email aaron@polyverse.com --organization polyverse-appsec --github_uri https://www.github.com/polyverse-appsec/sara --project_name sara
 ```
 
-* Overtime `Sara` ought to be able to make requests to [`node-boost-api`](https://github.com/polyverse-appsec/boost-node-api) to get the file IDs for the uploaded files
+- Overtime `Sara` ought to be able to make requests to [`node-boost-api`](https://github.com/polyverse-appsec/boost-node-api) to get the file IDs for the uploaded files
 
 ## Ops
 
 ### Overview Of CI/CD Strategy
 
 Any code committed to our trunk for development will go through this automatic CI/CD process:
-* Commit code to `main`
-* Build and deploy artifacts from `main` to Vercel `dev.boost.polyverse.com` domain
-* Build and test code from `main`
-* Merge code from `main` to `preview`
-* Build and deploy artifacts from `preview` to Vercel `preview.boost.polyverse.com` domain
-* Build and test code from `preview`
-* Merge code from `preview` to `prod`
+
+- Commit code to `main`
+- Build and deploy artifacts from `main` to Vercel `dev.boost.polyverse.com` domain
+- Build and test code from `main`
+- Merge code from `main` to `preview`
+- Build and deploy artifacts from `preview` to Vercel `preview.boost.polyverse.com` domain
+- Build and test code from `preview`
+- Merge code from `preview` to `prod`
 
 After the relevant code is merged into `prod` one can manually start a deployment to the Vercel `boost.polyverse.com` domain. See the section [Continuous Deployment: Deploying To Vercel](#Continuous-Deployment-Deploying-To-Vercel) for more details.
 
@@ -265,24 +302,26 @@ Each workflow runs a set of tests that are required to pass before we merge any 
 Vercel has deep `Git` integration for the projects they host. By default Vercel will monitor your projects branches and auto-deploy to the different environments (e.g. `Production`, `Preview`) when changes are made. We have turned this default behavior off to have tighter control over our CI/CD processes. The configuration for disabling this behavior is defined within `vercel.json` under the property [`git.deploymentEnabled = false`](https://vercel.com/docs/projects/project-configuration/git-configuration#git.deploymentenabled). Note that this configuration doesn't preclude us from deploying to Vercel when changes happen in our GitHub repo - we just need to do the work to deploying manually or automate `GitHub Actions`.
 
 Our Vercel setup has made available the following domains where each domain specifies whether it is a Vercel `Production` or `Preview` deployment as well as what `git` branch it is associated with:
-* boost.polyverse.com
-  * Production Deployment
-  * `prod` branch
-* preview.boost.polyverse.com
-  * Preview Deployment
-  * `preview` branch
-* dev.boost.polyverse.com
-  * Preview Deployment
-  * `main` branch
+
+- boost.polyverse.com
+  - Production Deployment
+  - `prod` branch
+- preview.boost.polyverse.com
+  - Preview Deployment
+  - `preview` branch
+- dev.boost.polyverse.com
+  - Preview Deployment
+  - `main` branch
 
 Several GitHub Workflows exist to do continuous deployments to Vercel either automatically or manually in the case of deploying to `boost.polyverse.com`. These workflows can be found in `.github/workflows`.
 
 A GitHub Workflow named `deploy-to-production.yml` will allow you to manually deploy any code in the `prod` branch to our Vercel `Production` deployment. To run the workflow:
-* Click the `Actions` tab in the GitHub repo
-* Select the `CD: Deploy to Prod Domain` in the left workflow panel
-* Select `Run workflow`
-* Select `prod` as the branch in the dropdown
-* Click `Run workflow`
+
+- Click the `Actions` tab in the GitHub repo
+- Select the `CD: Deploy to Prod Domain` in the left workflow panel
+- Select `Run workflow`
+- Select `prod` as the branch in the dropdown
+- Click `Run workflow`
 
 ![Run Vercel Production Deployment](/images-docs/run-production-workflow.png)
 
@@ -309,12 +348,12 @@ This template ships with OpenAI `gpt-3.5-turbo` as the default. However, thanks 
 
 ## Resources
 
-* [NextJS Docs](https://nextjs.org/docs)
-* [Vercel KV Docs](https://vercel.com/docs/storage/vercel-kv)
-  * [@vercel/kv SDK/API Reference](https://vercel.com/docs/storage/vercel-kv/kv-reference)
-* [Redis Docs](https://redis.io/docs/)
-* [React Tutorials](https://react.dev/learn)
-* [React API Reference](https://react.dev/reference/react)
-* [Tailwind CSS Docs](https://tailwindcss.com/docs/installation)
-* [MochaJS Docs](https://mochajs.org/)
-* [Trunk Based Development](https://trunkbaseddevelopment.com/)
+- [NextJS Docs](https://nextjs.org/docs)
+- [Vercel KV Docs](https://vercel.com/docs/storage/vercel-kv)
+  - [@vercel/kv SDK/API Reference](https://vercel.com/docs/storage/vercel-kv/kv-reference)
+- [Redis Docs](https://redis.io/docs/)
+- [React Tutorials](https://react.dev/learn)
+- [React API Reference](https://react.dev/reference/react)
+- [Tailwind CSS Docs](https://tailwindcss.com/docs/installation)
+- [MochaJS Docs](https://mochajs.org/)
+- [Trunk Based Development](https://trunkbaseddevelopment.com/)
