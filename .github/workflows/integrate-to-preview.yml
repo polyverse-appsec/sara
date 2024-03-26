@@ -95,7 +95,16 @@ jobs:
           echo "CHANGELOG_CONTENT<<EOF" >> $GITHUB_ENV
           echo "$CHANGELOG_CONTENT" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
-    
+
+      - name: Fetch branches
+        run: |
+          git fetch origin main:main
+          git fetch origin preview:preview
+
+      - name: Checkout preview branch
+        run: |
+          git checkout preview
+
       - name: Retrieve Commit Logs
         run: |
           logs=$(git log --oneline preview..main)
