@@ -114,8 +114,9 @@ export const POST = auth(async (req: NextAuthRequest) => {
 
     // If the `username` data member shows up on the user status that means
     // the user has the GitHub App installed.
-    const gitHubAppInstalled = boostOrgUserStatus.backgroundAnalysisAuthorized !== undefined &&
-        boostOrgUserStatus.backgroundAnalysisAuthorized
+    const gitHubAppInstalled =
+      boostOrgUserStatus.backgroundAnalysisAuthorized !== undefined &&
+      boostOrgUserStatus.backgroundAnalysisAuthorized
 
     if (!gitHubAppInstalled) {
       console.log(

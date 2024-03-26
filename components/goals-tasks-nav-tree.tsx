@@ -207,7 +207,9 @@ const GoalsTaskNavTree = ({ projectId }: GoalsTaskNavTreeProps) => {
   return (
     <>
       <div className="flex flex-col items-center">
-        <Label.Root className="font-semibold" style={{ marginBottom: '0px' }}>Goals & Tasks Explorer</Label.Root>
+        <Label.Root className="font-semibold" style={{ marginBottom: '0px' }}>
+          Goals & Tasks Explorer
+        </Label.Root>
       </div>
       <Tree data={goalsTasksTreeData}>{renderGoalOrTaskNode}</Tree>
     </>

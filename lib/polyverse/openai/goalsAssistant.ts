@@ -188,11 +188,16 @@ export const handleRequiresActionStatusForProjectGoalChatting = async (
 export const createOpenAIAssistantPromptForGoals = (
   goalName: string,
   goalDescription: string,
-  goalAcceptanceCriteria?: string
+  goalAcceptanceCriteria?: string,
 ): string => `
       You will be asked a question in the context of trying to accomplish the high-level project goal named ${goalName}.
       The description of the goal named ${goalName} is as follows: ${goalDescription}
-      ${goalAcceptanceCriteria ? 'The acceptance criteria that needs to be satisfied to accomplish the goal is as follows: ' + goalAcceptanceCriteria : ''}
+      ${
+        goalAcceptanceCriteria
+          ? 'The acceptance criteria that needs to be satisfied to accomplish the goal is as follows: ' +
+            goalAcceptanceCriteria
+          : ''
+      }
 
       The answers you provide to asked questions ought to focus on trying to:
       1. Provide knowledge around understanding the project goal named ${goalName}
@@ -245,11 +250,7 @@ export const createThreadRunForProjectGoalChatting = async (
   assistantId: string,
   threadId: string,
 ): Promise<Run> => {
-
-  const prompt = createOpenAIAssistantPromptForGoals(
-    goalName,
-    goalDescription,
-  )
+  const prompt = createOpenAIAssistantPromptForGoals(goalName, goalDescription)
 
   return oaiClient.beta.threads.runs.create(threadId, {
     assistant_id: assistantId,

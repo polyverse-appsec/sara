@@ -133,25 +133,37 @@ const ProjectCreate = () => {
 
   const toggleDropdown = () => setIsAdvancedMenuOpen(!isAdvancedMenuOpen)
 
-  
- async function fetchGoalsWithRetry(projectId: any, maxAttempts = 60, delay = 5000, currentAttempt = 1) {
-  const goalsRes = await fetch(`/api/projects/${projectId}/goals`);
-  if (goalsRes.ok) {
-    const fetchedGoals = await goalsRes.json();
-    if (fetchedGoals.length > 0) {
-      console.log('Goals fetched successfully:', fetchedGoals);
-      router.push(`/goals/${fetchedGoals[0].id}`);
-    } else if (currentAttempt < maxAttempts) {
-      setTimeout(() => fetchGoalsWithRetry(projectId, maxAttempts, delay, currentAttempt + 1), delay);
+  async function fetchGoalsWithRetry(
+    projectId: any,
+    maxAttempts = 60,
+    delay = 5000,
+    currentAttempt = 1,
+  ) {
+    const goalsRes = await fetch(`/api/projects/${projectId}/goals`)
+    if (goalsRes.ok) {
+      const fetchedGoals = await goalsRes.json()
+      if (fetchedGoals.length > 0) {
+        console.log('Goals fetched successfully:', fetchedGoals)
+        router.push(`/goals/${fetchedGoals[0].id}`)
+      } else if (currentAttempt < maxAttempts) {
+        setTimeout(
+          () =>
+            fetchGoalsWithRetry(
+              projectId,
+              maxAttempts,
+              delay,
+              currentAttempt + 1,
+            ),
+          delay,
+        )
+      } else {
+        console.log('Failed to fetch goals after max attempts')
+      }
     } else {
-      console.log('Failed to fetch goals after max attempts');
+      console.log('Failed to fetch goals:', goalsRes.statusText)
+      router.push(`/projects/${projectId}`)
     }
-  } else {
-    console.log('Failed to fetch goals:', goalsRes.statusText);
-    router.push(`/projects/${projectId}`);
   }
-}
-
 
   useEffect(() => {
     const fetchUserStatus = async () => {
@@ -338,7 +350,7 @@ const ProjectCreate = () => {
                 setProjectIdForConfiguration(project.id)
 
                 //router.push(`/projects/${project.id}`)
-                await fetchGoalsWithRetry(project.id);
+                await fetchGoalsWithRetry(project.id)
               } catch (err) {
                 console.debug(
                   `Caught error when trying to create a project: ${err}`,

@@ -72,7 +72,6 @@ const ProjectIndex = () => {
     }
   }
 
-
   if (isLoading) {
     return <div>Loading...</div>
   }

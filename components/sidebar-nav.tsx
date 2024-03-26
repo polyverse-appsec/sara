@@ -157,132 +157,135 @@ const SidebarNav = () => {
       exit={{ width: 0 }}
       transition={{ type: 'spring', bounce: 0 }}
     >
-        {/* Logo section */}
-        <div className="flex flex-col items-center sticky top-0 z-10 p-4 m-5 rounded-full border-4 border-blue-500">
-          <Image
-            src={SaraPortrait}
-            alt="Sara's AI Assistant"
-            title="Sara's AI Assistant"
-            width={100}
-            height={100}
-            className="rounded-full"
-          />
-          <p className="text-lg mt-2">Sara</p>
-          <p className="text-sm italic">AI Assistant</p>
-        </div>
+      {/* Logo section */}
+      <div className="flex flex-col items-center sticky top-0 z-10 p-4 m-5 rounded-full border-4 border-blue-500">
+        <Image
+          src={SaraPortrait}
+          alt="Sara's AI Assistant"
+          title="Sara's AI Assistant"
+          width={100}
+          height={100}
+          className="rounded-full"
+        />
+        <p className="text-lg mt-2">Sara</p>
+        <p className="text-sm italic">AI Assistant</p>
+      </div>
 
-        {/* Navigation Buttons */}
-        <nav className="flex flex-col space-y-1 p-2">
-          {/* Projects Button */}
-          <button
-            className="flex items-center justify-center px-4 py-2 rounded-lg hover:bg-secondary hover:text-secondary-foreground transition-colors"
-            onClick={() => {
-              if (!activeBillingOrg) {
-                toast.error(`Please select billing organization`)
-                return
-              }
-              setProjectIdForConfiguration(null)
-              router.push('/projects')
-            }}
+      {/* Navigation Buttons */}
+      <nav className="flex flex-col space-y-1 p-2">
+        {/* Projects Button */}
+        <button
+          className="flex items-center justify-center px-4 py-2 rounded-lg hover:bg-secondary hover:text-secondary-foreground transition-colors"
+          onClick={() => {
+            if (!activeBillingOrg) {
+              toast.error(`Please select billing organization`)
+              return
+            }
+            setProjectIdForConfiguration(null)
+            router.push('/projects')
+          }}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth="1.5"
+            stroke="currentColor"
+            className="w-6 h-6"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-              className="w-6 h-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z"
-              />
-            </svg>
-            <span className="ml-3">Switch Project</span>
-          </button>
-          {/* ...other buttons */}
-        </nav>
-        
-        <div className="flex flex-col items-center mb-5">
-          <div className="w-1/2 border-t-2 rounded-xl border-blue-600 my-2"></div>
-          { projectIdForConfiguration ? 
-              <p className="text-orange-500 font-semibold">{selectedProject?.name}</p>
-          : <p>No Project Selected</p>}
-          <div className="w-1/2 border-t-2 rounded-xl border-blue-600 my-2"></div>
-        </div>
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z"
+            />
+          </svg>
+          <span className="ml-3">Switch Project</span>
+        </button>
+        {/* ...other buttons */}
+      </nav>
 
-        <div className="flex-grow overflow-y-auto no-scrollbar m-2">
-          {/* Resource Loader */}
-          {projectIdForConfiguration ? (
-            <GoalsTaskNavTree projectId={projectIdForConfiguration} />
-          ) : null}
-        </div>
+      <div className="flex flex-col items-center mb-5">
+        <div className="w-1/2 border-t-2 rounded-xl border-blue-600 my-2"></div>
+        {projectIdForConfiguration ? (
+          <p className="text-orange-500 font-semibold">
+            {selectedProject?.name}
+          </p>
+        ) : (
+          <p>No Project Selected</p>
+        )}
+        <div className="w-1/2 border-t-2 rounded-xl border-blue-600 my-2"></div>
+      </div>
 
+      <div className="flex-grow overflow-y-auto no-scrollbar m-2">
+        {/* Resource Loader */}
+        {projectIdForConfiguration ? (
+          <GoalsTaskNavTree projectId={projectIdForConfiguration} />
+        ) : null}
+      </div>
 
-        {/* Bottom Section */}
-        <div className="flex flex-col items-center sticky bottom-0 z-10 rounded-lg mt-2 w-full">
-          <div className="w-3/4 border-t-4 rounded-xl border-blue-600 my-2"></div>
-          <div className="flex items-center">
-            {/* Github User Info */}
-            {!saraSession ? (
-              <LoadingCircle />
-            ) : saraSession.picture ? (
-              <Image
-                className="w-8 h-8 transition-opacity duration-300 rounded-full select-none ring-1 ring-zinc-100/10 hover:opacity-80"
-                src={saraSession.picture ? `${saraSession.picture}&s=60` : ''}
-                alt={saraSession.name ?? 'Avatar'}
-                title={saraSession.name ?? 'Avatar'}
-                height={48}
-                width={48}
-              />
-            ) : (
-              <div className="flex items-center justify-center text-xs font-medium uppercase rounded-full select-none h-7 w-7 shrink-0 bg-muted/50 text-muted-foreground">
-                {saraSession.name ? getUserInitials(saraSession.name) : null}
-              </div>
-            )}
-            <span className="ml-2">{saraSession?.name}</span>
-            <div className="relative w-5 h-5 ml-2">
-              <GearIcon
-                className="w-full h-full transition-opacity duration-300 rounded-full select-none ring-1 ring-zinc-100/10 hover:opacity-50"
-                onClick={() => {
-                  setProjectIdForConfiguration(null)
-                  router.push('/settings')
-                }}
-              />
-              {(!orgIsPremium ||
-                !userGitHubAppInstalled ||
-                !orgGitHubAppInstalled) && (
-                <span className="absolute top-0 right-0 block w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
-              )}
+      {/* Bottom Section */}
+      <div className="flex flex-col items-center sticky bottom-0 z-10 rounded-lg mt-2 w-full">
+        <div className="w-3/4 border-t-4 rounded-xl border-blue-600 my-2"></div>
+        <div className="flex items-center">
+          {/* Github User Info */}
+          {!saraSession ? (
+            <LoadingCircle />
+          ) : saraSession.picture ? (
+            <Image
+              className="w-8 h-8 transition-opacity duration-300 rounded-full select-none ring-1 ring-zinc-100/10 hover:opacity-80"
+              src={saraSession.picture ? `${saraSession.picture}&s=60` : ''}
+              alt={saraSession.name ?? 'Avatar'}
+              title={saraSession.name ?? 'Avatar'}
+              height={48}
+              width={48}
+            />
+          ) : (
+            <div className="flex items-center justify-center text-xs font-medium uppercase rounded-full select-none h-7 w-7 shrink-0 bg-muted/50 text-muted-foreground">
+              {saraSession.name ? getUserInitials(saraSession.name) : null}
             </div>
+          )}
+          <span className="ml-2">{saraSession?.name}</span>
+          <div className="relative w-5 h-5 ml-2">
+            <GearIcon
+              className="w-full h-full transition-opacity duration-300 rounded-full select-none ring-1 ring-zinc-100/10 hover:opacity-50"
+              onClick={() => {
+                setProjectIdForConfiguration(null)
+                router.push('/settings')
+              }}
+            />
             {(!orgIsPremium ||
               !userGitHubAppInstalled ||
               !orgGitHubAppInstalled) && (
-              <div title="Sara not properly configured" className="ml-2">
-                <ExclamationTriangleIcon className="w-4 h-4 text-red-500" />
-              </div>
+              <span className="absolute top-0 right-0 block w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
             )}
           </div>
-
-          {/* Organization Info */}
-          <div className="px-4 py-2 rounded-lg mb-2">
-            <div className="text-sm text-zinc-500">{saraSession?.email}</div>
-            <div className="flex items-center mt-1">
-              {orgIsPremium && (
-                <div
-                  title="Premium Plan"
-                  className="flex items-center justify-center mr-2 p-1 border border-yellow-500 rounded-full"
-                >
-                  <StarFilledIcon className="w-2 h-2 text-yellow-500" />
-                </div>
-              )}
-              <span className="text-sm truncate">
-                {activeBillingOrg ? activeBillingOrg.name : 'No org selected'}
-              </span>
+          {(!orgIsPremium ||
+            !userGitHubAppInstalled ||
+            !orgGitHubAppInstalled) && (
+            <div title="Sara not properly configured" className="ml-2">
+              <ExclamationTriangleIcon className="w-4 h-4 text-red-500" />
             </div>
+          )}
+        </div>
+
+        {/* Organization Info */}
+        <div className="px-4 py-2 rounded-lg mb-2">
+          <div className="text-sm text-zinc-500">{saraSession?.email}</div>
+          <div className="flex items-center mt-1">
+            {orgIsPremium && (
+              <div
+                title="Premium Plan"
+                className="flex items-center justify-center mr-2 p-1 border border-yellow-500 rounded-full"
+              >
+                <StarFilledIcon className="w-2 h-2 text-yellow-500" />
+              </div>
+            )}
+            <span className="text-sm truncate">
+              {activeBillingOrg ? activeBillingOrg.name : 'No org selected'}
+            </span>
           </div>
         </div>
+      </div>
     </motion.aside>
   )
 }
