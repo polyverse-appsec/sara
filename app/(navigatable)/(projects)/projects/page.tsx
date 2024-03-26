@@ -6,7 +6,6 @@ import { ProjectPartDeux } from 'lib/data-model-types'
 import toast from 'react-hot-toast'
 
 import { useAppContext } from './../../../../lib/hooks/app-context'
-import getOrgProjects from './../../../rest-requests/get-org-projects'
 import ProjectDashboard from './project-dashboard'
 
 const ProjectIndex = () => {

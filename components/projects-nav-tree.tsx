@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import * as Label from '@radix-ui/react-label'
-import getOrgProjects from 'app/rest-requests/get-org-projects'
+import { getResource } from 'app/saraClient'
 import { ProjectPartDeux } from 'lib/data-model-types'
 import { useAppContext } from 'lib/hooks/app-context'
 import { NodeRendererProps, Tree } from 'react-arborist'
@@ -102,10 +102,14 @@ const ProjectsNavTree = () => {
       }
 
       try {
-        const projects = await getOrgProjects(activeBillingOrg.id)
+        const projects = await getResource<ProjectPartDeux[]>(
+          `/orgs/${activeBillingOrg.id}/projects`,
+          `Failed to sync org level details for navigation`,
+        )
+
         setProjects(projects)
       } catch (error) {
-        console.log(`Failed to sync org level details because: ${error}`)
+        console.error(error)
       }
 
       if (isMounted) {
