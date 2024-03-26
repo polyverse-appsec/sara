@@ -96,22 +96,16 @@ jobs:
           echo "$CHANGELOG_CONTENT" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
 
-      - name: Fetch branches
-        run: |
-          git fetch origin main:main
-          git fetch origin preview:preview
-
-      - name: Checkout preview branch
-        run: |
-          git checkout preview
-
       - name: Retrieve Commit Logs
+        id: commit_logs
         run: |
-          logs=$(git log --oneline preview..main)
-          echo "LOGS<<EOF" >> $GITHUB_ENV
-          echo "${logs}" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
-        
+          # Ensure 'main' and 'preview' are up-to-date in the local repo
+          git fetch origin main:refs/remotes/origin/main
+          git fetch origin preview:refs/remotes/origin/preview
+          # Now, retrieve the commit logs
+          logs=$(git log --oneline origin/preview..origin/main)
+          echo "LOGS=${logs}" >> $GITHUB_ENV
+  
       - name: Merge main into preview as fast-forward
         run: |
           git fetch origin
