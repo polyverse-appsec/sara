@@ -89,30 +89,24 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Get version from package.json
-        id: package_version
-        run: echo "::set-output name=VERSION::$(node -p "require('./package.json').version")"
-      
-      - name: Get changelog excerpt
-        id: changelog_excerpt
+      - name: Extract Version Number and Changelog Entries
         run: |
-          VERSION=$(node -p "require('./package.json').version")
-          CHANGELOG=$(sed -n "/## Version ${VERSION}/,/## Version/p" CHANGELOG.md)
-          CHANGELOG=${CHANGELOG%$'## Version'*}
-          echo "::set-output name=EXCERPT::${CHANGELOG}"
+          echo "VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
+          CHANGELOG_CONTENT="$(awk '/# Release Notes/{flag=1; next} /## Version/{flag=0} flag' CHANGELOG.md)"
+          echo "CHANGELOG_CONTENT<<EOF" >> $GITHUB_ENV
+          echo "$CHANGELOG_CONTENT" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
       
       - name: Merge preview into prod as fast-forward
         run: |
           git fetch origin
-          git checkout -b prod --track origin/prod
+          git checkout prod
           git merge --ff-only origin/preview
-          # List of integrated commits
-          COMMITS=$(git log --oneline origin/prod..origin/preview)
-          # Amend the merge commit message
-          git commit --amend -m "Merge Preview to Prod: v${{ steps.package_version.outputs.VERSION }}
 
-          ${{ steps.changelog_excerpt.outputs.EXCERPT }}
+          # Configure Git user to allow commit operation
+          git config user.name "Sara Automated GitHub Actions"
+          git config user.email "sara.github.actions@polyverse.ai"
 
-          Integrated commits:
-          ${COMMITS}"
+          # Amend the commit to include version and changelog
+          git commit --amend -m "Merge Preview to Prod: v${{ env.VERSION }} - ${{ env.CHANGELOG_CONTENT }}"
           git push origin prod
