@@ -395,16 +395,6 @@ export interface Goal extends BaseSaraObject {
   closedAt: Date
 }
 
-export interface User extends Record<string, any> {
-  id: string
-  username: string
-  image?: string
-  email?: string
-  defaultTask?: Task
-  projectIds?: string[]
-  lastActiveProjectId: string
-}
-
 // Define the simplified Organization type
 export type Organization = {
   login: string // The organization's login name
