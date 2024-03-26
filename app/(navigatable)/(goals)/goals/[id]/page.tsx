@@ -1,14 +1,14 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { ArrowLeftIcon } from '@radix-ui/react-icons'
+import { Flex } from '@radix-ui/themes'
+import { getResource } from 'app/saraClient'
 import LoadingSpinner from 'components/loading-spinner'
-import CollapsibleRenderableResourceContent from 'components/renderable-resource/collapsible-renderable-resource-content'
 import RenderableResource from 'components/renderable-resource/renderable-resource'
 import RenderableResourceContent from 'components/renderable-resource/renderable-resource-content'
 import { Button } from 'components/ui/button'
-import { useAppContext } from 'lib/hooks/app-context'
 
 import SaraChat from '../../../../../components/sara-chat/sara-chat'
 import {
@@ -42,38 +42,30 @@ const renderChatForGoal = (
 }
 
 const GoalIndex = ({ params: { id } }: { params: { id: string } }) => {
-  const router = useRouter()
-  const { projectIdForConfiguration } = useAppContext()
   const [goal, setGoal] = useState<GoalPartDeux | null>(null)
   const [health, setHealth] = useState<ProjectHealth | null>(null)
 
   useEffect(() => {
     ;(async () => {
-      const goalRes = await fetch(`/api/goals/${id}`)
-
-      if (!goalRes.ok) {
-        const errText = await goalRes.text()
-
-        throw new Error(
-          `Failed to get a success response when fetching goal '${id}' because: ${errText}`,
-        )
-      }
-
-      const fetchedGoal = (await goalRes.json()) as GoalPartDeux
-      setGoal(fetchedGoal)
-
-      const healthRes = await fetch(
-        `/api/projects/${projectIdForConfiguration}/health`,
+      const goal = await getResource<GoalPartDeux>(
+        `/goals/${id}`,
+        `Failed to get a success response when fetching goal '${id}'`,
       )
 
-      if (healthRes.ok) {
-        const fetchedHealth = (await healthRes.json()) as ProjectHealth
-        setHealth(fetchedHealth)
-      } else {
-        console.debug(`Failed to get project health`)
-      }
+      setGoal(goal)
+
+      const health = await getResource<ProjectHealth>(
+        `/projects/${goal.parentProjectId}/health`,
+        `Failed to get project health for '${goal.parentProjectId}' for goal '${id}'`,
+      )
+
+      setHealth(health)
     })()
   }, [id])
+
+  if (!goal) {
+    return null
+  }
 
   // 03/14/24: We are prepping for a demo and new customer on-boarding next
   // week. As a result we are cutting the usage of this rendered page for now.
@@ -82,43 +74,40 @@ const GoalIndex = ({ params: { id } }: { params: { id: string } }) => {
 
   return (
     <RenderableResource>
-      <Button
-        onClick={() => router.push(`/projects/${projectIdForConfiguration}/`)}
-        className="flex items-center text-lg bg-blue-600 p-2 mb-2"
-      >
-        <ArrowLeftIcon className="mr-2" />{' '}
-        {/* Adjust margin and size as needed */}
-        Back to Project
-      </Button>
-      <CollapsibleRenderableResourceContent
-        title={goal ? goal.name : '[No Goal Title]'}
-      >
-        <div className="flex flex-col items-center">
-          <div className="w-1/2 border-t-2 border-blue-600 my-2"></div>
-          {goal?.description ? (
-            <div className="my-1 flex text-center">
-              {/* <h3 className="text-lg font-semibold">Description</h3> */}
-              <p className="mx-2">{goal.description}</p>
+      <RenderableResourceContent>
+        <Button>
+          <Link href={`/projects/${goal.parentProjectId}`}>
+            <Flex align="center">
+              <ArrowLeftIcon className="mr-2" />
+              Back to Project
+            </Flex>
+          </Link>
+        </Button>
+        <div className="my-1 flex justify-between w-full">
+          <div className="flex flex-col">
+            <div className="flex items-center">
+              <h3 className="text-lg font-semibold">Goal:</h3>
+              <p className="mx-2">{goal.name}</p>
             </div>
-          ) : null}
-        </div>
-        <div className="my-1">
-          <div className="flex items-center">
-            <h3 className="text-lg font-semibold">Acceptance Criteria</h3>
-            <div className="mx-2">
-              {goal?.acceptanceCriteria
-                ? goal.acceptanceCriteria
-                : 'None specified'}
+            <div className="my-1 flex items-center">
+              <h3 className="text-xs text-gray-500 italic">ID</h3>
+              <p className="text-xs text-gray-500 italic ml-2">{goal.id}</p>
             </div>
+            {goal.description ? (
+              <div className="my-1 flex items-center">
+                <h3 className="text-lg font-semibold">Description</h3>
+                <p className="mx-2">{goal.description}</p>
+              </div>
+            ) : null}
+            {goal.acceptanceCriteria ? (
+              <div className="my-1 flex items-center">
+                <h3 className="text-lg font-semibold">Acceptance Criteria</h3>
+                <p className="mx-2">{goal.acceptanceCriteria}</p>
+              </div>
+            ) : null}
           </div>
         </div>
-        <div className="my-1">
-          <div className="flex items-center">
-            <h3 className="text-lg font-semibold">Number of tasks</h3>
-            <p className="mx-2">{goal?.taskIds ? goal.taskIds.length : 0}</p>
-          </div>
-        </div>
-      </CollapsibleRenderableResourceContent>
+      </RenderableResourceContent>
       <RenderableResourceContent>
         {/* Give the appearance of being healthy if we don't know */}
         {renderChatForGoal(goal, health ? health.readableValue : 'HEALTHY')}
