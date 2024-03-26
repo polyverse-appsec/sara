@@ -86,16 +86,15 @@ jobs:
           fetch-depth: 0
 
       - name: Extract Version Number
-        id: version_number
-        run: |
-          echo "::set-output name=VERSION::$(jq -r .version package.json)"
-      
+        id: package_version
+        run: echo "VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
+
       - name: Extract Changelog Entries
-        id: changelog
         run: |
-          version=$(jq -r .version package.json)
-          changelog=$(awk "/## Version $version/,/## Version /{if (!/## Version $version/)print}" CHANGELOG | head -n -1)
-          echo "::set-output name=CHANGELOG::${changelog//%/%25}"
+          CHANGELOG_CONTENT="$(awk '/# Release Notes/{flag=1; next} /## Version/{flag=0} flag' CHANGELOG.md)"
+          echo "CHANGELOG_CONTENT<<EOF" >> $GITHUB_ENV
+          echo "$CHANGELOG_CONTENT" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
         
       - name: Retrieve Commit Logs
         id: commit_logs
