@@ -14,6 +14,7 @@
 - Created separate DB instances for Vercel `preview` and `prod`
 - Added delete button to project tiles in /projects
 - Reduced settings button sizes
+- Restyled nav-bar
 
 ### Bug Fixes
 

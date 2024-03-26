@@ -141,12 +141,24 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
     <RenderableResource>
       <RenderableResourceContent>
         <div className="my-1 flex justify-between w-full">
-          <div className="flex items-center">
-            <h3 className="text-lg font-semibold">Project:</h3>
-            <p className="mx-2">{project.name}</p>
-          </div>
           <div className="flex flex-col">
-            <div className="mb-3">
+            <div className="flex items-center">
+              <h3 className="text-lg font-semibold">Project:</h3>
+              <p className="mx-2">{project.name}</p>
+            </div>
+            <div className="my-1 flex items-center">
+              <h3 className="text-xs text-gray-500 italic">ID</h3>
+              <p className="text-xs text-gray-500 italic ml-2">{project.id}</p>
+            </div>
+            {project.description ? (
+              <div className="my-1 flex items-center">
+                <h3 className="text-lg font-semibold">Description</h3>
+                <p className="mx-2">{project.description}</p>
+              </div>
+            ) : null}
+          </div>
+          <div className="flex">
+            <div className="mr-2">
               <ProjectStatusCard
                 health={health}
                 lastRefreshedAt={project.lastRefreshedAt}
@@ -229,16 +241,6 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
             </Button>
           </div>
         </div>
-        <div className="my-1 flex items-center">
-          <h3 className="text-lg font-semibold">ID</h3>
-          <p className="mx-2">{project.id}</p>
-        </div>
-        {project.description ? (
-          <div className="my-1 flex items-center">
-            <h3 className="text-lg font-semibold">Description</h3>
-            <p className="mx-2">{project.description}</p>
-          </div>
-        ) : null}
       </RenderableResourceContent>
       <RenderableResourceContent>
         <GoalsManager projectId={id} goals={goals} />
