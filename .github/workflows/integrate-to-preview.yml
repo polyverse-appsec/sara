@@ -95,28 +95,14 @@ jobs:
           echo "CHANGELOG_CONTENT<<EOF" >> $GITHUB_ENV
           echo "$CHANGELOG_CONTENT" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
-
-      - name: Retrieve Commit Logs
-        id: commit_logs
-        run: |
-          # Ensure 'main' and 'preview' are up-to-date in the local repo
-          git fetch origin main:refs/remotes/origin/main
-          git fetch origin preview:refs/remotes/origin/preview
-          # Now, retrieve the commit logs and encode them in Base64
-          logs=$(git log --oneline origin/preview..origin/main | base64)
-          echo "LOGS=${logs}" >> $GITHUB_ENV
           
       - name: Merge main into preview as fast-forward
         run: |
           git fetch origin
           git checkout preview
           git merge --ff-only origin/main
-          # Decode the Base64 encoded logs
-          logs=$(echo ${{ env.LOGS }} | base64 --decode)
+
           # Amend the commit to include version, changelog, and commit logs
-          git commit --amend -m "Merge main into preview: v${{ env.VERSION }} - ${{ env.CHANGELOG_CONTENT }}
-          
-          Integrated commits:
-          ${logs}"
+          git commit --amend -m "Merge main into preview: v${{ env.VERSION }} - ${{ env.CHANGELOG_CONTENT }}"
           git push origin preview
           
