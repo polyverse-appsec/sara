@@ -102,6 +102,10 @@ jobs:
           git checkout preview
           git merge --ff-only origin/main
 
+          # Configure Git user to allow commit operation
+          git config user.name "Sara Automated GitHub Actions"
+          git config user.email "sara.github.actions@polytest.ai"
+
           # Amend the commit to include version, changelog, and commit logs
           git commit --amend -m "Merge main into preview: v${{ env.VERSION }} - ${{ env.CHANGELOG_CONTENT }}"
           git push origin preview
