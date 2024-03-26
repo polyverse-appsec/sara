@@ -65,11 +65,11 @@ const SettingsOrgUpgrade = () => {
       <RenderableResourceContent>
         {orgIsPremium ? (
           <p className="text-md font-bold text-green-600 mb-2">
-            {activeBillingOrg?.name} is on the premium plan
+            User {saraSession?.name} on {activeBillingOrg?.name} is on the premium plan
           </p>
         ) : (
           <p className="text-md font-bold mb-2">
-            {activeBillingOrg?.name} is on the free plan
+            User {saraSession?.name} on {activeBillingOrg?.name} is on the free plan
           </p>
         )}
         <Link
@@ -89,25 +89,25 @@ const SettingsOrgUpgrade = () => {
       </RenderableResourceContent>
       <RenderableResourceContent>
         <div className="flex items-center">
-          <RenderableResourceContent>
-            <div className="flex flex-col items-start">
-              <p>Premium Plan</p>
-              <p>✅ Unlimited project creation</p>
-              <p>✅ Access to private repositories for projects</p>
-            </div>
-          </RenderableResourceContent>
-          <RenderableResourceContent>
+          <div className={!orgIsPremium ? "bg-background shadow-md rounded-lg p-6 border-2 border-orange-500 mb-4" : "bg-background shadow-md rounded-lg p-6 border mb-4"}>
             <div className="flex flex-col items-start">
               <p>Free Plan</p>
               <p>❌ Project creation limit</p>
               <p>❌ Only public respositories for projects</p>
             </div>
-          </RenderableResourceContent>
+          </div>
+          <div className={orgIsPremium ? "bg-background shadow-md rounded-lg p-6 border-2 border-orange-500 mb-4" : "bg-background shadow-md rounded-lg p-6 border mb-4"}>
+            <div className="flex flex-col items-start">
+              <p>Premium Plan</p>
+              <p>✅ Unlimited project creation</p>
+              <p>✅ Access to private repositories for projects</p>
+            </div>
+          </div>
         </div>
         {orgIsPremium ? (
           <div className="inline-flex items-center justify-between w-full text-sm">
             <div className="flex justify-between items-center w-full font-semibold bg-white-600 shadow-md rounded-lg p-2 cursor-not-allowed opacity-50">
-              <p>{activeBillingOrg?.name} is already on premium plan</p>
+              <p>You are already on premium plan for {activeBillingOrg?.name}</p>
               <IconExternalLink className="w-4 h-4 ml-auto" />
             </div>
           </div>

@@ -218,8 +218,8 @@ const SidebarNav = () => {
       </div>
 
       {/* Bottom Section */}
-      <div className="flex flex-col items-center sticky bottom-0 z-10 rounded-lg mt-2 w-full">
-        <div className="w-3/4 border-t-4 rounded-xl border-blue-600 my-2"></div>
+      <div className="w-3/4 mx-auto border-t-4 rounded-xl border-blue-600 mt-2"></div>
+      <div className="flex flex-col items-center sticky bottom-0 z-10 w-full p-2 bg-orange-200">
         <div className="flex items-center">
           {/* Github User Info */}
           {!saraSession ? (
@@ -263,7 +263,7 @@ const SidebarNav = () => {
         </div>
 
         {/* Organization Info */}
-        <div className="px-4 py-2 rounded-lg mb-2">
+        <div className="px-4 mt-2 rounded-lg">
           <div className="text-sm text-zinc-500">{saraSession?.email}</div>
           <div className="flex items-center mt-1">
             {orgIsPremium && (

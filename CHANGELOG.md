@@ -2,6 +2,20 @@
 
 # Release Notes
 
+## Version 0.21.0: March 26th, 2024
+
+### New Features
+
+- N/A
+
+### Enhancements
+
+- UI enhancements for billing status settings page, create projects page (input validation), sidebar
+
+### Bug Fixes
+
+- N/A
+
 ## Version 0.20.0: March 25th, 2024
 
 ### New Features

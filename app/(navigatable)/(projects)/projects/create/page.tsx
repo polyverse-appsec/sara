@@ -131,6 +131,8 @@ const ProjectCreate = () => {
 
   const [isAdvancedMenuOpen, setIsAdvancedMenuOpen] = useState(false)
 
+  const [ displayRequiredText, setDisplayRequiredText ] = useState(false)
+
   const toggleDropdown = () => setIsAdvancedMenuOpen(!isAdvancedMenuOpen)
 
   async function fetchGoalsWithRetry(
@@ -222,7 +224,10 @@ const ProjectCreate = () => {
             </p>
           </div>
           <div className="my-1">
-            <h3 className="text-lg font-semibold">Set Project Name</h3>
+            <div className="flex items-center">
+              <h3 className="text-lg font-semibold">Set Project Name</h3>
+              { displayRequiredText && !projectName && <span className="ml-2 text-sm text-red-500">Required</span> }
+            </div>
             <Input
               value={projectName}
               onChange={(e) => setProjectName(e.target.value)}
@@ -230,9 +235,12 @@ const ProjectCreate = () => {
           </div>
           {/* This is the primary data source selector */}
           <div className="my-1">
-            <h3 className="text-lg font-semibold">
-              Select Project Data Sources
-            </h3>
+            <div className="flex items-center">
+              <h3 className="text-lg font-semibold">
+                Select Project Data Sources
+              </h3>
+              { displayRequiredText && controlledProjectDataSources.length === 0 && <span className="ml-2 text-sm text-red-500">Required</span> }
+            </div>
             <SingleDataSourceSelector
               orgName={activeBillingOrg.name}
               setControlledProjectDataSources={(gitHubRepos) =>
@@ -242,6 +250,7 @@ const ProjectCreate = () => {
           </div>
           {isAdvancedMenuOpen && (
             <div>
+              <div className="w-3/4 border-t-2 border-blue-600 my-2"></div>
               <div className="my-1">
                 <h3 className="text-lg font-semibold">
                   Select Secondary Project Data Sources
@@ -314,6 +323,7 @@ const ProjectCreate = () => {
               setSaveButtonEnabled(false)
 
               if (!projectName) {
+                setDisplayRequiredText(true)
                 toast.error(`Please provide a project name`)
                 setSaveButtonEnabled(true)
                 return
@@ -333,6 +343,7 @@ const ProjectCreate = () => {
                 !controlledProjectDataSources ||
                 controlledProjectDataSources.length === 0
               ) {
+                setDisplayRequiredText(true)
                 toast.error(`Please select a primary data source`)
                 setSaveButtonEnabled(true)
                 return
