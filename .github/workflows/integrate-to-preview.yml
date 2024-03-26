@@ -95,22 +95,23 @@ jobs:
           echo "CHANGELOG_CONTENT<<EOF" >> $GITHUB_ENV
           echo "$CHANGELOG_CONTENT" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
-        
+    
       - name: Retrieve Commit Logs
-        id: commit_logs
         run: |
-          # Assuming 'main' and 'preview' are branch names
           logs=$(git log --oneline preview..main)
-          echo "::set-output name=LOGS::${logs//%/%25}"
-          
+          echo "LOGS<<EOF" >> $GITHUB_ENV
+          echo "${logs}" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+        
       - name: Merge main into preview as fast-forward
         run: |
           git fetch origin
           git checkout -b preview --track origin/preview
           git merge --ff-only origin/main
           # Amend the commit to include version, changelog, and commit logs
-          git commit --amend -m "Merge main into preview: v${{ steps.version_number.outputs.VERSION }} - ${{ steps.changelog.outputs.CHANGELOG }}
+          git commit --amend -m "Merge main into preview: v${VERSION} - ${CHANGELOG_CONTENT}
           
           Integrated commits:
-          ${{ steps.commit_logs.outputs.LOGS }}"
+          ${LOGS}"
           git push origin preview
+  
