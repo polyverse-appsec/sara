@@ -1,7 +1,6 @@
 import { userInfo } from 'os'
 
 import {
-  Project,
   ProjectDataReference,
   Repository,
 } from '../../data-model-types'
@@ -178,60 +177,6 @@ export async function deleteProject(
 
     throw new Error(errMsg)
   }
-}
-
-export async function getUserProjects(
-  orgName: string,
-  email: string,
-): Promise<Project[]> {
-  console.debug(`Backend call getUserProjects`)
-  const url = `${USER_SERVICE_URI}/api/user_project/${orgName}/projects`
-
-  console.debug(`Backend call getUserProjects - url: ${url}`)
-
-  const signedHeader = createSignedHeader(email)
-  const res = await fetch(url, {
-    method: 'GET',
-    headers: {
-      ...signedHeader,
-    },
-  })
-
-  if (!res.ok) {
-    const errResMsg = await res.text()
-    const errLogMsg = `Got a failure response while trying to get projects for '${orgName}' for '${email}' - Status: ${res.status} - Message: ${errResMsg}`
-
-    console.error(`${errLogMsg}`)
-
-    throw new Error(errLogMsg)
-  }
-
-  const resJson = await res.json()
-
-  console.debug(
-    `Backend call getUserProjects - resJson: ${JSON.stringify(resJson)}`,
-  )
-
-  // Soooooo this is super weird...
-  // On non-production the JSON we deserialize is actually a list of projects.
-  // On production we are getting a JSON body in the HTTP response body. What we
-  // do here is check to see if resJson has a body property which is a
-  // serialized JSON string. If so we return that deserialize. Otherwise we
-  // return `resJson` as is expecting it to be an array of projects
-  if (resJson.body) {
-    console.debug(
-      `Backend call getUserProjects - parsing and returning resJson.body: ${resJson.body}`,
-    )
-    return JSON.parse(resJson.body) as Project[]
-  }
-
-  console.debug(
-    `Backend call getUserProjects - returning resJson already as parsed JSON: ${JSON.stringify(
-      resJson,
-    )}`,
-  )
-
-  return resJson as Project[]
 }
 
 export async function getBoostOrgUserStatus(

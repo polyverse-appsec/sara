@@ -477,13 +477,6 @@ export interface Chat extends Record<string, any> {
   thread?: Threads.Thread
 }
 
-export type ServerActionResult<Result> = Promise<
-  | Result
-  | {
-      error: string
-    }
->
-
 // TODO: Change name to ProjectFileInfoSchema
 export const ProjectDataReferenceSchema = Joi.object({
   // TODO: Should we add a format to the name that must be matched?

@@ -7,7 +7,6 @@ import React, {
   useEffect,
   useState,
 } from 'react'
-import { useSession } from 'next-auth/react'
 
 import {
   type GoalPartDeux,
@@ -15,27 +14,13 @@ import {
   type ProjectHealth,
   type ProjectPartDeux,
   type Repository,
-  type User,
 } from '../data-model-types'
-import { getOrCreateUserFromSession } from './../../app/_actions/get-or-create-user-from-session'
 
 interface UserSessionData {
   activeProjectId: string | null
 }
 
 interface AppContextType {
-  /////////////////////////////////////////////////////////////////////////////
-  // Start Old App Context
-  // 03/13/24: All of the app context between this block comment and the ending
-  // one ought to be deleted once we cut over to the new UI workflows.
-  /////////////////////////////////////////////////////////////////////////////
-  user: User | null
-  setUser: (user: User | null) => void
-
-  /////////////////////////////////////////////////////////////////////////////
-  // End Old App Context
-  /////////////////////////////////////////////////////////////////////////////
-
   activeBillingOrg: OrgPartDeux | null
   setActiveBillingOrg: (org: OrgPartDeux) => void
 
@@ -63,8 +48,6 @@ interface AppProviderProps {
 }
 
 export function AppProvider({ children }: AppProviderProps) {
-  const [user, setUser] = useState<User | null>(null)
-
   const [selectedProjectRepositories, setSelectedProjectRepositories] =
     useState<Repository[] | null>(null)
 
@@ -77,8 +60,6 @@ export function AppProvider({ children }: AppProviderProps) {
   >(null)
 
   const value = {
-    user,
-    setUser,
     selectedProjectRepositories,
     setSelectedProjectRepositories,
     activeBillingOrg,
@@ -86,27 +67,6 @@ export function AppProvider({ children }: AppProviderProps) {
     projectIdForConfiguration,
     setProjectIdForConfiguration,
   }
-
-  const { data: session } = useSession()
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      if (session) {
-        try {
-          const user = await getOrCreateUserFromSession(session)
-          setUser(user) // Set the user in context
-          // You can also set other states here based on the returned user data
-        } catch (error) {
-          console.error('Error fetching user:', error)
-          // Handle errors appropriately
-        }
-      } else {
-        setUser(null) // Reset user in context if session is not available
-      }
-    }
-
-    fetchUser()
-  }, [session])
 
   // Ehhh... This is probably the wrong construct to piggyback on this logic
   // but will be good enough for our first pass through. This project config

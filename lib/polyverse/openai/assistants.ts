@@ -3,10 +3,8 @@ import { Assistant } from 'openai/resources/beta/assistants/assistants'
 
 import packageInfo from '../../../package.json'
 import {
-  Project,
   ProjectDataReference,
   ProjectPartDeux,
-  Repository,
   type PromptFileInfo,
 } from '../../data-model-types'
 import { BoostProjectStatus } from '../backend/get-boost-project-status'

@@ -14,16 +14,11 @@ import { type ProjectHealth, type ProjectPartDeux } from 'lib/data-model-types'
 import { useSession } from 'next-auth/react'
 import toast from 'react-hot-toast'
 
-import {
-  getOrgStatus,
-  getOrgUserStatus,
-  renderHealthIcon,
-} from './../app/react-utils'
+import { getOrgStatus, getOrgUserStatus } from './../app/react-utils'
 import { useAppContext } from './../lib/hooks/app-context'
 import SaraPortrait from './../public/Sara_Cartoon_Portrait.png'
 import GoalsTaskNavTree from './goals-tasks-nav-tree'
 import LoadingCircle from './loading-spinner'
-import ProjectsNavTree from './projects-nav-tree'
 
 function getUserInitials(name: string) {
   const [firstName, lastName] = name.split(' ')
@@ -33,7 +28,6 @@ function getUserInitials(name: string) {
 const SidebarNav = () => {
   const router = useRouter()
   const {
-    user,
     activeBillingOrg,
     setActiveBillingOrg,
     projectIdForConfiguration,
