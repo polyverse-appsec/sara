@@ -11,10 +11,7 @@ import {
 } from '../../../../../components/ui/dropdown-menu'
 import { getResource } from './../../../../../app/saraClient'
 import LoadingSpinner from './../../../../../components/loading-spinner'
-import {
-  type GitHubRepo,
-  type ProjectDataSource,
-} from './../../../../../lib/data-model-types'
+import { type GitHubRepo } from './../../../../../lib/data-model-types'
 
 interface DataSourceSelectorProps {
   orgName: string

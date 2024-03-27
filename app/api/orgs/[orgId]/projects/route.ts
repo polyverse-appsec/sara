@@ -176,6 +176,14 @@ export const POST = auth(async (req: NextAuthRequest) => {
           // Project Data Source properties
           parentProjectId: projectBaseSaraObject.id,
           uri: projectDataSource.htmlUrl,
+
+          // Default to `PRIMARY_READ_WRITE` for now since we don't allow
+          // on this property at the moment
+          accessPermission: 'PRIMARY_READ_WRITE',
+
+          // Default to `UNKNOWN` for now since we don't have any business logic
+          // supporting this property yet
+          visibility: 'UNKNOWN'
         }) as ProjectDataSource,
     )
 

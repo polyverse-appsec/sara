@@ -1,27 +1,30 @@
-import { type ProjectDataSource } from './../../data-model-types'
+import { type ProjectDataSource, type ProjectDataSourceAccessPermission } from './../../data-model-types'
 import {
   createSignedHeader,
-  getBodyFromBoostServiceResponse,
   USER_SERVICE_URI,
 } from './utils'
 
-export const enum ResourceType {
+export interface BoostProjectResourceRequestBody {
+    uri: string
+    type: BoostProjectResourceTypeRequestBody
+  }
+
+export const enum BoostProjectResourceTypeRequestBody {
   PrimaryRead = 'primary_read', // user read-only to source
   PrimaryReadWrite = 'primary_write', // user read/write to source
   ReferenceRead = 'reference_read', // user read-only to reference
 }
 
-export const enum ResourceStatus {
-  Public = 'public',
-  Private = 'private',
-  Unknown = 'unknown',
-  Error = 'error',
+type BoostProjectResourceAccessTypesByProjectDataSourceAccessPermissionKeys = {
+    [projectDataSourceAccessPermissionKey in ProjectDataSourceAccessPermission]: BoostProjectResourceTypeRequestBody
 }
 
-export interface BoostProjectResource {
-  uri: string
-  type: string
-  access: ResourceStatus
+const boostProjectResourceAccessTypesByProjectDataSourceAccessPermissionKeys: BoostProjectResourceAccessTypesByProjectDataSourceAccessPermissionKeys =
+{
+    PRIMARY_READ: BoostProjectResourceTypeRequestBody.PrimaryRead,
+    PRIMARY_READ_WRITE: BoostProjectResourceTypeRequestBody.PrimaryReadWrite,
+    REFERENCE_READ: BoostProjectResourceTypeRequestBody.ReferenceRead
+
 }
 
 export interface UserProjectRequestBody {
@@ -32,7 +35,7 @@ export interface UserProjectRequestBody {
   title?: string
   // guidelines are a keyed list of guidelines for the project
   guidelines?: Record<string, string>[]
-  resources: BoostProjectResource[]
+  resources: BoostProjectResourceRequestBody[]
   lastUpdated?: number
 }
 
@@ -52,8 +55,8 @@ const createBoostProject = async (
     (dataSource) =>
       ({
         uri: dataSource.uri,
-        type: ResourceType.PrimaryReadWrite,
-      }) as BoostProjectResource,
+        type: boostProjectResourceAccessTypesByProjectDataSourceAccessPermissionKeys[primaryDataSource.accessPermission],
+      }) as BoostProjectResourceRequestBody,
   )
 
   // create ordered array of guidelines, with each guideline having a key

@@ -98,6 +98,28 @@ export interface ProjectPartDeux extends BaseSaraObject {
   lastRefreshedAt: Date
 }
 
+export enum ProjectDataSourceAccessPermission {
+  // User read-only to source
+  PRIMARY_READ = 'PRIMARY_READ',
+
+  // User read/write to source
+  PRIMARY_READ_WRITE = 'PRIMARY_READ_WRITE',
+
+  // User read-only to reference
+  REFERENCE_READ = 'REFERENCE_READ',
+}
+
+type ProjectDataSourceAccessPermissionString = keyof typeof ProjectDataSourceAccessPermission
+
+enum ProjectDataSourceVisibility {
+  PUBLIC = 'PUBLIC',
+  PRIVATE = 'PRIVATE',
+  UNKNOWN = 'UNKNOWN',
+  ERROR = 'ERROR',
+}
+
+type ProjectDataSourceVisibilityString = keyof typeof ProjectDataSourceVisibility
+
 // TODO: Test this with a Joi schema
 // TODO: This type differs from `ProjectDataReference` right now as
 // `ProjectDataReference` represents the return values from
@@ -112,6 +134,13 @@ export interface ProjectDataSource extends BaseSaraObject {
   // be fetchable immediately due to access controls put in place
   // by those that maintain/house the source.
   uri: string
+
+  // The permissions granted for this project data source when
+  // trying to access it
+  accessPermission: ProjectDataSourceAccessPermissionString
+
+  // The visibility of the project data source to others
+  visibility: ProjectDataSourceVisibilityString
 }
 
 // TODO: Test this with a Joi schema
