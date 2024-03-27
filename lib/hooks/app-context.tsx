@@ -130,7 +130,7 @@ export function AppProvider({ children }: AppProviderProps) {
         setActiveProjectDetails(newActiveProjectDetails)
 
         // Our behavior will pivot based on the health of the project.
-        // Once we the project as 'HEALTHY' we will start re-running this
+        // Once we see the project as 'HEALTHY' we will start re-running this
         // logic once every 60 seconds. If it isn't then we will re-run it
         // more frequently.
         if (projectHealth.readableValue === 'HEALTHY') {
