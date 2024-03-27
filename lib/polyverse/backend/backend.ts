@@ -2,7 +2,6 @@ import { userInfo } from 'os'
 
 import {
   ProjectDataReference,
-  Repository,
 } from '../../data-model-types'
 import { createSignedHeader, USER_SERVICE_URI } from './utils'
 
@@ -104,80 +103,6 @@ export interface UserProjectData {
     guidelines? : Record<string, string>[],
     resources : ProjectResource[],
     lastUpdated? : number,
-}
-
-export async function createProject(
-  projectId: string,
-  orgId: string,
-  name: string,
-  description: string,
-  primaryDataSource: Repository,
-  secondaryDataSources: Repository[],
-  projectGuidelines: string[],
-  email: string,
-): Promise<string> {
-  console.debug(`Invoking backend call createProject`)
-  const url = `${USER_SERVICE_URI}/api/user_project/${orgId}/${projectId}`
-
-  try {
-    const resources = [primaryDataSource, ...secondaryDataSources].map(
-      (dataSource) => ({
-        uri: dataSource.html_url,
-        type: ResourceType.PrimaryReadWrite,
-     } as ProjectResource),
-    )
-
-    // create ordered array of guidelines, with each guideline having a key
-    //    that is its numeric order in list
-    const guidelines = projectGuidelines.map((guideline, index) => {
-        return { [(index + 1).toString()]: guideline }
-        })
-
-    const signedHeader = createSignedHeader(email)
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...signedHeader,
-      },
-      body: JSON.stringify({
-        resources,
-        title: name,
-        description,
-        guidelines: guidelines,
-      } as UserProjectData),
-    })
-
-    if (!res.ok) {
-      console.error(
-        `Got a failure response while trying to start project for '${
-          primaryDataSource.orgId
-        }/${projectId} for ${email}' - Status: ${
-          res.status
-        } - Error: ${await res.text()}`,
-      )
-      return ''
-    }
-
-    // TODO: Return this if we actually get something in the response
-    // TODO: Properly type the return of this
-    const jsonRes = await res.json()
-
-    if (!jsonRes.body) {
-      throw new Error(`Response to GET ${url} doesn't have the 'body' property`)
-    }
-
-    const createdProject = JSON.parse(jsonRes.body)
-
-    return ''
-  } catch (error) {
-    console.error(
-      'Error making a request or parsing a response for project ID: ',
-      error,
-    )
-  }
-
-  return ''
 }
 
 export async function rediscoverProject(

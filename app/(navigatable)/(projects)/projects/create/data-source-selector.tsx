@@ -5,6 +5,7 @@ import * as Checkbox from '@radix-ui/react-checkbox'
 import { CheckIcon } from '@radix-ui/react-icons'
 import * as ScrollArea from '@radix-ui/react-scroll-area'
 
+import { getResource } from './../../../../../app/saraClient'
 import LoadingSpinner from './../../../../../components/loading-spinner'
 import { type GitHubRepo } from './../../../../../lib/data-model-types'
 
@@ -46,17 +47,11 @@ const DataSourceSelector = ({
 
   useEffect(() => {
     ;(async () => {
-      const res = await fetch(`/api/integrations/github/orgs/${orgName}/repos`)
+      const repos = await getResource<GitHubRepo[]>(
+        `/integrations/github/orgs/${orgName}/repos`,
+        'Failed to get a success response when fetching GitHub repos',
+      )
 
-      if (!res.ok) {
-        const errText = await res.text()
-
-        throw new Error(
-          `Failed to get a success response when fetching GitHub repos because: ${errText}`,
-        )
-      }
-
-      const repos = (await res.json()) as GitHubRepo[]
       const checkboxStates = createInitialDataSourceCheckboxStates(repos)
 
       setDataSourceCheckboxStates(checkboxStates)

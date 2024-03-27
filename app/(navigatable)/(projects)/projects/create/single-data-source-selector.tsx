@@ -9,8 +9,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '../../../../../components/ui/dropdown-menu'
+import { getResource } from './../../../../../app/saraClient'
 import LoadingSpinner from './../../../../../components/loading-spinner'
-import { type GitHubRepo } from './../../../../../lib/data-model-types'
+import {
+  type GitHubRepo,
+  type ProjectDataSource,
+} from './../../../../../lib/data-model-types'
 
 interface DataSourceSelectorProps {
   orgName: string
@@ -30,17 +34,11 @@ const SingleDataSourceSelector = ({
 
   useEffect(() => {
     ;(async () => {
-      const res = await fetch(`/api/integrations/github/orgs/${orgName}/repos`)
+      const repos = await getResource<GitHubRepo[]>(
+        `/integrations/github/orgs/${orgName}/repos`,
+        `Failed to get GitHub repos for organization '${orgName}'`,
+      )
 
-      if (!res.ok) {
-        const errText = await res.text()
-
-        throw new Error(
-          `Failed to get a success response when fetching GitHub repos because: ${errText}`,
-        )
-      }
-
-      const repos = (await res.json()) as GitHubRepo[]
       setGitHubRepos(repos)
 
       setShouldShowLoadingSpinner(false)
@@ -80,8 +78,9 @@ const SingleDataSourceSelector = ({
                 key={repo.name}
                 onSelect={(event) => {
                   setSelectedGithubRepo(repo)
+
                   // Now update the primary data source...
-                  setControlledProjectDataSources([repo]) // Fix: Wrap repo in an array since we currently only allow single data source to be selected
+                  setControlledProjectDataSources([repo])
                 }}
               >
                 <span className="ml-2 text-ellipsis whitespace-nowrap overflow-hidden">

@@ -3,10 +3,10 @@
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { getOrgStatus, getOrgUserStatus } from 'app/react-utils'
-
 import { useSession } from 'next-auth/react'
 import toast from 'react-hot-toast'
 
+import { createResource } from './../../../../../app/saraClient'
 import { type SaraSession } from './../../../../../auth'
 import { Button } from './../../../../../components/ui/button'
 import { Input } from './../../../../../components/ui/input'
@@ -18,93 +18,8 @@ import {
 import { useAppContext } from './../../../../../lib/hooks/app-context'
 import { projectNameSchema } from './../../../../../lib/polyverse/db/validators'
 import DataSourceSelector from './data-source-selector'
-import SingleDataSourceSelector from './single-data-source-selector'
 import GuidelineInputs from './guideline-inputs'
-
-const postProject = async (
-  billingOrgId: string,
-  name: string,
-  description: string,
-  projectDataSources: GitHubRepo[],
-  projectGuidelines: string[],
-): Promise<ProjectPartDeux> => {
-  const projectBody = {
-    name,
-    description,
-    projectDataSources,
-    projectGuidelines,
-  }
-
-  const res = await fetch(`/api/orgs/${billingOrgId}/projects`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(projectBody),
-  })
-
-  if (!res.ok) {
-    const errText = await res.text()
-    console.debug(`Failed to POST project because: ${errText}`)
-
-    throw new Error(`Failed to POST project`)
-  }
-
-  return (await res.json()) as ProjectPartDeux
-}
-
-const postDefaultGoal = async (
-  billingOrgId: string,
-  projectId: string,
-): Promise<GoalPartDeux> => {
-  const goalBody = {
-    orgId: billingOrgId,
-    parentProjectId: projectId,
-    name: 'Learn More About Your Project',
-    description:
-      'Provide details that will help me learn about my project. This includes details about the code in my project as well as the software packages/libraries it consumes.',
-  }
-
-  const res = await fetch(`/api/goals`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(goalBody),
-  })
-
-  if (!res.ok) {
-    const errText = await res.text()
-    console.debug(`Failed to POST default project goal because: ${errText}`)
-
-    throw new Error(`Failed to POST default project goal`)
-  }
-
-  return (await res.json()) as GoalPartDeux
-}
-
-const postChatForDefaultGoal = async (goalId: string, query: string) => {
-  const chatBody = {
-    query,
-  }
-
-  const res = await fetch(`/api/goals/${goalId}/chats`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(chatBody),
-  })
-
-  if (!res.ok) {
-    const errText = await res.text()
-    console.debug(
-      `Failed to POST chat for default project goal because: ${errText}`,
-    )
-
-    throw new Error(`Failed to POST chat for default project goal`)
-  }
-}
+import SingleDataSourceSelector from './single-data-source-selector'
 
 const ProjectCreate = () => {
   const router = useRouter()
@@ -136,7 +51,8 @@ const ProjectCreate = () => {
 
   const [displayRequiredText, setDisplayRequiredText] = useState(false)
 
-  const [ controlledProjectGuidelines, setControlledProjectGuidelines ] = useState<string[]>([])
+  const [controlledProjectGuidelines, setControlledProjectGuidelines] =
+    useState<string[]>([])
 
   const toggleDropdown = () => setIsAdvancedMenuOpen(!isAdvancedMenuOpen)
 
@@ -326,8 +242,10 @@ const ProjectCreate = () => {
                   Input Project Guidelines
                 </h3>
                 <GuidelineInputs
-                  setProjectGuidelines={(guidelines: string[]) => setControlledProjectGuidelines(guidelines)}
-                  />
+                  setProjectGuidelines={(guidelines: string[]) =>
+                    setControlledProjectGuidelines(guidelines)
+                  }
+                />
               </div>
               <div className="my-1">
                 <h3 className="text-lg font-semibold">
@@ -418,16 +336,23 @@ const ProjectCreate = () => {
                 return
               }
 
-              const projectGuidelines = controlledProjectGuidelines.filter(guideline => guideline !== "");
+              const projectGuidelines = controlledProjectGuidelines.filter(
+                (guideline) => guideline !== '',
+              )
 
               try {
                 // First create the project for the user...
-                const project = await postProject(
-                  activeBillingOrg.id,
-                  trimmedProjectName,
-                  projectDescription,
-                  controlledProjectDataSources,
-                  projectGuidelines,
+                const projectBody = {
+                  name: trimmedProjectName,
+                  description: projectDescription,
+                  projectDataSources: controlledProjectDataSources,
+                  projectGuidelines: projectGuidelines,
+                }
+
+                const project = await createResource<ProjectPartDeux>(
+                  `/orgs/${activeBillingOrg.id}/projects`,
+                  projectBody,
+                  'Failed to create project',
                 )
 
                 setProjectIdForConfiguration(project.id)

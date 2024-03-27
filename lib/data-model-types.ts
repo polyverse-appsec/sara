@@ -1,7 +1,5 @@
-import internal from 'stream'
 import { type Message } from 'ai'
 import Joi from 'joi'
-import { Assistant } from 'openai/resources/beta/assistants/assistants'
 import { Threads } from 'openai/resources/beta/threads/threads'
 
 ////////////////////////////
@@ -105,7 +103,7 @@ export interface ProjectPartDeux extends BaseSaraObject {
 // `ProjectDataReference` represents the return values from
 // `GET /user_project/billingOrgId/projectName/data_references`. They should
 // probably be collapsed into each other in the future though.
-export interface ProjectDataSourcePartDeux extends BaseSaraObject {
+export interface ProjectDataSource extends BaseSaraObject {
   // What project the source is associated with. Projects
   // themselves maintain what are primary/secondary data sources.
   parentProjectId: string
@@ -113,7 +111,7 @@ export interface ProjectDataSourcePartDeux extends BaseSaraObject {
   // Represents where the source may be fetched from. May not
   // be fetchable immediately due to access controls put in place
   // by those that maintain/house the source.
-  sourceUrl: string
+  uri: string
 }
 
 // TODO: Test this with a Joi schema
@@ -401,29 +399,6 @@ export interface Goal extends BaseSaraObject {
 export type Organization = {
   login: string // The organization's login name
   avatar_url: string // The URL of the organization's avatar
-}
-
-export interface Repository extends Record<string, any> {
-  id: string
-  userId: string
-  name: string
-  full_name: string
-  html_url: string
-  description: string
-  organization: Organization
-  image?: string
-}
-export interface Project extends Record<string, any> {
-  id: string
-  name: string
-  description: string
-  userId: string
-  mainRepository: Repository
-  referenceRepositories?: Repository[]
-  tasks?: Task[]
-  defaultTask?: Task
-  assistant?: Assistant
-  lastSynchronizedAt: Date
 }
 
 export const TaskSchema = Joi.object({

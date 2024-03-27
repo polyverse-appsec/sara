@@ -5,14 +5,11 @@ import { NextAuthRequest } from 'next-auth/lib'
 import { auth } from '../../../../../auth'
 import {
   type GitHubRepo,
-  type ProjectDataSourcePartDeux,
+  type ProjectDataSource,
   type ProjectPartDeux,
-  type Repository,
 } from './../../../../../lib/data-model-types'
-import {
-  createProject as createProjectOnBoost,
-  getBoostOrgUserStatus,
-} from './../../../../../lib/polyverse/backend/backend'
+import { getBoostOrgUserStatus } from './../../../../../lib/polyverse/backend/backend'
+import createBoostProject from './../../../../../lib/polyverse/backend/create-boost-project'
 import createProject from './../../../../../lib/polyverse/db/create-project'
 import createProjectDataSource from './../../../../../lib/polyverse/db/create-project-data-source'
 import getOrg from './../../../../../lib/polyverse/db/get-org'
@@ -140,40 +137,6 @@ export const POST = auth(async (req: NextAuthRequest) => {
       })
     }
 
-    // TODO: Remnove these temporary instances of the old Repository data
-    // model object once we fully transfer over to the new UI and data model
-    const oldTypedProjectDataSources = reqBody.projectDataSources.map(
-      (projectDataSource) =>
-        ({
-          // These are data members that are actually consumed by
-          // `createProject`
-          orgId: org.name,
-          // TODO: Simply take the first primary data source for now since we don't have the support for multiple
-          html_url: projectDataSource.htmlUrl,
-
-          // These aren't data members that are used by `createProject` so
-          // just bullshit the values for now since this will be removed
-          id: 'someId',
-          userId: 'someUserId',
-          name: 'someName',
-          full_name: 'someFullName',
-          description: 'someDescription',
-          organization: {
-            login: 'someLoginName',
-            avatar_url: 'someAvatarUrl',
-          },
-        }) as Repository,
-    )
-
-    // TODO: Since we still rely on the old data model for the usage of this API
-    // just pass the first project data source as the primary one and all the
-    // others as secondary ones. Once we switch over to the new UI and data
-    // model we will need to fix this.
-    const secondaryDataSources =
-      oldTypedProjectDataSources.length > 1
-        ? oldTypedProjectDataSources.slice(1)
-        : []
-
     // Start by building up the objects we will create in the DB.
     // Make sure to cross-reference the Project and the Project Data Source
     // IDs that we will be persisting to the DB.
@@ -212,19 +175,25 @@ export const POST = auth(async (req: NextAuthRequest) => {
 
           // Project Data Source properties
           parentProjectId: projectBaseSaraObject.id,
-          sourceUrl: projectDataSource.htmlUrl,
-        }) as ProjectDataSourcePartDeux,
+          uri: projectDataSource.htmlUrl,
+        }) as ProjectDataSource,
     )
+
+    // Right now we don't allow specifying secondary data sources separately
+    // from the primary ones so just slice out all other data sources after the
+    // first one which will be used as the primary data source in this API call.
+    const primaryProjectDataSource = projectDataSources[0]
+    const secondaryProjectDataSources = projectDataSources.length > 1 ? projectDataSources.slice(1) : []
 
     // Start now by creating the project on Boost. We wait til here since we
     // pass the project ID to the Boost backend.
-    await createProjectOnBoost(
+    await createBoostProject(
       project.id,
       org.name,
       project.name,
       project.description,
-      oldTypedProjectDataSources[0],
-      secondaryDataSources,
+      primaryProjectDataSource,
+      secondaryProjectDataSources,
       project.projectGuidelines,
       user.email,
     )
