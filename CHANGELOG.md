@@ -13,6 +13,7 @@
 - Refactor data model to align with new type expectations
   - Remove usage of `Repository` type from old data model
   - Rename `ProjectDataSourcePartDeux` -> `ProjectDataSource`
+- Update Source Synchronization icon
 
 ### Bug Fixes
 
