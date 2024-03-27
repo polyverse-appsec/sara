@@ -19,17 +19,20 @@ import { useAppContext } from './../../../../../lib/hooks/app-context'
 import { projectNameSchema } from './../../../../../lib/polyverse/db/validators'
 import DataSourceSelector from './data-source-selector'
 import SingleDataSourceSelector from './single-data-source-selector'
+import GuidelineInputs from './guideline-inputs'
 
 const postProject = async (
   billingOrgId: string,
   name: string,
   description: string,
   projectDataSources: GitHubRepo[],
+  projectGuidelines: string[],
 ): Promise<ProjectPartDeux> => {
   const projectBody = {
     name,
     description,
     projectDataSources,
+    projectGuidelines,
   }
 
   const res = await fetch(`/api/orgs/${billingOrgId}/projects`, {
@@ -132,6 +135,8 @@ const ProjectCreate = () => {
   const [isAdvancedMenuOpen, setIsAdvancedMenuOpen] = useState(false)
 
   const [ displayRequiredText, setDisplayRequiredText ] = useState(false)
+
+  const [ controlledProjectGuidelines, setControlledProjectGuidelines ] = useState<string[]>([])
 
   const toggleDropdown = () => setIsAdvancedMenuOpen(!isAdvancedMenuOpen)
 
@@ -253,6 +258,23 @@ const ProjectCreate = () => {
               <div className="w-3/4 border-t-2 border-blue-600 my-2"></div>
               <div className="my-1">
                 <h3 className="text-lg font-semibold">
+                  Add Project Description
+                </h3>
+                <Input
+                  value={projectDescription}
+                  onChange={(e) => setProjectDescription(e.target.value)}
+                />
+              </div>
+              <div className="my-1">
+                <h3 className="text-lg font-semibold">
+                  Input Project Guidelines
+                </h3>
+                <GuidelineInputs
+                  setProjectGuidelines={(guidelines: string[]) => setControlledProjectGuidelines(guidelines)}
+                  />
+              </div>
+              <div className="my-1">
+                <h3 className="text-lg font-semibold">
                   Select Secondary Project Data Sources
                 </h3>
                 {/* Currently this data source selector is only able to select one repo, it's the same one that was used for primary repo select I just 
@@ -263,15 +285,6 @@ const ProjectCreate = () => {
                   setControlledProjectDataSources={(gitHubRepos) =>
                     setControlledProjectDataSources(gitHubRepos)
                   }
-                />
-              </div>
-              <div className="my-1">
-                <h3 className="text-lg font-semibold">
-                  Add Project Description
-                </h3>
-                <Input
-                  value={projectDescription}
-                  onChange={(e) => setProjectDescription(e.target.value)}
                 />
               </div>
             </div>
@@ -349,6 +362,8 @@ const ProjectCreate = () => {
                 return
               }
 
+              const projectGuidelines = controlledProjectGuidelines.filter(guideline => guideline !== "");
+
               try {
                 // First create the project for the user...
                 const project = await postProject(
@@ -356,6 +371,7 @@ const ProjectCreate = () => {
                   trimmedProjectName,
                   projectDescription,
                   controlledProjectDataSources,
+                  projectGuidelines,
                 )
 
                 setProjectIdForConfiguration(project.id)

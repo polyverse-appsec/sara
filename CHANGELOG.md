@@ -11,6 +11,7 @@
 ### Enhancements
 
 - UI enhancements for billing status settings page, create projects page (input validation), sidebar
+- Project guidelines now getting captured for project creation. Starting UI added for it
 
 ### Bug Fixes
 

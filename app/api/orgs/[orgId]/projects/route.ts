@@ -89,6 +89,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
       name: string
       description: string
       projectDataSources: GitHubRepo[]
+      projectGuidelines: string[]
     }
 
     if (!reqBody.name || Joi.string().required().validate(reqBody.name).error) {
@@ -195,6 +196,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
       name: reqBody.name,
       description: reqBody.description,
       projectDataSourceIds,
+      projectGuidelines: reqBody.projectGuidelines,
       goalIds: [],
       closedAt: null,
       // The last time we refreshed this project is technically when we created
@@ -223,6 +225,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
       project.description,
       oldTypedProjectDataSources[0],
       secondaryDataSources,
+      project.projectGuidelines,
       user.email,
     )
 

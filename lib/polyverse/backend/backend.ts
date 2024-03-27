@@ -83,6 +83,7 @@ export async function createProject(
   description: string,
   primaryDataSource: Repository,
   secondaryDataSources: Repository[],
+  projectGuidelines: string[],
   email: string,
 ): Promise<string> {
   console.debug(`Invoking backend call createProject`)
@@ -107,6 +108,7 @@ export async function createProject(
         resources,
         title: name,
         description,
+        projectGuidelines,
       }),
     })
 

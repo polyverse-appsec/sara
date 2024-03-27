@@ -88,6 +88,8 @@ export interface ProjectPartDeux extends BaseSaraObject {
 
   projectDataSourceIds: string[]
 
+  projectGuidelines: string[]
+
   // Will always be populated with at least one goal which is
   // the default "Learn More About Project" goal
   goalIds: string[]
