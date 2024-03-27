@@ -180,6 +180,12 @@ export async function createProject(
   return ''
 }
 
+export async function projectDiscover(
+    orgId: string,
+    projectId: string,
+    email: string,
+)
+
 export async function deleteProject(
   orgId: string,
   projectId: string,
