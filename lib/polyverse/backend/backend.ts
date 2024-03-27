@@ -1,8 +1,6 @@
 import { userInfo } from 'os'
 
-import {
-  ProjectDataReference,
-} from '../../data-model-types'
+import { ProjectDataReference } from '../../data-model-types'
 import { createSignedHeader, USER_SERVICE_URI } from './utils'
 
 export interface BoostUserOrgStatusResponse {
@@ -76,71 +74,71 @@ export async function getProjectAssistantFileInfo(
 }
 
 export const enum ResourceType {
-    PrimaryRead = "primary_read",       // user read-only to source
-    PrimaryReadWrite = "primary_write",     // user read/write to source
-    ReferenceRead = "reference_read",   // user read-only to reference
+  PrimaryRead = 'primary_read', // user read-only to source
+  PrimaryReadWrite = 'primary_write', // user read/write to source
+  ReferenceRead = 'reference_read', // user read-only to reference
 }
 
 export const enum ResourceStatus {
-    Public = "public",
-    Private = "private",
-    Unknown = "unknown",
-    Error = "error",
+  Public = 'public',
+  Private = 'private',
+  Unknown = 'unknown',
+  Error = 'error',
 }
 
 export interface ProjectResource {
-    uri: string;
-    type: string;
-    access: ResourceStatus;
+  uri: string
+  type: string
+  access: ResourceStatus
 }
 export interface UserProjectData {
-    org? : string,
-    name? : string,
-    owner? : string,
-    description? : string,
-    title?: string,
-    // guidelines are a keyed list of guidelines for the project
-    guidelines? : Record<string, string>[],
-    resources : ProjectResource[],
-    lastUpdated? : number,
+  org?: string
+  name?: string
+  owner?: string
+  description?: string
+  title?: string
+  // guidelines are a keyed list of guidelines for the project
+  guidelines?: Record<string, string>[]
+  resources: ProjectResource[]
+  lastUpdated?: number
 }
 
 export async function rediscoverProject(
-    orgId: string,
-    projectId: string,
-    email: string,
-) : Promise<void> {
-    const url = `${USER_SERVICE_URI}/api/user_project/${orgId}/${projectId}/discovery`
+  orgId: string,
+  projectId: string,
+  email: string,
+): Promise<void> {
+  const url = `${USER_SERVICE_URI}/api/user_project/${orgId}/${projectId}/discovery`
 
-    const rediscoveryRequest = {
-        resetResources: true,
+  const rediscoveryRequest = {
+    resetResources: true,
+  }
+
+  try {
+    const signedHeader = createSignedHeader(email)
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...signedHeader,
+      },
+      body: JSON.stringify(rediscoveryRequest),
+    })
+
+    if (!res.ok) {
+      console.error(
+        `Got a failure response while trying to start project for '${orgId}/${projectId} for ${email}' - Status: ${res.status}`,
+      )
+
+      return
     }
+  } catch (error) {
+    const errMsg = `Error while trying to discover project for '${orgId}/${projectId} for ${email}' - ${error}`
 
-    try {
-        const signedHeader = createSignedHeader(email)
-        const res = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                ...signedHeader,
-            },
-            body: JSON.stringify(rediscoveryRequest),
-        })
+    console.error(errMsg)
 
-        if (!res.ok) {
-            console.error(
-                `Got a failure response while trying to start project for '${orgId}/${projectId} for ${email}' - Status: ${res.status}`,
-            )
-
-            return
-        }
-    } catch (error) {
-        const errMsg = `Error while trying to discover project for '${orgId}/${projectId} for ${email}' - ${error}`
-
-        console.error(errMsg)
-
-        throw new Error(errMsg)
-    }
+    throw new Error(errMsg)
+  }
 }
 
 export async function deleteProject(

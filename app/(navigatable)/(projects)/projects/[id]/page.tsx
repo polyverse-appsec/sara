@@ -2,14 +2,14 @@
 
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { useSession } from 'next-auth/react'
 import GoalsManager from 'components/goals/goals-manager'
 import ProjectStatusCard from 'components/project-status/project-status-card'
-
-import { type SaraSession } from './../../../../../auth'
+import { rediscoverProject } from 'lib/polyverse/backend/backend'
+import { useSession } from 'next-auth/react'
 import toast from 'react-hot-toast'
 
 import SaraChat from '../../../../../components/sara-chat/sara-chat'
+import { type SaraSession } from './../../../../../auth'
 import LoadingSpinner from './../../../../../components/loading-spinner'
 import RenderableResource from './../../../../../components/renderable-resource/renderable-resource'
 import RenderableResourceContent from './../../../../../components/renderable-resource/renderable-resource-content'
@@ -21,7 +21,6 @@ import {
   type ProjectPartDeux,
 } from './../../../../../lib/data-model-types'
 import { useAppContext } from './../../../../../lib/hooks/app-context'
-import { rediscoverProject } from 'lib/polyverse/backend/backend'
 
 const renderChatForGoal = (
   goal: GoalPartDeux | null,
@@ -56,7 +55,8 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
 
   const [project, setProject] = useState<ProjectPartDeux | null>(null)
   const [health, setHealth] = useState<ProjectHealth | null>(null)
-  const [rediscoverButtonEnabled, setRediscoverButtonEnabled] = useState<boolean>(true)
+  const [rediscoverButtonEnabled, setRediscoverButtonEnabled] =
+    useState<boolean>(true)
   const [goals, setGoals] = useState<GoalPartDeux[]>([])
   const [goalForChat, setGoalForChat] = useState<GoalPartDeux | null>(null)
 
@@ -65,21 +65,21 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
     let isMounted = true
 
     const fetchUserStatus = async () => {
-        try {
-          if (!activeBillingOrg) {
-            toast.error(`No active billing org set`)
-            return
-          }
-  
-          if (!saraSession) {
-            toast.error(`No session available`)
-            return
-          }
-        } catch (error) {
-          toast.error(`Failed to fetch user status: ${error}`)
+      try {
+        if (!activeBillingOrg) {
+          toast.error(`No active billing org set`)
+          return
         }
+
+        if (!saraSession) {
+          toast.error(`No session available`)
+          return
+        }
+      } catch (error) {
+        toast.error(`Failed to fetch user status: ${error}`)
       }
-  
+    }
+
     fetchUserStatus()
 
     const fetchProjectDeatilsFrequencyMilliseconds = 5000
@@ -198,38 +198,63 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
               variant="ghost"
               className="hover:bg-red-200"
               onClick={async (e) => {
-                    e.preventDefault();
+                e.preventDefault()
 
-                    setRediscoverButtonEnabled(false);
+                setRediscoverButtonEnabled(false)
 
-                    if (!activeBillingOrg || !saraSession) {
-                    console.error(`${project.id} Missing required billing and user information.`);
-                    toast.error("Required billing and user information is missing.");
-                    return;
-                    }
-                    
-                    try {
-                    await rediscoverProject(activeBillingOrg.id, project.id, saraSession.email);
-                    } catch (err) {
-                    console.error(
-                        `${activeBillingOrg.id} ${saraSession.email} ${project.id} Caught error when trying to rediscover a project: ${err}`,
-                    );
-                    }
-                }}
+                if (!activeBillingOrg || !saraSession) {
+                  console.error(
+                    `${project.id} Missing required billing and user information.`,
+                  )
+                  toast.error(
+                    'Required billing and user information is missing.',
+                  )
+                  return
+                }
+
+                try {
+                  await rediscoverProject(
+                    activeBillingOrg.id,
+                    project.id,
+                    saraSession.email,
+                  )
+                } catch (err) {
+                  console.error(
+                    `${activeBillingOrg.id} ${saraSession.email} ${project.id} Caught error when trying to rediscover a project: ${err}`,
+                  )
+                }
+              }}
+            >
+              {rediscoverButtonEnabled ? (
+                // Enabled state SVG
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  className="w-6 h-6"
+                  aria-hidden="true"
                 >
-                {rediscoverButtonEnabled ? (
-                    // Enabled state SVG
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6" aria-hidden="true">
-                    <path d="M4 4v6h6M20 20v-6h-6"/>
-                    <path d="M3.51 9a9 9 0 0114.98-3.51l-2.12 2.13A5.977 5.977 0 0012 6a6 6 0 00-6 6c0 1.66.67 3.16 1.76 4.24l-2.12 2.12A8.962 8.962 0 013.51 9z"/>
-                    </svg>
-                ) : (
-                    // Disabled state SVG with inline style for opacity
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#CCCCCC" strokeWidth="2" className="w-6 h-6" aria-hidden="true" style={{ opacity: 0.5 }}>
-                    <path d="M4 4v6h6M20 20v-6h-6"/>
-                    <path d="M3.51 9a9 9 0 0114.98-3.51l-2.12 2.13A5.977 5.977 0 0012 6a6 6 0 00-6 6c0 1.66.67 3.16 1.76 4.24l-2.12 2.12A8.962 8.962 0 013.51 9z"/>
-                    </svg>
-                )}
+                  <path d="M4 4v6h6M20 20v-6h-6" />
+                  <path d="M3.51 9a9 9 0 0114.98-3.51l-2.12 2.13A5.977 5.977 0 0012 6a6 6 0 00-6 6c0 1.66.67 3.16 1.76 4.24l-2.12 2.12A8.962 8.962 0 013.51 9z" />
+                </svg>
+              ) : (
+                // Disabled state SVG with inline style for opacity
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#CCCCCC"
+                  strokeWidth="2"
+                  className="w-6 h-6"
+                  aria-hidden="true"
+                  style={{ opacity: 0.5 }}
+                >
+                  <path d="M4 4v6h6M20 20v-6h-6" />
+                  <path d="M3.51 9a9 9 0 0114.98-3.51l-2.12 2.13A5.977 5.977 0 0012 6a6 6 0 00-6 6c0 1.66.67 3.16 1.76 4.24l-2.12 2.12A8.962 8.962 0 013.51 9z" />
+                </svg>
+              )}
               {rediscoverButtonEnabled ? 'Resync Source' : 'Synchronized'}
             </Button>
           </div>

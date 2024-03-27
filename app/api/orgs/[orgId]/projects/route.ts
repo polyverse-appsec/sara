@@ -183,7 +183,8 @@ export const POST = auth(async (req: NextAuthRequest) => {
     // from the primary ones so just slice out all other data sources after the
     // first one which will be used as the primary data source in this API call.
     const primaryProjectDataSource = projectDataSources[0]
-    const secondaryProjectDataSources = projectDataSources.length > 1 ? projectDataSources.slice(1) : []
+    const secondaryProjectDataSources =
+      projectDataSources.length > 1 ? projectDataSources.slice(1) : []
 
     // Start now by creating the project on Boost. We wait til here since we
     // pass the project ID to the Boost backend.

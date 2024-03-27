@@ -8,7 +8,10 @@ const prefixResourcePath = (resourcePath: string) => {
   return resourcePath
 }
 
-const throwIfResNotOk = async (res: Response, errorMessage: string = ''): Promise<void> => {
+const throwIfResNotOk = async (
+  res: Response,
+  errorMessage: string = '',
+): Promise<void> => {
   if (!res.ok) {
     const resErrText = await res.text()
 
@@ -16,26 +19,30 @@ const throwIfResNotOk = async (res: Response, errorMessage: string = ''): Promis
       throw new Error(resErrText)
     }
 
-
-    throw new Error(
-      `${errorMessage} - ${resErrText}`,
-    )
+    throw new Error(`${errorMessage} - ${resErrText}`)
   }
 }
 
-export const createResourceWithoutRequestBody = async (resourcePath: string, errorMessage: string = ''): Promise<void> => {
+export const createResourceWithoutRequestBody = async (
+  resourcePath: string,
+  errorMessage: string = '',
+): Promise<void> => {
   const prefixedResourcePath = prefixResourcePath(resourcePath)
 
   let res = null
 
   res = await fetch(prefixedResourcePath, {
-    method: 'POST'
+    method: 'POST',
   })
 
   await throwIfResNotOk(res, errorMessage)
 }
 
-export const createResource = async <T>(resourcePath: string, reqBody: POSTRequestBody, errorMessage: string = ''): Promise<T> => {
+export const createResource = async <T>(
+  resourcePath: string,
+  reqBody: POSTRequestBody,
+  errorMessage: string = '',
+): Promise<T> => {
   const prefixedResourcePath = prefixResourcePath(resourcePath)
 
   const res = await fetch(prefixedResourcePath, {
@@ -51,7 +58,11 @@ export const createResource = async <T>(resourcePath: string, reqBody: POSTReque
   return (await res.json()) as T
 }
 
-export const createResourceNoResponseBody = async <T>(resourcePath: string, reqBody: POSTRequestBody, errorMessage: string = ''): Promise<void> => {
+export const createResourceNoResponseBody = async <T>(
+  resourcePath: string,
+  reqBody: POSTRequestBody,
+  errorMessage: string = '',
+): Promise<void> => {
   const prefixedResourcePath = prefixResourcePath(resourcePath)
 
   const res = await fetch(prefixedResourcePath, {
@@ -65,12 +76,15 @@ export const createResourceNoResponseBody = async <T>(resourcePath: string, reqB
   await throwIfResNotOk(res, errorMessage)
 }
 
-export const getResource = async <T>(resourcePath: string, errorMessage: string = ''): Promise<T> => {
-    const prefixedResourcePath = prefixResourcePath(resourcePath)
+export const getResource = async <T>(
+  resourcePath: string,
+  errorMessage: string = '',
+): Promise<T> => {
+  const prefixedResourcePath = prefixResourcePath(resourcePath)
 
-    const res = await fetch(prefixedResourcePath)
+  const res = await fetch(prefixedResourcePath)
 
-    await throwIfResNotOk(res, errorMessage)
-  
-    return (await res.json()) as T
+  await throwIfResNotOk(res, errorMessage)
+
+  return (await res.json()) as T
 }
