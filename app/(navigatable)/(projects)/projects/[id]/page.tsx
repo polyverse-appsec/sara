@@ -227,34 +227,11 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
             >
               {rediscoverButtonEnabled ? (
                 // Enabled state SVG
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  className="w-6 h-6"
-                  aria-hidden="true"
-                >
-                  <path d="M4 4v6h6M20 20v-6h-6" />
-                  <path d="M3.51 9a9 9 0 0114.98-3.51l-2.12 2.13A5.977 5.977 0 0012 6a6 6 0 00-6 6c0 1.66.67 3.16 1.76 4.24l-2.12 2.12A8.962 8.962 0 013.51 9z" />
-                </svg>
-              ) : (
-                // Disabled state SVG with inline style for opacity
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="#CCCCCC"
-                  strokeWidth="2"
-                  className="w-6 h-6"
-                  aria-hidden="true"
-                  style={{ opacity: 0.5 }}
-                >
-                  <path d="M4 4v6h6M20 20v-6h-6" />
-                  <path d="M3.51 9a9 9 0 0114.98-3.51l-2.12 2.13A5.977 5.977 0 0012 6a6 6 0 00-6 6c0 1.66.67 3.16 1.76 4.24l-2.12 2.12A8.962 8.962 0 013.51 9z" />
-                </svg>
-              )}
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-refresh-cw"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0114.98-3.51l-1.42 1.42A7 7 0 005.67 9H3.51z"></path><path d="M20.49 15a9 9 0 0114.98 3.51l1.42-1.42A7 7 0 0018.33 15h1.16z"></path></svg>
+                  ) : (
+                // Disabled state SVG with corrected opacity style
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#CCCCCC" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-refresh-cw" style={{ opacity: 0.5 }}><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0114.98-3.51l-1.42 1.42A7 7 0 005.67 9H3.51z"></path><path d="M20.49 15a9 9 0 0114.98 3.51l1.42-1.42A7 7 0 0018.33 15h1.16z"></path></svg>
+                )}
               {rediscoverButtonEnabled ? 'Resync Source' : 'Synchronized'}
             </Button>
           </div>
