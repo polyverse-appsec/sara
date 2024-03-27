@@ -2,11 +2,12 @@
 
 # Release Notes
 
-## Version 0.21.0: March 26th, 2024
+## Version 0.21.0: March 27th, 2024
 
 ### New Features
 
-- N/A
+- Add support for resynchronization of source files on user request (via Goal page)
+    - This will only be enabled when existing project is fully synchronized
 
 ### Enhancements
 
@@ -15,7 +16,7 @@
 
 ### Bug Fixes
 
-- N/A
+- Fix issue Goal chat being disconnected from the response - endless spinning donut
 
 ## Version 0.20.0: March 25th, 2024
 
