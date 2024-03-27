@@ -134,7 +134,7 @@ const ProjectCreate = () => {
 
   const [isAdvancedMenuOpen, setIsAdvancedMenuOpen] = useState(false)
 
-  const [ displayRequiredText, setDisplayRequiredText ] = useState(false)
+  const [displayRequiredText, setDisplayRequiredText] = useState(false)
 
   const [ controlledProjectGuidelines, setControlledProjectGuidelines ] = useState<string[]>([])
 
@@ -147,29 +147,80 @@ const ProjectCreate = () => {
     currentAttempt = 1,
   ) {
     const goalsRes = await fetch(`/api/projects/${projectId}/goals`)
-    if (goalsRes.ok) {
-      const fetchedGoals = await goalsRes.json()
-      if (fetchedGoals.length > 0) {
-        console.log('Goals fetched successfully:', fetchedGoals)
-        router.push(`/goals/${fetchedGoals[0].id}`)
-      } else if (currentAttempt < maxAttempts) {
-        setTimeout(
-          () =>
-            fetchGoalsWithRetry(
-              projectId,
-              maxAttempts,
-              delay,
-              currentAttempt + 1,
-            ),
-          delay,
-        )
-      } else {
-        console.log('Failed to fetch goals after max attempts')
-      }
-    } else {
-      console.log('Failed to fetch goals:', goalsRes.statusText)
-      router.push(`/projects/${projectId}`)
+
+    // Just try again and hope the problem fixes itself :fingers-crossed:
+    if (!goalsRes.ok) {
+      setTimeout(
+        () =>
+          fetchGoalsWithRetry(
+            projectId,
+            maxAttempts,
+            delay,
+            currentAttempt + 1,
+          ),
+        delay,
+      )
+
+      return
     }
+
+    const fetchedGoals = (await goalsRes.json()) as GoalPartDeux[]
+
+    if (fetchedGoals.length === 0 && currentAttempt < maxAttempts) {
+      setTimeout(
+        () =>
+          fetchGoalsWithRetry(
+            projectId,
+            maxAttempts,
+            delay,
+            currentAttempt + 1,
+          ),
+        delay,
+      )
+
+      return
+    }
+
+    // If we still have 0 fetched goals at this point we don't have any retry
+    // atempts left so just route to the projects page
+    if (fetchedGoals.length === 0) {
+      console.log(
+        'Failed to get any goals while waiting for a default goal before max attempts',
+      )
+
+      router.push(`/projects/${projectId}`)
+
+      return
+    }
+
+    // Only route to the goal if the default chat is created. Otherwise
+    // retry.
+    if (fetchedGoals[0].chatId) {
+      router.push(`/goals/${fetchedGoals[0].id}`)
+      return
+    }
+
+    // At this point we presume we got the default goal but it doesn't have a
+    // chat ID so try again until one is created for it.
+    if (currentAttempt < maxAttempts) {
+      setTimeout(
+        () =>
+          fetchGoalsWithRetry(
+            projectId,
+            maxAttempts,
+            delay,
+            currentAttempt + 1,
+          ),
+        delay,
+      )
+
+      return
+    }
+
+    // Or if we are out of retry attempts just route to the project page...
+    console.log(`Didn't find a default goal with a chat ID before max attempts`)
+
+    router.push(`/projects/${projectId}`)
   }
 
   useEffect(() => {
@@ -231,7 +282,9 @@ const ProjectCreate = () => {
           <div className="my-1">
             <div className="flex items-center">
               <h3 className="text-lg font-semibold">Set Project Name</h3>
-              { displayRequiredText && !projectName && <span className="ml-2 text-sm text-red-500">Required</span> }
+              {displayRequiredText && !projectName && (
+                <span className="ml-2 text-sm text-red-500">Required</span>
+              )}
             </div>
             <Input
               value={projectName}
@@ -244,7 +297,10 @@ const ProjectCreate = () => {
               <h3 className="text-lg font-semibold">
                 Select Project Data Sources
               </h3>
-              { displayRequiredText && controlledProjectDataSources.length === 0 && <span className="ml-2 text-sm text-red-500">Required</span> }
+              {displayRequiredText &&
+                controlledProjectDataSources.length === 0 && (
+                  <span className="ml-2 text-sm text-red-500">Required</span>
+                )}
             </div>
             <SingleDataSourceSelector
               orgName={activeBillingOrg.name}
@@ -376,7 +432,6 @@ const ProjectCreate = () => {
 
                 setProjectIdForConfiguration(project.id)
 
-                //router.push(`/projects/${project.id}`)
                 await fetchGoalsWithRetry(project.id)
               } catch (err) {
                 console.debug(

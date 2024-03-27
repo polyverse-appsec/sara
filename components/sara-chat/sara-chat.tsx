@@ -6,6 +6,7 @@ import { useSession } from 'next-auth/react'
 import { toast } from 'react-hot-toast'
 
 import { ChatScrollAnchor } from '../chat-scroll-anchor'
+import { getResource } from './../../app/saraClient'
 import {
   type ChatPartDeux,
   type ChatQueryPartDeux,
@@ -111,28 +112,21 @@ const SaraChat = ({
       }
 
       const chatQueriesUrl = buildChatQueriesUrl(chatableResourceUrl, chatId)
+
       try {
-        const chatQueriesRes = await fetch(chatQueriesUrl)
+        const chatQueries =
+          await getResource<ChatQueryPartDeux[]>(chatQueriesUrl)
 
-        if (!chatQueriesRes.ok) {
-          const errText = await chatQueriesRes.text()
-          console.debug(
-            `Failed to get a success response when fetching chat queries because: ${errText}`,
-          )
-          return
-        }
-
-        const fetchedChatQueries =
-          (await chatQueriesRes.json()) as ChatQueryPartDeux[]
         if (isMounted) {
-          setChatQueries(fetchedChatQueries)
+          setChatQueries(chatQueries)
         }
       } catch (err) {
+        // Just catch the error and log a debug statement
         console.debug(`Failed to fetch chat queries because: ${err}`)
-      } finally {
-        if (isMounted) {
-          setTimeout(fetchChatQueries, fetchChatQueriesFrequencyMilliseconds)
-        }
+      }
+
+      if (isMounted) {
+        setTimeout(fetchChatQueries, fetchChatQueriesFrequencyMilliseconds)
       }
     }
 
