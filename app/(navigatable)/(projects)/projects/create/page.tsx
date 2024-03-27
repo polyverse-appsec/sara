@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { getOrgStatus, getOrgUserStatus } from 'app/react-utils'
-import Joi from 'joi'
+
 import { useSession } from 'next-auth/react'
 import toast from 'react-hot-toast'
 

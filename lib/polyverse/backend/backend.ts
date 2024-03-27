@@ -180,7 +180,7 @@ export async function createProject(
   return ''
 }
 
-export async function projectRediscover(
+export async function rediscoverProject(
     orgId: string,
     projectId: string,
     email: string,
