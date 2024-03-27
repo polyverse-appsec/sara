@@ -61,7 +61,7 @@ export const ProjectDetailsTile = ({
     }
 
     fetchProjectHealth()
-  }, [])
+  }, [id])
 
   return (
     <Link

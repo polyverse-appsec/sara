@@ -61,7 +61,7 @@ const GoalIndex = ({ params: { id } }: { params: { id: string } }) => {
 
       setHealth(health)
     })()
-  }, [id])
+  }, [id, projectIdForConfiguration])
 
   if (!goal) {
     return null
