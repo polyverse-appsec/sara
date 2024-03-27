@@ -87,7 +87,7 @@ export function AppProvider({ children }: AppProviderProps) {
     // set to run every 10 seconds but for now we are running it every 60
     // seconds once the projects health turns green. We will review the
     // architecture/approaches to satisfying UX moving forward.
-    let configProjectFrequencyMilliseconds = 10000
+    let configProjectFrequencyMilliseconds = 5000
 
     const configProject = async () => {
       if (!activeBillingOrg || !projectIdForConfiguration) {
@@ -136,7 +136,7 @@ export function AppProvider({ children }: AppProviderProps) {
         if (projectHealth.readableValue === 'HEALTHY') {
           configProjectFrequencyMilliseconds = 60000
         } else {
-          configProjectFrequencyMilliseconds = 10000
+          configProjectFrequencyMilliseconds = 5000
         }
 
         // If we are in an `UNHEALTHY` state we won't even consider creating
