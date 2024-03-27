@@ -76,6 +76,36 @@ export async function getProjectAssistantFileInfo(
   return []
 }
 
+export const enum ResourceType {
+    PrimaryRead = "primary_read",       // user read-only to source
+    PrimaryReadWrite = "primary_write",     // user read/write to source
+    ReferenceRead = "reference_read",   // user read-only to reference
+}
+
+export const enum ResourceStatus {
+    Public = "public",
+    Private = "private",
+    Unknown = "unknown",
+    Error = "error",
+}
+
+export interface ProjectResource {
+    uri: string;
+    type: string;
+    access: ResourceStatus;
+}
+export interface UserProjectData {
+    org? : string,
+    name? : string,
+    owner? : string,
+    description? : string,
+    title?: string,
+    // guidelines are a keyed list of guidelines for the project
+    guidelines? : Record<string, string>[],
+    resources : ProjectResource[],
+    lastUpdated? : number,
+}
+
 export async function createProject(
   projectId: string,
   orgId: string,
@@ -90,12 +120,18 @@ export async function createProject(
   const url = `${USER_SERVICE_URI}/api/user_project/${orgId}/${projectId}`
 
   try {
-    // For now the Boost backend doesn't support specifying primary data sources
-    // separately from secondary data sources so just combine them in a list for
-    // now.
     const resources = [primaryDataSource, ...secondaryDataSources].map(
-      (dataSource) => ({ uri: dataSource.html_url }),
+      (dataSource) => ({
+        uri: dataSource.html_url,
+        type: ResourceType.PrimaryReadWrite,
+     } as ProjectResource),
     )
+
+    // create ordered array of guidelines, with each guideline having a key
+    //    that is its numeric order in list
+    const guidelines = projectGuidelines.map((guideline, index) => {
+        return { [(index + 1).toString()]: guideline }
+        })
 
     const signedHeader = createSignedHeader(email)
     const res = await fetch(url, {
@@ -108,8 +144,8 @@ export async function createProject(
         resources,
         title: name,
         description,
-        projectGuidelines,
-      }),
+        guidelines: guidelines,
+      } as UserProjectData),
     })
 
     if (!res.ok) {
