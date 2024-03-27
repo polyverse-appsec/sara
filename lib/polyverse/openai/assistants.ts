@@ -244,6 +244,13 @@ function getOpenAIAssistantInstructions(
         If it is helpful you will be given additional details about how to answer specific types of questions when you go to answer them.
     `
 
+    if (project.guidelines && project.guidelines.length > 0) {
+      assistantPromptInstructions += `In addition here is a list of guidelines to follow when providing an answer: \n`
+
+      project.guidelines.forEach((guideline) => assistantPromptInstructions += `* ${guideline}\n`)
+      assistantPromptInstructions 
+    }
+
     return assistantPromptInstructions
 
     // if we fail to build the smart/dynamic prompt, we still want to provide a working prompt - so we fall back to the basic prompt with a major warning
@@ -288,32 +295,6 @@ function getOpenAIAssistantInstructions(
 const oaiClient = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 })
-
-// Note that the parameter `invalidProject` is - as the name implies - invalid.
-// We pass in this parameter which has data values which aren't correct as this
-// method ultimately will get a prompt for the assistant that relies on the new
-// data model types. Since this method is used in the old UI/actions based UX
-// and doesn't use the new data model types we just pass something to get this
-// to compile while trying to maintain two code paths.
-function mapProjectDetailsToPrompt(
-  fileInfos: ProjectDataReference[],
-  invalidProject: ProjectPartDeux,
-  boostProjectStatus?: BoostProjectStatus,
-) {
-  let fileTypes: FileTypes = { aispec: '', blueprint: '', projectsource: '' }
-  fileInfos.map(({ name, type }) => {
-    fileTypes[type as keyof FileTypes] = name
-  })
-
-  const prompt = getOpenAIAssistantInstructions(
-    fileTypes,
-    invalidProject,
-    boostProjectStatus,
-  )
-
-  const fileIDs = fileInfos.map(({ id }) => id)
-  return { prompt, fileIDs }
-}
 
 export async function createAssistant(
   fileInfos: ProjectDataReference[],
