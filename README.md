@@ -43,8 +43,8 @@ After pulling environment variables a file named `.env.local` should have been c
 ```
 AUTH_GITHUB_ID="96c90cb569b5c8ac46c4"
 AUTH_GITHUB_SECRET="bcb8c811b4604647a1f0ede6bb6f905140546b5f"
-AUTH_REDIRECT_PROXY_URL="http://localhost:3000/api/auth"
-NEXTAUTH_URL="http://localhost:3000/"
+AUTH_REDIRECT_PROXY_URL="http://localhost:5000/api/auth"
+NEXTAUTH_URL="http://localhost:5000/"
 ```
 
 After updating `.env.local` you can proceed by running the following commands:
@@ -54,7 +54,7 @@ $ pnpm install
 $ pnpm dev
 ```
 
-Your app template should now be running on [localhost:3000](http://localhost:3000/).
+Your app template should now be running on [localhost:5000](http://localhost:5000/).
 
 ## Design & Technical Docs
 
@@ -77,7 +77,7 @@ The following steps will setup your environment with Vercel Environment Variable
 4. Install dependencies: `pnpm install`
 5. Run local development instance: `pnpm run dev`
 
-Your app template should now be running on [localhost:3000](http://localhost:3000/).
+Your app template should now be running on [localhost:5000](http://localhost:5000/).
 
 ### Running With DB Containers (Docker)
 
@@ -146,7 +146,7 @@ Debugger listening on ws://127.0.0.1:9230/fd2cff6a-8c99-4429-878a-2f5904817747
 For help, see: https://nodejs.org/en/docs/inspector
    the --inspect option was detected, the Next.js router server should be inspected at port 9230.
    ▲ Next.js 14.0.4
-   - Local:        http://localhost:3000
+   - Local:        http://localhost:5000
    - Environments: .env.local
 ```
 
@@ -328,6 +328,21 @@ A GitHub Workflow named `deploy-to-production.yml` will allow you to manually de
 ### Adding/Updating Deployment Environment Variables
 
 Vercel allows for the management of [environment variables from the cloud](https://nextjs.org/docs/pages/building-your-application/configuring/environment-variables#environment-variables-on-vercel). When you need to add or update environment variables for the Vercel deployments do so through the configuration/settings for a `Deployment.` After doing so announce to others that the environment variables have been updated and that they need to update their own local environment variables by running `vercel env pull`.
+
+### Setting The Port For Local Development
+
+For local development Sara uses a OAuth app that will specifically redirect to port `5000`. While the port can be adjusted by setting it in the `dev` recipe of `package.json` certain authentication functionality may fail if not aligned with the OAuth app. To adjust the port take the following steps:
+
+- Set the port in the Polyverse OAuth app named `Polyverse Boost Sara Development`
+  - `Homepage URL` setting ought to be: `http://localhost:<port-number>`
+  - `Authorization Callback URL` setting ought to be: `http://localhost:<port-number>/api/auth/callback/github`
+- Vercel environment variables for local/development environment
+  - Run the steps in the quickstart guide to link and pull the latest environment variables
+  - Ensure the following environment variables are modified in `.env.local`:
+    - `AUTH_REDIRECT_PROXY_URL`: `http://localhost:<port-number>/api/auth`
+    - `NEXTAUTH_URL`: `http://localhost:<port-number>/`
+- Set the port on the NextJS development server in `package.json`
+  - The `dev` recipe/script takes a port number as a parameter in the form of: `-p <port-number>`
 
 ## Features
 
