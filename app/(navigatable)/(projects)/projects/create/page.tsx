@@ -336,9 +336,11 @@ const ProjectCreate = () => {
                 return
               }
 
-              const projectGuidelines = controlledProjectGuidelines.filter(
-                (guideline) => guideline !== '',
-              )
+              // Make sure to trim the guidelines to start pull out any
+              // whitespace
+              const guidelines = controlledProjectGuidelines
+                .map((guideline) => guideline.trim())
+                .filter((guideline) => guideline !== '')
 
               try {
                 // First create the project for the user...
@@ -346,7 +348,7 @@ const ProjectCreate = () => {
                   name: trimmedProjectName,
                   description: projectDescription,
                   projectDataSources: controlledProjectDataSources,
-                  projectGuidelines: projectGuidelines,
+                  guidelines,
                 }
 
                 const project = await createResource<ProjectPartDeux>(

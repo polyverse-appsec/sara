@@ -86,7 +86,9 @@ export interface ProjectPartDeux extends BaseSaraObject {
 
   projectDataSourceIds: string[]
 
-  projectGuidelines: string[]
+  // List of strings that can be used to help configure the way responses are
+  // provided from the LLM. For example: 'Give your answers in Spanish'
+  guidelines: string[]
 
   // Will always be populated with at least one goal which is
   // the default "Learn More About Project" goal

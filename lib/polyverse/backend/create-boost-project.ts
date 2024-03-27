@@ -44,9 +44,9 @@ const createBoostProject = async (
   orgName: string,
   name: string,
   description: string,
+  guidelines: string[],
   primaryDataSource: ProjectDataSource,
   secondaryDataSources: ProjectDataSource[],
-  projectGuidelines: string[],
   email: string,
 ): Promise<void> => {
   const url = `${USER_SERVICE_URI}/api/user_project/${orgName}/${projectId}`
@@ -59,10 +59,10 @@ const createBoostProject = async (
       }) as BoostProjectResourceRequestBody,
   )
 
-  // create ordered array of guidelines, with each guideline having a key
-  //    that is its numeric order in list
-  const guidelines = projectGuidelines.map((guideline, index) => {
-    return { [(index + 1).toString()]: guideline }
+  // Create ordered array of guidelines, with each guideline having a key that
+  // is its numeric order in list
+  const orderedGuidelines = guidelines.map((guideline, index) => {
+    return { [(index + 1).toString()]: guideline } as Record<string, string>
   })
 
   const signedHeader = createSignedHeader(email)
@@ -76,7 +76,7 @@ const createBoostProject = async (
       resources,
       title: name,
       description,
-      guidelines: guidelines,
+      guidelines: orderedGuidelines,
     } as UserProjectRequestBody),
   })
 

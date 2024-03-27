@@ -27,6 +27,13 @@ import { projectNameSchema } from './../../../../../lib/polyverse/db/validators'
 // adjust them accordingly.
 export const maxDuration = 60
 
+export interface CreateProjectRequestBody {
+  name: string
+  description: string
+  projectDataSources: GitHubRepo[]
+  guidelines: string[]
+}
+
 export const POST = auth(async (req: NextAuthRequest) => {
   const { auth } = req
 
@@ -82,12 +89,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
 
     // Validate that the name of the project doesn't already exist as
     // another project within the organization
-    const reqBody = (await req.json()) as {
-      name: string
-      description: string
-      projectDataSources: GitHubRepo[]
-      projectGuidelines: string[]
-    }
+    const reqBody = (await req.json()) as CreateProjectRequestBody
 
     if (!reqBody.name || Joi.string().required().validate(reqBody.name).error) {
       return new Response(`Request body is missing 'name'`, {
@@ -159,7 +161,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
       name: reqBody.name,
       description: reqBody.description,
       projectDataSourceIds,
-      projectGuidelines: reqBody.projectGuidelines,
+      guidelines: reqBody.guidelines,
       goalIds: [],
       closedAt: null,
       // The last time we refreshed this project is technically when we created
@@ -201,9 +203,9 @@ export const POST = auth(async (req: NextAuthRequest) => {
       org.name,
       project.name,
       project.description,
+      project.guidelines,
       primaryProjectDataSource,
       secondaryProjectDataSources,
-      project.projectGuidelines,
       user.email,
     )
 
