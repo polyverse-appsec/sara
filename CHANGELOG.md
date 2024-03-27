@@ -2,12 +2,28 @@
 
 # Release Notes
 
+## Version 0.22.0: March 28th, 2024
+
+### New Features
+
+- N/A
+
+### Enhancements
+
+- Refactor data model to align with new type expectations
+  - Remove usage of `Repository` type from old data model
+  - Rename `ProjectDataSourcePartDeux` -> `ProjectDataSource`
+
+### Bug Fixes
+
+- N/A
+
 ## Version 0.21.0: March 27th, 2024
 
 ### New Features
 
 - Add support for resynchronization of source files on user request (via Goal page)
-    - This will only be enabled when existing project is fully synchronized
+  - This will only be enabled when existing project is fully synchronized
 
 ### Enhancements
 
