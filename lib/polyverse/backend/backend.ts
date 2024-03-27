@@ -180,6 +180,44 @@ export async function createProject(
   return ''
 }
 
+export async function projectRediscover(
+    orgId: string,
+    projectId: string,
+    email: string,
+) : Promise<void> {
+    const url = `${USER_SERVICE_URI}/api/user_project/${orgId}/${projectId}/discovery`
+
+    const rediscoveryRequest = {
+        resetResources: true,
+    }
+
+    try {
+        const signedHeader = createSignedHeader(email)
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                ...signedHeader,
+            },
+            body: JSON.stringify(rediscoveryRequest),
+        })
+
+        if (!res.ok) {
+            console.error(
+                `Got a failure response while trying to start project for '${orgId}/${projectId} for ${email}' - Status: ${res.status}`,
+            )
+
+            return
+        }
+    } catch (error) {
+        const errMsg = `Error while trying to discover project for '${orgId}/${projectId} for ${email}' - ${error}`
+
+        console.error(errMsg)
+
+        throw new Error(errMsg)
+    }
+}
+
 export async function deleteProject(
   orgId: string,
   projectId: string,
