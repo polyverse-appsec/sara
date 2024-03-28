@@ -72,7 +72,11 @@ const ProjectIndex = () => {
   }
 
   if (isLoading) {
-    return <div>Loading...</div>
+    return (
+      <div className="flex justify-center items-center pt-20">
+        Sara is refreshing your projects...
+      </div>
+    )
   }
 
   return (

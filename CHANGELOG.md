@@ -13,6 +13,8 @@
 - Add REST API `DELETE /api/goals/<goalId>`
 - Added functionality to the projects page to delete a set of selected goals from a project
 - UI fixes for /orgs, /projects, navbar
+- Added 'Sara {loading}...' style placeholders on pages that are busy loading
+    - Avoids showing errors or partial data before ready to fully render
 
 ### Bug Fixes
 
