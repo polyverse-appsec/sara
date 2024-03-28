@@ -1,4 +1,5 @@
 import { NextAuthRequest } from 'next-auth/lib'
+import { ReasonPhrases, StatusCodes } from 'http-status-codes'
 
 import { auth } from './../../../../auth'
 import { deleteProject as deleteProjectOnBoost } from './../../../../lib/polyverse/backend/backend'
@@ -17,20 +18,18 @@ import {
   type AssistantMetadata,
 } from './../../../../lib/polyverse/openai/assistants'
 import getGoal from './../../../../lib/polyverse/db/get-goal'
+import authz from './../../../../app/api/authz'
 
 export const GET = auth(async (req: NextAuthRequest) => {
   const { auth } = req
 
   if (!auth || !auth.accessToken || !auth.user.email) {
-    return new Response('Unauthorized', {
-      status: 401,
+    return new Response(ReasonPhrases.FORBIDDEN, {
+      status: StatusCodes.FORBIDDEN,
     })
   }
 
   try {
-    // AuthZ: Check that the user has access to the project
-    const user = await getUser(auth.user.email)
-
     // TODO: Should be able to do Dynamic Route segments as documented:
     // https://nextjs.org/docs/app/building-your-application/routing/route-handlers#dynamic-route-segments
     // Problem is our Auth wrapper doesn't like it. See if we can figure
@@ -43,29 +42,34 @@ export const GET = auth(async (req: NextAuthRequest) => {
     const project = await getProjectDb(requestedProjectId)
 
     if (!project) {
-      return new Response('Not Found', {
-        status: 404,
+      return new Response(ReasonPhrases.NOT_FOUND, {
+        status: StatusCodes.NOT_FOUND,
       })
     }
 
-    const foundUserId = project.userIds.find((userId) => userId === user.id)
+    const user = await getUser(auth.user.email)
+    const org = await getOrg(project.orgId)
 
-    if (!foundUserId) {
-      return new Response('Forbidden', {
-        status: 403,
+    try {
+      authz.userListedOnOrg(org, user.id)
+      authz.orgListedOnUser(user, org.id)
+      authz.userListedOnProject(project, user.id)
+    } catch (error) {
+      return new Response(ReasonPhrases.FORBIDDEN, {
+        status: StatusCodes.FORBIDDEN,
       })
     }
 
     return new Response(JSON.stringify(project), {
-      status: 200,
+      status: StatusCodes.OK,
     })
   } catch (error) {
     console.error(
       `Failed fetching project for '${auth.user.email}' because: ${error}`,
     )
 
-    return new Response('Failed to fetch project', {
-      status: 500,
+    return new Response(ReasonPhrases.INTERNAL_SERVER_ERROR, {
+      status: StatusCodes.INTERNAL_SERVER_ERROR,
     })
   }
 }) as any
@@ -81,9 +85,6 @@ export const DELETE = auth(async (req: NextAuthRequest) => {
   }
 
   try {
-    // AuthZ: Check that the user has access to the project
-    const user = await getUser(auth.user.email)
-
     // TODO: Should be able to do Dynamic Route segments as documented:
     // https://nextjs.org/docs/app/building-your-application/routing/route-handlers#dynamic-route-segments
     // Problem is our Auth wrapper doesn't like it. See if we can figure
@@ -96,28 +97,24 @@ export const DELETE = auth(async (req: NextAuthRequest) => {
     const project = await getProjectDb(requestedProjectId)
 
     if (!project) {
-      return new Response('Not Found', {
-        status: 404,
+      return new Response(ReasonPhrases.NOT_FOUND, {
+        status: StatusCodes.NOT_FOUND,
       })
     }
 
-    const foundUserId = project.userIds.find((userId) => userId === user.id)
-
-    if (!foundUserId) {
-      return new Response('Forbidden', {
-        status: 403,
-      })
-    }
-
-    // This is a bad AuthZ check but for now verify that there is only one user
-    // within the project user IDs. If not then reject the request.
-    if (project.userIds.length > 1) {
-      return new Response('Forbidden', {
-        status: 403,
-      })
-    }
-
+    const user = await getUser(auth.user.email)
     const org = await getOrg(project.orgId)
+
+    try {
+      authz.userListedOnOrg(org, user.id)
+      authz.orgListedOnUser(user, org.id)
+      authz.userListedOnProject(project, user.id)
+      authz.soleUserOnProject(project, user.id)
+    } catch (error) {
+      return new Response(ReasonPhrases.FORBIDDEN, {
+        status: StatusCodes.FORBIDDEN,
+      })
+    }
 
     // One simply can't take the reverse order of the Project creation logic in
     // the POST request handlers. Other resources could have been created that

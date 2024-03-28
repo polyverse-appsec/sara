@@ -6,6 +6,7 @@ import { NextAuthRequest } from 'next-auth/lib'
 import { getBoostOrgUserStatus } from './../../../../../../../lib/polyverse/backend/backend'
 import getOrg from './../../../../../../../lib/polyverse/db/get-org'
 import getUser from './../../../../../../../lib/polyverse/db/get-user'
+import authz from './../../../../../../../app/api/authz'
 
 export const GET = auth(async (req: NextAuthRequest) => {
   const { auth } = req
@@ -17,15 +18,6 @@ export const GET = auth(async (req: NextAuthRequest) => {
   }
 
   try {
-    // AuthZ: Check that the user has access to the org
-    const user = await getUser(auth.user.email)
-
-    if (!user || !user.orgIds || user.orgIds.length === 0) {
-      return new Response(ReasonPhrases.NOT_FOUND, {
-        status: StatusCodes.NOT_FOUND,
-      })
-    }
-
     // TODO: Should be able to do Dynamic Route segments as documented:
     // https://nextjs.org/docs/app/building-your-application/routing/route-handlers#dynamic-route-segments
     // Problem is our Auth wrapper doesn't like it. See if we can figure
@@ -36,28 +28,13 @@ export const GET = auth(async (req: NextAuthRequest) => {
     // The 4th to the last slice ought to be the slug for the org id
     const requestedOrgId = reqUrlSlices[reqUrlSlices.length - 4]
 
-    const foundOrgId = user.orgIds.find(
-      (orgId: string) => orgId === requestedOrgId,
-    )
-
-    if (!foundOrgId) {
-      return new Response(ReasonPhrases.FORBIDDEN, {
-        status: StatusCodes.FORBIDDEN,
-      })
-    }
-
-    // AuthZ: Check the user is associated with the requested org
     const org = await getOrg(requestedOrgId)
+    const user = await getUser(auth.user.email)
 
-    if (!org.userIds || org.userIds.length === 0) {
-      return new Response(ReasonPhrases.FORBIDDEN, {
-        status: StatusCodes.FORBIDDEN,
-      })
-    }
-
-    const foundUserId = org.userIds.find((userId) => userId === user.id)
-
-    if (!foundUserId) {
+    try {
+      authz.userListedOnOrg(org, user.id)
+      authz.orgListedOnUser(user, org.id)
+    } catch (error) {
       return new Response(ReasonPhrases.FORBIDDEN, {
         status: StatusCodes.FORBIDDEN,
       })

@@ -10,6 +10,8 @@ import getUser from './../../../lib/polyverse/db/get-user'
 import updateProject from './../../../lib/polyverse/db/update-project'
 import { createBaseSaraObject } from './../../../lib/polyverse/db/utils'
 
+import authz from '../authz'
+
 interface POSTGoalReqBody {
   // TODO: Make sure we mark request body data members as optional in other
   // handlers and check that they deserialized or fail with 400.
@@ -24,7 +26,7 @@ interface POSTGoalReqBody {
 export const POST = auth(async (req: NextAuthRequest) => {
   const { auth } = req
 
-  if (!auth || !auth.accessToken || !auth.user.email || !auth.user.id) {
+  if (!auth || !auth.user.email || !auth.user.id) {
     return new Response(ReasonPhrases.UNAUTHORIZED, {
       status: StatusCodes.UNAUTHORIZED,
     })
@@ -34,7 +36,6 @@ export const POST = auth(async (req: NextAuthRequest) => {
     // Perform validation on the request body data
     const reqBody = (await req.json()) as POSTGoalReqBody
 
-    // TODO: Validate these using Joi
     // Crucial to AuthZ
     if (!reqBody.orgId || reqBody.orgId.length === 0) {
       return new Response(`Request body is missing 'orgId'`, {
@@ -66,53 +67,15 @@ export const POST = auth(async (req: NextAuthRequest) => {
     }
 
     // AuthZ: Check that the user has access to the org
-    const user = await getUser(auth.user.email)
-
-    if (!user.orgIds || user.orgIds.length === 0) {
-      return new Response(ReasonPhrases.FORBIDDEN, {
-        status: StatusCodes.FORBIDDEN,
-      })
-    }
-
-    const foundOrgId = user.orgIds.find((orgId) => orgId === reqBody.orgId)
-
-    if (!foundOrgId) {
-      return new Response(ReasonPhrases.FORBIDDEN, {
-        status: StatusCodes.FORBIDDEN,
-      })
-    }
-
-    // AuthZ: Check that the user is associated with the requested org
     const org = await getOrg(reqBody.orgId)
-
-    if (!org.userIds || org.userIds.length === 0) {
-      return new Response(ReasonPhrases.FORBIDDEN, {
-        status: StatusCodes.FORBIDDEN,
-      })
-    }
-
-    const foundUserIdOnOrg = org.userIds.find((userId) => userId === user.id)
-
-    if (!foundUserIdOnOrg) {
-      return new Response(ReasonPhrases.FORBIDDEN, {
-        status: StatusCodes.FORBIDDEN,
-      })
-    }
-
-    // AuthZ: Check that the user is associated with the requested project
+    const user = await getUser(auth.user.email)
     const project = await getProject(reqBody.parentProjectId)
 
-    if (!project.userIds || project.userIds.length === 0) {
-      return new Response(ReasonPhrases.FORBIDDEN, {
-        status: StatusCodes.FORBIDDEN,
-      })
-    }
-
-    const foundUserIdOnProject = project.userIds.find(
-      (userId) => userId === user.id,
-    )
-
-    if (!foundUserIdOnProject) {
+    try {
+      authz.userListedOnOrg(org, user.id)
+      authz.orgListedOnUser(user, org.id)
+      authz.userListedOnProject(project, user.id)
+    } catch (error) {
       return new Response(ReasonPhrases.FORBIDDEN, {
         status: StatusCodes.FORBIDDEN,
       })

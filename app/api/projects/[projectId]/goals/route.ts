@@ -7,6 +7,8 @@ import getOrg from './../../../../../lib/polyverse/db/get-org'
 import getProject from './../../../../../lib/polyverse/db/get-project'
 import getUser from './../../../../../lib/polyverse/db/get-user'
 
+import authz from './../../../../../app/api/authz'
+
 export const GET = auth(async (req: NextAuthRequest) => {
   const { auth } = req
 
@@ -27,58 +29,17 @@ export const GET = auth(async (req: NextAuthRequest) => {
     // The 2nd to the last slice ought to be the slug for the repo name
     const requestedProjectId = reqUrlSlices[reqUrlSlices.length - 2]
 
-    // AuthZ: Check that the user has access to the project that is being requested
     const user = await getUser(auth.user.email)
-
     const project = await getProject(requestedProjectId)
-
-    if (!project.userIds || project.userIds.length === 0) {
-      return new Response(ReasonPhrases.UNAUTHORIZED, {
-        status: StatusCodes.UNAUTHORIZED,
-      })
-    }
-
-    const foundUserIdOnProject = project.userIds.find(
-      (userId) => (userId = user.id),
-    )
-
-    if (!foundUserIdOnProject) {
-      return new Response(ReasonPhrases.UNAUTHORIZED, {
-        status: StatusCodes.UNAUTHORIZED,
-      })
-    }
-
-    // AuthZ: Check that the user has access to the organization that is listed
-    if (!user.orgIds || user.orgIds.length === 0) {
-      return new Response(ReasonPhrases.UNAUTHORIZED, {
-        status: StatusCodes.UNAUTHORIZED,
-      })
-    }
-
-    const foundOrgId = user.orgIds.find((orgId) => orgId === project.orgId)
-
-    if (!foundOrgId) {
-      // TODO: Add log statements for when someone is trying to access something unauthorized
-      return new Response(ReasonPhrases.UNAUTHORIZED, {
-        status: StatusCodes.UNAUTHORIZED,
-      })
-    }
-
-    // AuthZ: Check that the organization that owns the project has listed
-    // the user as part of the organization
     const org = await getOrg(project.orgId)
 
-    if (!org.userIds || org.userIds.length === 0) {
-      return new Response(ReasonPhrases.UNAUTHORIZED, {
-        status: StatusCodes.UNAUTHORIZED,
-      })
-    }
-
-    const foundUserIdOnOrg = org.userIds.find((userId) => userId === user.id)
-
-    if (!foundUserIdOnOrg) {
-      return new Response(ReasonPhrases.UNAUTHORIZED, {
-        status: StatusCodes.UNAUTHORIZED,
+    try {
+      authz.userListedOnOrg(org, user.id)
+      authz.orgListedOnUser(user, org.id)
+      authz.userListedOnProject(project, user.id)
+    } catch (error) {
+      return new Response(ReasonPhrases.FORBIDDEN, {
+        status: StatusCodes.FORBIDDEN,
       })
     }
 

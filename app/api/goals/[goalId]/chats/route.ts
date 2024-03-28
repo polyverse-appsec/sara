@@ -37,6 +37,8 @@ import {
 } from './../../../../../lib/polyverse/openai/goalsAssistant'
 import { promptFileInfosEqual } from './../../../../../lib/utils'
 
+import authz from './../../../../../app/api/authz'
+
 // 03/04/24: We set this max duration to 60 seconds during initial development
 // with no real criteria to use as a starting point for the max duration. We see
 // that this call is a lengthy call - possibly due to the upstream service
@@ -65,58 +67,16 @@ export const POST = auth(async (req: NextAuthRequest) => {
     // The 3rd to the last slice ought to be the slug for the goal name
     const requestedGoalId = reqUrlSlices[reqUrlSlices.length - 2]
 
-    // AuthZ: Check that the user is listed as a member on the org that owns
-    // the goal
     const goal = await getGoal(requestedGoalId)
     const org = await getOrg(goal.orgId)
-
-    if (!org.userIds || org.userIds.length === 0) {
-      return new Response(ReasonPhrases.FORBIDDEN, {
-        status: StatusCodes.FORBIDDEN,
-      })
-    }
-
     const user = await getUser(auth.user.email)
-
-    const foundUserIdOnOrg = org.userIds.find((userId) => userId === user.id)
-
-    if (!foundUserIdOnOrg) {
-      return new Response(ReasonPhrases.FORBIDDEN, {
-        status: StatusCodes.FORBIDDEN,
-      })
-    }
-
-    // AuthZ: Check that the user lists the org as something they are a
-    // member of
-    if (!user.orgIds || user.orgIds.length === 0) {
-      return new Response(ReasonPhrases.FORBIDDEN, {
-        status: StatusCodes.FORBIDDEN,
-      })
-    }
-
-    const foundOrgId = user.orgIds.find((orgId) => orgId === org.id)
-
-    if (!foundOrgId) {
-      return new Response(ReasonPhrases.FORBIDDEN, {
-        status: StatusCodes.FORBIDDEN,
-      })
-    }
-
-    // AuthZ: Check that the project the goal is associated with lists the
-    // user
     const project = await getProject(goal.parentProjectId)
 
-    if (!project.userIds || project.userIds.length === 0) {
-      return new Response(ReasonPhrases.FORBIDDEN, {
-        status: StatusCodes.FORBIDDEN,
-      })
-    }
-
-    const foundUserIdOnProject = project.userIds.find(
-      (userId) => userId === user.id,
-    )
-
-    if (!foundUserIdOnProject) {
+    try {
+      authz.userListedOnOrg(org, user.id)
+      authz.orgListedOnUser(user, org.id)
+      authz.userListedOnProject(project, user.id)
+    } catch (error) {
       return new Response(ReasonPhrases.FORBIDDEN, {
         status: StatusCodes.FORBIDDEN,
       })

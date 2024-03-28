@@ -19,6 +19,8 @@ import updateOrg from './../../../../../lib/polyverse/db/update-org'
 import { createBaseSaraObject } from './../../../../../lib/polyverse/db/utils'
 import { projectNameSchema } from './../../../../../lib/polyverse/db/validators'
 
+import authz from './../../../../../app/api/authz'
+
 // 03/04/24: We set this max duration to 60 seconds during initial development
 // with no real criteria to use as a starting point for the max duration. We see
 // that this call is a lengthy call - possibly due to the upstream service
@@ -44,15 +46,6 @@ export const POST = auth(async (req: NextAuthRequest) => {
   }
 
   try {
-    // AuthZ: Check that the user has access to the org
-    const user = await getUser(auth.user.email)
-
-    if (!user.orgIds || user.orgIds.length === 0) {
-      return new Response(ReasonPhrases.NOT_FOUND, {
-        status: StatusCodes.NOT_FOUND,
-      })
-    }
-
     // TODO: Should be able to do Dynamic Route segments as documented:
     // https://nextjs.org/docs/app/building-your-application/routing/route-handlers#dynamic-route-segments
     // Problem is our Auth wrapper doesn't like it. See if we can figure
@@ -62,26 +55,14 @@ export const POST = auth(async (req: NextAuthRequest) => {
 
     // The 3rd to the last slice ought to be the slug for the repo name
     const requestedOrgId = reqUrlSlices[reqUrlSlices.length - 2]
-    const foundOrgId = user.orgIds.find((orgId) => orgId === requestedOrgId)
 
-    if (!foundOrgId) {
-      return new Response(ReasonPhrases.FORBIDDEN, {
-        status: StatusCodes.FORBIDDEN,
-      })
-    }
-
-    // AuthZ: Check the user is associated with the requested org
     const org = await getOrg(requestedOrgId)
+    const user = await getUser(auth.user.email)
 
-    if (!org.userIds || org.userIds.length === 0) {
-      return new Response(ReasonPhrases.FORBIDDEN, {
-        status: StatusCodes.FORBIDDEN,
-      })
-    }
-
-    const foundUserId = org.userIds.find((userId) => userId === user.id)
-
-    if (!foundUserId) {
+    try {
+      authz.userListedOnOrg(org, user.id)
+      authz.orgListedOnUser(user, org.id)
+    } catch (error) {
       return new Response(ReasonPhrases.FORBIDDEN, {
         status: StatusCodes.FORBIDDEN,
       })
@@ -264,15 +245,6 @@ export const GET = auth(async (req: NextAuthRequest) => {
   }
 
   try {
-    // AuthZ: Check that the user has access to the org
-    const user = await getUser(auth.user.email)
-
-    if (!user.orgIds || user.orgIds.length === 0) {
-      return new Response(ReasonPhrases.NOT_FOUND, {
-        status: StatusCodes.NOT_FOUND,
-      })
-    }
-
     // TODO: Should be able to do Dynamic Route segments as documented:
     // https://nextjs.org/docs/app/building-your-application/routing/route-handlers#dynamic-route-segments
     // Problem is our Auth wrapper doesn't like it. See if we can figure
@@ -282,26 +254,14 @@ export const GET = auth(async (req: NextAuthRequest) => {
 
     // The 2nd to the last slice ought to be the slug for the repo name
     const requestedOrgId = reqUrlSlices[reqUrlSlices.length - 2]
-    const foundOrgId = user.orgIds.find((orgId) => orgId === requestedOrgId)
 
-    if (!foundOrgId) {
-      return new Response(ReasonPhrases.FORBIDDEN, {
-        status: StatusCodes.FORBIDDEN,
-      })
-    }
-
-    // AuthZ: Check the user is associated with the requested org
+    const user = await getUser(auth.user.email)
     const org = await getOrg(requestedOrgId)
 
-    if (!org.userIds || org.userIds.length === 0) {
-      return new Response(ReasonPhrases.FORBIDDEN, {
-        status: StatusCodes.FORBIDDEN,
-      })
-    }
-
-    const foundUserId = org.userIds.find((userId) => userId === user.id)
-
-    if (!foundUserId) {
+    try {
+      authz.userListedOnOrg(org, user.id)
+      authz.orgListedOnUser(user, org.id)
+    } catch (error) {
       return new Response(ReasonPhrases.FORBIDDEN, {
         status: StatusCodes.FORBIDDEN,
       })

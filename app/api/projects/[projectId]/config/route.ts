@@ -27,6 +27,7 @@ import {
   type AssistantMetadata,
 } from './../../../../../lib/polyverse/openai/assistants'
 import { promptFileInfosEqual } from './../../../../../lib/utils'
+import authz from './../../../../../app/api/authz'
 
 // 03/04/24: We set this max duration to 60 seconds during initial development
 // with no real criteria to use as a starting point for the max duration. We see
@@ -56,57 +57,17 @@ export const POST = auth(async (req: NextAuthRequest) => {
   const requestedProjectId = reqUrlSlices[reqUrlSlices.length - 2]
 
   try {
-    // AuthZ: Check that the user has access to the project that is being requested
     const user = await getUser(auth.user.email)
     const project = await getProject(requestedProjectId)
-
-    if (!project.userIds || project.userIds.length === 0) {
-      return new Response(ReasonPhrases.UNAUTHORIZED, {
-        status: StatusCodes.UNAUTHORIZED,
-      })
-    }
-
-    const foundUserIdOnProject = project.userIds.find(
-      (userId) => (userId = user.id),
-    )
-
-    if (!foundUserIdOnProject) {
-      return new Response(ReasonPhrases.UNAUTHORIZED, {
-        status: StatusCodes.UNAUTHORIZED,
-      })
-    }
-
-    // AuthZ: Check that the user has access to the organization that is listed
-    // on the project
-    if (!user.orgIds || user.orgIds.length === 0) {
-      return new Response(ReasonPhrases.UNAUTHORIZED, {
-        status: StatusCodes.UNAUTHORIZED,
-      })
-    }
-
-    const foundOrgId = user.orgIds.find((orgId) => orgId === project.orgId)
-
-    if (!foundOrgId) {
-      return new Response(ReasonPhrases.UNAUTHORIZED, {
-        status: StatusCodes.UNAUTHORIZED,
-      })
-    }
-
-    // AuthZ: Check that the organization that owns the project has listed
-    // the user as part of the organization
     const org = await getOrg(project.orgId)
 
-    if (!org.userIds || org.userIds.length === 0) {
-      return new Response(ReasonPhrases.UNAUTHORIZED, {
-        status: StatusCodes.UNAUTHORIZED,
-      })
-    }
-
-    const foundUserIdOnOrg = org.userIds.find((userId) => userId === user.id)
-
-    if (!foundUserIdOnOrg) {
-      return new Response(ReasonPhrases.UNAUTHORIZED, {
-        status: StatusCodes.UNAUTHORIZED,
+    try {
+      authz.userListedOnOrg(org, user.id)
+      authz.orgListedOnUser(user, org.id)
+      authz.userListedOnProject(project, user.id)
+    } catch (error) {
+      return new Response(ReasonPhrases.FORBIDDEN, {
+        status: StatusCodes.FORBIDDEN,
       })
     }
 
