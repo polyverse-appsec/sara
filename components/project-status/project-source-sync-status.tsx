@@ -10,10 +10,12 @@ import { usFormatter } from 'lib/polyverse/backend/utils/log'
 
 export const renderSourceSyncValue = (
     backgroundProjectStatus: BoostProjectStatusState,
+    projectResources: Url[]
   ) => {
     // eventually, we'll show detailed sync time for all resources - but for now, just use the first one (primary resource)
     let syncTime = `N/A`
     let syncCommitHash = `N/A`
+    let commitLink = undefined;
     if (backgroundProjectStatus.sourceDataStatus) {
       const firstResource = backgroundProjectStatus.sourceDataStatus[0]
       if (firstResource && firstResource.syncTime) {
@@ -21,6 +23,7 @@ export const renderSourceSyncValue = (
       }
       if (firstResource && firstResource.syncHash) {
         syncCommitHash = firstResource.syncHash
+        commitLink = `${projectResources[0].toString()}/commit/${syncCommitHash}`
       }
     }
     return (
@@ -87,7 +90,7 @@ const renderBriefSourceSyncDetails = (health: ProjectHealth | null, projectResou
     <Flex gap="3" align="center">
       {renderSourceSyncIcon(health.backgroundProjectStatus)}
       <Flex direction="column">
-        {renderSourceSyncValue(health.backgroundProjectStatus)}
+        {renderSourceSyncValue(health.backgroundProjectStatus, [])}
       </Flex>
     </Flex>
   )
