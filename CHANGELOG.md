@@ -2,6 +2,20 @@
 
 # Release Notes
 
+## Version 0.23.0: March 28th, 2024
+
+### New Features
+
+- N/A
+
+### Enhancements
+
+- N/A
+
+### Bug Fixes
+
+- Fix issue with `<SaraChat>` component showing it was constantly loading instead of handling new chat requests
+
 ## Version 0.22.0: March 27th, 2024
 
 ### New Features

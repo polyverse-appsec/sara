@@ -4,13 +4,11 @@ import * as React from 'react'
 import { ExclamationTriangleIcon } from '@radix-ui/react-icons'
 // TODO: Do I need to use this package at all?
 import { type UseChatHelpers } from 'ai/react'
-import { toast } from 'react-hot-toast'
 
 import {
   type ChatQueryPartDeux,
   type ProjectHealthStatusValue,
 } from './../../lib/data-model-types'
-import { Button } from './..//ui/button'
 import { ButtonScrollToBottom } from './../button-scroll-to-bottom'
 import { IconRefresh, IconStop } from './../ui/icons'
 import SaraPromptForm from './sara-prompt-form'
@@ -19,7 +17,6 @@ export interface SaraChatPanelProps
   extends Pick<UseChatHelpers, 'input' | 'setInput'> {
   id?: string
   title?: string
-  chatQueries: ChatQueryPartDeux[]
   onQuerySubmit: (query: string) => void
   projectHealth: ProjectHealthStatusValue
 }
@@ -50,7 +47,6 @@ const renderChatAlert = (projectHealth: ProjectHealthStatusValue) => {
 const SaraChatPanel = ({
   input,
   setInput,
-  chatQueries,
   onQuerySubmit,
   projectHealth,
 }: SaraChatPanelProps) => {
@@ -105,28 +101,6 @@ const SaraChatPanel = ({
           <SaraPromptForm
             projectHealth={projectHealth}
             onQuerySubmit={async (query) => {
-              // Check that the last chat query has received a response or
-              // isn't in an error state in order to allow a query to take place
-              if (chatQueries.length > 0) {
-                const lastChatQuery = chatQueries[chatQueries.length - 1]
-
-                if (lastChatQuery.status === 'ERROR') {
-                  toast.error(
-                    'Unable to submit new chat query - previous chat query in error state',
-                  )
-                  return
-                }
-
-                if (lastChatQuery.status !== 'RESPONSE_RECEIVED') {
-                  toast.custom(
-                    'Unable to submit new chat query - previous chat query in error state',
-                  )
-                  return
-                }
-              }
-
-              // We used to append() here
-              console.log(`***** onSubmit invoked on <PromptForm>`)
               onQuerySubmit(query)
             }}
             input={input}

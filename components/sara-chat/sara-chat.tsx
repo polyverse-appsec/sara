@@ -137,9 +137,10 @@ const SaraChat = ({
     }
   }, [chatableResourceUrl, chatId])
 
-  if (!chatQueries) {
-    return <LoadingSpinner />
-  }
+  // if (!chatQueries) {
+  //   return <LoadingSpinner />
+  // }
+
   if (!saraSession) {
     return null
   }
@@ -147,7 +148,7 @@ const SaraChat = ({
   return (
     <>
       <div className={cn('pb-[200px] pt-4')}>
-        {chatQueries.length ? (
+        {chatQueries && chatQueries.length ? (
           <>
             <SaraChatList
               chatQueries={chatQueries}
@@ -160,7 +161,6 @@ const SaraChat = ({
       </div>
       <SaraChatPanel
         projectHealth={projectHealth}
-        chatQueries={chatQueries}
         input={input}
         setInput={setInput}
         onQuerySubmit={async (query: string) => {
@@ -176,11 +176,33 @@ const SaraChat = ({
               return
             }
 
+            // If we are here it means we already created a Chat REST resource
+            // and we need to check its associated chat queries. We check that
+            // the last chat query has received a response or isn't in an error
+            // state in order to allow a query to take place
             if (!chatQueries) {
               toast.error(
                 `Previous chat query unknown and required for chat submission`,
               )
               return
+            }
+
+            if (chatQueries.length > 0) {
+              const lastChatQuery = chatQueries[chatQueries.length - 1]
+
+              if (lastChatQuery.status === 'ERROR') {
+                toast.error(
+                  'Unable to submit new chat query - previous chat query in error state',
+                )
+                return
+              }
+
+              if (lastChatQuery.status !== 'RESPONSE_RECEIVED') {
+                toast.custom(
+                  'Unable to submit new chat query - previous chat query in error state',
+                )
+                return
+              }
             }
 
             const chatQueriesUrl = buildChatQueriesUrl(
