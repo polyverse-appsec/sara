@@ -137,10 +137,6 @@ const SaraChat = ({
     }
   }, [chatableResourceUrl, chatId])
 
-  // if (!chatQueries) {
-  //   return <LoadingSpinner />
-  // }
-
   if (!saraSession) {
     return null
   }
