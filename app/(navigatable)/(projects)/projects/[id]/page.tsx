@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { Flex } from '@radix-ui/themes'
 import GoalsManager from 'components/goals/goals-manager'
 import ProjectStatusCard from 'components/project-status/project-status-card'
 import { rediscoverProject } from 'lib/polyverse/backend/backend'
@@ -187,7 +188,7 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
               </div>
             ) : null}
           </div>
-          <div className="flex">
+          <Flex direction="column">
             <div className="mr-2">
               <ProjectStatusCard
                 health={health}
@@ -227,14 +228,40 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
             >
               {rediscoverButtonEnabled ? (
                 // Enabled state SVG
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-refresh-cw"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0114.98-3.51l-1.42 1.42A7 7 0 005.67 9H3.51z"></path><path d="M20.49 15a9 9 0 0114.98 3.51l1.42-1.42A7 7 0 0018.33 15h1.16z"></path></svg>
-                  ) : (
-                // Disabled state SVG with corrected opacity style
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#CCCCCC" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-refresh-cw" style={{ opacity: 0.5 }}><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0114.98-3.51l-1.42 1.42A7 7 0 005.67 9H3.51z"></path><path d="M20.49 15a9 9 0 0114.98 3.51l1.42-1.42A7 7 0 0018.33 15h1.16z"></path></svg>
-                )}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 0 0-3.7-3.7 48.678 48.678 0 0 0-7.324 0 4.006 4.006 0 0 0-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 0 0 3.7 3.7 48.656 48.656 0 0 0 7.324 0 4.006 4.006 0 0 0 3.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3-3 3"
+                  />
+                </svg>
+              ) : (
+                // Disabled state SVG
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M10.125 2.25h-4.5c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125v-9M10.125 2.25h.375a9 9 0 0 1 9 9v.375M10.125 2.25A3.375 3.375 0 0 1 13.5 5.625v1.5c0 .621.504 1.125 1.125 1.125h1.5a3.375 3.375 0 0 1 3.375 3.375M9 15l2.25 2.25L15 12"
+                  />
+                </svg>
+              )}
               {rediscoverButtonEnabled ? 'Resync Source' : 'Synchronized'}
             </Button>
-          </div>
+          </Flex>
         </div>
       </RenderableResourceContent>
       <RenderableResourceContent>

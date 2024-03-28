@@ -15,6 +15,7 @@
 ### Bug Fixes
 
 - Fix issue with `<SaraChat>` component showing it was constantly loading instead of handling new chat requests
+- Fix icons with the source re-synchronization
 
 ## Version 0.22.0: March 27th, 2024
 
