@@ -10,7 +10,8 @@
 
 ### Enhancements
 
-- N/A
+- Add REST API `DELETE /api/goals/<goalId>`
+- Added functionality to the projects page to delete a set of selected goals from a project
 
 ### Bug Fixes
 

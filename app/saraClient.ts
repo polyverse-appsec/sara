@@ -88,3 +88,13 @@ export const getResource = async <T>(
 
   return (await res.json()) as T
 }
+
+export const deleteResource = async (resourcePath: string, errorMessage: string = ''): Promise<void> =>  {
+  const prefixedResourcePath = prefixResourcePath(resourcePath)
+
+  const res = await fetch(prefixedResourcePath, {
+    method: 'DELETE'
+  })
+
+  await throwIfResNotOk(res, errorMessage)
+}

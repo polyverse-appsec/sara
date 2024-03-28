@@ -10,6 +10,7 @@ import deleteGoal from './../../../../lib/polyverse/db/delete-goal'
 import updateProject from './../../../../lib/polyverse/db/update-project'
 
 import authz from './../../../../app/api/authz'
+import deleteChat from 'lib/polyverse/db/delete-chat'
 
 export const GET = auth(async (req: NextAuthRequest) => {
   const { auth } = req
@@ -139,6 +140,13 @@ export const DELETE = auth(async (req: NextAuthRequest) => {
       return new Response(ReasonPhrases.FORBIDDEN, {
         status: StatusCodes.FORBIDDEN,
       })
+    }
+
+    // Delete the chat that is associated with the goal. Note we only have to
+    // delete the chat as it will recursively delete any chat queries associated
+    // with it as they have a relationship with each other
+    if (goal.chatId) {
+      await deleteChat(goal.chatId)
     }
 
     await deleteGoal(requestedGoalId)

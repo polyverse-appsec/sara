@@ -1,9 +1,12 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
+import { Button, Flex, Heading } from '@radix-ui/themes'
+import toast from 'react-hot-toast'
 
+import { deleteResource } from './../../app/saraClient'
 import ScrollableGoalsTable from './../../components/goals/scrollable-goals-table'
-import { Button } from './../../components/ui/button'
 import { type GoalPartDeux } from './../../lib/data-model-types'
 
 interface GoalsManagerProps {
@@ -12,13 +15,35 @@ interface GoalsManagerProps {
 }
 
 const GoalsManager = ({ projectId, goals }: GoalsManagerProps) => {
+  const [checkedGoalIds, setCheckedGoalIds] = useState<string[]>([])
+  const [deleteGoalsButtonEnabled, setDeleteGoalsButtonEnabled] =
+    useState<boolean>(true)
+
+  const handleGoalChecked = (checkedGoalId: string) => {
+    const newCheckedGoalIds = [...checkedGoalIds]
+    newCheckedGoalIds.push(checkedGoalId)
+
+    setCheckedGoalIds(newCheckedGoalIds)
+  }
+
+  const handleGoalUnchecked = (uncheckedGoalId: string) => {
+    const newCheckedGoalIds = [
+      ...checkedGoalIds.filter(
+        (checkedGoalId) => checkedGoalId !== uncheckedGoalId,
+      ),
+    ]
+
+    setCheckedGoalIds(newCheckedGoalIds)
+  }
+
   return (
-    <>
-      <div className="my-1 flex justify-between w-full">
-        <h3 className="text-lg font-semibold">Goals</h3>
+    <Flex direction="column" gapY="3">
+      <Flex justify="between">
+        <Heading as="h3" weight="medium">
+          Goals
+        </Heading>
         <Button
-          variant="ghost"
-          className=" bg-green-500 hover:bg-green-200"
+          color="green"
           onClick={async (e) => {
             e.preventDefault()
           }}
@@ -27,9 +52,44 @@ const GoalsManager = ({ projectId, goals }: GoalsManagerProps) => {
             Create New Goal
           </Link>
         </Button>
-      </div>
-      <ScrollableGoalsTable goals={goals} />
-    </>
+      </Flex>
+      <ScrollableGoalsTable
+        goals={goals}
+        handleGoalChecked={handleGoalChecked}
+        handleGoalUnchecked={handleGoalUnchecked}
+      />
+      <Flex direction="row-reverse">
+        <Button
+          color="red"
+          onClick={async () => {
+            setDeleteGoalsButtonEnabled(false)
+
+            // If someone is just spamming the delete button then just return.
+            // This ought to be false after the first time the button is
+            // clicked so check for that state.
+            if (!deleteGoalsButtonEnabled) {
+              return
+            }
+
+            try {
+              const deleteGoalPromises = checkedGoalIds.map((goalId) =>
+                deleteResource(
+                  `/goals/${goalId}`,
+                  'Request to delete goal failed',
+                ),
+              )
+
+              await Promise.all(deleteGoalPromises)
+            } catch (error) {
+              toast.error(`Failed to delete goal because: ${error}`)
+            }
+            setDeleteGoalsButtonEnabled(true)
+          }}
+        >
+          Delete Goals
+        </Button>
+      </Flex>
+    </Flex>
   )
 }
 
