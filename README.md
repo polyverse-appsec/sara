@@ -10,6 +10,7 @@
   - [Development](#Development)
     - [Coding Patterns: Use Sara REST Client](#Coding-Patterns-Use-Sara-REST-Client)
     - [Trunk Based Development](#Trunk-Based-Development)
+    - [Feature-Flag Development](#Feature-Flag-Development)
     - [Debugging The Frontend](#Debugging-The-Frontend)
     - [Debugging The Backend](#Debugging-The-Backend)
     - [Committing Code](#Committing-Code)
@@ -121,6 +122,13 @@ The REST client exposes generic TypeScript functions to work with REST resources
 ### Trunk Based Development
 
 We used trunk based development where we all work out of `main` on a daily and don't use any feature branching strategy. This strategy is supported by and reinforces good Continuous Integration practices. [Click here](https://trunkbaseddevelopment.com/) to learn more about trunk based development.
+
+### Feature-Flag Development
+
+We use feature flags to enable and disable customer-facing features (and avoid forking the code or creating feature branches).
+Feature flags are generally available by creating a name for the feature, and setting it in the environment variables at NEXT_PUBLIC_PREVIEW_FEATURES in the Vercel dashboard per deployment.
+
+Then use the isPreviewFeatureEnabled function to determine if the feature is enabled or disabled in the UI.
 
 ### Debugging The Frontend
 
