@@ -59,13 +59,12 @@ const OrgIndex = ({ params: { id } }: { params: { id: string } }) => {
 
   return (
     <div className="flex-1 flex-col gap-4 p-10 text-2xl font-bold">
-      <RenderableResourceContent children={
+      <RenderableResourceContent>
         <div className="flex flex-col items-center">
           <h3>Current User Context</h3>
           <div className="w-1/2 border-t-2 border-blue-600 my-2"></div>
           <p className="text-lg">{org.name}</p>
         </div>
-      }>
       </RenderableResourceContent>
       {orgIsPremium ? (
         <div className="bg-background shadow-md rounded-lg p-6 my-10">
