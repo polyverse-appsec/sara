@@ -1,6 +1,6 @@
 {
   "name": "polyverse-sara-web-ui",
-  "version": "0.23.0",
+  "version": "0.24.0",
   "private": true,
   "scripts": {
     "dev": "cross-env NODE_OPTIONS='--inspect' next dev -p 5000",
@@ -32,7 +32,7 @@
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-switch": "^1.0.3",
     "@radix-ui/react-tooltip": "^1.0.7",
-    "@radix-ui/themes": "^2.0.3",
+    "@radix-ui/themes": "^3.0.1",
     "@types/jsonwebtoken": "^9.0.5",
     "@vercel/analytics": "^1.1.1",
     "@vercel/kv": "^1.0.1",

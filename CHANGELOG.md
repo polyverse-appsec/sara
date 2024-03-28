@@ -2,6 +2,20 @@
 
 # Release Notes
 
+## Version 0.24.0: March 28th, 2024
+
+### New Features
+
+- N/A
+
+### Enhancements
+
+- N/A
+
+### Bug Fixes
+
+- Fix issue in REST API `DELETE /api/projects/<projectId>` note actually cleaning up chats associated with goals
+
 ## Version 0.23.0: March 28th, 2024
 
 ### New Features

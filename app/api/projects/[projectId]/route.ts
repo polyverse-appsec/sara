@@ -2,6 +2,7 @@ import { NextAuthRequest } from 'next-auth/lib'
 
 import { auth } from './../../../../auth'
 import { deleteProject as deleteProjectOnBoost } from './../../../../lib/polyverse/backend/backend'
+import deleteChat from './../../../../lib/polyverse/db/delete-goal'
 import deleteGoal from './../../../../lib/polyverse/db/delete-goal'
 import deleteProject from './../../../../lib/polyverse/db/delete-project'
 import deleteProjectDataSource from './../../../../lib/polyverse/db/delete-project-data-source'
@@ -15,6 +16,7 @@ import {
   findAssistantFromMetadata,
   type AssistantMetadata,
 } from './../../../../lib/polyverse/openai/assistants'
+import getGoal from './../../../../lib/polyverse/db/get-goal'
 
 export const GET = auth(async (req: NextAuthRequest) => {
   const { auth } = req
@@ -154,6 +156,18 @@ export const DELETE = auth(async (req: NextAuthRequest) => {
     // since it has a relationship set key based off of the project ID.
     await deleteProject(project.id)
 
+    // Start by retrieving our goals to check to see if they have any chats
+    // associated with them. If so we need to delete those before the goals.
+    const getGoalPromises = project.goalIds.map((goalId) => getGoal(goalId))
+    const goals = await Promise.all(getGoalPromises)
+
+    // Note we only have to delete the chat as it will recursively delete any
+    // chat queries associated with it as they have a relationship with each
+    // other
+    const deleteChatPromises = goals.map((goal) => goal.chatId ? deleteChat(goal.chatId) : Promise.resolve())
+    await Promise.all(deleteChatPromises)
+
+    // Now actually delete the goals
     const deleteGoalPromises = project.goalIds.map((goalId) =>
       deleteGoal(goalId),
     )
