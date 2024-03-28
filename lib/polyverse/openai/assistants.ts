@@ -7,7 +7,7 @@ import {
   ProjectPartDeux,
   type PromptFileInfo,
 } from '../../data-model-types'
-import { BoostProjectStatus } from '../backend/get-boost-project-status'
+import { BoostProjectStatusState } from '../backend/types/BoostProjectStatus'
 import { isRecord } from '../typescript/helpers'
 import {
   mapPromptFileInfosToPromptFileTypes,
@@ -53,7 +53,7 @@ function createAssistantName(metadata: AssistantMetadata): string {
 function getOpenAIAssistantInstructions(
   fileTypes: FileTypes | PromptFileTypes,
   project: ProjectPartDeux,
-  projectStatus?: BoostProjectStatus,
+  projectStatus?: BoostProjectStatusState,
 ): string {
   // This prompt was engineered to guide Sara on what she will be doing
   // overall when she is created as an OpenAI Assistant. When specific questions
@@ -300,7 +300,7 @@ export async function createAssistant(
   fileInfos: ProjectDataReference[],
   assistantMetadata: AssistantMetadata,
   project: ProjectPartDeux,
-  boostProjectStatus?: BoostProjectStatus,
+  boostProjectStatus?: BoostProjectStatusState,
 ): Promise<Assistant> {
   if (fileInfos.length > 3) {
     throw new Error(
@@ -397,7 +397,7 @@ export const updateGlobalAssistantPrompt = async (
   promptFileInfos: PromptFileInfo[],
   assistantMetadata: AssistantMetadata,
   project: ProjectPartDeux,
-  projectStatus: BoostProjectStatus,
+  projectStatus: BoostProjectStatusState,
 ): Promise<Assistant> => {
   if (promptFileInfos.length > 3) {
     throw new Error(
