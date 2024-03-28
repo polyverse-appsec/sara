@@ -168,7 +168,6 @@ const SidebarNav = () => {
                   Active Project:
                 </Text>
                 <Text size="2">{activeProjectDetails.project.name}</Text>
-                <Text size="2">(Hover For Details)</Text>
               </>
             ) : (
               <Text size="2">No Project Selected</Text>

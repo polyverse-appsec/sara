@@ -19,9 +19,6 @@ const renderBriefHealthDetails = (health: ProjectHealth | null) => {
             </Text>
             <Text size="2">Loading</Text>
           </Flex>
-          <Text as="div" size="2">
-            (Hover For Details)
-          </Text>
         </Box>
       </Flex>
     )
@@ -32,9 +29,6 @@ const renderBriefHealthDetails = (health: ProjectHealth | null) => {
       {renderHealthIcon(health.readableValue)}
       <Flex direction="column">
         {renderReadableHealthValue(health.readableValue)}
-        <Text as="div" size="2">
-          (Hover For Details)
-        </Text>
       </Flex>
     </Flex>
   )
