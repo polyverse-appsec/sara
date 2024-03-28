@@ -28,7 +28,7 @@ interface ActiveProjectDetails {
 }
 
 interface ActiveWorkspaceDetails {
-  goalId: string
+  goalId: string | null
   taskId: string | null
 }
 
@@ -47,7 +47,7 @@ interface AppContextType {
 
   activeWorkspaceDetails: ActiveWorkspaceDetails | null
 
-  setActiveGoalId: (goalId: string) => void
+  setActiveGoalId: (goalId: string | null) => void
   setActiveTaskId: (taskId: string, goalId: string) => void
 }
 
@@ -82,7 +82,7 @@ export function AppProvider({ children }: AppProviderProps) {
   const [activeWorkspaceDetails, setActiveWorkspaceDetails] =
     useState<ActiveWorkspaceDetails | null>(null)
 
-  const setActiveGoalId = (goalId: string) => {
+  const setActiveGoalId = (goalId: string | null) => {
     const newActiveWorkspaceDetails: ActiveWorkspaceDetails = {
       goalId,
       taskId: null,

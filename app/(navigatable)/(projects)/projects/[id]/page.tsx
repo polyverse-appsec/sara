@@ -52,7 +52,12 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
   const session = useSession()
   const saraSession = session.data ? (session.data as SaraSession) : null
 
-  const { activeBillingOrg, setProjectIdForConfiguration } = useAppContext()
+  const {
+    activeBillingOrg,
+    setProjectIdForConfiguration,
+    setActiveGoalId,
+    activeWorkspaceDetails,
+  } = useAppContext()
 
   const [project, setProject] = useState<ProjectPartDeux | null>(null)
   const [health, setHealth] = useState<ProjectHealth | null>(null)
@@ -159,6 +164,10 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
       isMounted = false
     }
   }, [id, activeBillingOrg, saraSession])
+
+  if (activeWorkspaceDetails && activeWorkspaceDetails.goalId !== null) {
+    setActiveGoalId(null)
+  }
 
   if (!project) {
     return null

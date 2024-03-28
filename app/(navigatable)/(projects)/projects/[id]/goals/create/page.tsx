@@ -7,6 +7,10 @@ import Joi from 'joi'
 import { type GoalPartDeux, type ProjectPartDeux } from 'lib/data-model-types'
 import toast from 'react-hot-toast'
 
+import {
+  createResource,
+  getResource,
+} from './../../../../../../../app/saraClient'
 import RenderableResource from './../../../../../../../components/renderable-resource/renderable-resource'
 import RenderableResourceContent from './../../../../../../../components/renderable-resource/renderable-resource-content'
 import { Button } from './../../../../../../../components/ui/button'
@@ -23,17 +27,12 @@ const ProjectGoalCreate = ({ params: { id } }: { params: { id: string } }) => {
 
   useEffect(() => {
     ;(async () => {
-      const projectRes = await fetch(`/api/projects/${id}`)
+      const project = await getResource<ProjectPartDeux>(
+        `/projects/${id}`,
+        'Failed to load project details',
+      )
 
-      if (!projectRes.ok) {
-        const errText = await projectRes.text()
-        toast.error(`Failed to load project details because: ${errText}`)
-        return
-      }
-
-      const fetchedProject = (await projectRes.json()) as ProjectPartDeux
-
-      setProject(fetchedProject)
+      setProject(project)
     })()
   }, [id])
 
@@ -100,22 +99,11 @@ const ProjectGoalCreate = ({ params: { id } }: { params: { id: string } }) => {
               acceptanceCriteria,
             }
 
-            const createGoalRes = await fetch(`/api/goals`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(goalBody),
-            })
-
-            if (!createGoalRes.ok) {
-              const errText = await createGoalRes.text()
-              const errMsg = `Failed to create goal because: ${errText}`
-              toast.error(errMsg)
-              return
-            }
-
-            const goal = (await createGoalRes.json()) as GoalPartDeux
+            const goal = await createResource<GoalPartDeux>(
+              `/goals`,
+              goalBody,
+              'Failed to create goal',
+            )
 
             router.push(`/goals/${goal.id}`)
           }}
