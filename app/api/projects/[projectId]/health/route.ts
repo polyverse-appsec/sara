@@ -17,6 +17,7 @@ import {
 } from './../../../../../lib/data-model-types'
 import { getProjectAssistantFileInfo } from './../../../../../lib/polyverse/backend/backend'
 import getBoostProjectStatus, {
+    BoostProjectStatus,
   BoostProjectStatuses,
 } from './../../../../../lib/polyverse/backend/get-boost-project-status'
 import {
@@ -32,6 +33,7 @@ const createProjectHealth = (
   configurationState: ProjectHealthConfigurationState,
   message: string,
   actionableRecourse: string | null = null,
+  backgroundProjectStatus: BoostProjectStatus | undefined = undefined,
 ) => {
   const scalarValue = projectHealthScalarValuesByReadableValues[readableValue]
 
@@ -42,6 +44,7 @@ const createProjectHealth = (
     message,
     actionableRecourse,
     configurationState,
+    backgroundProjectStatus,
     lastCheckedAt: new Date(),
   }
 
@@ -304,6 +307,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
           'VECTOR_DATA_UPDATE_AVAILABLE',
           `LLM not synchronized`,
           `Refresh project`,
+          boostProjectStatus,
         )
 
         return new Response(JSON.stringify(projectHealth), {

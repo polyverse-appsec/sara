@@ -1,6 +1,7 @@
 import { type Message } from 'ai'
 import Joi from 'joi'
 import { Threads } from 'openai/resources/beta/threads/threads'
+import { BoostProjectStatus } from './polyverse/backend/get-boost-project-status'
 
 ////////////////////////////
 // Refined Data Model Start
@@ -360,6 +361,10 @@ export interface ProjectHealth {
   // provided to the user to allow them to take some action to help improve
   // the health
   actionableRecourse: string | null
+
+  // The status of the project's background project proessing, source
+  //        retrieval and AI file synchronization
+  backgroundProjectStatus: BoostProjectStatus | undefined
 
   // ISO 8601 string
   lastCheckedAt: Date
