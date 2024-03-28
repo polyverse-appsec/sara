@@ -15,6 +15,7 @@
 - UI fixes for /orgs, /projects, navbar
 - Added 'Sara {loading}...' style placeholders on pages that are busy loading
     - Avoids showing errors or partial data before ready to fully render
+- Added support for Preview features in the UI
 
 ### Bug Fixes
 

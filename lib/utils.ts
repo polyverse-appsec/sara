@@ -10,6 +10,13 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+export const isPreviewFeatureEnabled = (feature: string): boolean => {
+  if (!process.env.NEXT_PUBLIC_PREVIEW_FEATURES) {
+    return false
+  }
+  return process.env.NEXT_PUBLIC_PREVIEW_FEATURES.split(',').includes(feature)
+}
+
 export const formatDateForLastSynchronizedAt = (date: Date): string =>
   `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`
 

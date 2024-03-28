@@ -9,6 +9,7 @@ import ProjectSourceSyncStatus from 'components/project-status/project-source-sy
 import { rediscoverProject } from 'lib/polyverse/backend/backend'
 import { useSession } from 'next-auth/react'
 import toast from 'react-hot-toast'
+import { isPreviewFeatureEnabled } from 'lib/utils'
 
 import SaraChat from '../../../../../components/sara-chat/sara-chat'
 import { type SaraSession } from './../../../../../auth'
@@ -178,14 +179,6 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
   // refreshed
   setProjectIdForConfiguration(project.id)
 
-  // need to add the following
-// <div className="mr-2">
-//   <ProjectSourceSyncStatus
-//     health={health}
-//     projectResources={[]}
-//   />
-// </div>
-
   return (
     <RenderableResource>
       <RenderableResourceContent>
@@ -213,6 +206,15 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
                 lastRefreshedAt={project.lastRefreshedAt}
               />
             </div>
+
+            {isPreviewFeatureEnabled('ProjectSourceSyncStatus') && (
+              <div className="mr-2">
+                <ProjectSourceSyncStatus
+                  health={health}
+                  projectResources={[]}
+                />
+              </div>
+            )}
             <Button
               variant="ghost"
               className="hover:bg-red-200"
