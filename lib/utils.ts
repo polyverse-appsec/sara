@@ -14,7 +14,11 @@ export const isPreviewFeatureEnabled = (feature: string): boolean => {
   if (!process.env.NEXT_PUBLIC_PREVIEW_FEATURES) {
     return false
   }
-  return process.env.NEXT_PUBLIC_PREVIEW_FEATURES.split(',').includes(feature)
+  const featureEnabled = process.env.NEXT_PUBLIC_PREVIEW_FEATURES.split(',').includes(feature)
+
+  console.log(`[${process.env.SARA_STAGE} Deployment] Preview Feature: ${feature} = ${featureEnabled ? 'ENABLED' : 'DISABLED'}`)
+
+  return featureEnabled
 }
 
 export const formatDateForLastSynchronizedAt = (date: Date): string =>
