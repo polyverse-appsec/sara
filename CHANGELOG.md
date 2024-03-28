@@ -2,7 +2,7 @@
 
 # Release Notes
 
-## Version 0.22.0: March 28th, 2024
+## Version 0.22.0: March 27th, 2024
 
 ### New Features
 
@@ -14,12 +14,14 @@
   - Remove usage of `Repository` type from old data model
   - Rename `ProjectDataSourcePartDeux` -> `ProjectDataSource`
 - Update Source Synchronization icon
+- Create project primary repo select dropdown now has repos from all orgs of user (besides personal)
+  - Orgs in this dropdown will be unselectable if the github app is not installed for it.
 
 ### Bug Fixes
 
 - N/A
 
-## Version 0.21.0: March 27th, 2024
+## Version 0.21.0: March 26th, 2024
 
 ### New Features
 

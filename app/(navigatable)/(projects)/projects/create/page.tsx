@@ -19,7 +19,7 @@ import { useAppContext } from './../../../../../lib/hooks/app-context'
 import { projectNameSchema } from './../../../../../lib/polyverse/db/validators'
 import DataSourceSelector from './data-source-selector'
 import GuidelineInputs from './guideline-inputs'
-import SingleDataSourceSelector from './single-data-source-selector'
+import PrimaryDataSourceSelector from './primary-data-source-selector'
 
 const ProjectCreate = () => {
   const router = useRouter()
@@ -211,15 +211,14 @@ const ProjectCreate = () => {
           <div className="my-1">
             <div className="flex items-center">
               <h3 className="text-lg font-semibold">
-                Select Project Data Sources
+                Select Project Data Source
               </h3>
               {displayRequiredText &&
                 controlledProjectDataSources.length === 0 && (
                   <span className="ml-2 text-sm text-red-500">Required</span>
                 )}
             </div>
-            <SingleDataSourceSelector
-              orgName={activeBillingOrg.name}
+            <PrimaryDataSourceSelector
               setControlledProjectDataSources={(gitHubRepos) =>
                 setControlledProjectDataSources(gitHubRepos)
               }
