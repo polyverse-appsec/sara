@@ -25,7 +25,7 @@
 
 ### Enhancements
 
-- N/A
+- Remove 'Hover For Details' text on hover items - to save screen real-estate
 
 ### Bug Fixes
 
