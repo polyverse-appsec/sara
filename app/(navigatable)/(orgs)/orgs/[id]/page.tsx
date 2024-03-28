@@ -11,9 +11,11 @@ import {
   type OrgPartDeux,
 } from './../../../../../lib/data-model-types'
 import { useAppContext } from './../../../../../lib/hooks/app-context'
+import RenderableResourceContent from 'components/renderable-resource/renderable-resource-content'
+import Link from 'next/link'
 
 const OrgIndex = ({ params: { id } }: { params: { id: string } }) => {
-  const { setActiveBillingOrg } = useAppContext()
+  const { activeBillingOrg, setActiveBillingOrg } = useAppContext()
   const [org, setOrg] = useState<OrgPartDeux | null>(null)
 
   const session = useSession()
@@ -57,35 +59,82 @@ const OrgIndex = ({ params: { id } }: { params: { id: string } }) => {
 
   return (
     <div className="flex-1 flex-col gap-4 p-10 text-2xl font-bold">
-      <div className="bg-background shadow-md rounded-lg p-6">
-        <h3 className="text-lg font-semibold">{org.name}</h3>
-      </div>
+      <RenderableResourceContent children={
+        <div className="flex flex-col items-center">
+          <h3>Current User Context</h3>
+          <div className="w-1/2 border-t-2 border-blue-600 my-2"></div>
+          <p className="text-lg">{org.name}</p>
+        </div>
+      }>
+      </RenderableResourceContent>
       {orgIsPremium ? (
-        <div className="bg-background shadow-md rounded-lg p-6 mt-10">
-          <h3 className="text-lg font-semibold">
+        <div className="bg-background shadow-md rounded-lg p-6 my-10">
+          <h3 className="text-lg font-semibold text-center">
             You have all premium plan permissions for this organization
           </h3>
         </div>
       ) : (
-        <div className="bg-background shadow-md rounded-lg p-6 mt-10">
-          <h3 className="text-lg font-semibold">
+        <div className="bg-background shadow-md rounded-lg p-6 my-10">
+          <h3 className="text-lg font-semibold text-center">
             You have basic plan permissions for this organization
           </h3>
-          <button
-            onClick={() =>
-              window.open(
-                'https://buy.stripe.com/8wM9AY9hAe4y5fa000',
-                '_blank',
-                'noopener,noreferrer',
-              )
-            }
-            className="inline-flex items-center text-xs hover:bg-blue-300 transition duration-300 p-2 rounded"
-          >
-            Upgrade to Premium Subscription
-            <IconExternalLink className="w-3 h-3 ml-2" />
-          </button>
         </div>
       )}
+      <RenderableResourceContent>
+        <div className="flex items-center justify-between px-20 text-lg">
+          <div
+            className={
+              !orgIsPremium
+                ? 'bg-background shadow-md rounded-lg p-6 border-2 border-orange-500 mb-4'
+                : 'bg-background shadow-md rounded-lg p-6 border mb-4'
+            }
+          >
+            <div className="flex flex-col items-start">
+              <p>Free Plan</p>
+              <p>❌ Project creation limit</p>
+              <p>❌ Only public respositories for projects</p>
+            </div>
+          </div>
+          <div
+            className={
+              orgIsPremium
+                ? 'bg-background shadow-md rounded-lg p-6 border-2 border-orange-500 mb-4'
+                : 'bg-background shadow-md rounded-lg p-6 border mb-4'
+            }
+          >
+            <div className="flex flex-col items-start">
+              <p>Premium Plan</p>
+              <p>✅ Unlimited project creation</p>
+              <p>✅ Access to private repositories for projects</p>
+            </div>
+          </div>
+        </div>
+        {orgIsPremium ? (
+          <div className="inline-flex items-center justify-between w-full text-sm">
+            <div className="flex justify-between items-center w-full font-semibold bg-white-600 shadow-md rounded-lg p-2 cursor-not-allowed opacity-50">
+              <p>
+                You are already on premium plan for {activeBillingOrg?.name}
+              </p>
+              <IconExternalLink className="w-4 h-4 ml-auto" />
+            </div>
+          </div>
+        ) : (
+          <Link
+            href="https://buy.stripe.com/8wM9AY9hAe4y5fa000"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-between w-full text-sm"
+          >
+            <div className="flex justify-between items-center w-full font-semibold bg-white-600 shadow-md rounded-lg p-2 transform transition hover:scale-105 cursor-pointer">
+              <p>Upgrade to premium plan for {activeBillingOrg?.name}</p>
+              <IconExternalLink className="w-4 h-4 ml-auto" />
+            </div>
+          </Link>
+        )}
+        <p className="text-xs text-blue-600 mt-2">
+          Note, this will redirect you to Stripe
+        </p>
+      </RenderableResourceContent>
     </div>
   )
 }

@@ -52,7 +52,7 @@ export const OrgDetailsTile = ({ name, id }: OrgDetailsTileProps) => {
       href={`/orgs/${id}`}
       className="block transform transition hover:scale-105"
     >
-      <div className="bg-background shadow-md rounded-lg p-6">
+      <div className="bg-background shadow-md rounded-lg p-6 border border-blue-500">
         <div className="flex items-center justify-center text-xs font-medium uppercase rounded-full select-none h-7 w-7 shrink-0 bg-muted/50 text-muted-foreground">
           {name.slice(0, 2)}
         </div>

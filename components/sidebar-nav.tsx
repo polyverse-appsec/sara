@@ -162,12 +162,12 @@ const SidebarNav = () => {
       <HoverCard.Root>
         <HoverCard.Trigger>
           <Flex gap="2" align="center" direction="column">
-            {activeProjectDetails ? (
+            {projectIdForConfiguration ? (
               <>
                 <Text size="2" weight="bold">
                   Active Project:
                 </Text>
-                <Text size="2">{activeProjectDetails.project.name}</Text>
+                <Text size="2">{activeProjectDetails?.project.name}</Text>
               </>
             ) : (
               <Text size="2">No Project Selected</Text>
@@ -189,7 +189,7 @@ const SidebarNav = () => {
         <div className="w-1/2 border-t-2 rounded-xl border-blue-600 my-2"></div>
       </Flex>
 
-      <div className="flex-grow overflow-y-auto no-scrollbar m-2">
+      <div className="flex-grow rounded-lg border border-blue-500 overflow-y-auto no-scrollbar m-2">
         {/* Resource Loader */}
         {projectIdForConfiguration ? (
           <GoalsTaskNavTree
@@ -201,12 +201,16 @@ const SidebarNav = () => {
               activeWorkspaceDetails ? activeWorkspaceDetails.taskId : null
             }
           />
-        ) : null}
+        ) : 
+          <div>
+            <p className="text-center font-semibold">Goals & Tasks Explorer</p>
+          </div>
+        }
       </div>
 
       {/* Bottom Section */}
       <div className="w-3/4 mx-auto border-t-4 rounded-xl border-blue-600 mt-2"></div>
-      <div className="flex flex-col items-center sticky bottom-0 z-10 w-full p-2 bg-orange-200">
+      <div className="flex flex-col items-center sticky bottom-0 z-10 w-full p-2 bg-orange-200 dark:bg-orange-700">
         <div className="flex items-center">
           {/* Github User Info */}
           {!saraSession ? (

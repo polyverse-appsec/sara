@@ -12,6 +12,7 @@
 
 - Add REST API `DELETE /api/goals/<goalId>`
 - Added functionality to the projects page to delete a set of selected goals from a project
+- UI fixes for /orgs, /projects, navbar
 
 ### Bug Fixes
 

@@ -85,14 +85,14 @@ const GoalIndex = ({ params: { id } }: { params: { id: string } }) => {
   return (
     <RenderableResource>
       <RenderableResourceContent>
-        <Button>
+        <button className="btn-blue text-sm">
           <Link href={`/projects/${goal.parentProjectId}`}>
             <Flex align="center">
               <ArrowLeftIcon className="mr-2" />
               Back to Project
             </Flex>
           </Link>
-        </Button>
+        </button>
         <div className="my-1 flex justify-between w-full">
           <div className="flex flex-col">
             <div className="flex items-center">
