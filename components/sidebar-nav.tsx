@@ -40,6 +40,7 @@ const SidebarNav = () => {
     projectIdForConfiguration,
     setProjectIdForConfiguration,
     activeProjectDetails,
+    activeWorkspaceDetails,
   } = useAppContext()
 
   const session = useSession()
@@ -192,7 +193,15 @@ const SidebarNav = () => {
       <div className="flex-grow overflow-y-auto no-scrollbar m-2">
         {/* Resource Loader */}
         {projectIdForConfiguration ? (
-          <GoalsTaskNavTree projectId={projectIdForConfiguration} />
+          <GoalsTaskNavTree
+            projectId={projectIdForConfiguration}
+            activeGoalId={
+              activeWorkspaceDetails ? activeWorkspaceDetails.goalId : null
+            }
+            activeTaskId={
+              activeWorkspaceDetails ? activeWorkspaceDetails.taskId : null
+            }
+          />
         ) : null}
       </div>
 

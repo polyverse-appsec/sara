@@ -27,10 +27,16 @@ interface ActiveProjectDetails {
   health: ProjectHealth
 }
 
+interface ActiveWorkspaceDetails {
+  goalId: string
+  taskId: string | null
+}
+
 interface AppContextType {
   activeBillingOrg: OrgPartDeux | null
   setActiveBillingOrg: (org: OrgPartDeux) => void
 
+  // Details for the most recently selected project
   activeProjectDetails: ActiveProjectDetails | null
 
   // To only be used to config the project. All individual pages ought to pull
@@ -38,6 +44,11 @@ interface AppContextType {
   // their rendered route slugs
   projectIdForConfiguration: string | null
   setProjectIdForConfiguration: (projectId: string | null) => void
+
+  activeWorkspaceDetails: ActiveWorkspaceDetails | null
+
+  setActiveGoalId: (goalId: string) => void
+  setActiveTaskId: (taskId: string, goalId: string) => void
 }
 
 const AppContext = createContext<AppContextType | null>(null)
@@ -68,12 +79,36 @@ export function AppProvider({ children }: AppProviderProps) {
     string | null
   >(null)
 
+  const [activeWorkspaceDetails, setActiveWorkspaceDetails] =
+    useState<ActiveWorkspaceDetails | null>(null)
+
+  const setActiveGoalId = (goalId: string) => {
+    const newActiveWorkspaceDetails: ActiveWorkspaceDetails = {
+      goalId,
+      taskId: null,
+    }
+
+    setActiveWorkspaceDetails(newActiveWorkspaceDetails)
+  }
+
+  const setActiveTaskId = (taskId: string, goalId: string) => {
+    const newActiveWorkspaceDetails: ActiveWorkspaceDetails = {
+      goalId,
+      taskId,
+    }
+
+    setActiveWorkspaceDetails(newActiveWorkspaceDetails)
+  }
+
   const value = {
     activeBillingOrg,
     setActiveBillingOrg,
     activeProjectDetails,
     projectIdForConfiguration,
     setProjectIdForConfiguration,
+    activeWorkspaceDetails,
+    setActiveGoalId,
+    setActiveTaskId,
   }
 
   // Ehhh... This is probably the wrong construct to piggyback on this logic

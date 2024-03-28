@@ -3,30 +3,25 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import * as Label from '@radix-ui/react-label'
+import { Text } from '@radix-ui/themes'
 import { NodeRendererProps, Tree } from 'react-arborist'
 
 import { type GoalPartDeux, type TaskPartDeux } from '../lib/data-model-types'
+import { getResource } from './../app/saraClient'
 
 interface GoalsTaskNavTreeProps {
   projectId: string
+  activeGoalId: string | null
+  activeTaskId: string | null
 }
 
 const getGoals = (projectId: string): Promise<GoalPartDeux[]> =>
   new Promise(async (resolve, reject) => {
     try {
-      const getGoalsRes = await fetch(`/api/projects/${projectId}/goals`)
-
-      if (!getGoalsRes.ok) {
-        const errText = await getGoalsRes.text()
-
-        reject(
-          `Goals response returned unsuccessful status because: ${errText}`,
-        )
-
-        return
-      }
-
-      const goals = (await getGoalsRes.json()) as GoalPartDeux[]
+      const goals = await getResource<GoalPartDeux[]>(
+        `/projects/${projectId}/goals`,
+        `Failed to get goals for goals & task tree`,
+      )
 
       resolve(goals)
     } catch (error) {
@@ -41,19 +36,10 @@ const getGoals = (projectId: string): Promise<GoalPartDeux[]> =>
 const getTasks = (goalId: string): Promise<TaskPartDeux[]> =>
   new Promise(async (resolve, reject) => {
     try {
-      const getTasksRes = await fetch(`/api/goals/${goalId}/tasks`)
-
-      if (!getTasksRes.ok) {
-        const errText = await getTasksRes.text()
-
-        reject(
-          `Tasks response returned unsuccessful status because: ${errText}`,
-        )
-
-        return
-      }
-
-      const tasks = (await getTasksRes.json()) as TaskPartDeux[]
+      const tasks = await getResource<TaskPartDeux[]>(
+        `/goals/${goalId}/tasks`,
+        `Failed to get tasks for goals & task tree`,
+      )
 
       resolve(tasks)
     } catch (error) {
@@ -70,6 +56,7 @@ type NavigatableResourceTypes = 'GOAL' | 'TASK'
 interface NavigatableGoalOrTaskResource {
   id: string
   name: string
+  isActive: boolean
   type: NavigatableResourceTypes
   children?: NavigatableGoalOrTaskResource[]
 }
@@ -113,13 +100,19 @@ const renderTaskIcon = () => (
   </svg>
 )
 
-const renderNodeLink = (navigatableResource: NavigatableGoalOrTaskResource) =>
+const renderNodeName = (navigatableResource: NavigatableGoalOrTaskResource) =>
   navigatableResource.type === 'GOAL' ? (
     <Link href={`/goals/${navigatableResource.id}`}>
-      {navigatableResource.name}
+      {navigatableResource.isActive ? (
+        <Text weight="bold" color="green">
+          {navigatableResource.name}
+        </Text>
+      ) : (
+        <Text>{navigatableResource.name}</Text>
+      )}
     </Link>
   ) : (
-    navigatableResource.name
+    <Text>{navigatableResource.name}</Text>
   )
 
 const renderGoalOrTaskNode = ({
@@ -141,13 +134,17 @@ const renderGoalOrTaskNode = ({
         <span>
           {node.data.type === 'GOAL' ? renderGoalIcon() : renderTaskIcon()}
         </span>
-        <span>{renderNodeLink(node.data)}</span>
+        <span>{renderNodeName(node.data)}</span>
       </div>
     </div>
   )
 }
 
-const GoalsTaskNavTree = ({ projectId }: GoalsTaskNavTreeProps) => {
+const GoalsTaskNavTree = ({
+  projectId,
+  activeGoalId,
+  activeTaskId,
+}: GoalsTaskNavTreeProps) => {
   const [goalsTasksTreeData, setGoalsTasksTreeData] = useState<
     NavigatableGoalOrTaskResource[]
   >([])
@@ -166,12 +163,14 @@ const GoalsTaskNavTree = ({ projectId }: GoalsTaskNavTreeProps) => {
           return {
             id: goal.id,
             name: goal.name,
+            isActive: goal.id === activeGoalId,
             type: 'GOAL',
             children: tasks.map(
               (task) =>
                 ({
                   id: task.id,
                   name: task.name,
+                  isActive: task.id === activeTaskId,
                   type: 'TASK',
                   children: [],
                 }) as NavigatableGoalOrTaskResource,
@@ -181,7 +180,13 @@ const GoalsTaskNavTree = ({ projectId }: GoalsTaskNavTreeProps) => {
 
         const navResourceTree = await Promise.all(mapNavResourceTreePromises)
 
-        setGoalsTasksTreeData(navResourceTree)
+        // Only set the data in the event we are still mounted. If we don't
+        // perform this check then we can get flickering of the nav bar between
+        // old and new data as this `useEffect` function is fired again from a
+        // new active goal/task ID
+        if (isMounted) {
+          setGoalsTasksTreeData(navResourceTree)
+        }
       } catch (error) {
         console.debug(
           `Failed to load resources for project ${projectId} because: ${error}`,
@@ -199,7 +204,7 @@ const GoalsTaskNavTree = ({ projectId }: GoalsTaskNavTreeProps) => {
     return () => {
       isMounted = false
     }
-  }, [])
+  }, [projectId, activeGoalId, activeTaskId])
 
   // Note that our `<Tree>` is a controlled component since we pass our goals
   // and tasks in through `data`. We need to eventually add handlers to it if

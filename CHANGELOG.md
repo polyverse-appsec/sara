@@ -16,6 +16,7 @@
 - Update Source Synchronization icon
 - Create project primary repo select dropdown now has repos from all orgs of user (besides personal)
   - Orgs in this dropdown will be unselectable if the github app is not installed for it.
+- Highlight active goal/task in nav bar
 
 ### Bug Fixes
 

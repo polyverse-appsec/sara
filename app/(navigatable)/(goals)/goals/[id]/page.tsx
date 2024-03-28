@@ -9,6 +9,7 @@ import LoadingSpinner from 'components/loading-spinner'
 import RenderableResource from 'components/renderable-resource/renderable-resource'
 import RenderableResourceContent from 'components/renderable-resource/renderable-resource-content'
 import { Button } from 'components/ui/button'
+import { useAppContext } from 'lib/hooks/app-context'
 
 import SaraChat from '../../../../../components/sara-chat/sara-chat'
 import {
@@ -42,6 +43,8 @@ const renderChatForGoal = (
 }
 
 const GoalIndex = ({ params: { id } }: { params: { id: string } }) => {
+  const { setActiveGoalId, activeWorkspaceDetails } = useAppContext()
+
   const [goal, setGoal] = useState<GoalPartDeux | null>(null)
   const [health, setHealth] = useState<ProjectHealth | null>(null)
 
@@ -62,6 +65,13 @@ const GoalIndex = ({ params: { id } }: { params: { id: string } }) => {
       setHealth(health)
     })()
   }, [id])
+
+  if (
+    (activeWorkspaceDetails && id !== activeWorkspaceDetails.goalId) ||
+    !activeWorkspaceDetails
+  ) {
+    setActiveGoalId(id)
+  }
 
   if (!goal) {
     return null
