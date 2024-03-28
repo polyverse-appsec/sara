@@ -4,37 +4,13 @@ import {
   USER_SERVICE_URI,
 } from './utils'
 
-// Copied from the Boost Node service codebase
-export enum BoostProjectStatuses {
-  Unknown = 'Unknown', // project not found
-  OutOfDateProjectData = 'Out of Date Project Data', // project data out of date with source (e.g. newer source)
-  ResourcesMissing = 'Resources Missing', // project uris found, but not resources
-  // ResourcesOutOfDate = 'Resources Out of Date',        // Resources out of date with source (e.g. newer source)
-  ResourcesIncomplete = 'Resources Incomplete', // resources found, but not completely generated
-  ResourcesInError = 'Resources In Error', // resources found, but generators in error state
-  ResourcesGenerating = 'Resources Generating', // resources missing or incomplete, but still being generated
-  ResourcesNotSynchronized = 'Resources Not Synchronized', // resources completely generated, but not synchronized to OpenAI
-  AIResourcesOutOfDate = 'AI Data Out of Date', // resources synchronized to OpenAI, but newer resources available
-  Synchronized = 'Fully Synchronized', // All current resources completely synchronized to OpenAI
-}
-
-// Copied from the Boost Node service codebase
-export interface BoostProjectStatus {
-  status: BoostProjectStatuses
-  synchronized?: boolean
-  activelyUpdating?: boolean
-  resourcesState?: any[]
-  possibleStagesRemaining?: number
-  details?: string
-  lastSynchronized?: number
-  lastUpdated: number
-}
+import { BoostProjectStatusState } from './types/BoostProjectStatus'
 
 const getBoostProjectStatus = async (
   email: string,
   orgName: string,
   projectId: string,
-): Promise<BoostProjectStatus> => {
+): Promise<BoostProjectStatusState> => {
   const boostServiceUrl = `${USER_SERVICE_URI}/api/user_project/${orgName}/${projectId}/status`
 
   const signedHeader = createSignedHeader(email)
@@ -54,7 +30,7 @@ const getBoostProjectStatus = async (
     throw new Error(errLogMsg)
   }
 
-  return getBodyFromBoostServiceResponse<BoostProjectStatus>(res)
+  return getBodyFromBoostServiceResponse<BoostProjectStatusState>(res)
 }
 
 export default getBoostProjectStatus

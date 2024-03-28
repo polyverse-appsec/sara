@@ -16,10 +16,8 @@ import {
   type ProjectHealthStatusValue,
 } from './../../../../../lib/data-model-types'
 import { getProjectAssistantFileInfo } from './../../../../../lib/polyverse/backend/backend'
-import getBoostProjectStatus, {
-    BoostProjectStatus,
-  BoostProjectStatuses,
-} from './../../../../../lib/polyverse/backend/get-boost-project-status'
+import getBoostProjectStatus from './../../../../../lib/polyverse/backend/get-boost-project-status'
+import { BoostProjectStatusState, BoostProjectStatus } from 'lib/polyverse/backend/types/BoostProjectStatus'
 import {
   ASSISTANT_METADATA_CREATOR,
   findAssistantFromMetadata,
@@ -34,7 +32,7 @@ const createProjectHealth = (
   configurationState: ProjectHealthConfigurationState,
   message: string,
   actionableRecourse: string | null = null,
-  backgroundProjectStatus: BoostProjectStatus | undefined = undefined,
+  backgroundProjectStatus: BoostProjectStatusState | undefined = undefined,
 ) => {
   const scalarValue = projectHealthScalarValuesByReadableValues[readableValue]
 
@@ -261,7 +259,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
 
       // Rather than check all of the file states just check that the project is
       // fully synchronized
-      if (boostProjectStatus.status !== BoostProjectStatuses.Synchronized) {
+      if (boostProjectStatus.status !== BoostProjectStatus.Synchronized) {
         const projectHealth = createProjectHealth(
           project.id,
           'PARTIALLY_HEALTHY',

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Flex } from '@radix-ui/themes'
 import GoalsManager from 'components/goals/goals-manager'
 import ProjectStatusCard from 'components/project-status/project-status-card'
+import ProjectSourceSyncStatus from 'components/project-status/project-source-sync-status'
 import { rediscoverProject } from 'lib/polyverse/backend/backend'
 import { useSession } from 'next-auth/react'
 import toast from 'react-hot-toast'
@@ -176,6 +177,14 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
   // Once we have loaded our data set the project that ought to be actively
   // refreshed
   setProjectIdForConfiguration(project.id)
+
+  // need to add the following
+// <div className="mr-2">
+//   <ProjectSourceSyncStatus
+//     health={health}
+//     projectResources={[]}
+//   />
+// </div>
 
   return (
     <RenderableResource>
