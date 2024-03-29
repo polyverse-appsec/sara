@@ -14,7 +14,7 @@ interface ProjectTileProps {
   name: string
   createdAt: string
   lastUpdatedAt: string
-  refreshProjects: () => void
+  onProjectDelete: (projectId: string) => void
 }
 
 function formatDate(date: Date) {
@@ -33,7 +33,7 @@ export const ProjectDetailsTile = ({
   createdAt,
   lastUpdatedAt,
   name,
-  refreshProjects,
+  onProjectDelete,
 }: ProjectTileProps) => {
   const { setProjectIdForConfiguration } = useAppContext()
 
@@ -117,7 +117,7 @@ export const ProjectDetailsTile = ({
 
                 setProjectIdForConfiguration(null)
                 toast.success(`Project deleted successfully`)
-                refreshProjects()
+                onProjectDelete(id)
               } catch (err) {
                 console.debug(
                   `Caught error when trying to delete a project: ${err}`,

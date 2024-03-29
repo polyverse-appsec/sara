@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { ProjectPartDeux } from 'lib/data-model-types'
 import toast from 'react-hot-toast'
 
+import { getResource } from './../../../../app/saraClient'
 import { useAppContext } from './../../../../lib/hooks/app-context'
 import ProjectDashboard from './project-dashboard'
 
@@ -12,7 +13,7 @@ const ProjectIndex = () => {
   const router = useRouter()
   const {
     activeBillingOrg,
-    setActiveBillingOrg,
+    activeProjectDetails,
     setProjectIdForConfiguration,
   } = useAppContext()
 
@@ -21,54 +22,28 @@ const ProjectIndex = () => {
 
   useEffect(() => {
     ;(async () => {
-      // if we hit this page directly, without going through the billing org set logic, we'll need
-      //     to load it again
-      setProjectIdForConfiguration(null)
+      setIsLoading(true)
 
-      refreshProjects()
-    })()
-  }, [
-    activeBillingOrg,
-    setActiveBillingOrg,
-    setProjectIdForConfiguration,
-    router,
-  ])
-
-  const fetchProjects = async (orgId: string) => {
-    setIsLoading(true)
-    const res = await fetch(`/api/orgs/${orgId}/projects`)
-
-    if (!res.ok) {
-      const errText = await res.text()
-      toast.error(`Failed to fetch projects: ${errText}`)
-      setIsLoading(false)
-      return
-    }
-
-    const fetchedProjects = await res.json()
-    setProjects(fetchedProjects)
-    setIsLoading(false)
-  }
-
-  const refreshProjects = async () => {
-    if (!activeBillingOrg) {
-      const orgRes = await fetch('/api/orgs/active')
-
-      if (orgRes.ok) {
-        const defaultOrg = await orgRes.json()
-        setActiveBillingOrg(defaultOrg)
-
-        if (defaultOrg && defaultOrg.id) {
-          fetchProjects(defaultOrg.id)
-        }
-      } else {
+      if (!activeBillingOrg) {
         toast.error(`Please select a billing organization`)
         router.push('/orgs')
+
         return
       }
-    } else {
-      fetchProjects(activeBillingOrg.id)
-    }
+
+      const projects = await getResource<ProjectPartDeux[]>(
+        `/orgs/${activeBillingOrg.id}/projects`,
+      )
+
+      setProjects(projects)
+      setIsLoading(false)
+    })()
+  }, [activeBillingOrg])
+
+  // Make sure to clear the active project to ensure we don't render the nav
+  // bar specific details to a previously selected project.
+  if (activeProjectDetails && activeProjectDetails.id) {
+    setProjectIdForConfiguration(null)
   }
 
   if (isLoading) {
@@ -81,7 +56,16 @@ const ProjectIndex = () => {
 
   return (
     <div className="flex-1 p-10 text-2xl font-bold">
-      <ProjectDashboard projects={projects} onDelete={refreshProjects} />
+      <ProjectDashboard
+        projects={projects}
+        onProjectDelete={(deletedProjectId) => {
+          const filteredProjects = projects.filter(
+            (project) => project.id !== deletedProjectId,
+          )
+
+          setProjects(filteredProjects)
+        }}
+      />
     </div>
   )
 }
