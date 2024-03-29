@@ -4,16 +4,16 @@ import Link from 'next/link'
 import * as ScrollArea from '@radix-ui/react-scroll-area'
 import { Checkbox, Table } from '@radix-ui/themes'
 
-import { type GoalPartDeux } from './../../lib/data-model-types'
+import { type Goal } from './../../lib/data-model-types'
 
 interface ScrollableGoalsTableProps {
-  goals: GoalPartDeux[]
+  goals: Goal[]
   handleGoalChecked: null | ((checkedGoalId: string) => void)
   handleGoalUnchecked: null | ((uncheckedGoalId: string) => void)
 }
 
 const renderGoals = (
-  goals: GoalPartDeux[],
+  goals: Goal[],
   handleGoalChecked: null | ((checkedGoalId: string) => void),
   handleGoalUnchecked: null | ((uncheckedGoalId: string) => void),
 ) => {

@@ -1,12 +1,12 @@
 import { kv } from '@vercel/kv'
 
-import { type GoalPartDeux } from './../../data-model-types'
+import { type Goal } from './../../data-model-types'
 import { goalKey } from './keys'
 
-const getGoal = async (goalId: string): Promise<GoalPartDeux> => {
+const getGoal = async (goalId: string): Promise<Goal> => {
   const itemKey = goalKey(goalId)
 
-  const goal = await kv.hgetall<GoalPartDeux>(itemKey)
+  const goal = await kv.hgetall<Goal>(itemKey)
 
   if (!goal) {
     throw new Error(`Goal with an ID of '${goalId}' doesn't exist`)

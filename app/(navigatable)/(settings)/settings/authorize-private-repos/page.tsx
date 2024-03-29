@@ -8,7 +8,7 @@ import { getOrgStatus, getOrgUserStatus } from 'app/react-utils'
 import { SaraSession } from 'auth'
 import CollapsibleRenderableResourceContent from 'components/renderable-resource/collapsible-renderable-resource-content'
 import RenderableResourceContent from 'components/renderable-resource/renderable-resource-content'
-import { GoalPartDeux } from 'lib/data-model-types'
+import { Goal } from 'lib/data-model-types'
 import { useAppContext } from 'lib/hooks/app-context'
 import { useSession } from 'next-auth/react'
 import toast from 'react-hot-toast'
@@ -68,7 +68,7 @@ const SettingsGithubAppInstall = () => {
 
         const fetchedOrgs = await res.json()
 
-        const statusPromises = fetchedOrgs.map(async (org: GoalPartDeux) => {
+        const statusPromises = fetchedOrgs.map(async (org: Goal) => {
           const orgStatus = await getOrgStatus(org.id, saraSession.id) // Assuming this function returns the status
           return { name: org.name, orgStatus }
         })

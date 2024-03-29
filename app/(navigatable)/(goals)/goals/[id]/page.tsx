@@ -15,11 +15,11 @@ import SaraChat from '../../../../../components/sara-chat/sara-chat'
 import {
   ProjectHealth,
   ProjectHealthStatusValue,
-  type GoalPartDeux,
+  type Goal,
 } from './../../../../../lib/data-model-types'
 
 const renderChatForGoal = (
-  goal: GoalPartDeux | null,
+  goal: Goal | null,
   projectHealth: ProjectHealthStatusValue,
 ) => {
   if (!goal) {
@@ -45,12 +45,12 @@ const renderChatForGoal = (
 const GoalIndex = ({ params: { id } }: { params: { id: string } }) => {
   const { setActiveGoalId, activeWorkspaceDetails } = useAppContext()
 
-  const [goal, setGoal] = useState<GoalPartDeux | null>(null)
+  const [goal, setGoal] = useState<Goal | null>(null)
   const [health, setHealth] = useState<ProjectHealth | null>(null)
 
   useEffect(() => {
     ;(async () => {
-      const goal = await getResource<GoalPartDeux>(
+      const goal = await getResource<Goal>(
         `/goals/${id}`,
         `Failed to get a success response when fetching goal '${id}'`,
       )

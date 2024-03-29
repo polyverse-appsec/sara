@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { TextArea } from '@radix-ui/themes'
 import Joi from 'joi'
-import { type GoalPartDeux, type Project } from 'lib/data-model-types'
+import { type Goal, type Project } from 'lib/data-model-types'
 import toast from 'react-hot-toast'
 
 import {
@@ -99,7 +99,7 @@ const ProjectGoalCreate = ({ params: { id } }: { params: { id: string } }) => {
               acceptanceCriteria,
             }
 
-            const goal = await createResource<GoalPartDeux>(
+            const goal = await createResource<Goal>(
               `/goals`,
               goalBody,
               'Failed to create goal',

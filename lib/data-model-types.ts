@@ -133,7 +133,7 @@ export interface ProjectDataSource extends BaseSaraObject {
 }
 
 // TODO: Test this with a Joi schema
-export interface GoalPartDeux extends BaseSaraObject {
+export interface Goal extends BaseSaraObject {
   // Crucial to identity management/RBAC
   // Pertains to a billing organization (i.e. not a GitHub organization)
   orgId: string

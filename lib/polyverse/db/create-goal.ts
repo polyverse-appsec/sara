@@ -1,9 +1,9 @@
 import { kv } from '@vercel/kv'
 
-import { type GoalPartDeux } from './../../data-model-types'
+import { type Goal } from './../../data-model-types'
 import { globalGoalIdsSetKey, goalKey } from './keys'
 
-const createGoal = async (goal: GoalPartDeux): Promise<void> => {
+const createGoal = async (goal: Goal): Promise<void> => {
   // Create the new goal...
   const itemKey = goalKey(goal.id)
 

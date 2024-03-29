@@ -12,7 +12,7 @@ import { Button } from './../../../../../components/ui/button'
 import { Input } from './../../../../../components/ui/input'
 import {
   type GitHubRepo,
-  type GoalPartDeux,
+  type Goal,
   type Project,
 } from './../../../../../lib/data-model-types'
 import { useAppContext } from './../../../../../lib/hooks/app-context'
@@ -80,7 +80,7 @@ const ProjectCreate = () => {
       return
     }
 
-    const fetchedGoals = (await goalsRes.json()) as GoalPartDeux[]
+    const fetchedGoals = (await goalsRes.json()) as Goal[]
 
     if (fetchedGoals.length === 0 && currentAttempt < maxAttempts) {
       setTimeout(

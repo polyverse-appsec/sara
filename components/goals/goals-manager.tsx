@@ -7,11 +7,11 @@ import toast from 'react-hot-toast'
 
 import { deleteResource } from './../../app/saraClient'
 import ScrollableGoalsTable from './../../components/goals/scrollable-goals-table'
-import { type GoalPartDeux } from './../../lib/data-model-types'
+import { type Goal } from './../../lib/data-model-types'
 
 interface GoalsManagerProps {
   projectId: string
-  goals: GoalPartDeux[]
+  goals: Goal[]
 }
 
 const GoalsManager = ({ projectId, goals }: GoalsManagerProps) => {

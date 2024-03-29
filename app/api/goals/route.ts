@@ -2,7 +2,7 @@ import { ReasonPhrases, StatusCodes } from 'http-status-codes'
 import { NextAuthRequest } from 'next-auth/lib'
 
 import { auth } from '../../../auth'
-import { type GoalPartDeux } from './../../../lib/data-model-types'
+import { type Goal } from './../../../lib/data-model-types'
 import createGoal from './../../../lib/polyverse/db/create-goal'
 import getOrg from './../../../lib/polyverse/db/get-org'
 import getProject from './../../../lib/polyverse/db/get-project'
@@ -90,7 +90,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
 
     // Write a goal to our K/V
     const goalBaseSaraObject = createBaseSaraObject()
-    const goal: GoalPartDeux = {
+    const goal: Goal = {
       // BaseSaraObject properties
       ...goalBaseSaraObject,
 

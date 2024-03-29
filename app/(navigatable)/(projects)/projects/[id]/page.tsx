@@ -18,7 +18,7 @@ import RenderableResource from './../../../../../components/renderable-resource/
 import RenderableResourceContent from './../../../../../components/renderable-resource/renderable-resource-content'
 import { Button } from './../../../../../components/ui/button'
 import {
-  type GoalPartDeux,
+  type Goal,
   type Project,
   type ProjectHealth,
   type ProjectHealthStatusValue,
@@ -26,7 +26,7 @@ import {
 import { useAppContext } from './../../../../../lib/hooks/app-context'
 
 const renderChatForGoal = (
-  goal: GoalPartDeux | null,
+  goal: Goal | null,
   projectHealth: ProjectHealthStatusValue,
 ) => {
   if (!goal) {
@@ -65,8 +65,8 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
   const [health, setHealth] = useState<ProjectHealth | null>(null)
   const [rediscoverButtonEnabled, setRediscoverButtonEnabled] =
     useState<boolean>(true)
-  const [goals, setGoals] = useState<GoalPartDeux[]>([])
-  const [goalForChat, setGoalForChat] = useState<GoalPartDeux | null>(null)
+  const [goals, setGoals] = useState<Goal[]>([])
+  const [goalForChat, setGoalForChat] = useState<Goal | null>(null)
 
   // This use effect is to just get the project details...
   useEffect(() => {
@@ -111,7 +111,7 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
         const goalsRes = await fetch(`/api/projects/${id}/goals`)
 
         if (goalsRes.ok) {
-          const fetchedGoals = (await goalsRes.json()) as GoalPartDeux[]
+          const fetchedGoals = (await goalsRes.json()) as Goal[]
 
           // If we don't have a goal for chat then just take the first goal with
           // if it has a chat ID. This is making the assumption that the first

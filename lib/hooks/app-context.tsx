@@ -9,7 +9,7 @@ import React, {
 } from 'react'
 
 import {
-  type GoalPartDeux,
+  type Goal,
   type Org,
   type Project,
   type ProjectHealth,
@@ -231,7 +231,7 @@ export function AppProvider({ children }: AppProviderProps) {
               'Provide details that will help me learn about my project. This includes details about the code in my project as well as the software packages/libraries it consumes.',
           }
 
-          const defaultGoal = await createResource<GoalPartDeux>(
+          const defaultGoal = await createResource<Goal>(
             `/goals`,
             goalBody,
             `Failed to create default goal for project '${projectIdForConfiguration}'`,
