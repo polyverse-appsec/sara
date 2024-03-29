@@ -66,7 +66,7 @@ const RenderableSaraChatResourceContent = <T extends Chatable>({
     return (
       <RenderableSaraChatGuideContent>
         <Flex align="center">
-          <Text>I'm currently setting up your chat</Text>
+          <Text>I&apos;m currently setting up your chat</Text>
           <Spinner ml="2" />
         </Flex>
       </RenderableSaraChatGuideContent>

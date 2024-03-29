@@ -13,19 +13,22 @@ export function ThemeToggle() {
   return (
     <Button
       variant="ghost"
-      size="icon"
+      size="sm"
       onClick={() => {
         startTransition(() => {
           setTheme(theme === 'light' ? 'dark' : 'light')
         })
       }}
+      className="bg-blue-500 text-white text-lg p-5"
     >
-      {!theme ? null : theme === 'dark' ? (
-        <IconMoon className="transition-all" />
-      ) : (
-        <IconSun className="transition-all" />
-      )}
-      <span className="sr-only">Toggle theme</span>
+      <div className="flex items-center">
+        <p>Toggle Theme</p>
+        {!theme ? null : theme === 'dark' ? (
+          <IconMoon className="transition-all ml-2" />
+        ) : (
+          <IconSun className="transition-all ml-2" />
+        )}
+      </div>
     </Button>
   )
 }

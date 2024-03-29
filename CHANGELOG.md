@@ -6,7 +6,7 @@
 
 ### New Features
 
-- N/A
+- Added theme toggle button to settings page
 
 ### Enhancements
 
@@ -15,6 +15,9 @@
   - Sara greeting for help with initial chat questions
   - Sara greeting for receiving an error
 - Allow initial questions to be selected for the input of `<SaraChat>`
+- Reworked select repo dropdown to display repos and then org
+  - Show which repos are private and have been unlocked because of premium
+- Added UI enhancements including adding plan comparison chart to org page
 
 ### Bug Fixes
 

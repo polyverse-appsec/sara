@@ -9,6 +9,7 @@ import { Button } from 'components/ui/button'
 import { useAppContext } from 'lib/hooks/app-context'
 import { signOut, useSession } from 'next-auth/react'
 import toast from 'react-hot-toast'
+import { ThemeToggle } from 'components/theme-toggle'
 
 const SettingsIndex = () => {
   const { activeBillingOrg } = useAppContext()
@@ -60,7 +61,7 @@ const SettingsIndex = () => {
       <p className="text-2xl font-bold">Account Settings</p>
       <div className="w-1/2 border-t-2 border-blue-600 my-2"></div>
       <Link href="/orgs" className="w-1/2">
-        <div className="bg-blue-600 shadow-md rounded-lg p-4 block transform transition hover:scale-105 cursor-pointer">
+        <div className="bg-blue-500 shadow-md rounded-lg p-4 block transform transition hover:scale-105 cursor-pointer">
           <div className="flex items-center justify-center text-white">
             <h3 className="text-lg font-semibold flex-1 text-center">
               Switch User Context:{' '}
@@ -77,7 +78,7 @@ const SettingsIndex = () => {
         </div>
       </Link>
       <Link href="settings/billing-status" className="w-1/2">
-        <div className="bg-blue-600 shadow-md rounded-lg p-4 block transform transition hover:scale-105 cursor-pointer">
+        <div className="bg-blue-500 shadow-md rounded-lg p-4 block transform transition hover:scale-105 cursor-pointer">
           <div className="flex items-center justify-center text-white">
             <h3 className="text-lg font-semibold flex-1 text-center">
               Billing Status: {orgIsPremium ? 'Premium Plan' : 'Free Plan'}
@@ -96,7 +97,7 @@ const SettingsIndex = () => {
         </div>
       </Link>
       <Link href="/settings/authorize-private-repos" className="w-1/2">
-        <div className="bg-blue-600 shadow-md rounded-lg p-4 block transform transition hover:scale-105 cursor-pointer">
+        <div className="bg-blue-500 shadow-md rounded-lg p-4 block transform transition hover:scale-105 cursor-pointer">
           <div className="flex items-center justify-center text-white">
             <h3 className="text-lg font-semibold flex-1 text-center">
               Authorize Github Access:{' '}
@@ -128,16 +129,19 @@ const SettingsIndex = () => {
           </div>
         </div>
       </Link>
-      <Button
-        onClick={() =>
-          signOut({
-            callbackUrl: '/',
-          })
-        }
-        className="text-lg bg-blue-600 p-5"
-      >
-        Log Out
-      </Button>
+      <div className="w-1/2 flex items-center justify-evenly">
+        <Button
+          onClick={() =>
+            signOut({
+              callbackUrl: '/',
+            })
+          }
+          className="text-lg dark:text-white bg-blue-500 p-5"
+        >
+          Log Out
+        </Button>
+        <ThemeToggle />
+      </div>
     </div>
   )
 }

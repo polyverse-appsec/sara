@@ -10,6 +10,7 @@ import { useSession } from 'next-auth/react'
 
 import { UserOrgStatus, type Org } from './../../../../../lib/data-model-types'
 import { useAppContext } from './../../../../../lib/hooks/app-context'
+import { StarFilledIcon } from '@radix-ui/react-icons'
 
 const OrgIndex = ({ params: { id } }: { params: { id: string } }) => {
   const { activeBillingOrg, setActiveBillingOrg } = useAppContext()
@@ -64,7 +65,13 @@ const OrgIndex = ({ params: { id } }: { params: { id: string } }) => {
         </div>
       </RenderableResourceContent>
       {orgIsPremium ? (
-        <div className="bg-background shadow-md rounded-lg p-6 my-10">
+        <div className="flex items-center justify-center bg-background shadow-md rounded-lg p-6 my-10">
+            <div
+              title="Premium Plan"
+              className="flex items-center justify-center mr-2 p-1 border border-yellow-500 rounded-full"
+            >
+              <StarFilledIcon className="w-2 h-2 text-yellow-500" />
+            </div>
           <h3 className="text-lg font-semibold text-center">
             You have all premium plan permissions for this organization
           </h3>

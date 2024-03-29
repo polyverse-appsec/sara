@@ -376,6 +376,7 @@ export interface GitHubOrg {
 export interface GitHubRepo {
   name: string
   htmlUrl: string
+  private: boolean
 }
 
 export const ProjectFileInfoSchema = Joi.object({

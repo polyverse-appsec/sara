@@ -15,6 +15,7 @@ import { motion } from 'framer-motion'
 import { Org, type Project, type ProjectHealth } from 'lib/data-model-types'
 import { useSession } from 'next-auth/react'
 import toast from 'react-hot-toast'
+import { ThemeToggle } from './theme-toggle'
 
 import { getOrgStatus, getOrgUserStatus } from './../app/react-utils'
 import { getResource } from './../app/saraClient'
@@ -206,7 +207,7 @@ const SidebarNav = () => {
 
       {/* Bottom Section */}
       <div className="w-3/4 mx-auto border-t-4 rounded-xl border-blue-600 mt-2"></div>
-      <div className="flex flex-col items-center sticky bottom-0 z-10 w-full p-2 bg-orange-200 dark:bg-orange-700">
+      <div className="flex flex-col items-center sticky bottom-0 z-10 w-full p-2 bg-orange-200">
         <div className="flex items-center">
           {/* Github User Info */}
           {!saraSession ? (
@@ -225,10 +226,10 @@ const SidebarNav = () => {
               {saraSession.name ? getUserInitials(saraSession.name) : null}
             </div>
           )}
-          <span className="ml-2">{saraSession?.name}</span>
+          <span className="ml-2 dark:text-black">{saraSession?.name}</span>
           <div className="relative w-5 h-5 ml-2">
             <GearIcon
-              className="w-full h-full transition-opacity duration-300 rounded-full select-none ring-1 ring-zinc-100/10 hover:opacity-50"
+              className="w-full h-full transition-opacity duration-300 rounded-full select-none ring-1 ring-zinc-100/10 dark:text-black hover:opacity-50"
               onClick={() => {
                 setProjectIdForConfiguration(null)
                 router.push('/settings')
@@ -261,7 +262,7 @@ const SidebarNav = () => {
                 <StarFilledIcon className="w-2 h-2 text-yellow-500" />
               </div>
             )}
-            <span className="text-sm truncate">
+            <span className="text-sm truncate dark:text-black">
               {activeBillingOrg ? activeBillingOrg.name : 'No org selected'}
             </span>
           </div>

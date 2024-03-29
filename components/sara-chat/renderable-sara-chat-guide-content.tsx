@@ -29,7 +29,7 @@ const RenderableSaraChatGuideContent = ({
             <Box width="824px">
               <Heading>Hi, my name is Sara!</Heading>
               <Text>
-                I'm a <Text weight="bold">s</Text>mart{' '}
+                I&apos;m a <Text weight="bold">s</Text>mart{' '}
                 <Text weight="bold">a</Text>
                 rchitectural <Text weight="bold">r</Text>easoning{' '}
                 <Text weight="bold">a</Text>ssistant powered by AI. I understand
