@@ -1,13 +1,13 @@
 import Joi from 'joi'
 
-import { Org, ProjectPartDeux, User } from "./../../lib/data-model-types"
+import { Org, Project, User } from "./../../lib/data-model-types"
 
 
 interface SaraAuthZ {
     orgListedOnUser: (user: User, orgId: string) => void
-    soleUserOnProject: (project: ProjectPartDeux, userId: string) => void
+    soleUserOnProject: (project: Project, userId: string) => void
     userListedOnOrg: (org: Org, userId: string) => void
-    userListedOnProject: (project: ProjectPartDeux, userId: string) => void
+    userListedOnProject: (project: Project, userId: string) => void
 }
 
 const orgListedOnUser = (user: User, orgId: string) => {
@@ -34,7 +34,7 @@ const orgListedOnUser = (user: User, orgId: string) => {
     }
 }
 
-const soleUserOnProject = (project: ProjectPartDeux, userId: string) => {
+const soleUserOnProject = (project: Project, userId: string) => {
     if (Joi.any().required().not(null).validate(project).error) {
         throw new Error('Project instance null/undefined')
     }
@@ -86,7 +86,7 @@ const userListedOnOrg = (org: Org, userId: string) => {
     }
 }
 
-const userListedOnProject = (project: ProjectPartDeux, userId: string) => {
+const userListedOnProject = (project: Project, userId: string) => {
     if (Joi.any().required().not(null).validate(project).error) {
         throw new Error('Project instance null/undefined')
     }

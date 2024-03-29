@@ -4,7 +4,7 @@ import { Assistant } from 'openai/resources/beta/assistants/assistants'
 import packageInfo from '../../../package.json'
 import {
   ProjectFileInfo,
-  ProjectPartDeux,
+  Project,
   type PromptFileInfo,
 } from '../../data-model-types'
 import { BoostProjectStatusState } from '../backend/types/BoostProjectStatus'
@@ -52,7 +52,7 @@ function createAssistantName(metadata: AssistantMetadata): string {
 // update the other functions to use the new type.
 function getOpenAIAssistantInstructions(
   fileTypes: FileTypes | PromptFileTypes,
-  project: ProjectPartDeux,
+  project: Project,
   projectStatus?: BoostProjectStatusState,
 ): string {
   // This prompt was engineered to guide Sara on what she will be doing
@@ -299,7 +299,7 @@ const oaiClient = new OpenAI({
 export async function createAssistant(
   fileInfos: ProjectFileInfo[],
   assistantMetadata: AssistantMetadata,
-  project: ProjectPartDeux,
+  project: Project,
   boostProjectStatus?: BoostProjectStatusState,
 ): Promise<Assistant> {
   if (fileInfos.length > 3) {
@@ -396,7 +396,7 @@ export async function deleteAssistantFiles(assistant: Assistant) {
 export const updateGlobalAssistantPrompt = async (
   promptFileInfos: PromptFileInfo[],
   assistantMetadata: AssistantMetadata,
-  project: ProjectPartDeux,
+  project: Project,
   projectStatus: BoostProjectStatusState,
 ): Promise<Assistant> => {
   if (promptFileInfos.length > 3) {

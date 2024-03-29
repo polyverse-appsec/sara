@@ -1,13 +1,13 @@
 'use client'
 
 import React, { useState } from 'react'
-import { ProjectPartDeux } from 'lib/data-model-types'
+import { Project } from 'lib/data-model-types'
 
 import { ProjectCreateTile } from './project-create-tile'
 import { ProjectDetailsTile } from './project-details-tile'
 
 interface ProjectDashboardProps {
-  projects: ProjectPartDeux[]
+  projects: Project[]
   onProjectDelete: (projectId: string) => void
 }
 

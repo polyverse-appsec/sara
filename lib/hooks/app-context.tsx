@@ -11,8 +11,8 @@ import React, {
 import {
   type GoalPartDeux,
   type Org,
+  type Project,
   type ProjectHealth,
-  type ProjectPartDeux,
 } from '../data-model-types'
 import {
   createResource,
@@ -23,7 +23,7 @@ import {
 
 interface ActiveProjectDetails {
   id: string
-  project: ProjectPartDeux
+  project: Project
   health: ProjectHealth
 }
 
@@ -132,7 +132,7 @@ export function AppProvider({ children }: AppProviderProps) {
       }
 
       try {
-        const project = await getResource<ProjectPartDeux>(
+        const project = await getResource<Project>(
           `/projects/${projectIdForConfiguration}`,
           `Failed to get project data for '${projectIdForConfiguration}'`,
         )

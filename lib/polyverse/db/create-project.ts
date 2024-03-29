@@ -1,9 +1,9 @@
 import { kv } from '@vercel/kv'
 
-import { type ProjectPartDeux } from './../../data-model-types'
+import { type Project } from './../../data-model-types'
 import { globalProjectIdsSetKey, projectKey } from './keys'
 
-const createProject = async (project: ProjectPartDeux): Promise<void> => {
+const createProject = async (project: Project): Promise<void> => {
   // Create the new project...
   const itemKey = projectKey(project.id)
 

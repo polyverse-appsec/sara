@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { TextArea } from '@radix-ui/themes'
 import Joi from 'joi'
-import { type GoalPartDeux, type ProjectPartDeux } from 'lib/data-model-types'
+import { type GoalPartDeux, type Project } from 'lib/data-model-types'
 import toast from 'react-hot-toast'
 
 import {
@@ -23,11 +23,11 @@ const ProjectGoalCreate = ({ params: { id } }: { params: { id: string } }) => {
   const [description, setDescription] = useState<string>('')
   const [acceptanceCriteria, setAcceptanceCriteria] = useState<string>('')
 
-  const [project, setProject] = useState<ProjectPartDeux | null>(null)
+  const [project, setProject] = useState<Project | null>(null)
 
   useEffect(() => {
     ;(async () => {
-      const project = await getResource<ProjectPartDeux>(
+      const project = await getResource<Project>(
         `/projects/${id}`,
         'Failed to load project details',
       )

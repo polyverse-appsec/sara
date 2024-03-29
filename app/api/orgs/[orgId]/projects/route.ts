@@ -6,7 +6,7 @@ import { auth } from '../../../../../auth'
 import {
   type GitHubRepo,
   type ProjectDataSource,
-  type ProjectPartDeux,
+  type Project,
 } from './../../../../../lib/data-model-types'
 import { getBoostOrgUserStatus } from './../../../../../lib/polyverse/backend/backend'
 import createBoostProject from './../../../../../lib/polyverse/backend/create-boost-project'
@@ -132,7 +132,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
       (projectDataSourceBaseSaraObject) => projectDataSourceBaseSaraObject.id,
     )
 
-    const project: ProjectPartDeux = {
+    const project: Project = {
       // BaseSaraObject properties
       ...projectBaseSaraObject,
 

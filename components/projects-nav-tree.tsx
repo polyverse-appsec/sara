@@ -4,11 +4,11 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import * as Label from '@radix-ui/react-label'
 import { getResource } from 'app/saraClient'
-import { ProjectPartDeux } from 'lib/data-model-types'
+import { Project } from 'lib/data-model-types'
 import { useAppContext } from 'lib/hooks/app-context'
 import { NodeRendererProps, Tree } from 'react-arborist'
 
-interface NavigatableProjectResource extends ProjectPartDeux {
+interface NavigatableProjectResource extends Project {
   children?: NavigatableProjectResource[]
   isActive: boolean
 }
@@ -83,7 +83,7 @@ const renderProjectNode = ({
 
 const ProjectsNavTree = () => {
   const { activeBillingOrg, projectIdForConfiguration } = useAppContext()
-  const [projects, setProjects] = useState<ProjectPartDeux[]>([])
+  const [projects, setProjects] = useState<Project[]>([])
 
   useEffect(() => {
     let isMounted = true
@@ -102,7 +102,7 @@ const ProjectsNavTree = () => {
       }
 
       try {
-        const projects = await getResource<ProjectPartDeux[]>(
+        const projects = await getResource<Project[]>(
           `/orgs/${activeBillingOrg.id}/projects`,
           `Failed to sync org level details for navigation`,
         )

@@ -12,11 +12,7 @@ import { Box, Card, Flex, HoverCard, Inset, Text } from '@radix-ui/themes'
 import { SaraSession } from 'auth'
 import ProjectStatusDetailsHoverCard from 'components/project-status/project-status-details-card'
 import { motion } from 'framer-motion'
-import {
-  Org,
-  type ProjectHealth,
-  type ProjectPartDeux,
-} from 'lib/data-model-types'
+import { Org, type Project, type ProjectHealth } from 'lib/data-model-types'
 import { useSession } from 'next-auth/react'
 import toast from 'react-hot-toast'
 

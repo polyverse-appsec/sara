@@ -13,7 +13,7 @@ import { Input } from './../../../../../components/ui/input'
 import {
   type GitHubRepo,
   type GoalPartDeux,
-  type ProjectPartDeux,
+  type Project,
 } from './../../../../../lib/data-model-types'
 import { useAppContext } from './../../../../../lib/hooks/app-context'
 import { projectNameSchema } from './../../../../../lib/polyverse/db/validators'
@@ -350,7 +350,7 @@ const ProjectCreate = () => {
                   guidelines,
                 }
 
-                const project = await createResource<ProjectPartDeux>(
+                const project = await createResource<Project>(
                   `/orgs/${activeBillingOrg.id}/projects`,
                   projectBody,
                   'Failed to create project',

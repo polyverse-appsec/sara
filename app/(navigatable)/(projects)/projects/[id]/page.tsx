@@ -19,9 +19,9 @@ import RenderableResourceContent from './../../../../../components/renderable-re
 import { Button } from './../../../../../components/ui/button'
 import {
   type GoalPartDeux,
+  type Project,
   type ProjectHealth,
   type ProjectHealthStatusValue,
-  type ProjectPartDeux,
 } from './../../../../../lib/data-model-types'
 import { useAppContext } from './../../../../../lib/hooks/app-context'
 
@@ -61,7 +61,7 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
     activeWorkspaceDetails,
   } = useAppContext()
 
-  const [project, setProject] = useState<ProjectPartDeux | null>(null)
+  const [project, setProject] = useState<Project | null>(null)
   const [health, setHealth] = useState<ProjectHealth | null>(null)
   const [rediscoverButtonEnabled, setRediscoverButtonEnabled] =
     useState<boolean>(true)
@@ -104,7 +104,7 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
           )
         }
 
-        const fetchedProject = (await projectRes.json()) as ProjectPartDeux
+        const fetchedProject = (await projectRes.json()) as Project
         setProject(fetchedProject)
 
         // Best effort collect goals associated with the project and its health

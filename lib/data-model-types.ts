@@ -59,11 +59,7 @@ export interface Org extends BaseSaraObject {
 }
 
 // TODO: Test this with a Joi schema
-// TODO: Note we called this interface `ProjectPartDeux` while we iterate on
-// the data model design and the UX/UI. We preserve the original `Project`
-// interface for now until we have fully implemented enough details about
-// the project to cut over in which case we will delete `Project`.
-export interface ProjectPartDeux extends BaseSaraObject {
+export interface Project extends BaseSaraObject {
   // Crucial to identity management/RBAC.
   // Pertains to a billing organization (i.e. not a GitHub organization)
   orgId: string

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { ProjectPartDeux } from 'lib/data-model-types'
+import { Project } from 'lib/data-model-types'
 import toast from 'react-hot-toast'
 
 import { getResource } from './../../../../app/saraClient'
@@ -17,7 +17,7 @@ const ProjectIndex = () => {
     setProjectIdForConfiguration,
   } = useAppContext()
 
-  const [projects, setProjects] = useState<ProjectPartDeux[]>([])
+  const [projects, setProjects] = useState<Project[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
@@ -31,7 +31,7 @@ const ProjectIndex = () => {
         return
       }
 
-      const projects = await getResource<ProjectPartDeux[]>(
+      const projects = await getResource<Project[]>(
         `/orgs/${activeBillingOrg.id}/projects`,
       )
 

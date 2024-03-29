@@ -1,9 +1,9 @@
 import { kv } from '@vercel/kv'
 
-import { type ProjectPartDeux } from './../../data-model-types'
+import { type Project } from './../../data-model-types'
 import { projectKey } from './keys'
 
-const updateProject = async (project: ProjectPartDeux): Promise<void> => {
+const updateProject = async (project: Project): Promise<void> => {
   const itemKey = projectKey(project.id)
 
   project.lastUpdatedAt = new Date()
