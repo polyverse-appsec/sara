@@ -393,7 +393,7 @@ export interface GitHubRepo {
 ////////////////////////////
 
 // TODO: Change name to ProjectFileInfoSchema
-export const ProjectDataReferenceSchema = Joi.object({
+export const ProjectFileInfoSchema = Joi.object({
   // TODO: Should we add a format to the name that must be matched?
   name: Joi.string().required(),
   // TODO: Restrict these to a specific amount of types
@@ -408,7 +408,7 @@ export const ProjectDataReferenceSchema = Joi.object({
 })
 
 // TODO: Change name to ProjectFileInfo
-export interface ProjectDataReference extends Record<string, any> {
+export interface ProjectFileInfo extends Record<string, any> {
   name: string
   type: string
   id: string

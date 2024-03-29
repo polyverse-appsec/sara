@@ -3,7 +3,7 @@ import { Assistant } from 'openai/resources/beta/assistants/assistants'
 
 import packageInfo from '../../../package.json'
 import {
-  ProjectDataReference,
+  ProjectFileInfo,
   ProjectPartDeux,
   type PromptFileInfo,
 } from '../../data-model-types'
@@ -297,7 +297,7 @@ const oaiClient = new OpenAI({
 })
 
 export async function createAssistant(
-  fileInfos: ProjectDataReference[],
+  fileInfos: ProjectFileInfo[],
   assistantMetadata: AssistantMetadata,
   project: ProjectPartDeux,
   boostProjectStatus?: BoostProjectStatusState,

@@ -1,6 +1,6 @@
 import { userInfo } from 'os'
 
-import { ProjectDataReference } from '../../data-model-types'
+import { ProjectFileInfo } from '../../data-model-types'
 import { createSignedHeader, USER_SERVICE_URI } from './utils'
 
 export interface BoostUserOrgStatusResponse {
@@ -18,7 +18,7 @@ export async function getProjectAssistantFileInfo(
   billingOrgName: string,
   projectId: string,
   email: string,
-): Promise<ProjectDataReference[]> {
+): Promise<ProjectFileInfo[]> {
   const url = `${USER_SERVICE_URI}/api/user_project/${billingOrgName}/${projectId}/data_references`
 
   try {
@@ -62,8 +62,8 @@ export async function getProjectAssistantFileInfo(
         mappedFileInfo.lastUpdatedAt = new Date(fileInfo.lastUpdated * 1000)
       }
 
-      return mappedFileInfo as ProjectDataReference
-    }) as ProjectDataReference[]
+      return mappedFileInfo as ProjectFileInfo
+    }) as ProjectFileInfo[]
   } catch (error) {
     console.error(
       'getProjectAssistantFileInfo: Error making a request or parsing a response for project ID: ',

@@ -9,7 +9,7 @@ import getOrg from '../../../../../lib/polyverse/db/get-org'
 import getProject from '../../../../../lib/polyverse/db/get-project'
 import getUser from '../../../../../lib/polyverse/db/get-user'
 import {
-  ProjectDataReference,
+  ProjectFileInfo,
   projectHealthScalarValuesByReadableValues,
   type ProjectHealth,
   type ProjectHealthConfigurationState,
@@ -111,7 +111,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
 
     // 1) Check that we are getting 3 files back from
     // `GET /api/user_project/${billingOrgName}/${projectId}/data_references`
-    let boostFileInfos: ProjectDataReference[] | null = null
+    let boostFileInfos: ProjectFileInfo[] | null = null
 
     try {
       boostFileInfos = await getProjectAssistantFileInfo(
