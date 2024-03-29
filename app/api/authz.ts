@@ -1,16 +1,16 @@
 import Joi from 'joi'
 
-import { OrgPartDeux, ProjectPartDeux, UserPartDeux } from "./../../lib/data-model-types"
+import { OrgPartDeux, ProjectPartDeux, User } from "./../../lib/data-model-types"
 
 
 interface SaraAuthZ {
-    orgListedOnUser: (user: UserPartDeux, orgId: string) => void
+    orgListedOnUser: (user: User, orgId: string) => void
     soleUserOnProject: (project: ProjectPartDeux, userId: string) => void
     userListedOnOrg: (org: OrgPartDeux, userId: string) => void
     userListedOnProject: (project: ProjectPartDeux, userId: string) => void
 }
 
-const orgListedOnUser = (user: UserPartDeux, orgId: string) => {
+const orgListedOnUser = (user: User, orgId: string) => {
     if (Joi.any().required().not(null).validate(user).error) {
         throw new Error('User instance null/undefined')
     }

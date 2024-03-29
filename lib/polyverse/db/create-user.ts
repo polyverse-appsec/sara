@@ -1,9 +1,9 @@
 import { kv } from '@vercel/kv'
 
-import { type UserPartDeux } from './../../data-model-types'
+import { type User } from './../../data-model-types'
 import { globalUserEmailsSetKey, userKey } from './keys'
 
-const createUser = async (user: UserPartDeux): Promise<void> => {
+const createUser = async (user: User): Promise<void> => {
   // Create the new user...
   const itemKey = userKey(user.email)
 

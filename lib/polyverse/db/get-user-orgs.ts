@@ -1,6 +1,6 @@
 import { kv } from '@vercel/kv'
 
-import { type OrgPartDeux, type UserPartDeux } from './../../data-model-types'
+import { type OrgPartDeux, type User } from './../../data-model-types'
 import getUser from './get-user'
 import { orgKey, userKey } from './keys'
 

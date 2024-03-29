@@ -1,7 +1,7 @@
 import NextAuth from 'next-auth'
 import GitHub from 'next-auth/providers/github'
 
-import { type UserPartDeux } from './lib/data-model-types'
+import { type User } from './lib/data-model-types'
 import { createBaseSaraObject } from './lib/polyverse/db/utils'
 import createUser from './lib/polyverse/db/create-user'
 import getUser, { createUserNotFoundErrorString } from './lib/polyverse/db/get-user'
@@ -121,7 +121,7 @@ export const {
             console.debug(`Caught user not found error for ${profile.email} on sign in - attempting to create now`)
             const baseSaraObject = createBaseSaraObject()
 
-            const newUser: UserPartDeux = {
+            const newUser: User = {
               // BaseSaraObject properties
               ...baseSaraObject,
 

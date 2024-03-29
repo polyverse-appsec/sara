@@ -27,11 +27,7 @@ export interface BaseSaraObject extends Record<string, any> {
 }
 
 // TODO: Test this with a Joi schema
-// TODO: Note we called this interface `UserPartDeux` while we iterate on
-// the data model design and the UX/UI. We preserve the original `User`
-// interface for now until we have fully implemented enough details about
-// the user to cut over in which case we will delete `User`.
-export interface UserPartDeux extends BaseSaraObject {
+export interface User extends BaseSaraObject {
   // Crucial to identity management/RBAC
   email: string
 
