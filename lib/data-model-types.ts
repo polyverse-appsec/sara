@@ -1,11 +1,5 @@
-import { type Message } from 'ai'
 import Joi from 'joi'
-import { Threads } from 'openai/resources/beta/threads/threads'
 import { BoostProjectStatusState } from 'lib/polyverse/backend/types/BoostProjectStatus'
-
-////////////////////////////
-// Refined Data Model Start
-////////////////////////////
 
 export const BaseSaraObjectSchema = Joi.object({
   id: Joi.string().required(),
@@ -388,11 +382,6 @@ export interface GitHubRepo {
   htmlUrl: string
 }
 
-////////////////////////////
-// Refined Data Model End
-////////////////////////////
-
-// TODO: Change name to ProjectFileInfoSchema
 export const ProjectFileInfoSchema = Joi.object({
   // TODO: Should we add a format to the name that must be matched?
   name: Joi.string().required(),
@@ -407,7 +396,6 @@ export const ProjectFileInfoSchema = Joi.object({
     .required(),
 })
 
-// TODO: Change name to ProjectFileInfo
 export interface ProjectFileInfo extends Record<string, any> {
   name: string
   type: string
