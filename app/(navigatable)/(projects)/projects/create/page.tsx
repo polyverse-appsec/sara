@@ -219,6 +219,7 @@ const ProjectCreate = () => {
                 )}
             </div>
             <PrimaryDataSourceSelector
+              userIsPremium={userIsPremium}
               setControlledProjectDataSources={(gitHubRepos) =>
                 setControlledProjectDataSources(gitHubRepos)
               }
@@ -373,7 +374,6 @@ const ProjectCreate = () => {
               !saveButtonEnabled ||
               !userGitHubAppInstalled ||
               !orgGithubAppInstalled ||
-              !userIsPremium ||
               !statusCheckDone
             }
           >

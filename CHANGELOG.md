@@ -18,6 +18,7 @@
 - Reworked select repo dropdown to display repos and then org
   - Show which repos are private and have been unlocked because of premium
 - Added UI enhancements including adding plan comparison chart to org page
+- Create projects is now blocked for private repos when user is not premium. It is unblocked for everything else
 
 ### Bug Fixes
 
