@@ -1,22 +1,19 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
+import Link from 'next/link'
 import { getOrgUserStatus } from 'app/react-utils'
 import { SaraSession } from 'auth'
+import RenderableResourceContent from 'components/renderable-resource/renderable-resource-content'
 import { IconExternalLink } from 'components/ui/icons'
 import { useSession } from 'next-auth/react'
 
-import {
-  UserOrgStatus,
-  type OrgPartDeux,
-} from './../../../../../lib/data-model-types'
+import { UserOrgStatus, type Org } from './../../../../../lib/data-model-types'
 import { useAppContext } from './../../../../../lib/hooks/app-context'
-import RenderableResourceContent from 'components/renderable-resource/renderable-resource-content'
-import Link from 'next/link'
 
 const OrgIndex = ({ params: { id } }: { params: { id: string } }) => {
   const { activeBillingOrg, setActiveBillingOrg } = useAppContext()
-  const [org, setOrg] = useState<OrgPartDeux | null>(null)
+  const [org, setOrg] = useState<Org | null>(null)
 
   const session = useSession()
   const saraSession = session.data ? (session.data as SaraSession) : null

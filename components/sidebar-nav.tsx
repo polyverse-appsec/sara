@@ -13,7 +13,7 @@ import { SaraSession } from 'auth'
 import ProjectStatusDetailsHoverCard from 'components/project-status/project-status-details-card'
 import { motion } from 'framer-motion'
 import {
-  OrgPartDeux,
+  Org,
   type ProjectHealth,
   type ProjectPartDeux,
 } from 'lib/data-model-types'
@@ -55,7 +55,7 @@ const SidebarNav = () => {
   useEffect(() => {
     const fetchAndSetActiveBillingOrg = async () => {
       if (!activeBillingOrg) {
-        const orgs = await getResource<OrgPartDeux[]>(`/orgs`)
+        const orgs = await getResource<Org[]>(`/orgs`)
 
         if (orgs.length > 0) {
           setActiveBillingOrg(orgs[0])
@@ -201,11 +201,11 @@ const SidebarNav = () => {
               activeWorkspaceDetails ? activeWorkspaceDetails.taskId : null
             }
           />
-        ) : 
+        ) : (
           <div>
             <p className="text-center font-semibold">Goals & Tasks Explorer</p>
           </div>
-        }
+        )}
       </div>
 
       {/* Bottom Section */}

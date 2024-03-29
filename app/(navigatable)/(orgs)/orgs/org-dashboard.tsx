@@ -2,12 +2,12 @@
 
 import React from 'react'
 
-import { type OrgPartDeux } from './../../../../lib/data-model-types'
+import { type Org } from './../../../../lib/data-model-types'
 import { OrgCreateTile } from './org-create-tile'
 import { OrgDetailsTile } from './org-details-tile'
 
 interface OrgDashboardProps {
-  orgs: OrgPartDeux[]
+  orgs: Org[]
 }
 
 const OrgDashboard = ({ orgs }: OrgDashboardProps) => {

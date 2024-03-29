@@ -10,7 +10,7 @@ import React, {
 
 import {
   type GoalPartDeux,
-  type OrgPartDeux,
+  type Org,
   type ProjectHealth,
   type ProjectPartDeux,
 } from '../data-model-types'
@@ -33,8 +33,8 @@ interface ActiveWorkspaceDetails {
 }
 
 interface AppContextType {
-  activeBillingOrg: OrgPartDeux | null
-  setActiveBillingOrg: (org: OrgPartDeux) => void
+  activeBillingOrg: Org | null
+  setActiveBillingOrg: (org: Org) => void
 
   // Details for the most recently selected project
   activeProjectDetails: ActiveProjectDetails | null
@@ -68,9 +68,7 @@ interface AppProviderProps {
 }
 
 export function AppProvider({ children }: AppProviderProps) {
-  const [activeBillingOrg, setActiveBillingOrg] = useState<OrgPartDeux | null>(
-    null,
-  )
+  const [activeBillingOrg, setActiveBillingOrg] = useState<Org | null>(null)
 
   const [activeProjectDetails, setActiveProjectDetails] =
     useState<ActiveProjectDetails | null>(null)

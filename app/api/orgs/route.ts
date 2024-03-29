@@ -2,7 +2,7 @@ import { ReasonPhrases, StatusCodes } from 'http-status-codes'
 import { NextAuthRequest } from 'next-auth/lib'
 
 import { auth } from './../../../auth'
-import { OrgPartDeux } from './../../../lib/data-model-types'
+import { Org } from './../../../lib/data-model-types'
 import createOrg from './../../../lib/polyverse/db/create-org'
 import getUser from './../../../lib/polyverse/db/get-user'
 import getUserOrgs from './../../../lib/polyverse/db/get-user-orgs'
@@ -54,7 +54,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
     // Create the object in our DB...
     const baseSaraObject = createBaseSaraObject()
 
-    const org: OrgPartDeux = {
+    const org: Org = {
       // BaseSaraObject properties
       ...baseSaraObject,
 

@@ -1,6 +1,10 @@
 import Joi from 'joi'
 import { BoostProjectStatusState } from 'lib/polyverse/backend/types/BoostProjectStatus'
 
+////////////////////////////
+// Core Sara Types - Start
+////////////////////////////
+
 export const BaseSaraObjectSchema = Joi.object({
   id: Joi.string().required(),
   createdAt: Joi.date()
@@ -41,11 +45,7 @@ export interface User extends BaseSaraObject {
 }
 
 // TODO: Test this with a Joi schema
-// TODO: Note we called this interface `OrgPartDeux` while we iterate on
-// the data model design and the UX/UI. We preserve the original `Org`
-// interface for now until we have fully implemented enough details about
-// the org to cut over in which case we will delete `Org`.
-export interface OrgPartDeux extends BaseSaraObject {
+export interface Org extends BaseSaraObject {
   // Crucial to identity management/RBAC
   // Identifies all users within the organization
   userIds: string[]
@@ -359,6 +359,10 @@ export interface ProjectHealth {
   // ISO 8601 string
   lastCheckedAt: Date
 }
+
+////////////////////////////
+// Core Sara Types - End
+////////////////////////////
 
 // TODO: Test
 export interface UserOrgStatus {

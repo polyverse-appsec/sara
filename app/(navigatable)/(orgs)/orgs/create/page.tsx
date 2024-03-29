@@ -5,10 +5,7 @@ import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
 
 import { Button } from './../../../../../components/ui/button'
-import {
-  type GitHubOrg,
-  type OrgPartDeux,
-} from './../../../../../lib/data-model-types'
+import { type GitHubOrg, type Org } from './../../../../../lib/data-model-types'
 import { useAppContext } from './../../../../../lib/hooks/app-context'
 import OrgSelector from './github-org-selector'
 
@@ -80,7 +77,7 @@ const OrgCreate = () => {
                     return
                   }
 
-                  const org = (await res.json()) as OrgPartDeux
+                  const org = (await res.json()) as Org
 
                   setActiveBillingOrg(org)
 

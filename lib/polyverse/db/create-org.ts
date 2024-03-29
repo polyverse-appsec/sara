@@ -1,9 +1,9 @@
 import { kv } from '@vercel/kv'
 
-import { type OrgPartDeux } from './../../data-model-types'
+import { type Org } from './../../data-model-types'
 import { globalOrgIdsSetKey, orgKey } from './keys'
 
-const createOrg = async (org: OrgPartDeux): Promise<void> => {
+const createOrg = async (org: Org): Promise<void> => {
   // Create the new org...
   const itemKey = orgKey(org.id)
 

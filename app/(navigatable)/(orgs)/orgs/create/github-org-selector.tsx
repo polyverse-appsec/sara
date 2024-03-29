@@ -2,7 +2,7 @@
 
 import React, { use, useEffect, useState } from 'react'
 import LoadingSpinner from 'components/loading-spinner'
-import { type GitHubOrg, type OrgPartDeux } from 'lib/data-model-types'
+import { type GitHubOrg, type Org } from 'lib/data-model-types'
 
 import { Button } from './../../../../../components/ui/button'
 import {
@@ -26,7 +26,7 @@ const getGitHubOrgs = async (): Promise<GitHubOrg[]> => {
   return res.json()
 }
 
-const getBillingOrgs = async (): Promise<OrgPartDeux[]> => {
+const getBillingOrgs = async (): Promise<Org[]> => {
   const res = await fetch('/api/orgs')
 
   if (!res.ok) {
@@ -45,7 +45,7 @@ interface OrgSelectorProps {
 }
 
 const OrgSelector = ({ setControlledGitHubOrg }: OrgSelectorProps) => {
-  const [billingOrgs, setBillingOrgs] = useState<OrgPartDeux[]>([])
+  const [billingOrgs, setBillingOrgs] = useState<Org[]>([])
   const [gitHubOrgs, setGitHubOrgs] = useState<GitHubOrg[]>([])
   const [shouldShowLoadingSpinner, setShouldShowLoadingSpinner] =
     useState<boolean>(true)
@@ -80,7 +80,7 @@ const OrgSelector = ({ setControlledGitHubOrg }: OrgSelectorProps) => {
       accumulator[billingOrg.name] = billingOrg
       return accumulator
     },
-    {} as Record<string, OrgPartDeux>,
+    {} as Record<string, Org>,
   )
 
   const filteredGitHubOrgs = gitHubOrgs.filter(
