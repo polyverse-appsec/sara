@@ -7,7 +7,7 @@ import { NextAuthRequest } from 'next-auth/lib'
 import { auth } from '../../../../../../../auth'
 import getProjectPromptFileInfoIds from '../../../../../../../lib/polyverse/db/get-project-prompt-file-info-ids'
 import {
-  type ChatQueryPartDeux,
+  type ChatQuery,
   type PromptFileInfo,
 } from './../../../../../../../lib/data-model-types'
 import { getProjectAssistantFileInfo } from './../../../../../../../lib/polyverse/backend/backend'
@@ -335,7 +335,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
 
     const chatQueryBaseSaraObject = createBaseSaraObject()
 
-    const newTailChatQuery: ChatQueryPartDeux = {
+    const newTailChatQuery: ChatQuery = {
       // BaseSaraObject properties
       ...chatQueryBaseSaraObject,
 

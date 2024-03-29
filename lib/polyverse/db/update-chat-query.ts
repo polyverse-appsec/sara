@@ -1,9 +1,9 @@
 import { kv } from '@vercel/kv'
 
-import { type ChatQueryPartDeux } from './../../data-model-types'
+import { type ChatQuery } from './../../data-model-types'
 import { chatQueryKey } from './keys'
 
-const updateChatQuery = async (chatQuery: ChatQueryPartDeux): Promise<void> => {
+const updateChatQuery = async (chatQuery: ChatQuery): Promise<void> => {
   const itemKey = chatQueryKey(chatQuery.id)
 
   // TODO: DRY up this logic across all update functions

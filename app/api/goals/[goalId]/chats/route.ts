@@ -6,7 +6,7 @@ import { auth } from '../../../../../auth'
 import getProjectPromptFileInfoIds from '../../../../../lib/polyverse/db/get-project-prompt-file-info-ids'
 import {
   type Chat,
-  type ChatQueryPartDeux,
+  type ChatQuery,
   type PromptFileInfo,
 } from './../../../../../lib/data-model-types'
 import { getProjectAssistantFileInfo } from './../../../../../lib/polyverse/backend/backend'
@@ -281,7 +281,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
       openAiThreadRunId: null,
     }
 
-    const chatQuery: ChatQueryPartDeux = {
+    const chatQuery: ChatQuery = {
       // BaseSaraObject properties
       ...chatQueryBaseSaraObject,
 

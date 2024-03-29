@@ -6,7 +6,7 @@ import { ExclamationTriangleIcon } from '@radix-ui/react-icons'
 import { type UseChatHelpers } from 'ai/react'
 
 import {
-  type ChatQueryPartDeux,
+  type ChatQuery,
   type ProjectHealthStatusValue,
 } from './../../lib/data-model-types'
 import { ButtonScrollToBottom } from './../button-scroll-to-bottom'

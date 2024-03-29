@@ -9,7 +9,7 @@ import { ChatScrollAnchor } from '../chat-scroll-anchor'
 import { getResource } from './../../app/saraClient'
 import {
   type Chat,
-  type ChatQueryPartDeux,
+  type ChatQuery,
   type ProjectHealthStatusValue,
 } from './../../lib/data-model-types'
 import { cn } from './../../lib/utils'
@@ -91,9 +91,7 @@ const SaraChat = ({
   chatableResourceUrl,
   existingChatId = null,
 }: SaraChatProps) => {
-  const [chatQueries, setChatQueries] = useState<ChatQueryPartDeux[] | null>(
-    null,
-  )
+  const [chatQueries, setChatQueries] = useState<ChatQuery[] | null>(null)
   const [input, setInput] = useState('')
   const [chatId, setChatId] = useState<string | null>(existingChatId)
   const { data: session } = useSession()
@@ -114,8 +112,7 @@ const SaraChat = ({
       const chatQueriesUrl = buildChatQueriesUrl(chatableResourceUrl, chatId)
 
       try {
-        const chatQueries =
-          await getResource<ChatQueryPartDeux[]>(chatQueriesUrl)
+        const chatQueries = await getResource<ChatQuery[]>(chatQueriesUrl)
 
         if (isMounted) {
           setChatQueries(chatQueries)

@@ -226,7 +226,7 @@ export interface Chat extends BaseSaraObject {
 }
 
 // TODO: Test this with a Joi schema
-export interface ChatQueryPartDeux extends BaseSaraObject {
+export interface ChatQuery extends BaseSaraObject {
   // Crucial to identity management/RBAC
   chatId: string
 

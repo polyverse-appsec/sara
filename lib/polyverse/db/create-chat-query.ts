@@ -1,13 +1,13 @@
 import { kv } from '@vercel/kv'
 
-import { type ChatQueryPartDeux } from './../../data-model-types'
+import { type ChatQuery } from './../../data-model-types'
 import {
   chatQueryKey,
   globalChatQueryIdsSetKey,
   relatedChatQueriesToChatIdsSetKey,
 } from './keys'
 
-const createChatQuery = async (chatQuery: ChatQueryPartDeux): Promise<void> => {
+const createChatQuery = async (chatQuery: ChatQuery): Promise<void> => {
   // Create the new chat query...
   const itemKey = chatQueryKey(chatQuery.id)
 

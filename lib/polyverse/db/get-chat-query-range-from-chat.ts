@@ -1,12 +1,12 @@
 import { kv } from '@vercel/kv'
 
-import { type ChatQueryPartDeux } from '../../data-model-types'
+import { type ChatQuery } from '../../data-model-types'
 import { chatQueryKey, relatedChatQueriesToChatIdsSetKey } from './keys'
 
 const getChatQueryRangeFromChat = async (
   chatId: string,
   rangeSize: number = 20,
-): Promise<ChatQueryPartDeux[]> => {
+): Promise<ChatQuery[]> => {
   const chatQueriesToChatIdsSetKey = relatedChatQueriesToChatIdsSetKey(chatId)
 
   const totalChatQueries = await kv.zcard(chatQueriesToChatIdsSetKey)
@@ -31,7 +31,7 @@ const getChatQueryRangeFromChat = async (
     chatQueriesPipeline.hgetall(chatQueryKey(chatQueryId)),
   )
 
-  const chatQueries = (await chatQueriesPipeline.exec()) as ChatQueryPartDeux[]
+  const chatQueries = (await chatQueriesPipeline.exec()) as ChatQuery[]
 
   return chatQueries
 }

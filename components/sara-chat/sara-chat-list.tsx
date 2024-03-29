@@ -2,12 +2,12 @@
 
 import { SaraSession } from 'auth'
 
-import { ChatQueryPartDeux } from './../../lib/data-model-types'
+import { ChatQuery } from './../../lib/data-model-types'
 import { Separator } from './../ui/separator'
 import SaraChatQueryContent from './sara-chat-query-content'
 
 export interface SaraChatListProps {
-  chatQueries: ChatQueryPartDeux[]
+  chatQueries: ChatQuery[]
 
   /**
    * Indicates whether we are currently in the midst of a chat with OpenAI.
