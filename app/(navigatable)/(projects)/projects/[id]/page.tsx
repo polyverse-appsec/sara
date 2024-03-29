@@ -11,9 +11,7 @@ import { isPreviewFeatureEnabled } from 'lib/utils'
 import { useSession } from 'next-auth/react'
 import toast from 'react-hot-toast'
 
-import SaraChat from '../../../../../components/sara-chat/sara-chat'
 import { type SaraSession } from './../../../../../auth'
-import LoadingSpinner from './../../../../../components/loading-spinner'
 import RenderableResource from './../../../../../components/renderable-resource/renderable-resource'
 import RenderableResourceContent from './../../../../../components/renderable-resource/renderable-resource-content'
 import { Button } from './../../../../../components/ui/button'
@@ -21,33 +19,8 @@ import {
   type Goal,
   type Project,
   type ProjectHealth,
-  type ProjectHealthStatusValue,
 } from './../../../../../lib/data-model-types'
 import { useAppContext } from './../../../../../lib/hooks/app-context'
-
-const renderChatForGoal = (
-  goal: Goal | null,
-  projectHealth: ProjectHealthStatusValue,
-) => {
-  if (!goal) {
-    return (
-      <div className="flex">
-        <h3 className="text-lg font-semibold text-center">
-          Building initial advice for your Goal
-        </h3>
-        <LoadingSpinner />
-      </div>
-    )
-  }
-
-  return (
-    <SaraChat
-      projectHealth={projectHealth}
-      chatableResourceUrl={`/api/goals/${goal.id}`}
-      existingChatId={goal.chatId}
-    />
-  )
-}
 
 const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
   const router = useRouter()
@@ -66,7 +39,6 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
   const [rediscoverButtonEnabled, setRediscoverButtonEnabled] =
     useState<boolean>(true)
   const [goals, setGoals] = useState<Goal[]>([])
-  const [goalForChat, setGoalForChat] = useState<Goal | null>(null)
 
   // This use effect is to just get the project details...
   useEffect(() => {
@@ -112,17 +84,6 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
 
         if (goalsRes.ok) {
           const fetchedGoals = (await goalsRes.json()) as Goal[]
-
-          // If we don't have a goal for chat then just take the first goal with
-          // if it has a chat ID. This is making the assumption that the first
-          // goal is the default goal and it has been configured for a chat.
-          if (
-            fetchedGoals &&
-            fetchedGoals.length !== 0 &&
-            fetchedGoals[0].chatId
-          ) {
-            setGoalForChat(fetchedGoals[0])
-          }
 
           setGoals(fetchedGoals)
         } else {
