@@ -30,6 +30,11 @@ export interface BaseSaraObject extends Record<string, any> {
   lastUpdatedAt: Date
 }
 
+export interface Chatable extends BaseSaraObject {
+  // Chat may not exist - only if user initiates (sans default goal).
+  chatId: string | null
+}
+
 // TODO: Test this with a Joi schema
 export interface User extends BaseSaraObject {
   // Crucial to identity management/RBAC
@@ -133,7 +138,7 @@ export interface ProjectDataSource extends BaseSaraObject {
 }
 
 // TODO: Test this with a Joi schema
-export interface Goal extends BaseSaraObject {
+export interface Goal extends Chatable {
   // Crucial to identity management/RBAC
   // Pertains to a billing organization (i.e. not a GitHub organization)
   orgId: string
@@ -149,16 +154,13 @@ export interface Goal extends BaseSaraObject {
   // Right now the only status value we have defined is 'OPEN'
   status: 'OPEN'
 
-  // Chat may not exist - only if user initiates (sans default goal).
-  chatId: string | null
-
   parentProjectId: string
 
   // Considered to be all the top-level tasks that are associated with the goal
   taskIds: string[]
 }
 
-export interface Task extends BaseSaraObject {
+export interface Task extends Chatable {
   // Crucial to identity management/RBAC
   // Pertains to a billing organization (i.e. not a GitHub organization)
   orgId: string
@@ -173,9 +175,6 @@ export interface Task extends BaseSaraObject {
 
   // Right now the only status value we have defined is 'OPEN'
   status: 'OPEN'
-
-  // Chat may not exist - only if user initiates
-  chatId: string | null
 
   // If task associated with goal then won't be null (parentTaskId will be
   // null). In other words setting the parent goal ID is a mutually exclusive
