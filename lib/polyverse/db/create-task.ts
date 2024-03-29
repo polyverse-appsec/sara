@@ -1,6 +1,6 @@
 import { kv } from '@vercel/kv'
 
-import { type TaskPartDeux } from './../../data-model-types'
+import { type Task } from './../../data-model-types'
 import {
   globalTaskIdsSetKey,
   relatedChildTasksToParentGoalIdsSetKey,
@@ -8,7 +8,7 @@ import {
   taskKey,
 } from './keys'
 
-const createTask = async (task: TaskPartDeux): Promise<void> => {
+const createTask = async (task: Task): Promise<void> => {
   // Verify that we have a either the parent goal ID or the parent task ID
   // set. Them being set to values are mutually exclusive events with each
   // other.

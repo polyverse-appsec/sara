@@ -158,7 +158,7 @@ export interface Goal extends BaseSaraObject {
   taskIds: string[]
 }
 
-export interface TaskPartDeux extends BaseSaraObject {
+export interface Task extends BaseSaraObject {
   // Crucial to identity management/RBAC
   // Pertains to a billing organization (i.e. not a GitHub organization)
   orgId: string

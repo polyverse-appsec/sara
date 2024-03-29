@@ -6,7 +6,7 @@ import * as Label from '@radix-ui/react-label'
 import { Text } from '@radix-ui/themes'
 import { NodeRendererProps, Tree } from 'react-arborist'
 
-import { type Goal, type TaskPartDeux } from '../lib/data-model-types'
+import { type Goal, type Task } from '../lib/data-model-types'
 import { getResource } from './../app/saraClient'
 
 interface GoalsTaskNavTreeProps {
@@ -33,10 +33,10 @@ const getGoals = (projectId: string): Promise<Goal[]> =>
     }
   })
 
-const getTasks = (goalId: string): Promise<TaskPartDeux[]> =>
+const getTasks = (goalId: string): Promise<Task[]> =>
   new Promise(async (resolve, reject) => {
     try {
-      const tasks = await getResource<TaskPartDeux[]>(
+      const tasks = await getResource<Task[]>(
         `/goals/${goalId}/tasks`,
         `Failed to get tasks for goals & task tree`,
       )

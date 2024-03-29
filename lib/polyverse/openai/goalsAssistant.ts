@@ -5,7 +5,7 @@ import { Thread } from 'openai/resources/beta/threads/threads'
 
 import {
   type PromptFileInfo,
-  type TaskPartDeux,
+  type Task,
 } from './../../../lib/data-model-types'
 import createTask from './../../../lib/polyverse/db/create-task'
 import getGoal from './../../../lib/polyverse/db/get-goal'
@@ -73,11 +73,11 @@ export const submitWorkItemsForGoal = async (
   parsedArgsAsWorkItems: SubmitWorkItemsForGoalType,
 ) => {
   if (parsedArgsAsWorkItems) {
-    const tasksToCreate: TaskPartDeux[] = []
+    const tasksToCreate: Task[] = []
 
     parsedArgsAsWorkItems.workItems.forEach((workItem) => {
       const taskBaseSaraObject = createBaseSaraObject()
-      const task: TaskPartDeux = {
+      const task: Task = {
         // BaseSaraObject properties
         ...taskBaseSaraObject,
 
