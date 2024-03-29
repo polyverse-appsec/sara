@@ -23,7 +23,6 @@ import {
 import { useAppContext } from './../../../../../lib/hooks/app-context'
 
 const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
-  const router = useRouter()
   const session = useSession()
   const saraSession = session.data ? (session.data as SaraSession) : null
 
@@ -40,6 +39,9 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
     useState<boolean>(true)
   const [goals, setGoals] = useState<Goal[]>([])
 
+  const [toastedInactiveBillingOrg, setToastedInactiveBillingOrg] =
+    useState<boolean>(false)
+
   // This use effect is to just get the project details...
   useEffect(() => {
     let isMounted = true
@@ -47,7 +49,9 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
     const fetchUserStatus = async () => {
       try {
         if (!activeBillingOrg) {
-          toast.error(`No active billing org set`)
+          // Just return here as hopefully the billing org is being loaded in
+          // the background
+
           return
         }
 
@@ -130,6 +134,17 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
 
   if (activeWorkspaceDetails && activeWorkspaceDetails.goalId !== null) {
     setActiveGoalId(null)
+  }
+
+  if (!activeBillingOrg) {
+    // Make sure to not spam the user with toasts that we are loading their
+    // billing org
+    if (!toastedInactiveBillingOrg) {
+      setToastedInactiveBillingOrg(true)
+      toast('Loading user context')
+    }
+
+    return null
   }
 
   if (!project) {
