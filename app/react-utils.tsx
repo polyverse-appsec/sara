@@ -1,6 +1,6 @@
 'use client'
 
-import { Text } from '@radix-ui/themes'
+import { Flex, Text } from '@radix-ui/themes'
 import {
   ProjectHealthConfigurationState,
   ProjectHealthStatusValue,
@@ -64,63 +64,63 @@ export const renderReadableHealthValue = (
   switch (readableHealthValue) {
     case 'HEALTHY': {
       return (
-        <div>
+        <Flex gap="1">
           <Text size="2" weight="bold">
             {'Status: '}
           </Text>
           <Text size="2" className="text-green-500">
             Healthy
           </Text>
-        </div>
+        </Flex>
       )
     }
     case 'PARTIALLY_HEALTHY': {
       return (
-        <div>
+        <Flex gap="1">
           <Text size="2" weight="bold">
             {'Status: '}
           </Text>
           <Text size="2" className="text-yellow-500">
             Becoming Healthy
           </Text>
-        </div>
+        </Flex>
       )
     }
     case 'UNHEALTHY': {
       return (
-        <div>
+        <Flex gap="1">
           <Text size="2" weight="bold">
             {'Status: '}
           </Text>
           <Text size="2" className="text-red-500">
             Unhealthy
           </Text>
-        </div>
+        </Flex>
       )
     }
     case 'UNKNOWN': {
       return (
-        <div>
+        <Flex gap="1">
           <Text size="2" weight="bold">
             {'Status: '}
           </Text>
           <Text size="2" className="text-blue-500">
             Unknown
           </Text>
-        </div>
+        </Flex>
       )
     }
     default: {
       // Return the unknown name
       return (
-        <div>
+        <Flex gap="1">
           <Text size="2" weight="bold">
             {'Status: '}
           </Text>
           <Text size="2" className="text-blue-500">
             Healthy
           </Text>
-        </div>
+        </Flex>
       )
     }
   }
