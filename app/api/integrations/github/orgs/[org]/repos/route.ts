@@ -38,6 +38,8 @@ export const GET = auth(async (req: NextAuthRequest) => {
     const mappedRepos = repos.map((repo) => ({
       name: repo.name,
       htmlUrl: repo.html_url,
+      // Used when selecting data sources for a project
+      private: repo.private
     }))
 
     return new Response(JSON.stringify(mappedRepos), {
