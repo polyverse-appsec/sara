@@ -9,18 +9,19 @@ import { ChatScrollAnchor } from '../chat-scroll-anchor'
 import { getResource } from './../../app/saraClient'
 import {
   type Chat,
+  type Chatable,
   type ChatQuery,
   type ProjectHealthStatusValue,
 } from './../../lib/data-model-types'
 import { cn } from './../../lib/utils'
-import LoadingSpinner from './../loading-spinner'
 import SaraChatList from './sara-chat-list'
 import SaraChatPanel from './sara-chat-panel'
 
 interface SaraChatProps {
   projectHealth: ProjectHealthStatusValue
   chatableResourceUrl: string
-  existingChatId: string | null
+  existingChatId?: string
+  initialChatQuery?: string
 }
 
 const buildChat = async (
@@ -86,14 +87,15 @@ const buildChatQueriesUrl = (chatableResourceUrl: string, chatId: string) =>
     ? `${chatableResourceUrl}chats/${chatId}/chat-queries`
     : `${chatableResourceUrl}/chats/${chatId}/chat-queries`
 
-const SaraChat = ({
+const SaraChat = <T extends Chatable>({
   projectHealth,
   chatableResourceUrl,
-  existingChatId = null,
+  existingChatId,
+  initialChatQuery,
 }: SaraChatProps) => {
   const [chatQueries, setChatQueries] = useState<ChatQuery[] | null>(null)
-  const [input, setInput] = useState('')
-  const [chatId, setChatId] = useState<string | null>(existingChatId)
+  const [chatQuery, setChatQuery] = useState<string>('')
+  const [chatId, setChatId] = useState<string | undefined>(existingChatId)
   const { data: session } = useSession()
   const saraSession = session as SaraSession | null // Handling session data properly
 
@@ -134,6 +136,13 @@ const SaraChat = ({
     }
   }, [chatableResourceUrl, chatId])
 
+  // If someone provides an initial chat query set our state to it
+  useEffect(() => {
+    if (initialChatQuery) {
+      setChatQuery(initialChatQuery)
+    }
+  }, [initialChatQuery])
+
   if (!saraSession) {
     return null
   }
@@ -154,8 +163,8 @@ const SaraChat = ({
       </div>
       <SaraChatPanel
         projectHealth={projectHealth}
-        input={input}
-        setInput={setInput}
+        input={chatQuery}
+        setInput={setChatQuery}
         onQuerySubmit={async (query: string) => {
           try {
             // Check to see if we have a chat in the first place...

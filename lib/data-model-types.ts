@@ -49,6 +49,7 @@ export interface User extends BaseSaraObject {
   lastSignedInAt: Date
 }
 
+// TODO: Rename this as BillingOrg
 // TODO: Test this with a Joi schema
 export interface Org extends BaseSaraObject {
   // Crucial to identity management/RBAC

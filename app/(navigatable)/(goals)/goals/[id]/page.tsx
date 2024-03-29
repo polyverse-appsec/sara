@@ -8,10 +8,9 @@ import { getResource } from 'app/saraClient'
 import LoadingSpinner from 'components/loading-spinner'
 import RenderableResource from 'components/renderable-resource/renderable-resource'
 import RenderableResourceContent from 'components/renderable-resource/renderable-resource-content'
-import { Button } from 'components/ui/button'
+import RenderableSaraChatResourceContent from 'components/sara-chat/renderable-sara-chat-resource-content'
 import { useAppContext } from 'lib/hooks/app-context'
 
-import SaraChat from '../../../../../components/sara-chat/sara-chat'
 import {
   ProjectHealth,
   ProjectHealthStatusValue,
@@ -24,20 +23,21 @@ const renderChatForGoal = (
 ) => {
   if (!goal) {
     return (
-      <div className="flex">
-        <h3 className="text-lg font-semibold text-center">
-          Building initial advice for your Goal
-        </h3>
-        <LoadingSpinner />
-      </div>
+      <RenderableResourceContent>
+        <div className="flex">
+          <h3 className="text-lg font-semibold text-center">
+            Building initial advice for your Goal
+          </h3>
+          <LoadingSpinner />
+        </div>
+      </RenderableResourceContent>
     )
   }
 
   return (
-    <SaraChat
+    <RenderableSaraChatResourceContent<Goal>
       projectHealth={projectHealth}
       chatableResourceUrl={`/api/goals/${goal.id}`}
-      existingChatId={goal.chatId}
     />
   )
 }
@@ -118,10 +118,10 @@ const GoalIndex = ({ params: { id } }: { params: { id: string } }) => {
           </div>
         </div>
       </RenderableResourceContent>
-      <RenderableResourceContent>
-        {/* Give the appearance of being healthy if we don't know */}
-        {renderChatForGoal(goal, health ? health.readableValue : 'HEALTHY')}
-      </RenderableResourceContent>
+      <RenderableSaraChatResourceContent<Goal>
+        projectHealth={health ? health.readableValue : 'HEALTHY'}
+        chatableResourceUrl={`/api/goals/${goal.id}`}
+      />
     </RenderableResource>
   )
 }

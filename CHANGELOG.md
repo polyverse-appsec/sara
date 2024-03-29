@@ -2,6 +2,24 @@
 
 # Release Notes
 
+## Version 0.25.0: March 29th, 2024
+
+### New Features
+
+- N/A
+
+### Enhancements
+
+- Improve the visual elements of chatting with Sara with a greeting and a UX specific message
+  - Sara greeting for loading chat
+  - Sara greeting for help with initial chat questions
+  - Sara greeting for receiving an error
+- Allow initial questions to be selected for the input of `<SaraChat>`
+
+### Bug Fixes
+
+- N/A
+
 ## Version 0.24.0: March 28th, 2024
 
 ### New Features
@@ -14,7 +32,7 @@
 - Added functionality to the projects page to delete a set of selected goals from a project
 - UI fixes for /orgs, /projects, navbar
 - Added 'Sara {loading}...' style placeholders on pages that are busy loading
-    - Avoids showing errors or partial data before ready to fully render
+  - Avoids showing errors or partial data before ready to fully render
 - Added support for Preview features in the UI
 
 ### Bug Fixes
