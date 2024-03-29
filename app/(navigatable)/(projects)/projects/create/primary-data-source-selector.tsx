@@ -39,15 +39,21 @@ const PrimaryDataSourceSelector = ({
 }: DataSourceSelectorProps) => {
   const session = useSession()
   const saraSession = session.data ? (session.data as SaraSession) : null
+
   const [orgs, setOrgs] = useState([])
+
   const [githubReposForOrgs, setGitHubReposForOrgs] = useState<
     Record<string, GitHubRepo[]>
   >({})
-  const [githubAppInstalledForOrgs, setGitHubAppInstalledForOrgs] = useState<
-    Record<string, string>
-  >({})
+
+  const [
+    gitHubAppInstallStatusByOrgNames,
+    setGitHubAppInstallStatusByOrgNames,
+  ] = useState<Record<string, string>>({})
+
   const [selectedGithubRepo, setSelectedGithubRepo] =
     useState<GitHubRepo | null>(null)
+
   const [selectedGithubOrg, setSelectedGithubOrg] = useState<Org | null>(null)
 
   const [shouldShowLoadingSpinner, setShouldShowLoadingSpinner] =
@@ -104,7 +110,7 @@ const PrimaryDataSourceSelector = ({
         appInstallationStatuses[org.name] = ''
       }
     }
-    setGitHubAppInstalledForOrgs(appInstallationStatuses)
+    setGitHubAppInstallStatusByOrgNames(appInstallationStatuses)
   }
 
   useEffect(() => {
@@ -171,7 +177,7 @@ const PrimaryDataSourceSelector = ({
       {/* SECOND REPO DROPDOWN */}
       {selectedGithubOrg && (
         <div>
-          {githubAppInstalledForOrgs[selectedGithubOrg.name] ===
+          {gitHubAppInstallStatusByOrgNames[selectedGithubOrg.name] ===
             'INSTALLED' && (
             <div className="p-4 space-y-1 text-sm border rounded-md">
               <DropdownMenu>
@@ -223,7 +229,7 @@ const PrimaryDataSourceSelector = ({
               </DropdownMenu>
             </div>
           )}
-          {githubAppInstalledForOrgs[selectedGithubOrg.name] !==
+          {gitHubAppInstallStatusByOrgNames[selectedGithubOrg.name] !==
             'INSTALLED' && (
             <Callout.Root color="orange">
               <Callout.Icon>
