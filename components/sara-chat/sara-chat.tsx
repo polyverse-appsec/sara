@@ -8,7 +8,7 @@ import { toast } from 'react-hot-toast'
 import { ChatScrollAnchor } from '../chat-scroll-anchor'
 import { getResource } from './../../app/saraClient'
 import {
-  type ChatPartDeux,
+  type Chat,
   type ChatQueryPartDeux,
   type ProjectHealthStatusValue,
 } from './../../lib/data-model-types'
@@ -26,7 +26,7 @@ interface SaraChatProps {
 const buildChat = async (
   query: string,
   chatableResourceUrl: string,
-): Promise<ChatPartDeux> => {
+): Promise<Chat> => {
   const chatBody = {
     query,
   }
@@ -50,7 +50,7 @@ const buildChat = async (
     throw new Error(errMsg)
   }
 
-  const chat = (await postChatRes.json()) as ChatPartDeux
+  const chat = (await postChatRes.json()) as Chat
 
   return chat
 }

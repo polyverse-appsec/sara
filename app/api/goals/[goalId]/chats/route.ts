@@ -5,7 +5,7 @@ import { NextAuthRequest } from 'next-auth/lib'
 import { auth } from '../../../../../auth'
 import getProjectPromptFileInfoIds from '../../../../../lib/polyverse/db/get-project-prompt-file-info-ids'
 import {
-  type ChatPartDeux,
+  type Chat,
   type ChatQueryPartDeux,
   type PromptFileInfo,
 } from './../../../../../lib/data-model-types'
@@ -262,7 +262,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
     const chatBaseSaraObject = createBaseSaraObject()
     const chatQueryBaseSaraObject = createBaseSaraObject()
 
-    const chat: ChatPartDeux = {
+    const chat: Chat = {
       // BaseSaraObject properties
       ...chatBaseSaraObject,
 

@@ -194,7 +194,7 @@ export interface Task extends BaseSaraObject {
 }
 
 // TODO: Test this with a Joi schema
-export interface ChatPartDeux extends BaseSaraObject {
+export interface Chat extends BaseSaraObject {
   // Crucial to identity management/RBAC
   // Users who can participate - or make queries - in this chat
   participatingUserIds: string[]
