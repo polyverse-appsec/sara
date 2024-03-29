@@ -1,18 +1,6 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import Link from 'next/link'
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@radix-ui/react-collapsible'
-import {
-  InfoCircledIcon,
-  LockClosedIcon,
-  LockOpen2Icon,
-} from '@radix-ui/react-icons'
-import { Callout } from '@radix-ui/themes'
 import { getOrgStatus } from 'app/react-utils'
 import { SaraSession } from 'auth'
 import { Button } from 'components/ui/button'
@@ -23,18 +11,22 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuTrigger,
 } from '../../../../../components/ui/dropdown-menu'
 import { getResource } from './../../../../../app/saraClient'
 import LoadingSpinner from './../../../../../components/loading-spinner'
 import { Org, type GitHubRepo } from './../../../../../lib/data-model-types'
+import { InfoCircledIcon, LockClosedIcon, LockOpen2Icon } from '@radix-ui/react-icons'
+import { Badge, Callout } from '@radix-ui/themes'
+import Link from 'next/link'
 
 interface DataSourceSelectorProps {
+  userIsPremium: boolean
   setControlledProjectDataSources: (gitHubRepos: GitHubRepo[]) => void
 }
 
 const PrimaryDataSourceSelector = ({
+  userIsPremium,
   setControlledProjectDataSources,
 }: DataSourceSelectorProps) => {
   const session = useSession()
@@ -154,11 +146,7 @@ const PrimaryDataSourceSelector = ({
             )}
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent
-          sideOffset={8}
-          align="start"
-          className="min-w-64 max-h-60"
-        >
+        <DropdownMenuContent align="start" className="min-w-64 max-h-60">
           {orgs.map((org: Org) => (
             <DropdownMenuItem
               key={org.name}
@@ -190,41 +178,40 @@ const PrimaryDataSourceSelector = ({
                         Select Repo...
                       </span>
                     )}
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  sideOffset={8}
-                  align="start"
-                  className="min-w-64 max-h-60"
-                >
-                  {githubReposForOrgs[selectedGithubOrg?.name] ? (
-                    githubReposForOrgs[selectedGithubOrg.name].map(
-                      (repo: GitHubRepo) => (
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="min-w-64 max-h-60">
+                {githubReposForOrgs[selectedGithubOrg?.name] ? 
+                    githubReposForOrgs[selectedGithubOrg.name].map((repo: GitHubRepo) => (
                         <DropdownMenuItem
                           key={repo.name}
                           onSelect={async (event) => {
                             setSelectedGithubRepo(repo)
                             setControlledProjectDataSources([repo])
-                          }}
+                            }}
+                            disabled={repo.private && !userIsPremium}
                         >
-                          <span className="ml-2 text-ellipsis whitespace-nowrap overflow-hidden">
-                            {repo.name}
-                          </span>
-                          {repo.private ? (
-                            <div title="Repo Unlocked" className="ml-1">
-                              <LockOpen2Icon className="w-4 h-4" />
-                            </div>
-                          ) : null}
+                            <span className="mx-2 text-ellipsis whitespace-nowrap overflow-hidden">
+                              {repo.name}
+                            </span>
+                            {(repo.private && !userIsPremium) && 
+                            <div className="p-1 rounded text-red-500 font-semibold text-xs bg-red-100">
+                              Premium Requred
+                            </div>}
+                            {(repo.private && userIsPremium) && 
+                            <div title="Premium Access" className="px-1 rounded text-green-500 font-semibold text-xs bg-green-100">
+                              P
+                            </div>}
                         </DropdownMenuItem>
                       ),
                     )
-                  ) : (
+                   :
                     <DropdownMenuItem>
                       <span className="ml-2 text-ellipsis whitespace-nowrap overflow-hidden">
                         No repos available for this org
                       </span>
                     </DropdownMenuItem>
-                  )}
+                  }
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
