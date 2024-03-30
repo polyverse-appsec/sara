@@ -2,6 +2,20 @@
 
 # Release Notes
 
+## Version 0.25.1: March 30th, 2024
+
+### New Features
+
+- N/A
+
+### Enhancements
+
+- N/A
+
+### Bug Fixes
+
+- Render new chat in correct area/box when using pre-canned messages to start new conversation
+
 ## Version 0.25.0: March 29th, 2024
 
 ### New Features

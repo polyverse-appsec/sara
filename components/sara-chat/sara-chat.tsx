@@ -22,6 +22,7 @@ interface SaraChatProps {
   chatableResourceUrl: string
   existingChatId?: string
   initialChatQuery?: string
+  onChatCreated?: (chatId: string) => void
 }
 
 const buildChat = async (
@@ -92,6 +93,7 @@ const SaraChat = <T extends Chatable>({
   chatableResourceUrl,
   existingChatId,
   initialChatQuery,
+  onChatCreated,
 }: SaraChatProps) => {
   const [chatQueries, setChatQueries] = useState<ChatQuery[] | null>(null)
   const [chatQuery, setChatQuery] = useState<string>('')
@@ -175,6 +177,11 @@ const SaraChat = <T extends Chatable>({
               // sure to flag that we shouldn't try to build it again and return
               // so we don't try to make a query to an existing chat
               setChatId(chat.id)
+
+              if (onChatCreated) {
+                onChatCreated(chat.id)
+              }
+
               return
             }
 

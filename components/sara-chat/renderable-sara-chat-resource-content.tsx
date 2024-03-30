@@ -87,6 +87,14 @@ const RenderableSaraChatResourceContent = <T extends Chatable>({
           projectHealth={projectHealth}
           chatableResourceUrl={chatableResourceUrl}
           initialChatQuery={initialChatQuery}
+          onChatCreated={(chatId: string) => {
+            const newChatableResource: T = {
+              ...chatableResource,
+              chatId,
+            }
+
+            setChatableResource(newChatableResource)
+          }}
         />
       </>
     )
