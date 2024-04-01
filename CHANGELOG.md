@@ -2,6 +2,20 @@
 
 # Release Notes
 
+## Version 0.26.0: April 1st, 2024
+
+### New Features
+
+- User's personal github repos are now able to be selected for project creation
+
+### Enhancements
+
+- N/A
+
+### Bug Fixes
+
+- N/A
+
 ## Version 0.25.1: March 30th, 2024
 
 ### New Features
