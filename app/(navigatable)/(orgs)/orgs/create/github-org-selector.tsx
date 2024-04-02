@@ -11,34 +11,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from './../../../../../components/ui/dropdown-menu'
-
-const getGitHubOrgs = async (): Promise<GitHubOrg[]> => {
-  const res = await fetch('/api/integrations/github/orgs')
-
-  if (!res.ok) {
-    const errText = await res.text()
-
-    throw new Error(
-      `Failed to get a success response when fetching GitHub organizations because: ${errText}`,
-    )
-  }
-
-  return res.json()
-}
-
-const getBillingOrgs = async (): Promise<Org[]> => {
-  const res = await fetch('/api/orgs')
-
-  if (!res.ok) {
-    const errText = await res.text()
-
-    throw new Error(
-      `Failed to get a success response when fetching billing organizations because: ${errText}`,
-    )
-  }
-
-  return res.json()
-}
+import { getBillingOrgs, getGitHubOrgs } from 'app/react-utils'
 
 interface OrgSelectorProps {
   setControlledGitHubOrg: (gitHugOrg: GitHubOrg) => void

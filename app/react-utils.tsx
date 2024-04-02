@@ -2,6 +2,8 @@
 
 import { Flex, Text } from '@radix-ui/themes'
 import {
+  GitHubOrg,
+  Org,
   ProjectHealthConfigurationState,
   ProjectHealthStatusValue,
   UserOrgStatus,
@@ -37,10 +39,9 @@ export const getOrgUserStatus = async (
 }
 
 export const getOrgStatus = async (
-  orgId: string,
-  userId: string,
+  orgName: string,
 ): Promise<UserOrgStatus> => {
-  const res = await fetch(`/api/orgs/${orgId}/status`, {
+  const res = await fetch(`/api/orgs/${orgName}/status`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -56,6 +57,34 @@ export const getOrgStatus = async (
 
   const orgStatus = await res.json()
   return orgStatus
+}
+
+export const getGitHubOrgs = async (): Promise<GitHubOrg[]> => {
+  const res = await fetch('/api/integrations/github/orgs')
+
+  if (!res.ok) {
+    const errText = await res.text()
+
+    throw new Error(
+      `Failed to get a success response when fetching GitHub organizations because: ${errText}`,
+    )
+  }
+
+  return res.json()
+}
+
+export const getBillingOrgs = async (): Promise<Org[]> => {
+  const res = await fetch('/api/orgs')
+
+  if (!res.ok) {
+    const errText = await res.text()
+
+    throw new Error(
+      `Failed to get a success response when fetching billing organizations because: ${errText}`,
+    )
+  }
+
+  return res.json()
 }
 
 export const renderReadableHealthValue = (

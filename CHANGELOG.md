@@ -7,14 +7,19 @@
 ### New Features
 
 - User's personal github repos are now able to be selected for project creation
+- Added distinction between personal and business billing orgs/user contexts
 
 ### Enhancements
 
-- N/A
+- Navbar and settings page UI fixes
+- Moved org github app installation status REST api to new path: orgs/[orgNameOrId]/status.
+  - can put the name or id of an org in the slug depending on which one the api requires.
+- Added github username to saraSession
 
 ### Bug Fixes
 
-- N/A
+- Fixed org github app installation status checks for anything besides project creation org dropdown
+- Fixed theme toggle not toggling on the first click
 
 ## Version 0.25.1: March 30th, 2024
 

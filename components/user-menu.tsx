@@ -1,4 +1,5 @@
 'use client'
+// WE ARE NO LONGER USING THIS USER MENU. SHOULD DELETE THIS FILE PROBABLY
 
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
@@ -42,8 +43,6 @@ export function UserMenu({ user }: UserMenuProps) {
 
   const [userGitHubAppInstalled, setUserGitHubAppInstalled] =
     useState<boolean>(true)
-  const [orgGitHubAppInstalled, setOrgGitHubAppInstalled] =
-    useState<boolean>(true)
   const [userIsPremium, setUserIsPremium] = useState<boolean>(true)
 
   useEffect(() => {
@@ -62,15 +61,9 @@ export function UserMenu({ user }: UserMenuProps) {
           saraSession.id,
         )
 
-        const orgStatus = await getOrgStatus(
-          activeBillingOrg.id,
-          saraSession.id,
-        )
-
         setUserGitHubAppInstalled(
           orgUserStatus.gitHubAppInstalled === 'INSTALLED',
         )
-        setOrgGitHubAppInstalled(orgStatus.gitHubAppInstalled === 'INSTALLED')
         setUserIsPremium(orgUserStatus.isPremium === 'PREMIUM')
       } catch (error) {
         toast.error(`Failed to fetch user status: ${error}`)
@@ -105,11 +98,6 @@ export function UserMenu({ user }: UserMenuProps) {
             <HamburgerMenuIcon className="ml-2 w-4 h-4" />
             {!userGitHubAppInstalled ? (
               <div title="The User GitHub App has not been installed.">
-                <ExclamationTriangleIcon className="w-4 h-4 text-red-500" />
-              </div>
-            ) : null}
-            {!orgGitHubAppInstalled ? (
-              <div title="The Organization GitHub App has not been installed.">
                 <ExclamationTriangleIcon className="w-4 h-4 text-red-500" />
               </div>
             ) : null}
@@ -174,11 +162,6 @@ export function UserMenu({ user }: UserMenuProps) {
               </a>
               {!userGitHubAppInstalled ? (
                 <div title="The User GitHub App has not been installed.">
-                  <ExclamationTriangleIcon className="w-4 h-4 text-red-500" />
-                </div>
-              ) : null}
-              {!orgGitHubAppInstalled ? (
-                <div title="The Organization GitHub App has not been installed.">
                   <ExclamationTriangleIcon className="w-4 h-4 text-red-500" />
                 </div>
               ) : null}

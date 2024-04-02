@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { getOrgStatus } from 'app/react-utils'
+import { getGitHubOrgs, getOrgStatus } from 'app/react-utils'
 import { SaraSession } from 'auth'
 import { Button } from 'components/ui/button'
 import { useSession } from 'next-auth/react'
@@ -15,7 +15,7 @@ import {
 } from '../../../../../components/ui/dropdown-menu'
 import { getResource } from './../../../../../app/saraClient'
 import LoadingSpinner from './../../../../../components/loading-spinner'
-import { Org, type GitHubRepo } from './../../../../../lib/data-model-types'
+import { Org, type GitHubRepo, GitHubOrg } from './../../../../../lib/data-model-types'
 import { InfoCircledIcon, LockClosedIcon, LockOpen2Icon } from '@radix-ui/react-icons'
 import { Badge, Callout } from '@radix-ui/themes'
 import Link from 'next/link'
@@ -33,7 +33,7 @@ const PrimaryDataSourceSelector = ({
   const session = useSession()
   const saraSession = session.data ? (session.data as SaraSession) : null
 
-  const [orgs, setOrgs] = useState([])
+  const [orgs, setOrgs] = useState<GitHubOrg[]>([])
 
   const [githubReposForOrgs, setGitHubReposForOrgs] = useState<
     Record<string, GitHubRepo[]>
@@ -51,7 +51,7 @@ const PrimaryDataSourceSelector = ({
   const [selectedGithubRepo, setSelectedGithubRepo] =
     useState<GitHubRepo | null>(null)
 
-  const [selectedGithubOrg, setSelectedGithubOrg] = useState<Org | null>(null)
+  const [selectedGithubOrg, setSelectedGithubOrg] = useState<GitHubOrg | null>(null)
 
   const [shouldShowLoadingSpinner, setShouldShowLoadingSpinner] =
     useState<boolean>(true)
@@ -76,7 +76,7 @@ const PrimaryDataSourceSelector = ({
     setGithubReposForPersonal(reposForPersonal)
   }
 
-  async function fetchAndSetReposForOrgs(orgs: Org[]) {
+  async function fetchAndSetReposForOrgs(orgs: GitHubOrg[]) {
     // Initialize an empty record to store org names as keys and their corresponding GitHubRepo arrays as values
     const reposForOrgs: Record<string, GitHubRepo[]> = {}
 
@@ -85,19 +85,19 @@ const PrimaryDataSourceSelector = ({
       try {
         // Fetch GitHub repos for the current orgName using the getResource function
         const repos = await getResource<GitHubRepo[]>(
-          `/integrations/github/orgs/${org.name}/repos`,
-          `Failed to get GitHub repos for organization '${org.name}'`,
+          `/integrations/github/orgs/${org.login}/repos`,
+          `Failed to get GitHub repos for organization '${org.login}'`,
         )
 
         // If successful, add the orgName as a key and its corresponding repos array as the value to the reposForOrgs record
-        reposForOrgs[org.name] = repos
+        reposForOrgs[org.login] = repos
       } catch (error) {
         console.error(
-          `Error fetching repos for org ${org.name} on data source select screen: `,
+          `Error fetching repos for org ${org.login} on data source select screen: `,
           error,
         )
         // Optionally handle errors, e.g., by setting an empty array or using a different fallback value
-        reposForOrgs[org.name] = []
+        reposForOrgs[org.login] = []
       }
     }
 
@@ -105,7 +105,7 @@ const PrimaryDataSourceSelector = ({
     setGitHubReposForOrgs(reposForOrgs)
   }
 
-  async function setAppInstalledStatusForOrgs(orgs: Org[]) {
+  async function setAppInstalledStatusForOrgs(orgs: GitHubOrg[]) {
     if (!saraSession) {
       toast.error(`No session available`)
       return
@@ -115,16 +115,16 @@ const PrimaryDataSourceSelector = ({
 
     for (const org of orgs) {
       try {
-        const orgStatus = await getOrgStatus(org.id, saraSession.id)
+        const orgStatus = await getOrgStatus(org.login)
 
         // If successful, add the orgName as a key and its corresponding repos array as the value to the reposForOrgs record
-        appInstallationStatuses[org.name] = orgStatus.gitHubAppInstalled
+        appInstallationStatuses[org.login] = orgStatus.gitHubAppInstalled
       } catch (error) {
         console.error(
-          `Error fetching installation status for ${org.name} on data source select screen: `,
+          `Error fetching installation status for ${org.login} on data source select screen: `,
           error,
         )
-        appInstallationStatuses[org.name] = ''
+        appInstallationStatuses[org.login] = ''
       }
     }
     setGitHubAppInstallStatusByOrgNames(appInstallationStatuses)
@@ -132,22 +132,12 @@ const PrimaryDataSourceSelector = ({
 
   useEffect(() => {
     ;(async () => {
-      const res = await fetch('/api/orgs')
+      const fetchedGitHubOrgs = await getGitHubOrgs()
 
-      if (!res.ok) {
-        const errText = await res.text()
+      setOrgs(fetchedGitHubOrgs)
 
-        throw new Error(
-          `Failed to get a success response when fetching organizations because: ${errText}`,
-        )
-      }
-
-      const fetchedOrgs = await res.json()
-
-      setOrgs(fetchedOrgs)
-
-      fetchAndSetReposForOrgs(fetchedOrgs)
-      setAppInstalledStatusForOrgs(fetchedOrgs)
+      fetchAndSetReposForOrgs(fetchedGitHubOrgs)
+      setAppInstalledStatusForOrgs(fetchedGitHubOrgs)
       fetchAndSetReposForPersonal()
 
       setShouldShowLoadingSpinner(false)
@@ -164,7 +154,7 @@ const PrimaryDataSourceSelector = ({
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="pl-0 text-black-500">
             {personalReposSelected && (<span className="pl-1">Personal Repos</span>)}
-            {selectedGithubOrg && (<span className="pl-1">{selectedGithubOrg.name}</span>)}
+            {selectedGithubOrg && (<span className="pl-1">{selectedGithubOrg.login}</span>)}
             {(!personalReposSelected && !selectedGithubOrg) && (
               <span className="flex pl-1 min-w-64 text-left">
                 Select Repo Source...
@@ -187,16 +177,16 @@ const PrimaryDataSourceSelector = ({
             <div className="ml-2 font-semibold">
               Orgs
             </div>
-          {orgs.map((org: Org) => (
+          {orgs.map((org: GitHubOrg) => (
             <DropdownMenuItem
-              key={org.name}
+              key={org.login}
               onSelect={(event) => {
                 setPersonalReposSelected(false)
                 setSelectedGithubOrg(org)
               }}
             >
               <span className="ml-2 text-ellipsis whitespace-nowrap overflow-hidden">
-                {org.name}
+                {org.login}
               </span>
             </DropdownMenuItem>
           ))}
@@ -259,7 +249,7 @@ const PrimaryDataSourceSelector = ({
       {/* SECOND REPO DROPDOWN */}
       {selectedGithubOrg && (
         <div>
-          {gitHubAppInstallStatusByOrgNames[selectedGithubOrg.name] ===
+          {gitHubAppInstallStatusByOrgNames[selectedGithubOrg.login] ===
             'INSTALLED' && (
             <div className="p-4 space-y-1 text-sm border rounded-md">
               <DropdownMenu>
@@ -275,8 +265,8 @@ const PrimaryDataSourceSelector = ({
                   </Button>
                 </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="min-w-64 max-h-60">
-                {githubReposForOrgs[selectedGithubOrg?.name] ? 
-                    githubReposForOrgs[selectedGithubOrg.name].map((repo: GitHubRepo) => (
+                {githubReposForOrgs[selectedGithubOrg?.login] ? 
+                    githubReposForOrgs[selectedGithubOrg.login].map((repo: GitHubRepo) => (
                         <DropdownMenuItem
                           key={repo.name}
                           onSelect={async (event) => {
@@ -310,7 +300,7 @@ const PrimaryDataSourceSelector = ({
               </DropdownMenu>
             </div>
           )}
-          {gitHubAppInstallStatusByOrgNames[selectedGithubOrg.name] !==
+          {gitHubAppInstallStatusByOrgNames[selectedGithubOrg.login] !==
             'INSTALLED' && (
             <Callout.Root color="orange">
               <Callout.Icon>

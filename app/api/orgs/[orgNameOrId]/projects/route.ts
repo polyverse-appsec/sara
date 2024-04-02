@@ -7,19 +7,19 @@ import {
   type GitHubRepo,
   type ProjectDataSource,
   type Project,
-} from './../../../../../lib/data-model-types'
-import { getBoostOrgUserStatus } from './../../../../../lib/polyverse/backend/backend'
-import createBoostProject from './../../../../../lib/polyverse/backend/create-boost-project'
-import createProject from './../../../../../lib/polyverse/db/create-project'
-import createProjectDataSource from './../../../../../lib/polyverse/db/create-project-data-source'
-import getOrg from './../../../../../lib/polyverse/db/get-org'
-import getProject from './../../../../../lib/polyverse/db/get-project'
-import getUser from './../../../../../lib/polyverse/db/get-user'
-import updateOrg from './../../../../../lib/polyverse/db/update-org'
-import { createBaseSaraObject } from './../../../../../lib/polyverse/db/utils'
-import { projectNameSchema } from './../../../../../lib/polyverse/db/validators'
+} from '../../../../../lib/data-model-types'
+import { getBoostOrgUserStatus } from '../../../../../lib/polyverse/backend/backend'
+import createBoostProject from '../../../../../lib/polyverse/backend/create-boost-project'
+import createProject from '../../../../../lib/polyverse/db/create-project'
+import createProjectDataSource from '../../../../../lib/polyverse/db/create-project-data-source'
+import getOrg from '../../../../../lib/polyverse/db/get-org'
+import getProject from '../../../../../lib/polyverse/db/get-project'
+import getUser from '../../../../../lib/polyverse/db/get-user'
+import updateOrg from '../../../../../lib/polyverse/db/update-org'
+import { createBaseSaraObject } from '../../../../../lib/polyverse/db/utils'
+import { projectNameSchema } from '../../../../../lib/polyverse/db/validators'
 
-import authz from './../../../../../app/api/authz'
+import authz from '../../../authz'
 
 // 03/04/24: We set this max duration to 60 seconds during initial development
 // with no real criteria to use as a starting point for the max duration. We see

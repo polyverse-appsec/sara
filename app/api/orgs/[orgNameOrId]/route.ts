@@ -1,11 +1,11 @@
 import { ReasonPhrases, StatusCodes } from 'http-status-codes'
 import { NextAuthRequest } from 'next-auth/lib'
 
-import { auth } from './../../../../auth'
-import getOrg from './../../../../lib/polyverse/db/get-org'
-import getUser from './../../../../lib/polyverse/db/get-user'
+import { auth } from '../../../../auth'
+import getOrg from '../../../../lib/polyverse/db/get-org'
+import getUser from '../../../../lib/polyverse/db/get-user'
 
-import authz from './../../../../app/api/authz'
+import authz from '../../authz'
 
 export const GET = auth(async (req: NextAuthRequest) => {
   const { auth } = req

@@ -40,9 +40,6 @@ const ProjectCreate = () => {
   const [userGitHubAppInstalled, setUserGitHubAppInstalled] =
     useState<boolean>(true)
 
-  const [orgGithubAppInstalled, setOrgGitHubAppInstalled] =
-    useState<boolean>(true)
-
   const [userIsPremium, setUserIsPremium] = useState<boolean>(true)
 
   const [statusCheckDone, setStatusCheckDone] = useState<boolean>(false)
@@ -157,16 +154,10 @@ const ProjectCreate = () => {
           saraSession.id,
         )
 
-        const orgStatus = await getOrgStatus(
-          activeBillingOrg.id,
-          saraSession.id,
-        )
-
         setStatusCheckDone(true)
         setUserGitHubAppInstalled(
           orgUserStatus.gitHubAppInstalled === 'INSTALLED',
         )
-        setOrgGitHubAppInstalled(orgStatus.gitHubAppInstalled === 'INSTALLED')
         setUserIsPremium(orgUserStatus.isPremium === 'PREMIUM')
       } catch (error) {
         toast.error(`Failed to fetch user status: ${error}`)
@@ -272,21 +263,6 @@ const ProjectCreate = () => {
             </p>
           </div>
         ) : null}
-        {!orgGithubAppInstalled ? (
-          <div className="text-left text-base text-red-500 my-1">
-            <p>
-              Please install Boost GitHub App for your organization before
-              creating a project.
-            </p>
-          </div>
-        ) : null}
-        {!userIsPremium ? (
-          <div className="text-left text-base text-red-500 my-1">
-            <p>
-              Please upgrade to a Premium account before creating a project.
-            </p>
-          </div>
-        ) : null}
         {!statusCheckDone ? (
           <div className="text-left text-base my-1">
             <p>Verifying permissions...</p>
@@ -298,8 +274,6 @@ const ProjectCreate = () => {
             className={`${
               !saveButtonEnabled ||
               !userGitHubAppInstalled ||
-              !orgGithubAppInstalled ||
-              !userIsPremium ||
               !statusCheckDone
                 ? 'bg-gray-500'
                 : 'bg-green-500 hover:bg-green-200'
@@ -373,7 +347,6 @@ const ProjectCreate = () => {
             disabled={
               !saveButtonEnabled ||
               !userGitHubAppInstalled ||
-              !orgGithubAppInstalled ||
               !statusCheckDone
             }
           >

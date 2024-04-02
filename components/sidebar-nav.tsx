@@ -46,8 +46,6 @@ const SidebarNav = () => {
   const [orgIsPremium, setOrgIsPremium] = useState(true)
   const [userGitHubAppInstalled, setUserGitHubAppInstalled] =
     useState<boolean>(true)
-  const [orgGitHubAppInstalled, setOrgGitHubAppInstalled] =
-    useState<boolean>(true)
 
   useEffect(() => {
     const fetchAndSetActiveBillingOrg = async () => {
@@ -73,15 +71,9 @@ const SidebarNav = () => {
           saraSession.id,
         )
 
-        const orgStatus = await getOrgStatus(
-          activeBillingOrg.id,
-          saraSession.id,
-        )
-
         setUserGitHubAppInstalled(
           orgUserStatus.gitHubAppInstalled === 'INSTALLED',
         )
-        setOrgGitHubAppInstalled(orgStatus.gitHubAppInstalled === 'INSTALLED')
 
         setOrgIsPremium(orgUserStatus.isPremium === 'PREMIUM')
       } catch (err) {
@@ -236,14 +228,12 @@ const SidebarNav = () => {
               }}
             />
             {(!orgIsPremium ||
-              !userGitHubAppInstalled ||
-              !orgGitHubAppInstalled) && (
+              !userGitHubAppInstalled) && (
               <span className="absolute top-0 right-0 block w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
             )}
           </div>
           {(!orgIsPremium ||
-            !userGitHubAppInstalled ||
-            !orgGitHubAppInstalled) && (
+            !userGitHubAppInstalled) && (
             <div title="Sara not properly configured" className="ml-2">
               <ExclamationTriangleIcon className="w-4 h-4 text-red-500" />
             </div>
@@ -253,7 +243,7 @@ const SidebarNav = () => {
         {/* Organization Info */}
         <div className="px-4 mt-2 rounded-lg">
           <div className="text-sm text-zinc-500">{saraSession?.email}</div>
-          <div className="flex items-center mt-1">
+          <div className="flex items-center justify-center mt-1">
             {orgIsPremium && (
               <div
                 title="Premium Plan"

@@ -26,11 +26,16 @@ const IndexPage = () => {
         )
       }
       setIsLoadingOrgs(false)
-      setIsRedirectingToProjects(true)
 
       const fetchedOrgs = await res.json()
 
       setOrgs(fetchedOrgs)
+
+      if (fetchedOrgs.length == 0) {
+        router.push(`/orgs/create`)
+      }
+
+      setIsRedirectingToProjects(true)
 
       if (fetchedOrgs.length > 0) {
         setActiveBillingOrg(fetchedOrgs[0])

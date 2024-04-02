@@ -18,8 +18,6 @@ const SettingsIndex = () => {
 
   const [userGitHubAppInstalled, setUserGitHubAppInstalled] =
     useState<boolean>(true)
-  const [orgGitHubAppInstalled, setOrgGitHubAppInstalled] =
-    useState<boolean>(true)
   const [orgIsPremium, setOrgIsPremium] = useState<boolean>(true)
 
   useEffect(() => {
@@ -38,15 +36,9 @@ const SettingsIndex = () => {
           saraSession.id,
         )
 
-        const orgStatus = await getOrgStatus(
-          activeBillingOrg.id,
-          saraSession.id,
-        )
-
         setUserGitHubAppInstalled(
           orgUserStatus.gitHubAppInstalled === 'INSTALLED',
         )
-        setOrgGitHubAppInstalled(orgStatus.gitHubAppInstalled === 'INSTALLED')
         setOrgIsPremium(orgUserStatus.isPremium === 'PREMIUM')
       } catch (error) {
         toast.error(`Failed to fetch user status: ${error}`)
@@ -83,7 +75,7 @@ const SettingsIndex = () => {
             <h3 className="text-lg font-semibold flex-1 text-center">
               Billing Status: {orgIsPremium ? 'Premium Plan' : 'Free Plan'}
             </h3>
-            {!userGitHubAppInstalled ? (
+            {!orgIsPremium ? (
               <div
                 title="No Premium Plan Configured."
                 className="flex-shrink-0"
@@ -101,7 +93,7 @@ const SettingsIndex = () => {
           <div className="flex items-center justify-center text-white">
             <h3 className="text-lg font-semibold flex-1 text-center">
               Authorize Github Access:{' '}
-              {userGitHubAppInstalled && orgGitHubAppInstalled
+              {userGitHubAppInstalled
                 ? 'Access Configured'
                 : 'Access Not Configured'}
             </h3>
@@ -113,15 +105,7 @@ const SettingsIndex = () => {
                 <ExclamationTriangleIcon className="w-8 h-8 text-red-500" />
               </div>
             ) : null}
-            {!orgGitHubAppInstalled ? (
-              <div
-                title="The Organization GitHub App has not been installed."
-                className="flex-shrink-0"
-              >
-                <ExclamationTriangleIcon className="w-8 h-8 text-red-500" />
-              </div>
-            ) : null}
-            {userGitHubAppInstalled && orgGitHubAppInstalled && (
+            {userGitHubAppInstalled && (
               <div className="flex-shrink-0 ml-4">
                 <p>✅</p>
               </div>

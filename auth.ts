@@ -190,6 +190,7 @@ export const {
 export interface SaraSession extends Session {
   id: string
   name: string
+  username: string
   email: string
   picture: string
 }

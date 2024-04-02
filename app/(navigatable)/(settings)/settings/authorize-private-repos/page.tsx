@@ -69,7 +69,7 @@ const SettingsGithubAppInstall = () => {
         const fetchedOrgs = await res.json()
 
         const statusPromises = fetchedOrgs.map(async (org: Goal) => {
-          const orgStatus = await getOrgStatus(org.id, saraSession.id) // Assuming this function returns the status
+          const orgStatus = await getOrgStatus(org.id) // Assuming this function returns the status
           return { name: org.name, orgStatus }
         })
 
