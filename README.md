@@ -380,3 +380,4 @@ This template ships with OpenAI `gpt-3.5-turbo` as the default. However, thanks 
 - [Tailwind CSS Docs](https://tailwindcss.com/docs/installation)
 - [MochaJS Docs](https://mochajs.org/)
 - [Trunk Based Development](https://trunkbaseddevelopment.com/)
+- [Component Driven Design](https://www.componentdriven.org/)
