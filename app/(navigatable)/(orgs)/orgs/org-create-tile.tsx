@@ -8,7 +8,7 @@ export const OrgCreateTile = () => {
     <Link href="/orgs/create">
       <div className="bg-background shadow-md rounded-lg border border-blue-500 p-6 block transform transition hover:scale-105">
         <h3 className="text-lg font-semibold text-center">
-          Create New User Context
+          Create New Billing Context
         </h3>
         <div className="flex justify-center">
           <svg

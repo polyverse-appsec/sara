@@ -3,8 +3,11 @@
 import { useEffect, useState } from 'react'
 
 import OrgDashboard from './org-dashboard'
+import { useRouter } from 'next/navigation'
+import toast from 'react-hot-toast'
 
 const OrgsIndex = () => {
+  const router = useRouter()
   const [orgs, setOrgs] = useState([])
 
   useEffect(() => {
@@ -22,6 +25,12 @@ const OrgsIndex = () => {
       const fetchedOrgs = await res.json()
 
       setOrgs(fetchedOrgs)
+
+      if (fetchedOrgs.length == 0) {
+        router.push(`/orgs/create`)
+      }
+
+
     })()
   }, [])
 

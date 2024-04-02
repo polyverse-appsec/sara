@@ -56,10 +56,10 @@ const SettingsIndex = () => {
         <div className="bg-blue-500 shadow-md rounded-lg p-4 block transform transition hover:scale-105 cursor-pointer">
           <div className="flex items-center justify-center text-white">
             <h3 className="text-lg font-semibold flex-1 text-center">
-              Switch User Context:{' '}
+              Switch Billing Context:{' '}
               {activeBillingOrg
                 ? activeBillingOrg.name
-                : 'No selected billing org'}
+                : 'No selected billing context'}
             </h3>
             {activeBillingOrg && (
               <div className="flex-shrink-0 ml-4">

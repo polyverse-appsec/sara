@@ -49,7 +49,7 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
     const fetchUserStatus = async () => {
       try {
         if (!activeBillingOrg) {
-          // Just return here as hopefully the billing org is being loaded in
+          // Just return here as hopefully the billing context is being loaded in
           // the background
 
           return
@@ -138,10 +138,10 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
 
   if (!activeBillingOrg) {
     // Make sure to not spam the user with toasts that we are loading their
-    // billing org
+    // billing context
     if (!toastedInactiveBillingOrg) {
       setToastedInactiveBillingOrg(true)
-      toast('Loading user context')
+      toast('Loading Billing Context')
     }
 
     return null

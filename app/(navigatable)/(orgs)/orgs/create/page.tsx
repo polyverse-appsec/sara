@@ -19,7 +19,7 @@ const getBillingOrgs = async (): Promise<Org[]> => {
     const errText = await res.text()
 
     throw new Error(
-      `Failed to get a success response when fetching billing organizations because: ${errText}`,
+      `Failed to get a success response when fetching billing context because: ${errText}`,
     )
   }
 
@@ -76,7 +76,7 @@ const OrgCreate = () => {
           <div className="bg-background shadow-md rounded-lg p-6 font-semibold text-base text-center my-2 mx-2">
             <p>
               Create an organization that will be billed. When a billing
-              organization is set as the active billing organization all future
+              organization is set as the active billingcontext all future
               resources created will be associated with it. For example
               projects, goals, tasks, and chats.
             </p>
@@ -105,10 +105,10 @@ const OrgCreate = () => {
                     const errText = await res.text()
 
                     console.debug(
-                      `Failed to create personal billing org because: ${errText}`,
+                      `Failed to create personal billing context because: ${errText}`,
                     )
 
-                    toast.error(`Failed to create personal billing organization`)
+                    toast.error(`Failed to create personal billing context`)
                     setSaveButtonEnabled(true)
                     return
                   }
@@ -120,11 +120,11 @@ const OrgCreate = () => {
                   router.push(`/orgs/${org.id}`)
                 } catch (err) {
                   console.debug(
-                    `Caught error when trying to create a personal billing organization: ${err}`,
+                    `Caught error when trying to create a personal billing context: ${err}`,
                   )
                   
                   setSaveButtonEnabled(true)
-                  toast.error(`Failed to create personal billing organization`)
+                  toast.error(`Failed to create personal billing context`)
                 }
               }}
               disabled={personalBillingExists}

@@ -24,7 +24,7 @@ const BusinessBillingContextCreator = () => {
           <div className="text-base my-1">
             <p>
               Create an organization that will be billed. When a billing
-              organization is set as the active billing organization all future
+              organization is set as the active billing context all future
               resources created will be associated with it. For example
               projects, goals, tasks, and chats.
             </p>
@@ -68,10 +68,10 @@ const BusinessBillingContextCreator = () => {
                     const errText = await res.text()
 
                     console.debug(
-                      `Failed to create a billing organization because: ${errText}`,
+                      `Failed to create a billing context because: ${errText}`,
                     )
 
-                    toast.error(`Failed to create billing organization`)
+                    toast.error(`Failed to create billing context`)
 
                     setSaveButtonEnabled(true)
                     return
@@ -84,12 +84,12 @@ const BusinessBillingContextCreator = () => {
                   router.push(`/orgs/${org.id}`)
                 } catch (err) {
                   console.debug(
-                    `Caught error when trying to create a billing organization: ${err}`,
+                    `Caught error when trying to create a billing context: ${err}`,
                   )
 
                   setSaveButtonEnabled(true)
 
-                  toast.error(`Failed to create billing organization`)
+                  toast.error(`Failed to create billing context`)
                 }
               }}
             >

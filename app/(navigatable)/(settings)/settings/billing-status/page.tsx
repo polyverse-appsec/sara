@@ -57,10 +57,10 @@ const SettingsOrgUpgrade = () => {
       <div className="w-1/2 border-t-2 border-blue-600 my-2"></div>
       {activeBillingOrg ? (
         <p className="m-4 font-semibold">
-          Your current billing org is {activeBillingOrg.name}{' '}
+          Your current billing context is {activeBillingOrg.name}{' '}
         </p>
       ) : (
-        <p className="m-4 font-semibold">No selected billing org</p>
+        <p className="m-4 font-semibold">No selected billing context</p>
       )}
       <RenderableResourceContent>
         {orgIsPremium ? (

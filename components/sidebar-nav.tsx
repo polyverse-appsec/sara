@@ -119,7 +119,7 @@ const SidebarNav = () => {
           className="flex items-center justify-center px-4 py-2 rounded-lg hover:bg-secondary hover:text-secondary-foreground transition-colors"
           onClick={() => {
             if (!activeBillingOrg) {
-              toast.error(`Please select billing organization`)
+              toast.error(`Please select billing context`)
               return
             }
             setProjectIdForConfiguration(null)

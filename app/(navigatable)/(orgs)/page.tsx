@@ -25,7 +25,6 @@ const IndexPage = () => {
           `Failed to get a success response when fetching organizations because: ${errText}`,
         )
       }
-      setIsLoadingOrgs(false)
 
       const fetchedOrgs = await res.json()
 
@@ -35,9 +34,10 @@ const IndexPage = () => {
         router.push(`/orgs/create`)
       }
 
-      setIsRedirectingToProjects(true)
+      setIsLoadingOrgs(false)
 
       if (fetchedOrgs.length > 0) {
+        setIsRedirectingToProjects(true)
         setActiveBillingOrg(fetchedOrgs[0])
         router.push(`/projects`)
       }

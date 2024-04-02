@@ -25,7 +25,7 @@ const ProjectIndex = () => {
       setIsLoading(true)
 
       if (!activeBillingOrg) {
-        toast.error(`Please select a billing organization`)
+        toast.error(`Please select a billing context`)
         router.push('/orgs')
 
         return

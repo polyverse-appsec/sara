@@ -47,7 +47,7 @@ const OrgSelector = ({ setControlledGitHubOrg }: OrgSelectorProps) => {
   }
 
   // Filter the GitHub orgs by removing those that already exist by name on the
-  // billing org instances
+  // billing context instances
   const billingOrgsByName = billingOrgs.reduce(
     (accumulator, billingOrg) => {
       accumulator[billingOrg.name] = billingOrg
@@ -64,7 +64,7 @@ const OrgSelector = ({ setControlledGitHubOrg }: OrgSelectorProps) => {
     return (
       <div className="text-base">
         <p>
-          No GitHub organizations available to create as a billing organization.
+          No GitHub organizations available to create as a billing context.
         </p>
       </div>
     )

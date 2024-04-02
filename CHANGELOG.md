@@ -2,12 +2,27 @@
 
 # Release Notes
 
+## Version 0.27.0: April 2nd, 2024
+
+### New Features
+
+- N/A
+
+### Enhancements
+
+- Changed "billing org" to say "billing context" in the UI.
+- /orgs will now always rediriect to /orgs/create if there are no orgs for user
+
+### Bug Fixes
+
+- N/A
+
 ## Version 0.26.0: April 1st, 2024
 
 ### New Features
 
 - User's personal github repos are now able to be selected for project creation
-- Added distinction between personal and business billing orgs/user contexts
+- Added distinction between personal and business billing contexts/github orgs
 
 ### Enhancements
 
@@ -268,7 +283,7 @@
 ### Bug Fixes
 
 - Remove sample text from prompt input text box
-- Load the Billing Organization for the Project Chat Page - avoid Select Billing Organization error popup
+- Load the billing context for the Project Chat Page - avoid Select billing context error popup
 
 ## Version 0.16.0: March 15th, 2024
 
@@ -284,7 +299,7 @@
 - Upon log in, user will be redirected to the projects page of their first org if applicable
 - Added project name and project status display to the nav bar
 - UI improvements to the Sara status messages
-- Added premium plan logo next to org on nav bar and applicable orgs in billing orgs page
+- Added premium plan logo next to org on nav bar and applicable orgs in billing contexts page
 - Show plan status inside each org page and if the org isn't premium, include link to upgrade
 - Show project health for each of the projects in the projects list page
 - Encourage Sara NOT to use the specific vector store filenames in her answers to the user - and instead use more general resource names like "Software Architectural Blueprint" - which are names also in the raw resources uploaded by Backend
@@ -325,7 +340,7 @@
 - Modify project creation API to not create Open AI assistant `POST /api/orgs/orgId/projects`
   - These details of Open AI assistant creation and updating the prompt get deferred to `POST /api/projects/<projectId>/refresh`
 - Added notification warnings for user plan, and github app installations
-- Disabled project creation if github app is not installed for selected billing org
+- Disabled project creation if github app is not installed for selected billing context
 - Renamed buttons and text to clarify their purpose
 - Added branding to the login page
 

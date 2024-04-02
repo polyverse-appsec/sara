@@ -140,7 +140,7 @@ const ProjectCreate = () => {
     const fetchUserStatus = async () => {
       try {
         if (!activeBillingOrg) {
-          toast.error(`No active billing org set`)
+          toast.error(`No active billing context set`)
           return
         }
 
@@ -167,10 +167,10 @@ const ProjectCreate = () => {
     fetchUserStatus()
   }, [activeBillingOrg, saraSession])
 
-  // Force a user to select an active billing org first before they can create
+  // Force a user to select an active billing context first before they can create
   // a project
   if (!activeBillingOrg) {
-    toast.error(`Please select billing organization`)
+    toast.error(`Please select billing context`)
 
     return null
   }

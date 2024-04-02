@@ -13,6 +13,10 @@ interface OrgDashboardProps {
 const OrgDashboard = ({ orgs }: OrgDashboardProps) => {
   return (
     <div>
+      <div className="text-center mb-2">Billing Contexts</div>
+      <div className="flex justify-center w-full">
+        <div className="w-1/2 border-t-2 border-blue-600 mb-5"></div>
+      </div>
       <div className="mb-10">
         <OrgCreateTile />
       </div>

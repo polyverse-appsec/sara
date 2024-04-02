@@ -80,7 +80,7 @@ export const getBillingOrgs = async (): Promise<Org[]> => {
     const errText = await res.text()
 
     throw new Error(
-      `Failed to get a success response when fetching billing organizations because: ${errText}`,
+      `Failed to get a success response when fetching billing contexts because: ${errText}`,
     )
   }
 

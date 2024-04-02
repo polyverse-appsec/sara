@@ -40,7 +40,7 @@ export interface User extends BaseSaraObject {
   // Crucial to identity management/RBAC
   email: string
 
-  // Identifies all the billing organizations a user belongs to
+  // Identifies all the billing contexts a user belongs to
   orgIds: string[]
 
   // Some human readable name
@@ -67,7 +67,7 @@ export interface Org extends BaseSaraObject {
 // TODO: Test this with a Joi schema
 export interface Project extends BaseSaraObject {
   // Crucial to identity management/RBAC.
-  // Pertains to a billing organization (i.e. not a GitHub organization)
+  // Pertains to a billing context (i.e. not a GitHub organization)
   orgId: string
 
   // Identifies which users have access to read/write this project
@@ -141,7 +141,7 @@ export interface ProjectDataSource extends BaseSaraObject {
 // TODO: Test this with a Joi schema
 export interface Goal extends Chatable {
   // Crucial to identity management/RBAC
-  // Pertains to a billing organization (i.e. not a GitHub organization)
+  // Pertains to a billing context (i.e. not a GitHub organization)
   orgId: string
 
   name: string
@@ -163,7 +163,7 @@ export interface Goal extends Chatable {
 
 export interface Task extends Chatable {
   // Crucial to identity management/RBAC
-  // Pertains to a billing organization (i.e. not a GitHub organization)
+  // Pertains to a billing context (i.e. not a GitHub organization)
   orgId: string
 
   name: string

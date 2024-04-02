@@ -29,7 +29,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
   try {
     const user = await getUser(auth.user.email)
 
-    // Validate that the user hasn't already created a billing organization
+    // Validate that the user hasn't already created a billing context
     // with the same name. For now we expect the names of the billing
     // organiziations to be those of GitHub organizations but our data model
     // isn't built around the idea of GitHub organizations. It just serves
@@ -44,7 +44,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
 
     if (duplicateOrg) {
       return new Response(
-        `Billing organization with a name of '${name}' already exists`,
+        `billing context with a name of '${name}' already exists`,
         {
           status: StatusCodes.BAD_REQUEST,
         },

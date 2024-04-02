@@ -33,10 +33,10 @@ const SettingsOrgUpgrade = () => {
       <div className="w-1/2 border-t-2 border-blue-600 my-2"></div>
       {activeBillingOrg ? (
         <p className="m-4">
-          Your current billing org is {activeBillingOrg.name}{' '}
+          Your current billing context is {activeBillingOrg.name}{' '}
         </p>
       ) : (
-        'No selected billing org'
+        'No selected billing context'
       )}
       <RenderableResourceContent>
         <p>Choose an org to Upgrade to Premium</p>
