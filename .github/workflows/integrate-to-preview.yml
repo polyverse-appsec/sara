@@ -50,10 +50,10 @@ jobs:
         run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Pull Docker images
-        run: docker-compose pull
+        run: docker compose pull
 
       - name: Run Redis test DB
-        run: docker-compose up -d
+        run: docker compose up -d
 
       # Export NEXTAUTH_URL as localhost when running in GitHub Actions to
       # avoid UntrustedHost error: https://authjs.dev/reference/core/errors/#untrustedhost
@@ -73,7 +73,7 @@ jobs:
 
       - name: Stop Redis test DB
         if: always()
-        run: docker-compose down
+        run: docker compose down
 
   integrate:
     name: Integrate to Preview branch
