@@ -1,5 +1,5 @@
 'use client'
-
+// THIS CODE ISN'T USED AT THE MOMENT
 import React, { useState } from 'react'
 
 const BoostExplanation = () => {

@@ -11,6 +11,7 @@ import { useSession } from 'next-auth/react'
 import { UserOrgStatus, type Org } from './../../../../../lib/data-model-types'
 import { useAppContext } from './../../../../../lib/hooks/app-context'
 import { StarFilledIcon } from '@radix-ui/react-icons'
+import { Badge } from '@radix-ui/themes'
 
 const OrgIndex = ({ params: { id } }: { params: { id: string } }) => {
   const { activeBillingOrg, setActiveBillingOrg } = useAppContext()
@@ -20,6 +21,7 @@ const OrgIndex = ({ params: { id } }: { params: { id: string } }) => {
   const saraSession = session.data ? (session.data as SaraSession) : null
 
   const [orgIsPremium, setOrgIsPremium] = useState(false)
+  const [orgIsPersonal, setOrgIsPersonal] = useState(false)
 
   useEffect(() => {
     ;(async () => {
@@ -45,6 +47,9 @@ const OrgIndex = ({ params: { id } }: { params: { id: string } }) => {
       const orgUserStatus = await getOrgUserStatus(id, saraSession.id)
 
       setOrgIsPremium(orgUserStatus.isPremium === 'PREMIUM')
+
+      setOrgIsPersonal(fetchedOrg.name === saraSession.username)
+
     })()
   }, [id, saraSession])
 
@@ -62,6 +67,11 @@ const OrgIndex = ({ params: { id } }: { params: { id: string } }) => {
           <h3>Current Billing Context</h3>
           <div className="w-1/2 border-t-2 border-blue-600 my-2"></div>
           <p className="text-lg">{org.name}</p>
+          {orgIsPersonal ?
+          <Badge color="orange">Personal</Badge>
+          :
+          <Badge color="orange">Business</Badge>
+          }
         </div>
       </RenderableResourceContent>
       {orgIsPremium ? (

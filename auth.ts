@@ -8,6 +8,7 @@ import getUser, { createUserNotFoundErrorString } from './lib/polyverse/db/get-u
 import updateUser from 'lib/polyverse/db/update-user'
 import { Session } from 'next-auth/types'
 import { updateBoostOrgUserStatus } from 'lib/polyverse/backend/backend'
+import getOrg from 'lib/polyverse/db/get-org'
 
 export const {
   handlers: { GET, POST },
@@ -104,8 +105,9 @@ export const {
           try {
             // we don't need an org to update the username, since login is tied to email, but we'll pass an org (or email as org)
             //      for now, since the backend requires it for all user APIs
-            const orgName = retrievedUser.orgIds.length > 0 ? retrievedUser.orgIds[0] : profile.email
-            await updateBoostOrgUserStatus(orgName, profile.email, profile.login as string)
+            const orgId = retrievedUser.orgIds.length > 0 ? retrievedUser.orgIds[0] : profile.email
+            const org = await getOrg(orgId)
+            await updateBoostOrgUserStatus(org.name, profile.email, profile.login as string)
           } catch (error) {
             console.error(`Failed to update Boost org user status for ${profile.email} to ${profile.login} on sign in:`, error)
           }

@@ -11,6 +11,10 @@ import BusinessBillingContextCreator from './business-billing-context-creator'
 import LoadingSpinner from 'components/loading-spinner'
 import { SaraSession } from 'auth'
 import { useSession } from 'next-auth/react'
+import { getGitHubOrgs } from 'app/react-utils'
+import Link from 'next/link'
+import { Flex } from '@radix-ui/themes'
+import { ArrowLeftIcon } from '@radix-ui/react-icons'
 
 const getBillingOrgs = async (): Promise<Org[]> => {
   const res = await fetch('/api/orgs')
@@ -41,6 +45,12 @@ const OrgCreate = () => {
   const [shouldShowLoadingSpinner, setShouldShowLoadingSpinner] =
     useState<boolean>(true)
 
+  const [fetchedGitHubOrgs, setFetchedGitHubOrgs] = useState<GitHubOrg[]>([])
+
+  const handleUnselectBillingOrganization = () => {
+    setSelectedBusinessBilling(false);
+  };
+
   useEffect(() => {
     const fetchOrgs = async () => {
       if (!saraSession?.username) {
@@ -55,6 +65,10 @@ const OrgCreate = () => {
         if (personalBillingExists) {
           setPersonalBillingExists(true)
         }
+
+        const fetchedGitHubOrgs = await getGitHubOrgs()
+
+        setFetchedGitHubOrgs(fetchedGitHubOrgs)
 
       } catch (error) {
         console.error('Error fetching orgs:', error)
@@ -74,6 +88,16 @@ const OrgCreate = () => {
       {!selectedBusinessBilling && (
         <div className="flex flex-col items-center">
           <div className="bg-background shadow-md rounded-lg p-6 font-semibold text-base text-center my-2 mx-2">
+            <div className="text-left mb-2">
+              <button className="btn-blue text-sm">
+                <Link href="/orgs">
+                    <Flex align="center">
+                    <ArrowLeftIcon className="mr-2" />
+                    Back to Orgs
+                    </Flex>
+                </Link>
+              </button>
+            </div>
             <p>
               Create an organization that will be billed. When a billing
               organization is set as the active billingcontext all future
@@ -83,72 +107,79 @@ const OrgCreate = () => {
           </div>
           <div className="flex justify-content mt-16">
             <div className="flex flex-col items-center">
-            <Button 
-              className="mx-5 rounded-lg bg-blue-500 hover:bg-blue-700 h-64 w-64" 
-              onClick={async (e) => {
-                e.preventDefault()
+              <Button 
+                className="mx-5 rounded-lg bg-blue-500 hover:bg-blue-700 h-64 w-64" 
+                onClick={async (e) => {
+                  e.preventDefault()
 
-                setSaveButtonEnabled(false)
-                
-                try {
-                  const orgBody = { name: saraSession!.username }
-
-                  const res = await fetch('/api/orgs', {
-                    method: 'POST',
-                    headers: {
-                      'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(orgBody),
-                  })
-
-                  if (!res.ok) {
-                    const errText = await res.text()
-
-                    console.debug(
-                      `Failed to create personal billing context because: ${errText}`,
-                    )
-
-                    toast.error(`Failed to create personal billing context`)
-                    setSaveButtonEnabled(true)
-                    return
-                  }
-
-                  const org = (await res.json()) as Org
-
-                  setActiveBillingOrg(org)
-
-                  router.push(`/orgs/${org.id}`)
-                } catch (err) {
-                  console.debug(
-                    `Caught error when trying to create a personal billing context: ${err}`,
-                  )
+                  setSaveButtonEnabled(false)
                   
-                  setSaveButtonEnabled(true)
-                  toast.error(`Failed to create personal billing context`)
-                }
-              }}
-              disabled={personalBillingExists}
-              >
-                <div className="text-2xl font-bold">
-                  Personal
-                </div>
-            </Button>
+                  try {
+                    const orgBody = { name: saraSession!.username }
+
+                    const res = await fetch('/api/orgs', {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                      },
+                      body: JSON.stringify(orgBody),
+                    })
+
+                    if (!res.ok) {
+                      const errText = await res.text()
+
+                      console.debug(
+                        `Failed to create personal billing context because: ${errText}`,
+                      )
+
+                      toast.error(`Failed to create personal billing context`)
+                      setSaveButtonEnabled(true)
+                      return
+                    }
+
+                    const org = (await res.json()) as Org
+
+                    setActiveBillingOrg(org)
+
+                    router.push(`/orgs/${org.id}`)
+                  } catch (err) {
+                    console.debug(
+                      `Caught error when trying to create a personal billing context: ${err}`,
+                    )
+                    
+                    setSaveButtonEnabled(true)
+                    toast.error(`Failed to create personal billing context`)
+                  }
+                }}
+                disabled={personalBillingExists}
+                >
+                  <div className="text-2xl font-bold">
+                    Personal
+                  </div>
+              </Button>
               {personalBillingExists && 
                 <div className="text-md text-red-500 font-bold mt-5">Personal Already Created</div>
               }
             </div>
-            <Button 
-              className="mx-5 rounded-lg bg-blue-500 hover:bg-blue-700 h-64 w-64"
-              onClick={() => setSelectedBusinessBilling(true)}>
-                <div className="text-2xl font-bold">
-                  Business
-                </div>
-            </Button>
+            <div className="flex flex-col items-center">
+              <Button 
+                className="mx-5 rounded-lg bg-blue-500 hover:bg-blue-700 h-64 w-64"
+                onClick={() => setSelectedBusinessBilling(true)}
+                disabled={fetchedGitHubOrgs.length === 0}
+                >
+                  <div className="text-2xl font-bold">
+                    Business
+                  </div>
+              </Button>
+              {(fetchedGitHubOrgs.length === 0) && 
+                <div className="text-md text-red-500 font-bold mt-5">No Github Orgs</div>
+              }
+            </div>
           </div>
         </div>
 
       )}
-      {selectedBusinessBilling && <BusinessBillingContextCreator />}
+      {selectedBusinessBilling && <BusinessBillingContextCreator onUnselectBillingOrganization={handleUnselectBillingOrganization} />}
     </div>
   )
 }

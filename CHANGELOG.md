@@ -12,10 +12,15 @@
 
 - Changed "billing org" to say "billing context" in the UI.
 - /orgs will now always rediriect to /orgs/create if there are no orgs for user
+- Billing context in user menu is now clickable, will redirect to billing context page or /orgs/create page if there is none selected
+- Clicking on switch project will now redirect user to /orgs if there is no billing context selected
+- Added personal/business badges to corresponding billing contexts
+- Added Back buttons in /orgs/create
+- Loading skeleton for project status in the project details tile
 
 ### Bug Fixes
 
-- N/A
+- Fixed auth.ts passing in an org id instead of an org name into updating user boost backend
 
 ## Version 0.26.0: April 1st, 2024
 

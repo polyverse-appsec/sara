@@ -8,6 +8,7 @@ import { Button } from 'components/ui/button'
 import { ProjectHealth, ProjectHealthStatusValue } from 'lib/data-model-types'
 import { useAppContext } from 'lib/hooks/app-context'
 import toast from 'react-hot-toast'
+import { Skeleton } from '@radix-ui/themes'
 
 interface ProjectTileProps {
   id: string
@@ -79,16 +80,16 @@ export const ProjectDetailsTile = ({
           </p>
         </div>
         <div className="flex flex-col items-end justify-end">
-          {projectHealth && (
-            <div className="my-1">
-              <div className="flex items-center">
-                <ProjectStatusCard
-                  health={projectHealth}
-                  lastRefreshedAt={lastedUpdatedDate}
-                />
+          <Skeleton loading={!projectHealth}>
+              <div className="my-1">
+                <div className="flex items-center">
+                  <ProjectStatusCard
+                    health={projectHealth!}
+                    lastRefreshedAt={lastedUpdatedDate}
+                  />
+                </div>
               </div>
-            </div>
-          )}
+          </Skeleton>
           <Button
             variant="ghost"
             className="self-end hover:bg-red-200"

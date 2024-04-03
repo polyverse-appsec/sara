@@ -9,6 +9,7 @@ import { UserOrgStatus } from 'lib/data-model-types'
 import { useAppContext } from 'lib/hooks/app-context'
 import { useSession } from 'next-auth/react'
 import toast from 'react-hot-toast'
+import { Badge } from '@radix-ui/themes'
 
 interface OrgDetailsTileProps {
   name: string
@@ -22,6 +23,7 @@ export const OrgDetailsTile = ({ name, id }: OrgDetailsTileProps) => {
 
   const [orgIsPremium, setOrgIsPremium] = useState(false)
   const [orgIsSelected, setOrgIsSelected] = useState(false)
+  const [orgIsPersonal, setOrgIsPersonal] = useState(false)
 
   useEffect(() => {
     const fetchUserStatus = async () => {
@@ -43,6 +45,8 @@ export const OrgDetailsTile = ({ name, id }: OrgDetailsTileProps) => {
         toast.error(`Failed to fetch user status: ${error}`)
       }
     }
+
+    setOrgIsPersonal(name === saraSession?.username)
 
     fetchUserStatus()
   }, [activeBillingOrg])
@@ -66,7 +70,12 @@ export const OrgDetailsTile = ({ name, id }: OrgDetailsTileProps) => {
             </div>
           ) : null}
         </div>
-        {orgIsSelected && <p className="text-xs text-blue-600">Active</p>}
+        {orgIsPersonal ?
+          <Badge color="orange">Personal</Badge>
+          :
+          <Badge color="orange">Business</Badge>
+        }
+        {orgIsSelected && <p className="text-xs text-blue-600 mt-2">Active</p>}
       </div>
     </Link>
   )

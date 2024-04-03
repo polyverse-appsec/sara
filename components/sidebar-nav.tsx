@@ -8,14 +8,13 @@ import {
   GearIcon,
   StarFilledIcon,
 } from '@radix-ui/react-icons'
-import { Box, Card, Flex, HoverCard, Inset, Text } from '@radix-ui/themes'
+import { Flex, HoverCard, Inset, Text } from '@radix-ui/themes'
 import { SaraSession } from 'auth'
 import ProjectStatusDetailsHoverCard from 'components/project-status/project-status-details-card'
 import { motion } from 'framer-motion'
 import { Org, type Project, type ProjectHealth } from 'lib/data-model-types'
 import { useSession } from 'next-auth/react'
 import toast from 'react-hot-toast'
-import { ThemeToggle } from './theme-toggle'
 
 import { getOrgStatus, getOrgUserStatus } from './../app/react-utils'
 import { getResource } from './../app/saraClient'
@@ -23,6 +22,7 @@ import { useAppContext } from './../lib/hooks/app-context'
 import SaraPortrait from './../public/Sara_Cartoon_Portrait.png'
 import GoalsTaskNavTree from './goals-tasks-nav-tree'
 import LoadingCircle from './loading-spinner'
+import Link from 'next/link'
 
 function getUserInitials(name: string) {
   const [firstName, lastName] = name.split(' ')
@@ -120,7 +120,7 @@ const SidebarNav = () => {
           onClick={() => {
             if (!activeBillingOrg) {
               toast.error(`Please select billing context`)
-              return
+              router.push('/orgs')
             }
             setProjectIdForConfiguration(null)
             router.push('/projects')
@@ -242,7 +242,7 @@ const SidebarNav = () => {
 
         {/* Organization Info */}
         <div className="px-4 mt-2 rounded-lg">
-          <div className="text-sm text-zinc-500">{saraSession?.email}</div>
+          <div className="text-sm text-center text-zinc-500">{saraSession?.email}</div>
           <div className="flex items-center justify-center mt-1">
             {orgIsPremium && (
               <div
@@ -253,7 +253,19 @@ const SidebarNav = () => {
               </div>
             )}
             <span className="text-sm truncate dark:text-black">
-              {activeBillingOrg ? activeBillingOrg.name : 'No org selected'}
+              {activeBillingOrg ? 
+              <Link href={`/orgs/${activeBillingOrg.id}`}>
+                {(activeBillingOrg.name === saraSession?.username) ?
+                  <p className="hover:underline">Personal</p>
+                  :
+                  <p className="hover:underline">{activeBillingOrg.name}</p>
+                }
+              </Link>
+              : 
+              <Link href="/orgs">
+                <p className="hover:underline">No Billing Context Selected</p>
+              </Link>
+              }
             </span>
           </div>
         </div>
