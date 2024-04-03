@@ -49,12 +49,16 @@ const ProjectGoalCreate = ({ params: { id } }: { params: { id: string } }) => {
         </div>
         <div className="my-1">
           <h3 className="text-lg font-semibold">Name</h3>
-          <Input value={name} onChange={(e) => setName(e.target.value)} />
+          <Input
+            value={name}
+            placeholder="Enter Goal name"
+            onChange={(e) => setName(e.target.value)}
+          />
         </div>
         <div className="my-1">
           <h3 className="text-lg font-semibold">Description</h3>
           <TextArea
-            placeholder="Description for goal..."
+            placeholder="Enter a description of your Goal that will guide Sara"
             onChange={(e) => setDescription(e.target.value)}
           >
             {description}
@@ -65,7 +69,7 @@ const ProjectGoalCreate = ({ params: { id } }: { params: { id: string } }) => {
             Acceptance Criteria (Optional)
           </h3>
           <TextArea
-            placeholder="Acceptance criteria for goal..."
+            placeholder="Enter an Acceptance Criteria that Sara will use to determine when the Goal is complete"
             onChange={(e) => setAcceptanceCriteria(e.target.value)}
           >
             {acceptanceCriteria}

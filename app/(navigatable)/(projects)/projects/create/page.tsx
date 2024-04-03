@@ -195,6 +195,7 @@ const ProjectCreate = () => {
             </div>
             <Input
               value={projectName}
+              placeholder="Enter project name"
               onChange={(e) => setProjectName(e.target.value)}
             />
           </div>
@@ -221,16 +222,17 @@ const ProjectCreate = () => {
               <div className="w-3/4 border-t-2 border-blue-600 my-2"></div>
               <div className="my-1">
                 <h3 className="text-lg font-semibold">
-                  Add Project Description
+                  Project Description
                 </h3>
                 <Input
                   value={projectDescription}
+                  placeholder="Enter a description of your Project that Sara will use to guide her analysis"
                   onChange={(e) => setProjectDescription(e.target.value)}
                 />
               </div>
               <div className="my-1">
                 <h3 className="text-lg font-semibold">
-                  Input Project Guidelines
+                  Project Guidelines
                 </h3>
                 <GuidelineInputs
                   setProjectGuidelines={(guidelines: string[]) =>
@@ -240,7 +242,7 @@ const ProjectCreate = () => {
               </div>
               <div className="my-1">
                 <h3 className="text-lg font-semibold">
-                  Select Secondary Project Data Sources
+                  Additional Data Sources
                 </h3>
                 {/* Currently this data source selector is only able to select one repo, it's the same one that was used for primary repo select I just 
               moved it here to replace it with a dropdown menu to signal clearer ui. Once we build multi project functionality we'll need to 
