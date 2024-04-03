@@ -83,13 +83,13 @@ const OrgIndex = ({ params: { id } }: { params: { id: string } }) => {
               <StarFilledIcon className="w-2 h-2 text-yellow-500" />
             </div>
           <h3 className="text-lg font-semibold text-center">
-            You have all premium plan permissions for this organization
+            Your Account is currently subscribed at the Premium Plan level with supported features noted below.
           </h3>
         </div>
       ) : (
         <div className="bg-background shadow-md rounded-lg p-6 my-10">
           <h3 className="text-lg font-semibold text-center">
-            You have basic plan permissions for this organization
+            Your Account is currently a Free Subscription with supported features noted below.
           </h3>
         </div>
       )}
@@ -104,8 +104,12 @@ const OrgIndex = ({ params: { id } }: { params: { id: string } }) => {
           >
             <div className="flex flex-col items-start">
               <p>Free Plan</p>
-              <p>❌ Project creation limit</p>
-              <p>❌ Only public respositories for projects</p>
+              <p>✅ Project creation to analyze GitHub repositories</p>
+              <p>✅ Project Goals can be set to guide Sara analysis</p>
+              <p>✅ Sara generated Task-plans to achieve Goals</p>
+              <p>✅ Manual GitHub source synchronization</p>
+              <p>❌ Projects limited to 5 per account</p>
+              <p>❌ GitHub repositories limited to public repositories only</p>
             </div>
           </div>
           <div
@@ -117,6 +121,10 @@ const OrgIndex = ({ params: { id } }: { params: { id: string } }) => {
           >
             <div className="flex flex-col items-start">
               <p>Premium Plan</p>
+              <p>✅ Project creation to analyze GitHub repositories</p>
+              <p>✅ Project Goals can be set to guide Sara analysis</p>
+              <p>✅ Sara generated Task-plans to achieve Goals</p>
+              <p>✅ Manual GitHub source synchronization</p>
               <p>✅ Unlimited project creation</p>
               <p>✅ Access to private repositories for projects</p>
             </div>
