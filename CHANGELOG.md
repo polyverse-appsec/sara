@@ -2,7 +2,21 @@
 
 # Release Notes
 
-## Version 0.27.0: April 2nd, 2024
+## Version 0.20.2: April 3nd, 2024
+
+### New Features
+
+- N/A
+
+### Enhancements
+
+- Improvements to Form input boxes in various Sara UI pages
+
+### Bug Fixes
+
+- N/A
+
+## Version 0.20.1: April 2nd, 2024
 
 ### New Features
 
