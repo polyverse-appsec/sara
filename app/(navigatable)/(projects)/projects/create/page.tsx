@@ -188,7 +188,7 @@ const ProjectCreate = () => {
           </div>
           <div className="my-1">
             <div className="flex items-center">
-              <h3 className="text-lg font-semibold">Set Project Name</h3>
+              <h3 className="text-lg font-semibold">Project Name</h3>
               {displayRequiredText && !projectName && (
                 <span className="ml-2 text-sm text-red-500">Required</span>
               )}
@@ -202,7 +202,7 @@ const ProjectCreate = () => {
           <div className="my-1">
             <div className="flex items-center">
               <h3 className="text-lg font-semibold">
-                Select Project Data Source
+                Data Source
               </h3>
               {displayRequiredText &&
                 controlledProjectDataSources.length === 0 && (
