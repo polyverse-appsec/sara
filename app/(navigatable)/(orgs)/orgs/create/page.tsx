@@ -93,7 +93,7 @@ const OrgCreate = () => {
                 <Link href="/orgs">
                     <Flex align="center">
                     <ArrowLeftIcon className="mr-2" />
-                    Back to Orgs
+                    Back to Billing Contexts
                     </Flex>
                 </Link>
               </button>
