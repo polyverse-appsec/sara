@@ -1,6 +1,14 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
+import Link from 'next/link'
+import { DropdownMenuLabel } from '@radix-ui/react-dropdown-menu'
+import {
+  InfoCircledIcon,
+  LockClosedIcon,
+  LockOpen2Icon,
+} from '@radix-ui/react-icons'
+import { Badge, Callout } from '@radix-ui/themes'
 import { getGitHubOrgs, getOrgStatus } from 'app/react-utils'
 import { SaraSession } from 'auth'
 import { Button } from 'components/ui/button'
@@ -15,11 +23,11 @@ import {
 } from '../../../../../components/ui/dropdown-menu'
 import { getResource } from './../../../../../app/saraClient'
 import LoadingSpinner from './../../../../../components/loading-spinner'
-import { Org, type GitHubRepo, GitHubOrg } from './../../../../../lib/data-model-types'
-import { InfoCircledIcon, LockClosedIcon, LockOpen2Icon } from '@radix-ui/react-icons'
-import { Badge, Callout } from '@radix-ui/themes'
-import Link from 'next/link'
-import { DropdownMenuLabel } from '@radix-ui/react-dropdown-menu'
+import {
+  GitHubOrg,
+  Org,
+  type GitHubRepo,
+} from './../../../../../lib/data-model-types'
 
 interface DataSourceSelectorProps {
   userIsPremium: boolean
@@ -39,9 +47,12 @@ const PrimaryDataSourceSelector = ({
     Record<string, GitHubRepo[]>
   >({})
 
-  const [githubReposForPersonal, setGithubReposForPersonal] = useState<GitHubRepo[]>([])
+  const [githubReposForPersonal, setGithubReposForPersonal] = useState<
+    GitHubRepo[]
+  >([])
 
-  const [personalReposSelected, setPersonalReposSelected] = useState<boolean>(false)
+  const [personalReposSelected, setPersonalReposSelected] =
+    useState<boolean>(false)
 
   const [
     gitHubAppInstallStatusByOrgNames,
@@ -51,7 +62,9 @@ const PrimaryDataSourceSelector = ({
   const [selectedGithubRepo, setSelectedGithubRepo] =
     useState<GitHubRepo | null>(null)
 
-  const [selectedGithubOrg, setSelectedGithubOrg] = useState<GitHubOrg | null>(null)
+  const [selectedGithubOrg, setSelectedGithubOrg] = useState<GitHubOrg | null>(
+    null,
+  )
 
   const [shouldShowLoadingSpinner, setShouldShowLoadingSpinner] =
     useState<boolean>(true)
@@ -61,7 +74,7 @@ const PrimaryDataSourceSelector = ({
     try {
       // Fetch GitHub repos for the current orgName using the getResource function
       const repos = await getResource<GitHubRepo[]>(
-        `/integrations/github/personal/repos`,
+        `/integrations/github/user/repos`,
         `Failed to get GitHub repos for user`,
       )
 
@@ -153,9 +166,13 @@ const PrimaryDataSourceSelector = ({
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="pl-0 text-black-500">
-            {personalReposSelected && (<span className="pl-1">Personal Repos</span>)}
-            {selectedGithubOrg && (<span className="pl-1">{selectedGithubOrg.login}</span>)}
-            {(!personalReposSelected && !selectedGithubOrg) && (
+            {personalReposSelected && (
+              <span className="pl-1">Personal Repos</span>
+            )}
+            {selectedGithubOrg && (
+              <span className="pl-1">{selectedGithubOrg.login}</span>
+            )}
+            {!personalReposSelected && !selectedGithubOrg && (
               <span className="flex pl-1 min-w-64 text-left">
                 Select Repo Source...
               </span>
@@ -174,75 +191,77 @@ const PrimaryDataSourceSelector = ({
             </span>
           </DropdownMenuItem>
           <DropdownMenuLabel>
-            <div className="ml-2 font-semibold">
-              Orgs
-            </div>
-          {orgs.map((org: GitHubOrg) => (
-            <DropdownMenuItem
-              key={org.login}
-              onSelect={(event) => {
-                setPersonalReposSelected(false)
-                setSelectedGithubOrg(org)
-              }}
-            >
-              <span className="ml-2 text-ellipsis whitespace-nowrap overflow-hidden">
-                {org.login}
-              </span>
-            </DropdownMenuItem>
-          ))}
+            <div className="ml-2 font-semibold">Orgs</div>
+            {orgs.map((org: GitHubOrg) => (
+              <DropdownMenuItem
+                key={org.login}
+                onSelect={(event) => {
+                  setPersonalReposSelected(false)
+                  setSelectedGithubOrg(org)
+                }}
+              >
+                <span className="ml-2 text-ellipsis whitespace-nowrap overflow-hidden">
+                  {org.login}
+                </span>
+              </DropdownMenuItem>
+            ))}
           </DropdownMenuLabel>
         </DropdownMenuContent>
       </DropdownMenu>
 
-
       {/* PERSONAL REPO DROPDOWN */}
       {personalReposSelected && (
         <div className="p-4 space-y-1 text-sm border rounded-md">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="pl-0 text-black-500">
-              {selectedGithubRepo ? (
-                <span className="pl-1">{selectedGithubRepo.name}</span>
-              ) : (
-                <span className="flex pl-1 min-w-64 text-left">
-                  Select Repo...
-                </span>
-              )}
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="min-w-64 max-h-60">
-            {(githubReposForPersonal.length > 0) ?
-              githubReposForPersonal.map((repo: GitHubRepo) => (
-                <DropdownMenuItem
-                  key={repo.name}
-                  onSelect={async (event) => {
-                    setSelectedGithubRepo(repo)
-                    setControlledProjectDataSources([repo])
-                  }}
-                  disabled={repo.private && !userIsPremium}
-                >
-                  <span className="mx-2 text-ellipsis whitespace-nowrap overflow-hidden">
-                    {repo.name}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="pl-0 text-black-500">
+                {selectedGithubRepo ? (
+                  <span className="pl-1">{selectedGithubRepo.name}</span>
+                ) : (
+                  <span className="flex pl-1 min-w-64 text-left">
+                    Select Repo...
                   </span>
-                  {(repo.private && !userIsPremium) && 
-                    <div className="p-1 rounded text-red-500 font-semibold text-xs bg-red-100">
-                      Premium Requred
-                    </div>}
-                  {(repo.private && userIsPremium) && 
-                    <div title="Premium Access" className="px-1 rounded text-green-500 font-semibold text-xs bg-green-100">
-                      P
-                    </div>}
-                </DropdownMenuItem>
-              ))               
-              :
+                )}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="min-w-64 max-h-60">
+              {githubReposForPersonal.length > 0 ? (
+                githubReposForPersonal.map((repo: GitHubRepo) => (
+                  <DropdownMenuItem
+                    key={repo.name}
+                    onSelect={async (event) => {
+                      setSelectedGithubRepo(repo)
+                      setControlledProjectDataSources([repo])
+                    }}
+                    disabled={repo.private && !userIsPremium}
+                  >
+                    <span className="mx-2 text-ellipsis whitespace-nowrap overflow-hidden">
+                      {repo.name}
+                    </span>
+                    {repo.private && !userIsPremium && (
+                      <div className="p-1 rounded text-red-500 font-semibold text-xs bg-red-100">
+                        Premium Requred
+                      </div>
+                    )}
+                    {repo.private && userIsPremium && (
+                      <div
+                        title="Premium Access"
+                        className="px-1 rounded text-green-500 font-semibold text-xs bg-green-100"
+                      >
+                        P
+                      </div>
+                    )}
+                  </DropdownMenuItem>
+                ))
+              ) : (
                 <DropdownMenuItem>
-                      <span className="ml-2 text-ellipsis whitespace-nowrap overflow-hidden">
-                        No personal repos available
-                      </span>
+                  <span className="ml-2 text-ellipsis whitespace-nowrap overflow-hidden">
+                    No personal repos available
+                  </span>
                 </DropdownMenuItem>
-              }
-          </DropdownMenuContent>
-        </DropdownMenu>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       )}
 
@@ -264,38 +283,47 @@ const PrimaryDataSourceSelector = ({
                     )}
                   </Button>
                 </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="min-w-64 max-h-60">
-                {githubReposForOrgs[selectedGithubOrg?.login] ? 
-                    githubReposForOrgs[selectedGithubOrg.login].map((repo: GitHubRepo) => (
+                <DropdownMenuContent
+                  align="start"
+                  className="min-w-64 max-h-60"
+                >
+                  {githubReposForOrgs[selectedGithubOrg?.login] ? (
+                    githubReposForOrgs[selectedGithubOrg.login].map(
+                      (repo: GitHubRepo) => (
                         <DropdownMenuItem
                           key={repo.name}
                           onSelect={async (event) => {
                             setSelectedGithubRepo(repo)
                             setControlledProjectDataSources([repo])
-                            }}
-                            disabled={repo.private && !userIsPremium}
+                          }}
+                          disabled={repo.private && !userIsPremium}
                         >
-                            <span className="mx-2 text-ellipsis whitespace-nowrap overflow-hidden">
-                              {repo.name}
-                            </span>
-                            {(repo.private && !userIsPremium) && 
+                          <span className="mx-2 text-ellipsis whitespace-nowrap overflow-hidden">
+                            {repo.name}
+                          </span>
+                          {repo.private && !userIsPremium && (
                             <div className="p-1 rounded text-red-500 font-semibold text-xs bg-red-100">
                               Premium Requred
-                            </div>}
-                            {(repo.private && userIsPremium) && 
-                            <div title="Premium Access" className="px-1 rounded text-green-500 font-semibold text-xs bg-green-100">
+                            </div>
+                          )}
+                          {repo.private && userIsPremium && (
+                            <div
+                              title="Premium Access"
+                              className="px-1 rounded text-green-500 font-semibold text-xs bg-green-100"
+                            >
                               P
-                            </div>}
+                            </div>
+                          )}
                         </DropdownMenuItem>
                       ),
                     )
-                   :
+                  ) : (
                     <DropdownMenuItem>
                       <span className="ml-2 text-ellipsis whitespace-nowrap overflow-hidden">
                         No repos available for this org
                       </span>
                     </DropdownMenuItem>
-                  }
+                  )}
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
