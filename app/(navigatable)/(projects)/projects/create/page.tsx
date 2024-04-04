@@ -55,7 +55,7 @@ const ProjectCreate = () => {
 
   async function fetchGoalsWithRetry(
     projectId: any,
-    maxAttempts = 60,
+    maxAttempts = 10,
     delay = 5000,
     currentAttempt = 1,
   ) {
@@ -79,23 +79,7 @@ const ProjectCreate = () => {
 
     const fetchedGoals = (await goalsRes.json()) as Goal[]
 
-    if (fetchedGoals.length === 0 && currentAttempt < maxAttempts) {
-      setTimeout(
-        () =>
-          fetchGoalsWithRetry(
-            projectId,
-            maxAttempts,
-            delay,
-            currentAttempt + 1,
-          ),
-        delay,
-      )
-
-      return
-    }
-
-    // If we still have 0 fetched goals at this point we don't have any retry
-    // atempts left so just route to the projects page
+    // If we still have 0 fetched goals after project creation just route to the projects page
     if (fetchedGoals.length === 0) {
       console.log(
         'Failed to get any goals while waiting for a default goal before max attempts',

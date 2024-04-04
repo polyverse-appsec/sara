@@ -202,6 +202,10 @@ export default function SignInPage() {
           <div className="flex flex-col items-start">
             <p className="text-2xl font-semibold">Free Plan</p>
             <div className="text-xl mt-2">
+              <p>✅ Project creation to analyze GitHub repositories</p>
+              <p>✅ Project Goals can be set to guide Sara analysis</p>
+              <p>✅ Sara generated Task-plans to achieve Goals</p>
+              <p>✅ Manual GitHub source synchronization</p>
               <p>❌ Project creation limit</p>
               <p>❌ Only public respositories for projects</p>
             </div>
@@ -211,6 +215,10 @@ export default function SignInPage() {
           <div className="flex flex-col items-start">
             <p className="text-2xl font-semibold">Premium Plan</p>
             <div className="text-xl mt-2">
+              <p>✅ Project creation to analyze GitHub repositories</p>
+              <p>✅ Project Goals can be set to guide Sara analysis</p>
+              <p>✅ Sara generated Task-plans to achieve Goals</p>
+              <p>✅ Manual GitHub source synchronization</p>
               <p>✅ Unlimited project creation</p>
               <p>✅ Access to private repositories for projects</p>
             </div>
