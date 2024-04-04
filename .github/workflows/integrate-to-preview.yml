@@ -11,8 +11,18 @@ on:
   workflow_dispatch:
 
 jobs:
+  check-triggering-workflow-results:
+    name: Check Triggering Workflow Results
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    steps:
+      - run: |
+          echo "Triggering workflow ${{ github.event.workflow_run.name }} failed"
+          exit 1
+
   test:
     name: Run CI tests
+    needs: check-triggering-workflow-results
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
