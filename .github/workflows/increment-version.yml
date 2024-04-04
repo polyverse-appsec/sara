@@ -1,6 +1,11 @@
 name: Increment Package Version
 
 on:
+  workflow_run:
+    workflows:
+      - "CI: Integrate Main to Preview"
+    types:
+      - completed
   workflow_dispatch:
     inputs:
       incrementType:
