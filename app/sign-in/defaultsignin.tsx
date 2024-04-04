@@ -1,8 +1,8 @@
 import Image from 'next/image'
 import { redirect } from 'next/navigation'
 
-import { auth } from './../../auth'
-import { LoginButton } from './../../components/login-button'
+import { auth } from '../../auth'
+import { LoginButton } from '../../components/login-button'
 import PolyverseLogo from './../../public/Polyverse logo medium.jpg'
 import SaraPortrait from './../../public/Sara_Cartoon_Portrait.png'
 
