@@ -6,6 +6,18 @@ import { LoginButton } from './../../components/login-button'
 import PolyverseLogo from './../../public/Polyverse logo medium.jpg'
 import SaraPortrait from './../../public/Sara_Cartoon_Portrait.png'
 
+// TODO: For development of new carousel page, use something like the following code - this redirect doesn't fully work
+//     But you get the idea
+// import { isPreviewFeatureEnabled } from 'lib/utils'
+
+// export default async function SignInPage() {
+//   if (isPreviewFeatureEnabled('CarouselLoginPage')) {
+//     redirect('/signin/carouselsigninpage')
+//   } else {
+//     redirect('/signin/defaultpage')
+//   }
+// }
+
 export default async function SignInPage() {
   const session = await auth()
   // Redirect to home if user is already logged in

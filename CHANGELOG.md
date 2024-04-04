@@ -11,7 +11,6 @@
 ### Enhancements
 
 - Improvements to Form input boxes in various Sara UI pages
-- Redesigned new draft for sign in page
 
 ### Bug Fixes
 
