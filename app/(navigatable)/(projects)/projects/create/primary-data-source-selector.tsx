@@ -186,12 +186,12 @@ const PrimaryDataSourceSelector = ({
               setPersonalReposSelected(true)
             }}
           >
-            <span className="ml-2 text-ellipsis whitespace-nowrap overflow-hidden">
+            <span className="font-semibold text-ellipsis whitespace-nowrap overflow-hidden">
               Personal Repos
             </span>
           </DropdownMenuItem>
           <DropdownMenuLabel>
-            <div className="ml-2 font-semibold">Orgs</div>
+            <div className="ml-2 font-semibold">Organizations</div>
             {orgs.map((org: GitHubOrg) => (
               <DropdownMenuItem
                 key={org.login}

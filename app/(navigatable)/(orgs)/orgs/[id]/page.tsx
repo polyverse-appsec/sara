@@ -120,7 +120,15 @@ const OrgIndex = ({ params: { id } }: { params: { id: string } }) => {
             }
           >
             <div className="flex flex-col items-start">
-              <p>Premium Plan</p>
+              <div className="flex items-center">
+                <p>Premium Plan</p>
+                <div
+                title="Premium Plan"
+                className="flex items-center justify-center mx-2 p-1 border border-yellow-500 rounded-full"
+                >
+                  <StarFilledIcon className="w-2 h-2 text-yellow-500" />
+                </div>
+              </div>
               <p>✅ Project creation to analyze GitHub repositories</p>
               <p>✅ Project Goals can be set to guide Sara analysis</p>
               <p>✅ Sara generated Task-plans to achieve Goals</p>

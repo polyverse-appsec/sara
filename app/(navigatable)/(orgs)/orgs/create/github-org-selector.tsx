@@ -31,6 +31,15 @@ const OrgSelector = ({ setControlledGitHubOrg }: OrgSelectorProps) => {
       try {
         const fetchedBillingOrgs = await getBillingOrgs()
         const fetchedGitHubOrgs = await getGitHubOrgs()
+
+        if (fetchedGitHubOrgs.length === 1) {
+          // Set the controlled state first...
+          setControlledGitHubOrg(fetchedGitHubOrgs[0])
+
+          // Then set our local state for visual rendering effects...
+          setSelectedGitHubOrg(fetchedGitHubOrgs[0])
+        }
+
         setBillingOrgs(fetchedBillingOrgs)
         setGitHubOrgs(fetchedGitHubOrgs)
       } catch (error) {

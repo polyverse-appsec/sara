@@ -9,6 +9,7 @@ import RenderableResourceContent from 'components/renderable-resource/renderable
 import { IconExternalLink } from 'components/ui/icons'
 import { useAppContext } from 'lib/hooks/app-context'
 import { useSession } from 'next-auth/react'
+import { StarFilledIcon } from '@radix-ui/react-icons'
 
 const SettingsOrgUpgrade = () => {
   const { activeBillingOrg } = useAppContext()
@@ -100,6 +101,10 @@ const SettingsOrgUpgrade = () => {
           >
             <div className="flex flex-col items-start">
               <p>Free Plan</p>
+              <p>✅ Project creation to analyze GitHub repositories</p>
+              <p>✅ Project Goals can be set to guide Sara analysis</p>
+              <p>✅ Sara generated Task-plans to achieve Goals</p>
+              <p>✅ Manual GitHub source synchronization</p>
               <p>❌ Project creation limit</p>
               <p>❌ Only public respositories for projects</p>
             </div>
@@ -112,7 +117,19 @@ const SettingsOrgUpgrade = () => {
             }
           >
             <div className="flex flex-col items-start">
-              <p>Premium Plan</p>
+              <div>
+                <p>Premium Plan</p>
+                <div
+                title="Premium Plan"
+                className="flex items-center justify-center mr-2 p-1 border border-yellow-500 rounded-full"
+                >
+                  <StarFilledIcon className="w-2 h-2 text-yellow-500" />
+                </div>
+              </div>
+              <p>✅ Project creation to analyze GitHub repositories</p>
+              <p>✅ Project Goals can be set to guide Sara analysis</p>
+              <p>✅ Sara generated Task-plans to achieve Goals</p>
+              <p>✅ Manual GitHub source synchronization</p>
               <p>✅ Unlimited project creation</p>
               <p>✅ Access to private repositories for projects</p>
             </div>

@@ -221,9 +221,12 @@ const ProjectCreate = () => {
             <div>
               <div className="w-3/4 border-t-2 border-blue-600 my-2"></div>
               <div className="my-1">
-                <h3 className="text-lg font-semibold">
-                  Project Description
-                </h3>
+                <div className="flex items-center">
+                  <h3 className="text-lg font-semibold">
+                    Project Description
+                  </h3>
+                  <p className="text-sm ml-2">(optional)</p>
+                </div>
                 <Input
                   value={projectDescription}
                   placeholder="Enter a description of your Project that Sara will use to guide her analysis"
@@ -231,9 +234,12 @@ const ProjectCreate = () => {
                 />
               </div>
               <div className="my-1">
-                <h3 className="text-lg font-semibold">
-                  Project Guidelines
-                </h3>
+                <div className="flex items-center">
+                  <h3 className="text-lg font-semibold">
+                    Project Guidelines
+                  </h3>
+                  <p className="text-sm ml-2">(optional)</p>
+                </div>
                 <GuidelineInputs
                   setProjectGuidelines={(guidelines: string[]) =>
                     setControlledProjectGuidelines(guidelines)
@@ -241,9 +247,12 @@ const ProjectCreate = () => {
                 />
               </div>
               <div className="my-1">
-                <h3 className="text-lg font-semibold">
-                  Additional Data Sources
-                </h3>
+                <div className="flex items-center">
+                  <h3 className="text-lg font-semibold">
+                    Additional Data Sources
+                  </h3>
+                  <p className="text-sm ml-2">(optional)</p>
+                </div>
                 {/* Currently this data source selector is only able to select one repo, it's the same one that was used for primary repo select I just 
               moved it here to replace it with a dropdown menu to signal clearer ui. Once we build multi project functionality we'll need to 
               change this */}
@@ -278,7 +287,7 @@ const ProjectCreate = () => {
               !userGitHubAppInstalled ||
               !statusCheckDone
                 ? 'bg-gray-500'
-                : 'bg-green-500 hover:bg-green-200'
+                : 'btn-blue hover:bg-blue-700 hover:text-white'
             } transition duration-300`}
             onClick={async (e) => {
               e.preventDefault()
@@ -376,7 +385,7 @@ const ProjectCreate = () => {
             onClick={toggleDropdown}
             className="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition duration-300"
           >
-            Advanced Configuration
+            {!isAdvancedMenuOpen ? 'Advanced Configuration' : 'Hide Advanced'}
           </button>
         </div>
       </div>

@@ -20,7 +20,7 @@ const renderGoals = (
   return goals.map((goal) => {
     return (
       <>
-        <Table.Row>
+        <Table.Row className="hover:bg-orange-300">
           <Table.RowHeaderCell>
             <Link href={`/goals/${goal.id}`}>{goal.name}</Link>
           </Table.RowHeaderCell>

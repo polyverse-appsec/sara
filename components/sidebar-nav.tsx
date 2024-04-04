@@ -8,7 +8,7 @@ import {
   GearIcon,
   StarFilledIcon,
 } from '@radix-ui/react-icons'
-import { Flex, HoverCard, Inset, Text } from '@radix-ui/themes'
+import { Flex, HoverCard, Inset, Skeleton, Text } from '@radix-ui/themes'
 import { SaraSession } from 'auth'
 import ProjectStatusDetailsHoverCard from 'components/project-status/project-status-details-card'
 import { motion } from 'framer-motion'
@@ -43,9 +43,10 @@ const SidebarNav = () => {
   const session = useSession()
   const saraSession = session.data ? (session.data as SaraSession) : null
 
-  const [orgIsPremium, setOrgIsPremium] = useState(true)
+  const [orgIsPremium, setOrgIsPremium] = useState(false)
   const [userGitHubAppInstalled, setUserGitHubAppInstalled] =
     useState<boolean>(true)
+  const [loadingBillingOrg, setLoadingBillingOrg] = useState<boolean>(true)
 
   useEffect(() => {
     const fetchAndSetActiveBillingOrg = async () => {
@@ -53,6 +54,7 @@ const SidebarNav = () => {
         const orgs = await getResource<Org[]>(`/orgs`)
 
         if (orgs.length > 0) {
+          setLoadingBillingOrg(false)
           setActiveBillingOrg(orgs[0])
         }
       }
@@ -252,21 +254,23 @@ const SidebarNav = () => {
                 <StarFilledIcon className="w-2 h-2 text-yellow-500" />
               </div>
             )}
-            <span className="text-sm truncate dark:text-black">
-              {activeBillingOrg ? 
-              <Link href={`/orgs/${activeBillingOrg.id}`}>
-                {(activeBillingOrg.name === saraSession?.username) ?
-                  <p className="hover:underline">Personal</p>
-                  :
-                  <p className="hover:underline">{activeBillingOrg.name}</p>
+            <Skeleton loading={loadingBillingOrg}>
+              <span className="text-sm truncate dark:text-black">
+                {activeBillingOrg ? 
+                <Link href={`/orgs/${activeBillingOrg.id}`}>
+                  {(activeBillingOrg.name === saraSession?.username) ?
+                    <p className="hover:underline">Personal</p>
+                    :
+                    <p className="hover:underline">{activeBillingOrg.name}</p>
+                  }
+                </Link>
+                : 
+                <Link href="/orgs">
+                  <p className="hover:underline">No Billing Context Selected</p>
+                </Link>
                 }
-              </Link>
-              : 
-              <Link href="/orgs">
-                <p className="hover:underline">No Billing Context Selected</p>
-              </Link>
-              }
-            </span>
+              </span>
+            </Skeleton>
           </div>
         </div>
       </div>
