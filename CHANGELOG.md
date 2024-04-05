@@ -12,6 +12,7 @@
 
 - UI improvements
 - Improved Preview Feature enablement to work for all users, one user, or users in a specific org (e.g. @domain.com)
+- Improve project creation UX and just re-direct to projects page after creating default goal without a chat
 
 ### Bug Fixes
 

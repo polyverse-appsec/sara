@@ -58,7 +58,7 @@ export const createResource = async <T>(
   return (await res.json()) as T
 }
 
-export const createResourceNoResponseBody = async <T>(
+export const createResourceNoResponseBody = async (
   resourcePath: string,
   reqBody: POSTRequestBody,
   errorMessage: string = '',

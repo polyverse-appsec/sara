@@ -6,7 +6,10 @@ import { getOrgStatus, getOrgUserStatus } from 'app/react-utils'
 import { useSession } from 'next-auth/react'
 import toast from 'react-hot-toast'
 
-import { createResource } from './../../../../../app/saraClient'
+import {
+  createResource,
+  createResourceNoResponseBody,
+} from './../../../../../app/saraClient'
 import { type SaraSession } from './../../../../../auth'
 import { Button } from './../../../../../components/ui/button'
 import { Input } from './../../../../../components/ui/input'
@@ -52,73 +55,6 @@ const ProjectCreate = () => {
     useState<string[]>([])
 
   const toggleDropdown = () => setIsAdvancedMenuOpen(!isAdvancedMenuOpen)
-
-  async function fetchGoalsWithRetry(
-    projectId: any,
-    maxAttempts = 10,
-    delay = 5000,
-    currentAttempt = 1,
-  ) {
-    const goalsRes = await fetch(`/api/projects/${projectId}/goals`)
-
-    // Just try again and hope the problem fixes itself :fingers-crossed:
-    if (!goalsRes.ok) {
-      setTimeout(
-        () =>
-          fetchGoalsWithRetry(
-            projectId,
-            maxAttempts,
-            delay,
-            currentAttempt + 1,
-          ),
-        delay,
-      )
-
-      return
-    }
-
-    const fetchedGoals = (await goalsRes.json()) as Goal[]
-
-    // If we still have 0 fetched goals after project creation just route to the projects page
-    if (fetchedGoals.length === 0) {
-      console.log(
-        'Failed to get any goals while waiting for a default goal before max attempts',
-      )
-
-      router.push(`/projects/${projectId}`)
-
-      return
-    }
-
-    // Only route to the goal if the default chat is created. Otherwise
-    // retry.
-    if (fetchedGoals[0].chatId) {
-      router.push(`/goals/${fetchedGoals[0].id}`)
-      return
-    }
-
-    // At this point we presume we got the default goal but it doesn't have a
-    // chat ID so try again until one is created for it.
-    if (currentAttempt < maxAttempts) {
-      setTimeout(
-        () =>
-          fetchGoalsWithRetry(
-            projectId,
-            maxAttempts,
-            delay,
-            currentAttempt + 1,
-          ),
-        delay,
-      )
-
-      return
-    }
-
-    // Or if we are out of retry attempts just route to the project page...
-    console.log(`Didn't find a default goal with a chat ID before max attempts`)
-
-    router.push(`/projects/${projectId}`)
-  }
 
   useEffect(() => {
     const fetchUserStatus = async () => {
@@ -318,9 +254,28 @@ const ProjectCreate = () => {
                   'Failed to create project',
                 )
 
+                // Start configuring the project in the background
                 setProjectIdForConfiguration(project.id)
 
-                await fetchGoalsWithRetry(project.id)
+                // Now create the default goal for it before we route to it.
+                // Note that we won't create a chat for it here and leave it up
+                // to the user if they would like to start a chat before we
+                // might have fully synced their code to the vector store.
+                const goalBody = {
+                  orgId: activeBillingOrg.id,
+                  parentProjectId: project.id,
+                  name: 'Learn More About Your Project',
+                  description:
+                    'Provide details that will help me learn about my project. This includes details about the code in my project as well as the software packages/libraries it consumes.',
+                }
+
+                await createResourceNoResponseBody(
+                  `/goals`,
+                  goalBody,
+                  `Failed to create default goal for project '${project.id}'`,
+                )
+
+                router.push(`/projects/${project.id}`)
               } catch (err) {
                 console.debug(
                   `Caught error when trying to create a project: ${err}`,

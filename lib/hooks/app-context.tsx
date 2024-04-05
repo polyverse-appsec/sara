@@ -171,98 +171,19 @@ export function AppProvider({ children }: AppProviderProps) {
         } else {
           configProjectFrequencyMilliseconds = 5000
         }
-
-        // If we are in an `UNHEALTHY` state we won't even consider creating
-        // the default goal and chat even if one isn't created yet
-        if (projectHealth.readableValue === 'UNHEALTHY') {
-          console.debug(
-            `Project '${projectIdForConfiguration}' health is '${projectHealth.readableValue}' in a configuration state of '${projectHealth.configurationState}' - skipping default goal/chat creation`,
-          )
-
-          if (isMounted) {
-            setTimeout(configProject, configProjectFrequencyMilliseconds)
-          }
-
-          return
-        }
-
-        // We at least need to have vector data - any - attached to the LLM for
-        // us to provide a chat experience. The configuration states that happen
-        // before it aren't valid states when we are `PARTIALLY_HEALTHY`. Those
-        // states are: `UNKNOWN`, `VECTOR_DATA_AVAILABLE`, and `LLM_CREATED`
-        if (
-          projectHealth.readableValue === 'PARTIALLY_HEALTHY' &&
-          (projectHealth.configurationState === 'UNKNOWN' ||
-            projectHealth.configurationState === 'VECTOR_DATA_AVAILABLE' ||
-            projectHealth.configurationState === 'LLM_CREATED')
-        ) {
-          console.debug(
-            `Project '${projectIdForConfiguration}' health is '${projectHealth.readableValue}' in a configuration state of '${projectHealth.configurationState}' - skipping default goal/chat creation`,
-          )
-
-          if (isMounted) {
-            setTimeout(configProject, configProjectFrequencyMilliseconds)
-          }
-
-          return
-        }
-
-        // At this point our project is either healthy or partially healthy in
-        // some configuration state that can provide some chat experience.
-        // Create the default goal and chat now if needed.
-        //
-        // This is a lazy heuristic for determining if the default goal/chat has
-        // been created for a project but just check to see if it has any goal
-        // IDs associated with it. If not we will create the default goal. In
-        // the future we can improve on this. Note this has the downside of
-        // always creating a default goal if the user has deleted all of their
-        // goals at any one point.
-        //
-        // Create the default goal if we don't find any goal IDs associated with
-        // the project
-        if (project.goalIds.length === 0) {
-          // Proceed with default goal and chat creation if the project doesn't
-          // have any goal IDs associated with it...
-          const goalBody = {
-            orgId: activeBillingOrg.id,
-            parentProjectId: projectIdForConfiguration,
-            name: 'Learn More About Your Project',
-            description:
-              'Provide details that will help me learn about my project. This includes details about the code in my project as well as the software packages/libraries it consumes.',
-          }
-
-          const defaultGoal = await createResource<Goal>(
-            `/goals`,
-            goalBody,
-            `Failed to create default goal for project '${projectIdForConfiguration}'`,
-          )
-
-          // Now create the chat for the default goal.
-          const chatBody = {
-            query: defaultGoal.description,
-          }
-
-          await createResourceNoResponseBody(
-            `/goals/${defaultGoal.id}/chats`,
-            chatBody,
-            `Failed to create chat for default goal for project '${projectIdForConfiguration}'`,
-          )
-        }
-
-        // Restart it all over again...
-        if (isMounted) {
-          setTimeout(configProject, configProjectFrequencyMilliseconds)
-        }
       } catch (error) {
         console.debug(
           `Failed to config project '${projectIdForConfiguration}' because: ${error}`,
         )
 
+        // Blank out the details of our active project if we failed to collect
+        // them
         setActiveProjectDetails(null)
+      }
 
-        if (isMounted) {
-          setTimeout(configProject, configProjectFrequencyMilliseconds)
-        }
+      // Restart it all over again...
+      if (isMounted) {
+        setTimeout(configProject, configProjectFrequencyMilliseconds)
       }
     }
 
