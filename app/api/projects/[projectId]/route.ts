@@ -1,12 +1,14 @@
-import { NextAuthRequest } from 'next-auth/lib'
 import { ReasonPhrases, StatusCodes } from 'http-status-codes'
+import { NextAuthRequest } from 'next-auth/lib'
 
+import authz from './../../../../app/api/authz'
 import { auth } from './../../../../auth'
 import { deleteProject as deleteProjectOnBoost } from './../../../../lib/polyverse/backend/backend'
 import deleteChat from './../../../../lib/polyverse/db/delete-goal'
 import deleteGoal from './../../../../lib/polyverse/db/delete-goal'
 import deleteProject from './../../../../lib/polyverse/db/delete-project'
 import deleteProjectDataSource from './../../../../lib/polyverse/db/delete-project-data-source'
+import getGoal from './../../../../lib/polyverse/db/get-goal'
 import getOrg from './../../../../lib/polyverse/db/get-org'
 import getProjectDb from './../../../../lib/polyverse/db/get-project'
 import getUser from './../../../../lib/polyverse/db/get-user'
@@ -17,8 +19,6 @@ import {
   findAssistantFromMetadata,
   type AssistantMetadata,
 } from './../../../../lib/polyverse/openai/assistants'
-import getGoal from './../../../../lib/polyverse/db/get-goal'
-import authz from './../../../../app/api/authz'
 
 export const GET = auth(async (req: NextAuthRequest) => {
   const { auth } = req
@@ -161,7 +161,9 @@ export const DELETE = auth(async (req: NextAuthRequest) => {
     // Note we only have to delete the chat as it will recursively delete any
     // chat queries associated with it as they have a relationship with each
     // other
-    const deleteChatPromises = goals.map((goal) => goal.chatId ? deleteChat(goal.chatId) : Promise.resolve())
+    const deleteChatPromises = goals.map((goal) =>
+      goal.chatId ? deleteChat(goal.chatId) : Promise.resolve(),
+    )
     await Promise.all(deleteChatPromises)
 
     // Now actually delete the goals

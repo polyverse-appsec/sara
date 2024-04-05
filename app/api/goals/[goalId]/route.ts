@@ -1,16 +1,15 @@
 import { ReasonPhrases, StatusCodes } from 'http-status-codes'
+import deleteChat from 'lib/polyverse/db/delete-chat'
 import { NextAuthRequest } from 'next-auth/lib'
 
 import { auth } from '../../../../auth'
+import authz from './../../../../app/api/authz'
+import deleteGoal from './../../../../lib/polyverse/db/delete-goal'
 import getGoal from './../../../../lib/polyverse/db/get-goal'
 import getOrg from './../../../../lib/polyverse/db/get-org'
 import getProject from './../../../../lib/polyverse/db/get-project'
 import getUser from './../../../../lib/polyverse/db/get-user'
-import deleteGoal from './../../../../lib/polyverse/db/delete-goal'
 import updateProject from './../../../../lib/polyverse/db/update-project'
-
-import authz from './../../../../app/api/authz'
-import deleteChat from 'lib/polyverse/db/delete-chat'
 
 export const GET = auth(async (req: NextAuthRequest) => {
   const { auth } = req
@@ -111,7 +110,9 @@ export const DELETE = auth(async (req: NextAuthRequest) => {
 
     // Be sure to update our project and remove the deleted goal ID from its
     // list of associated goals
-    const goalIds = project.goalIds.filter((goalId) => goalId !== requestedGoalId)
+    const goalIds = project.goalIds.filter(
+      (goalId) => goalId !== requestedGoalId,
+    )
     project.goalIds = goalIds
 
     await updateProject(project)

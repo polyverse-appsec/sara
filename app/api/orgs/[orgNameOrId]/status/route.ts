@@ -6,7 +6,6 @@ import { NextAuthRequest } from 'next-auth/lib'
 
 import getOrg from '../../../../../lib/polyverse/db/get-org'
 import getUser from '../../../../../lib/polyverse/db/get-user'
-
 import authz from '../../../authz'
 
 export const GET = auth(async (req: NextAuthRequest) => {

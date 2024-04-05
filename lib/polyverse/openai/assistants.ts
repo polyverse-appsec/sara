@@ -3,8 +3,8 @@ import { Assistant } from 'openai/resources/beta/assistants/assistants'
 
 import packageInfo from '../../../package.json'
 import {
-  ProjectFileInfo,
   Project,
+  ProjectFileInfo,
   type PromptFileInfo,
 } from '../../data-model-types'
 import { BoostProjectStatusState } from '../backend/types/BoostProjectStatus'
@@ -247,8 +247,10 @@ function getOpenAIAssistantInstructions(
     if (project.guidelines && project.guidelines.length > 0) {
       assistantPromptInstructions += `In addition here is a list of guidelines to follow when providing an answer: \n`
 
-      project.guidelines.forEach((guideline) => assistantPromptInstructions += `* ${guideline}\n`)
-      assistantPromptInstructions 
+      project.guidelines.forEach(
+        (guideline) => (assistantPromptInstructions += `* ${guideline}\n`),
+      )
+      assistantPromptInstructions
     }
 
     return assistantPromptInstructions

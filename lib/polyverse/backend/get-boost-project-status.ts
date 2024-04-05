@@ -1,10 +1,9 @@
+import { BoostProjectStatusState } from './types/BoostProjectStatus'
 import {
   createSignedHeader,
   getBodyFromBoostServiceResponse,
   USER_SERVICE_URI,
 } from './utils'
-
-import { BoostProjectStatusState } from './types/BoostProjectStatus'
 
 const getBoostProjectStatus = async (
   email: string,

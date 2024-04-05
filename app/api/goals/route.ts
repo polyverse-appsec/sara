@@ -2,6 +2,7 @@ import { ReasonPhrases, StatusCodes } from 'http-status-codes'
 import { NextAuthRequest } from 'next-auth/lib'
 
 import { auth } from '../../../auth'
+import authz from '../authz'
 import { type Goal } from './../../../lib/data-model-types'
 import createGoal from './../../../lib/polyverse/db/create-goal'
 import getOrg from './../../../lib/polyverse/db/get-org'
@@ -9,8 +10,6 @@ import getProject from './../../../lib/polyverse/db/get-project'
 import getUser from './../../../lib/polyverse/db/get-user'
 import updateProject from './../../../lib/polyverse/db/update-project'
 import { createBaseSaraObject } from './../../../lib/polyverse/db/utils'
-
-import authz from '../authz'
 
 interface POSTGoalReqBody {
   // TODO: Make sure we mark request body data members as optional in other

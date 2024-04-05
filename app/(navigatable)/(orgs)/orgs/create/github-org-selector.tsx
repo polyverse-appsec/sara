@@ -1,6 +1,7 @@
 'use client'
 
 import React, { use, useEffect, useState } from 'react'
+import { getBillingOrgs, getGitHubOrgs } from 'app/react-utils'
 import LoadingSpinner from 'components/loading-spinner'
 import { type GitHubOrg, type Org } from 'lib/data-model-types'
 
@@ -11,7 +12,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from './../../../../../components/ui/dropdown-menu'
-import { getBillingOrgs, getGitHubOrgs } from 'app/react-utils'
 
 interface OrgSelectorProps {
   setControlledGitHubOrg: (gitHugOrg: GitHubOrg) => void
@@ -72,9 +72,7 @@ const OrgSelector = ({ setControlledGitHubOrg }: OrgSelectorProps) => {
   if (filteredGitHubOrgs.length === 0) {
     return (
       <div className="text-base">
-        <p>
-          No GitHub organizations available to create as a billing context.
-        </p>
+        <p>No GitHub organizations available to create as a billing context.</p>
       </div>
     )
   }

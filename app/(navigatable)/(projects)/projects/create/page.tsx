@@ -186,9 +186,7 @@ const ProjectCreate = () => {
           {/* This is the primary data source selector */}
           <div className="my-1">
             <div className="flex items-center">
-              <h3 className="text-lg font-semibold">
-                Data Source
-              </h3>
+              <h3 className="text-lg font-semibold">Data Source</h3>
               {displayRequiredText &&
                 controlledProjectDataSources.length === 0 && (
                   <span className="ml-2 text-sm text-red-500">Required</span>
@@ -206,9 +204,7 @@ const ProjectCreate = () => {
               <div className="w-3/4 border-t-2 border-blue-600 my-2"></div>
               <div className="my-1">
                 <div className="flex items-center">
-                  <h3 className="text-lg font-semibold">
-                    Project Description
-                  </h3>
+                  <h3 className="text-lg font-semibold">Project Description</h3>
                   <p className="text-sm ml-2">(optional)</p>
                 </div>
                 <Input
@@ -219,9 +215,7 @@ const ProjectCreate = () => {
               </div>
               <div className="my-1">
                 <div className="flex items-center">
-                  <h3 className="text-lg font-semibold">
-                    Project Guidelines
-                  </h3>
+                  <h3 className="text-lg font-semibold">Project Guidelines</h3>
                   <p className="text-sm ml-2">(optional)</p>
                 </div>
                 <GuidelineInputs
@@ -267,9 +261,7 @@ const ProjectCreate = () => {
           <Button
             variant="ghost"
             className={`${
-              !saveButtonEnabled ||
-              !userGitHubAppInstalled ||
-              !statusCheckDone
+              !saveButtonEnabled || !userGitHubAppInstalled || !statusCheckDone
                 ? 'bg-gray-500'
                 : 'btn-blue hover:bg-blue-700 hover:text-white'
             } transition duration-300`}
@@ -340,9 +332,7 @@ const ProjectCreate = () => {
               }
             }}
             disabled={
-              !saveButtonEnabled ||
-              !userGitHubAppInstalled ||
-              !statusCheckDone
+              !saveButtonEnabled || !userGitHubAppInstalled || !statusCheckDone
             }
           >
             {saveButtonEnabled ? null : (

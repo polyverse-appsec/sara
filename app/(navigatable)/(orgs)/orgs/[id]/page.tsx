@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { StarFilledIcon } from '@radix-ui/react-icons'
+import { Badge } from '@radix-ui/themes'
 import { getOrgUserStatus } from 'app/react-utils'
 import { SaraSession } from 'auth'
 import RenderableResourceContent from 'components/renderable-resource/renderable-resource-content'
@@ -10,8 +12,6 @@ import { useSession } from 'next-auth/react'
 
 import { UserOrgStatus, type Org } from './../../../../../lib/data-model-types'
 import { useAppContext } from './../../../../../lib/hooks/app-context'
-import { StarFilledIcon } from '@radix-ui/react-icons'
-import { Badge } from '@radix-ui/themes'
 
 const OrgIndex = ({ params: { id } }: { params: { id: string } }) => {
   const { activeBillingOrg, setActiveBillingOrg } = useAppContext()
@@ -49,7 +49,6 @@ const OrgIndex = ({ params: { id } }: { params: { id: string } }) => {
       setOrgIsPremium(orgUserStatus.isPremium === 'PREMIUM')
 
       setOrgIsPersonal(fetchedOrg.name === saraSession.username)
-
     })()
   }, [id, saraSession])
 
@@ -67,29 +66,31 @@ const OrgIndex = ({ params: { id } }: { params: { id: string } }) => {
           <h3>Current Billing Context</h3>
           <div className="w-1/2 border-t-2 border-blue-600 my-2"></div>
           <p className="text-lg">{org.name}</p>
-          {orgIsPersonal ?
-          <Badge color="orange">Personal</Badge>
-          :
-          <Badge color="orange">Business</Badge>
-          }
+          {orgIsPersonal ? (
+            <Badge color="orange">Personal</Badge>
+          ) : (
+            <Badge color="orange">Business</Badge>
+          )}
         </div>
       </RenderableResourceContent>
       {orgIsPremium ? (
         <div className="flex items-center justify-center bg-background shadow-md rounded-lg p-6 my-10">
-            <div
-              title="Premium Plan"
-              className="flex items-center justify-center mr-2 p-1 border border-yellow-500 rounded-full"
-            >
-              <StarFilledIcon className="w-2 h-2 text-yellow-500" />
-            </div>
+          <div
+            title="Premium Plan"
+            className="flex items-center justify-center mr-2 p-1 border border-yellow-500 rounded-full"
+          >
+            <StarFilledIcon className="w-2 h-2 text-yellow-500" />
+          </div>
           <h3 className="text-lg font-semibold text-center">
-            Your Account is currently subscribed at the Premium Plan level with supported features noted below.
+            Your Account is currently subscribed at the Premium Plan level with
+            supported features noted below.
           </h3>
         </div>
       ) : (
         <div className="bg-background shadow-md rounded-lg p-6 my-10">
           <h3 className="text-lg font-semibold text-center">
-            Your Account is currently a Free Subscription with supported features noted below.
+            Your Account is currently a Free Subscription with supported
+            features noted below.
           </h3>
         </div>
       )}
@@ -123,8 +124,8 @@ const OrgIndex = ({ params: { id } }: { params: { id: string } }) => {
               <div className="flex items-center">
                 <p>Premium Plan</p>
                 <div
-                title="Premium Plan"
-                className="flex items-center justify-center mx-2 p-1 border border-yellow-500 rounded-full"
+                  title="Premium Plan"
+                  className="flex items-center justify-center mx-2 p-1 border border-yellow-500 rounded-full"
                 >
                   <StarFilledIcon className="w-2 h-2 text-yellow-500" />
                 </div>

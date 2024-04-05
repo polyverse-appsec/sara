@@ -11,24 +11,24 @@ export enum BoostProjectStatus {
   AIResourcesOutOfDate = 'AI Data Out of Date', // resources synchronized to OpenAI, but newer resources available
   Synchronized = 'Fully Synchronized', // All current resources completely synchronized to OpenAI
 }
-  
+
 export interface ProjectAssistantInfo {
-  assistantId: string;
+  assistantId: string
 
-  matchedResources: any[];
+  matchedResources: any[]
 
-  synchronized: boolean;
+  synchronized: boolean
 }
 
 export interface ResourceSourceState {
-  syncTime?: number;
-  syncHash?: string;
+  syncTime?: number
+  syncHash?: string
 }
 
 export enum DiscoveryTrigger {
-  ProjectUpdate = "ProjectCreation",
-  UserManual = "UserManual",
-  AutomaticGrooming = "AutomaticGrooming",
+  ProjectUpdate = 'ProjectCreation',
+  UserManual = 'UserManual',
+  AutomaticGrooming = 'AutomaticGrooming',
 }
 
 // Copied from the Boost Node service codebase

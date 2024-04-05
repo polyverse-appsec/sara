@@ -5,8 +5,8 @@ import { NextAuthRequest } from 'next-auth/lib'
 import { auth } from '../../../../../auth'
 import {
   type GitHubRepo,
-  type ProjectDataSource,
   type Project,
+  type ProjectDataSource,
 } from '../../../../../lib/data-model-types'
 import { getBoostOrgUserStatus } from '../../../../../lib/polyverse/backend/backend'
 import createBoostProject from '../../../../../lib/polyverse/backend/create-boost-project'
@@ -18,7 +18,6 @@ import getUser from '../../../../../lib/polyverse/db/get-user'
 import updateOrg from '../../../../../lib/polyverse/db/update-org'
 import { createBaseSaraObject } from '../../../../../lib/polyverse/db/utils'
 import { projectNameSchema } from '../../../../../lib/polyverse/db/validators'
-
 import authz from '../../../authz'
 
 // 03/04/24: We set this max duration to 60 seconds during initial development
@@ -166,7 +165,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
 
           // Default to `UNKNOWN` for now since we don't have any business logic
           // supporting this property yet
-          visibility: 'UNKNOWN'
+          visibility: 'UNKNOWN',
         }) as ProjectDataSource,
     )
 

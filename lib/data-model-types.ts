@@ -104,7 +104,8 @@ export enum ProjectDataSourceAccessPermission {
   REFERENCE_READ = 'REFERENCE_READ',
 }
 
-type ProjectDataSourceAccessPermissionString = keyof typeof ProjectDataSourceAccessPermission
+type ProjectDataSourceAccessPermissionString =
+  keyof typeof ProjectDataSourceAccessPermission
 
 enum ProjectDataSourceVisibility {
   PUBLIC = 'PUBLIC',
@@ -113,7 +114,8 @@ enum ProjectDataSourceVisibility {
   ERROR = 'ERROR',
 }
 
-type ProjectDataSourceVisibilityString = keyof typeof ProjectDataSourceVisibility
+type ProjectDataSourceVisibilityString =
+  keyof typeof ProjectDataSourceVisibility
 
 // TODO: Test this with a Joi schema
 // TODO: This type differs from `ProjectDataReference` right now as

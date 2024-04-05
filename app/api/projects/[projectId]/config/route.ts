@@ -4,6 +4,7 @@ import { Assistant } from 'openai/resources/beta/assistants/assistants'
 
 import { auth } from '../../../../../auth'
 import getProjectPromptFileInfoIds from '../../../../../lib/polyverse/db/get-project-prompt-file-info-ids'
+import authz from './../../../../../app/api/authz'
 import { type PromptFileInfo } from './../../../../../lib/data-model-types'
 import {
   getBoostOrgUserStatus,
@@ -27,7 +28,6 @@ import {
   type AssistantMetadata,
 } from './../../../../../lib/polyverse/openai/assistants'
 import { promptFileInfosEqual } from './../../../../../lib/utils'
-import authz from './../../../../../app/api/authz'
 
 // 03/04/24: We set this max duration to 60 seconds during initial development
 // with no real criteria to use as a starting point for the max duration. We see

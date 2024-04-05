@@ -3,10 +3,7 @@ import { Assistant } from 'openai/resources/beta/assistants/assistants'
 import { Run } from 'openai/resources/beta/threads/runs/runs'
 import { Thread } from 'openai/resources/beta/threads/threads'
 
-import {
-  type PromptFileInfo,
-  type Task,
-} from './../../../lib/data-model-types'
+import { type PromptFileInfo, type Task } from './../../../lib/data-model-types'
 import createTask from './../../../lib/polyverse/db/create-task'
 import getGoal from './../../../lib/polyverse/db/get-goal'
 import updateGoal from './../../../lib/polyverse/db/update-goal'

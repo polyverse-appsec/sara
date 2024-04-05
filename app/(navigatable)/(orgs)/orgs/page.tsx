@@ -1,10 +1,10 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-
-import OrgDashboard from './org-dashboard'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
+
+import OrgDashboard from './org-dashboard'
 
 const OrgsIndex = () => {
   const router = useRouter()
@@ -29,8 +29,6 @@ const OrgsIndex = () => {
       if (fetchedOrgs.length == 0) {
         router.push(`/orgs/create`)
       }
-
-
     })()
   }, [])
 

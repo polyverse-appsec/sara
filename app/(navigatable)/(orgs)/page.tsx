@@ -48,7 +48,9 @@ const IndexPage = () => {
     <div className="flex-1 p-10 text-2xl font-bold">
       <OrgDashboard orgs={orgs} />
       {isLoadingOrgs && (
-        <div className="flex justify-center items-center">Sara is refreshing your account...</div>
+        <div className="flex justify-center items-center">
+          Sara is refreshing your account...
+        </div>
       )}
       {isRedirectingToProjects && (
         <div className="flex justify-center items-center pt-20">

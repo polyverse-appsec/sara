@@ -1,6 +1,6 @@
 'use client'
-// WE ARE NO LONGER USING THIS USER MENU. SHOULD DELETE THIS FILE PROBABLY
 
+// WE ARE NO LONGER USING THIS USER MENU. SHOULD DELETE THIS FILE PROBABLY
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'

@@ -1,13 +1,13 @@
-import { type ProjectDataSource, type ProjectDataSourceAccessPermission } from './../../data-model-types'
 import {
-  createSignedHeader,
-  USER_SERVICE_URI,
-} from './utils'
+  type ProjectDataSource,
+  type ProjectDataSourceAccessPermission,
+} from './../../data-model-types'
+import { createSignedHeader, USER_SERVICE_URI } from './utils'
 
 export interface BoostProjectResourceRequestBody {
-    uri: string
-    type: BoostProjectResourceTypeRequestBody
-  }
+  uri: string
+  type: BoostProjectResourceTypeRequestBody
+}
 
 export const enum BoostProjectResourceTypeRequestBody {
   PrimaryRead = 'primary_read', // user read-only to source
@@ -16,16 +16,15 @@ export const enum BoostProjectResourceTypeRequestBody {
 }
 
 type BoostProjectResourceAccessTypesByProjectDataSourceAccessPermissionKeys = {
-    [projectDataSourceAccessPermissionKey in ProjectDataSourceAccessPermission]: BoostProjectResourceTypeRequestBody
+  [projectDataSourceAccessPermissionKey in ProjectDataSourceAccessPermission]: BoostProjectResourceTypeRequestBody
 }
 
 const boostProjectResourceAccessTypesByProjectDataSourceAccessPermissionKeys: BoostProjectResourceAccessTypesByProjectDataSourceAccessPermissionKeys =
-{
+  {
     PRIMARY_READ: BoostProjectResourceTypeRequestBody.PrimaryRead,
     PRIMARY_READ_WRITE: BoostProjectResourceTypeRequestBody.PrimaryReadWrite,
-    REFERENCE_READ: BoostProjectResourceTypeRequestBody.ReferenceRead
-
-}
+    REFERENCE_READ: BoostProjectResourceTypeRequestBody.ReferenceRead,
+  }
 
 export interface UserProjectRequestBody {
   org?: string
@@ -55,7 +54,9 @@ const createBoostProject = async (
     (dataSource) =>
       ({
         uri: dataSource.uri,
-        type: boostProjectResourceAccessTypesByProjectDataSourceAccessPermissionKeys[primaryDataSource.accessPermission],
+        type: boostProjectResourceAccessTypesByProjectDataSourceAccessPermissionKeys[
+          primaryDataSource.accessPermission
+        ],
       }) as BoostProjectResourceRequestBody,
   )
 

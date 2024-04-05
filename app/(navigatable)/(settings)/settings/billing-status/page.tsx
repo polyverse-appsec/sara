@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { StarFilledIcon } from '@radix-ui/react-icons'
 import { OrgDetailsTile } from 'app/(navigatable)/(orgs)/orgs/org-details-tile'
 import { getOrgUserStatus } from 'app/react-utils'
 import { SaraSession } from 'auth'
@@ -9,7 +10,6 @@ import RenderableResourceContent from 'components/renderable-resource/renderable
 import { IconExternalLink } from 'components/ui/icons'
 import { useAppContext } from 'lib/hooks/app-context'
 import { useSession } from 'next-auth/react'
-import { StarFilledIcon } from '@radix-ui/react-icons'
 
 const SettingsOrgUpgrade = () => {
   const { activeBillingOrg } = useAppContext()
@@ -120,8 +120,8 @@ const SettingsOrgUpgrade = () => {
               <div>
                 <p>Premium Plan</p>
                 <div
-                title="Premium Plan"
-                className="flex items-center justify-center mr-2 p-1 border border-yellow-500 rounded-full"
+                  title="Premium Plan"
+                  className="flex items-center justify-center mr-2 p-1 border border-yellow-500 rounded-full"
                 >
                   <StarFilledIcon className="w-2 h-2 text-yellow-500" />
                 </div>

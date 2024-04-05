@@ -2,13 +2,13 @@
 
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { Skeleton } from '@radix-ui/themes'
 import { renderHealthIcon } from 'app/react-utils'
 import ProjectStatusCard from 'components/project-status/project-status-card'
 import { Button } from 'components/ui/button'
 import { ProjectHealth, ProjectHealthStatusValue } from 'lib/data-model-types'
 import { useAppContext } from 'lib/hooks/app-context'
 import toast from 'react-hot-toast'
-import { Skeleton } from '@radix-ui/themes'
 
 interface ProjectTileProps {
   id: string
@@ -81,14 +81,14 @@ export const ProjectDetailsTile = ({
         </div>
         <div className="flex flex-col items-end justify-end">
           <Skeleton loading={!projectHealth}>
-              <div className="my-1">
-                <div className="flex items-center">
-                  <ProjectStatusCard
-                    health={projectHealth!}
-                    lastRefreshedAt={lastedUpdatedDate}
-                  />
-                </div>
+            <div className="my-1">
+              <div className="flex items-center">
+                <ProjectStatusCard
+                  health={projectHealth!}
+                  lastRefreshedAt={lastedUpdatedDate}
+                />
               </div>
+            </div>
           </Skeleton>
           <Button
             variant="ghost"

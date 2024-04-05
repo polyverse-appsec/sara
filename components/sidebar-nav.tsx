@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import {
   ExclamationTriangleIcon,
@@ -22,7 +23,6 @@ import { useAppContext } from './../lib/hooks/app-context'
 import SaraPortrait from './../public/Sara_Cartoon_Portrait.png'
 import GoalsTaskNavTree from './goals-tasks-nav-tree'
 import LoadingCircle from './loading-spinner'
-import Link from 'next/link'
 
 function getUserInitials(name: string) {
   const [firstName, lastName] = name.split(' ')
@@ -229,13 +229,11 @@ const SidebarNav = () => {
                 router.push('/settings')
               }}
             />
-            {(!orgIsPremium ||
-              !userGitHubAppInstalled) && (
+            {(!orgIsPremium || !userGitHubAppInstalled) && (
               <span className="absolute top-0 right-0 block w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
             )}
           </div>
-          {(!orgIsPremium ||
-            !userGitHubAppInstalled) && (
+          {(!orgIsPremium || !userGitHubAppInstalled) && (
             <div title="Sara not properly configured" className="ml-2">
               <ExclamationTriangleIcon className="w-4 h-4 text-red-500" />
             </div>
@@ -244,7 +242,9 @@ const SidebarNav = () => {
 
         {/* Organization Info */}
         <div className="px-4 mt-2 rounded-lg">
-          <div className="text-sm text-center text-zinc-500">{saraSession?.email}</div>
+          <div className="text-sm text-center text-zinc-500">
+            {saraSession?.email}
+          </div>
           <div className="flex items-center justify-center mt-1">
             {orgIsPremium && (
               <div
@@ -256,19 +256,21 @@ const SidebarNav = () => {
             )}
             <Skeleton loading={loadingBillingOrg}>
               <span className="text-sm truncate dark:text-black">
-                {activeBillingOrg ? 
-                <Link href={`/orgs/${activeBillingOrg.id}`}>
-                  {(activeBillingOrg.name === saraSession?.username) ?
-                    <p className="hover:underline">Personal</p>
-                    :
-                    <p className="hover:underline">{activeBillingOrg.name}</p>
-                  }
-                </Link>
-                : 
-                <Link href="/orgs">
-                  <p className="hover:underline">No Billing Context Selected</p>
-                </Link>
-                }
+                {activeBillingOrg ? (
+                  <Link href={`/orgs/${activeBillingOrg.id}`}>
+                    {activeBillingOrg.name === saraSession?.username ? (
+                      <p className="hover:underline">Personal</p>
+                    ) : (
+                      <p className="hover:underline">{activeBillingOrg.name}</p>
+                    )}
+                  </Link>
+                ) : (
+                  <Link href="/orgs">
+                    <p className="hover:underline">
+                      No Billing Context Selected
+                    </p>
+                  </Link>
+                )}
               </span>
             </Skeleton>
           </div>

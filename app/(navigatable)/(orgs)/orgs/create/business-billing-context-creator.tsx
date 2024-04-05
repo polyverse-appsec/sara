@@ -2,16 +2,20 @@
 
 import React, { Suspense, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { ArrowLeftIcon } from '@radix-ui/react-icons'
+import { Flex } from '@radix-ui/themes'
 import toast from 'react-hot-toast'
 
 import { Button } from './../../../../../components/ui/button'
 import { type GitHubOrg, type Org } from './../../../../../lib/data-model-types'
 import { useAppContext } from './../../../../../lib/hooks/app-context'
 import OrgSelector from './github-org-selector'
-import { Flex } from '@radix-ui/themes'
-import { ArrowLeftIcon } from '@radix-ui/react-icons'
 
-const BusinessBillingContextCreator = ({ onUnselectBillingOrganization }: { onUnselectBillingOrganization: () => void }) => {
+const BusinessBillingContextCreator = ({
+  onUnselectBillingOrganization,
+}: {
+  onUnselectBillingOrganization: () => void
+}) => {
   const router = useRouter()
   const { setActiveBillingOrg } = useAppContext()
 
@@ -22,17 +26,17 @@ const BusinessBillingContextCreator = ({ onUnselectBillingOrganization }: { onUn
   return (
     <div className="flex-1 flex-col p-10">
       <div className="bg-background shadow-md rounded-lg p-6">
-        <button 
-            className="btn-blue text-sm"
-            onClick={(e) => {
-                e.preventDefault()
-                onUnselectBillingOrganization()
-            }}
-            >
-            <Flex align="center">
-                <ArrowLeftIcon className="mr-2" />
-                Back
-            </Flex>
+        <button
+          className="btn-blue text-sm"
+          onClick={(e) => {
+            e.preventDefault()
+            onUnselectBillingOrganization()
+          }}
+        >
+          <Flex align="center">
+            <ArrowLeftIcon className="mr-2" />
+            Back
+          </Flex>
         </button>
         <div className="grid grid-cols-1 gap-4">
           <div className="text-base my-1">

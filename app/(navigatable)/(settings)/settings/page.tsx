@@ -5,11 +5,11 @@ import Link from 'next/link'
 import { ExclamationTriangleIcon } from '@radix-ui/react-icons'
 import { getOrgStatus, getOrgUserStatus } from 'app/react-utils'
 import { SaraSession } from 'auth'
+import { ThemeToggle } from 'components/theme-toggle'
 import { Button } from 'components/ui/button'
 import { useAppContext } from 'lib/hooks/app-context'
 import { signOut, useSession } from 'next-auth/react'
 import toast from 'react-hot-toast'
-import { ThemeToggle } from 'components/theme-toggle'
 
 const SettingsIndex = () => {
   const { activeBillingOrg } = useAppContext()

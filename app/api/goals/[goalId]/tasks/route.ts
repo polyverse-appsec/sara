@@ -2,13 +2,12 @@ import { ReasonPhrases, StatusCodes } from 'http-status-codes'
 import { NextAuthRequest } from 'next-auth/lib'
 
 import { auth } from '../../../../../auth'
+import authz from './../../../../../app/api/authz'
 import getGoal from './../../../../../lib/polyverse/db/get-goal'
 import getOrg from './../../../../../lib/polyverse/db/get-org'
 import getProject from './../../../../../lib/polyverse/db/get-project'
 import getTask from './../../../../../lib/polyverse/db/get-task'
 import getUser from './../../../../../lib/polyverse/db/get-user'
-
-import authz from './../../../../../app/api/authz'
 
 export const GET = auth(async (req: NextAuthRequest) => {
   const { auth } = req

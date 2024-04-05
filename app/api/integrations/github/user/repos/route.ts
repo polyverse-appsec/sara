@@ -3,7 +3,6 @@ import { auth } from 'auth'
 import { ReasonPhrases, StatusCodes } from 'http-status-codes'
 import { NextAuthRequest } from 'next-auth/lib'
 
-
 export const GET = auth(async (req: NextAuthRequest) => {
   const { auth } = req
 
@@ -21,11 +20,14 @@ export const GET = auth(async (req: NextAuthRequest) => {
     const octokit = new Octokit({ auth: auth.accessToken })
 
     // GitHub docs on how to paginate: https://docs.github.com/en/rest/using-the-rest-api/using-pagination-in-the-rest-api?apiVersion=2022-11-28
-    const repos = await octokit.paginate(octokit.rest.repos.listForAuthenticatedUser, {
+    const repos = await octokit.paginate(
+      octokit.rest.repos.listForAuthenticatedUser,
+      {
         type: 'owner', // This ensures you get only the repos where the user is the owner
         per_page: 100, // Adjust the number of repos per page as needed
         headers: { 'X-GitHub-Api-Version': '2022-11-28' },
-      });
+      },
+    )
 
     // Map the data members returned by GitHub to a format more consistent
     // to what we use in our code (snake_case -> camelCase)
@@ -33,7 +35,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
       name: repo.name,
       htmlUrl: repo.html_url,
       // Used when selecting data sources for a project
-      private: repo.private
+      private: repo.private,
     }))
 
     return new Response(JSON.stringify(mappedRepos), {

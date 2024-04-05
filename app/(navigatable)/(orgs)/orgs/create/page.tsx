@@ -1,20 +1,20 @@
 'use client'
 
 import React, { Suspense, useEffect, useState } from 'react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { ArrowLeftIcon } from '@radix-ui/react-icons'
+import { Flex } from '@radix-ui/themes'
+import { getGitHubOrgs } from 'app/react-utils'
+import { SaraSession } from 'auth'
+import LoadingSpinner from 'components/loading-spinner'
+import { useSession } from 'next-auth/react'
 import toast from 'react-hot-toast'
 
 import { Button } from './../../../../../components/ui/button'
 import { type GitHubOrg, type Org } from './../../../../../lib/data-model-types'
 import { useAppContext } from './../../../../../lib/hooks/app-context'
 import BusinessBillingContextCreator from './business-billing-context-creator'
-import LoadingSpinner from 'components/loading-spinner'
-import { SaraSession } from 'auth'
-import { useSession } from 'next-auth/react'
-import { getGitHubOrgs } from 'app/react-utils'
-import Link from 'next/link'
-import { Flex } from '@radix-ui/themes'
-import { ArrowLeftIcon } from '@radix-ui/react-icons'
 
 const getBillingOrgs = async (): Promise<Org[]> => {
   const res = await fetch('/api/orgs')
@@ -40,16 +40,18 @@ const OrgCreate = () => {
   const [controlledGitHubOrg, setControlledGitHubOrg] =
     useState<GitHubOrg | null>(null)
 
-  const [personalBillingExists, setPersonalBillingExists] = useState<boolean>(false)
-  const [selectedBusinessBilling, setSelectedBusinessBilling] = useState<boolean>(false)
+  const [personalBillingExists, setPersonalBillingExists] =
+    useState<boolean>(false)
+  const [selectedBusinessBilling, setSelectedBusinessBilling] =
+    useState<boolean>(false)
   const [shouldShowLoadingSpinner, setShouldShowLoadingSpinner] =
     useState<boolean>(true)
 
   const [fetchedGitHubOrgs, setFetchedGitHubOrgs] = useState<GitHubOrg[]>([])
 
   const handleUnselectBillingOrganization = () => {
-    setSelectedBusinessBilling(false);
-  };
+    setSelectedBusinessBilling(false)
+  }
 
   useEffect(() => {
     const fetchOrgs = async () => {
@@ -60,7 +62,9 @@ const OrgCreate = () => {
       try {
         const fetchedBillingOrgs = await getBillingOrgs()
 
-        const personalBillingExists = fetchedBillingOrgs.some(org => org.name === saraSession.username);
+        const personalBillingExists = fetchedBillingOrgs.some(
+          (org) => org.name === saraSession.username,
+        )
 
         if (personalBillingExists) {
           setPersonalBillingExists(true)
@@ -69,7 +73,6 @@ const OrgCreate = () => {
         const fetchedGitHubOrgs = await getGitHubOrgs()
 
         setFetchedGitHubOrgs(fetchedGitHubOrgs)
-
       } catch (error) {
         console.error('Error fetching orgs:', error)
       }
@@ -91,10 +94,10 @@ const OrgCreate = () => {
             <div className="text-left mb-2">
               <button className="btn-blue text-sm">
                 <Link href="/orgs">
-                    <Flex align="center">
+                  <Flex align="center">
                     <ArrowLeftIcon className="mr-2" />
                     Back to Billing Contexts
-                    </Flex>
+                  </Flex>
                 </Link>
               </button>
             </div>
@@ -107,13 +110,13 @@ const OrgCreate = () => {
           </div>
           <div className="flex justify-content mt-16">
             <div className="flex flex-col items-center">
-              <Button 
-                className="mx-5 rounded-lg bg-blue-500 hover:bg-blue-700 h-64 w-64" 
+              <Button
+                className="mx-5 rounded-lg bg-blue-500 hover:bg-blue-700 h-64 w-64"
                 onClick={async (e) => {
                   e.preventDefault()
 
                   setSaveButtonEnabled(false)
-                  
+
                   try {
                     const orgBody = { name: saraSession!.username }
 
@@ -146,40 +149,43 @@ const OrgCreate = () => {
                     console.debug(
                       `Caught error when trying to create a personal billing context: ${err}`,
                     )
-                    
+
                     setSaveButtonEnabled(true)
                     toast.error(`Failed to create personal billing context`)
                   }
                 }}
                 disabled={personalBillingExists}
-                >
-                  <div className="text-2xl font-bold">
-                    Personal
-                  </div>
+              >
+                <div className="text-2xl font-bold">Personal</div>
               </Button>
-              {personalBillingExists && 
-                <div className="text-md text-red-500 font-bold mt-5">Personal Already Created</div>
-              }
+              {personalBillingExists && (
+                <div className="text-md text-red-500 font-bold mt-5">
+                  Personal Already Created
+                </div>
+              )}
             </div>
             <div className="flex flex-col items-center">
-              <Button 
+              <Button
                 className="mx-5 rounded-lg bg-blue-500 hover:bg-blue-700 h-64 w-64"
                 onClick={() => setSelectedBusinessBilling(true)}
                 disabled={fetchedGitHubOrgs.length === 0}
-                >
-                  <div className="text-2xl font-bold">
-                    Business
-                  </div>
+              >
+                <div className="text-2xl font-bold">Business</div>
               </Button>
-              {(fetchedGitHubOrgs.length === 0) && 
-                <div className="text-md text-red-500 font-bold mt-5">No Github Orgs</div>
-              }
+              {fetchedGitHubOrgs.length === 0 && (
+                <div className="text-md text-red-500 font-bold mt-5">
+                  No Github Orgs
+                </div>
+              )}
             </div>
           </div>
         </div>
-
       )}
-      {selectedBusinessBilling && <BusinessBillingContextCreator onUnselectBillingOrganization={handleUnselectBillingOrganization} />}
+      {selectedBusinessBilling && (
+        <BusinessBillingContextCreator
+          onUnselectBillingOrganization={handleUnselectBillingOrganization}
+        />
+      )}
     </div>
   )
 }

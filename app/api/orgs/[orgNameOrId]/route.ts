@@ -4,7 +4,6 @@ import { NextAuthRequest } from 'next-auth/lib'
 import { auth } from '../../../../auth'
 import getOrg from '../../../../lib/polyverse/db/get-org'
 import getUser from '../../../../lib/polyverse/db/get-user'
-
 import authz from '../../authz'
 
 export const GET = auth(async (req: NextAuthRequest) => {
@@ -25,7 +24,6 @@ export const GET = auth(async (req: NextAuthRequest) => {
     const requestedOrgId = reqUrl
       .toString()
       .substring(reqUrl.toString().lastIndexOf('/') + 1)
-
 
     const user = await getUser(auth.user.email)
     const org = await getOrg(requestedOrgId)

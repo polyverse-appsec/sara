@@ -4,6 +4,7 @@ import { NextAuthRequest } from 'next-auth/lib'
 
 import { auth } from '../../../../../auth'
 import getProjectPromptFileInfoIds from '../../../../../lib/polyverse/db/get-project-prompt-file-info-ids'
+import authz from './../../../../../app/api/authz'
 import {
   type Chat,
   type ChatQuery,
@@ -36,8 +37,6 @@ import {
   createThreadRunForProjectGoalChatting,
 } from './../../../../../lib/polyverse/openai/goalsAssistant'
 import { promptFileInfosEqual } from './../../../../../lib/utils'
-
-import authz from './../../../../../app/api/authz'
 
 // 03/04/24: We set this max duration to 60 seconds during initial development
 // with no real criteria to use as a starting point for the max duration. We see

@@ -38,9 +38,7 @@ export const getOrgUserStatus = async (
   return userStatus
 }
 
-export const getOrgStatus = async (
-  orgName: string,
-): Promise<UserOrgStatus> => {
+export const getOrgStatus = async (orgName: string): Promise<UserOrgStatus> => {
   const res = await fetch(`/api/orgs/${orgName}/status`, {
     method: 'GET',
     headers: {
