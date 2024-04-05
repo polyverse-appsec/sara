@@ -32,14 +32,6 @@ const OrgSelector = ({ setControlledGitHubOrg }: OrgSelectorProps) => {
         const fetchedBillingOrgs = await getBillingOrgs()
         const fetchedGitHubOrgs = await getGitHubOrgs()
 
-        if (fetchedGitHubOrgs.length === 1) {
-          // Set the controlled state first...
-          setControlledGitHubOrg(fetchedGitHubOrgs[0])
-
-          // Then set our local state for visual rendering effects...
-          setSelectedGitHubOrg(fetchedGitHubOrgs[0])
-        }
-
         setBillingOrgs(fetchedBillingOrgs)
         setGitHubOrgs(fetchedGitHubOrgs)
       } catch (error) {
@@ -75,6 +67,15 @@ const OrgSelector = ({ setControlledGitHubOrg }: OrgSelectorProps) => {
         <p>No GitHub organizations available to create as a billing context.</p>
       </div>
     )
+  }
+
+  // If there is only one github org, set it as the controlled org
+  if (filteredGitHubOrgs.length === 1) {
+    // Set the controlled state first...
+    setControlledGitHubOrg(filteredGitHubOrgs[0])
+
+    // Then set our local state for visual rendering effects...
+    setSelectedGitHubOrg(filteredGitHubOrgs[0])
   }
 
   return (

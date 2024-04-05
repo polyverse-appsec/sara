@@ -120,7 +120,7 @@ const SettingsIndex = () => {
               callbackUrl: '/',
             })
           }
-          className="text-lg dark:text-white bg-blue-500 p-5"
+          className="text-lg dark:text-white bg-blue-500 hover:bg-blue-700 p-5"
         >
           Log Out
         </Button>

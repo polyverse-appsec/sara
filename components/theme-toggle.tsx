@@ -12,14 +12,13 @@ export function ThemeToggle() {
 
   return (
     <Button
-      variant="ghost"
       size="sm"
       onClick={() => {
         startTransition(() => {
           setTheme(theme === 'light' ? 'dark' : 'light')
         })
       }}
-      className="bg-blue-500 text-white text-lg p-5"
+      className="bg-blue-500 hover:bg-blue-700 text-white text-lg p-5"
     >
       <div className="flex items-center">
         <p>Toggle Theme</p>

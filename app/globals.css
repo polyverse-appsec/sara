@@ -87,6 +87,22 @@
   .btn-blue {
     @apply bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded;
   }
+
+  .btn-green {
+    @apply bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded;
+  }
+
+  .btn-red {
+    @apply bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded;
+  }
+
+  .blue-border {
+    @apply border border-blue-500;
+  }
+
+  .plain-border {
+    @apply border;
+  }
 }
 
 @layer utilities {

@@ -57,25 +57,36 @@ export const OrgDetailsTile = ({ name, id }: OrgDetailsTileProps) => {
       className="block transform transition hover:scale-105"
     >
       <div className="bg-background shadow-md rounded-lg p-6 border border-blue-500">
-        <div className="flex items-center justify-center text-xs font-medium uppercase rounded-full select-none h-7 w-7 shrink-0 bg-muted/50 text-muted-foreground">
-          {name.slice(0, 2)}
-        </div>
         <div className="flex justify-between">
-          <h3 className="text-lg font-semibold">{name}</h3>
-          {orgIsPremium ? (
-            <div title="Premium Plan" className="ml-1">
-              <div className="p-1 border border-yellow-500 rounded-full">
-                <StarFilledIcon className="w-3 h-3 text-yellow-500" />
-              </div>
+          <div className="flex flex-col">
+            <div className="flex items-center justify-center text-xs font-medium uppercase rounded-full select-none h-7 w-7 shrink-0 bg-muted/50 text-muted-foreground">
+              {name.slice(0, 2)}
             </div>
-          ) : null}
+            <h3 className="text-lg font-semibold">{name}</h3>
+            <div className="inline-flex">
+              {orgIsPersonal ? (
+                <Badge color="orange">Personal</Badge>
+              ) : (
+                <Badge color="orange">Business</Badge>
+              )}
+            </div>
+            {orgIsSelected && <p className="text-xs text-blue-600 mt-2">Active</p>}
+          </div>
+          {orgIsPremium ? (
+            <div className="flex flex-col items-center">
+              <div title="Premium Plan" className="ml-1">
+                <div className="p-1 border border-yellow-500 rounded-full">
+                  <StarFilledIcon className="w-3 h-3 text-yellow-500" />
+                </div>
+              </div>
+              <Badge color="green" className="mt-2">Premium</Badge>
+            </div>
+          ) : 
+          (
+            <Badge color="gray">Free</Badge>
+          )
+          }
         </div>
-        {orgIsPersonal ? (
-          <Badge color="orange">Personal</Badge>
-        ) : (
-          <Badge color="orange">Business</Badge>
-        )}
-        {orgIsSelected && <p className="text-xs text-blue-600 mt-2">Active</p>}
       </div>
     </Link>
   )

@@ -42,7 +42,7 @@ const GuidelineInputs = ({ setProjectGuidelines }: ProjectGuidelinesProps) => {
               placeholder="Type guideline here"
             />
             <Button
-              className="shrink-0 bg-red-500"
+              className="shrink-0 bg-red-500 hover:bg-red-700"
               onClick={() => handleDeleteGuideline(index)}
             >
               Delete
@@ -51,7 +51,7 @@ const GuidelineInputs = ({ setProjectGuidelines }: ProjectGuidelinesProps) => {
         ))}
       </div>
       <Button
-        className="mt-2 px-2 py-2 bg-blue-500"
+        className="mt-2 px-2 py-2 bg-blue-500 hover:bg-blue-700"
         onClick={handleAddGuideline}
       >
         Add Guideline
