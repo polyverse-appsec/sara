@@ -2,7 +2,21 @@
 
 # Release Notes
 
-## Version 0.20.3: April 4th, 2024
+## Version 0.20.3: April 5th, 2024
+
+### New Features
+
+- N/A
+
+### Enhancements
+
+- N/A
+
+### Bug Fixes
+
+- Use server timezone for timestamps in Assistant prompt (e.g. PST)
+
+## Version 0.20.3: April 5th, 2024
 
 ### New Features
 

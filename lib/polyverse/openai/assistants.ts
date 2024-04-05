@@ -14,6 +14,7 @@ import {
   type PromptFileTypes,
 } from './../../../lib/polyverse/openai/utils'
 import { OPENAI_MODEL } from './constants'
+import { usFormatter } from '../backend/utils/log'
 
 export const ASSISTANT_METADATA_CREATOR = 'sara.frontend'
 
@@ -95,7 +96,7 @@ function getOpenAIAssistantInstructions(
 
     // pretty print the last sync date and time in local time zone (note last synchronized is a Unix time in seconds
     const lastSynchronizedProjectDataAt = projectStatus?.lastSynchronized
-      ? new Date(projectStatus.lastSynchronized * 1000).toLocaleString()
+      ? usFormatter.format(new Date(projectStatus?.lastSynchronized * 1000))
       : ''
 
     if (projectStatus?.synchronized) {
