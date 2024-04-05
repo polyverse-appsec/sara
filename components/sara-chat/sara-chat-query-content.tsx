@@ -11,6 +11,11 @@ import { CodeBlock } from '../ui/codeblock'
 import { IconUser } from '../ui/icons'
 import Sara32x32 from './../../public/Sara_Cartoon_Portrait-32x32.png'
 
+export interface ChatAvatarDetails {
+  name: string
+  pictureSrc: string
+}
+
 export interface SaraChatQueryContentProps {
   content: string
   contentType: 'QUERY' | 'RESPONSE'
@@ -21,14 +26,14 @@ export interface SaraChatQueryContentProps {
    * Required or else we will always so a loading spinner.
    */
   shouldRenderLoadingSpinner: boolean
-  saraSession: SaraSession
+  chatAvatarDetails?: ChatAvatarDetails
 }
 
 function renderSideChatDetails(
   contentType: 'QUERY' | 'RESPONSE',
   timestamp: Date | null,
   shouldRenderLoadingSpinner: boolean,
-  saraSession: SaraSession,
+  chatAvatarDetails?: ChatAvatarDetails,
 ) {
   return (
     <div className={'flex flex-col items-start'}>
@@ -41,11 +46,11 @@ function renderSideChatDetails(
         )}
       >
         {contentType === 'QUERY' ? (
-          saraSession.picture ? (
+          chatAvatarDetails ? (
             <Image
-              src={saraSession.picture}
-              alt={saraSession.name}
-              title={saraSession.name}
+              src={chatAvatarDetails.pictureSrc}
+              alt={chatAvatarDetails.name}
+              title={chatAvatarDetails.name}
               width={32}
               height={32}
               className="rounded-full"
@@ -97,7 +102,7 @@ const SaraChatQueryContent = ({
   contentType,
   timestamp,
   shouldRenderLoadingSpinner,
-  saraSession,
+  chatAvatarDetails,
   ...props
 }: SaraChatQueryContentProps) => {
   return (
@@ -106,7 +111,7 @@ const SaraChatQueryContent = ({
         contentType,
         timestamp,
         shouldRenderLoadingSpinner,
-        saraSession,
+        chatAvatarDetails,
       )}
       <div className="flex-1 px-1 ml-4 space-y-2 overflow-hidden">
         <MemoizedReactMarkdown
