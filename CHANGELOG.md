@@ -11,6 +11,7 @@
 ### Enhancements
 
 - UI improvements
+- Improved Preview Feature enablement to work for all users, one user, or users in a specific org (e.g. @domain.com)
 
 ### Bug Fixes
 

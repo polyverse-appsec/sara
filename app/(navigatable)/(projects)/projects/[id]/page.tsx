@@ -183,7 +183,7 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
               />
             </div>
 
-            {isPreviewFeatureEnabled('ProjectSourceSyncStatus') && (
+            {isPreviewFeatureEnabled('ProjectSourceSyncStatus', saraSession?.email) && (
               <div className="mr-2">
                 <ProjectSourceSyncStatus
                   health={health}
