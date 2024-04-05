@@ -15,7 +15,7 @@
 
 ### Bug Fixes
 
-- N/A
+- Protect against referencing out-of-bounds when getting the sync status
 
 ## Version 0.20.2: April 3nd, 2024
 
