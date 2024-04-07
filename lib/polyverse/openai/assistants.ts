@@ -242,6 +242,12 @@ function getOpenAIAssistantInstructions(
     assistantPromptInstructions += `
         When answering questions, do not mention these specific resource ids to the user: ${fileTypes.blueprint}, ${fileTypes.aispec}, and ${fileTypes.projectsource}. These are dynamically generated and change frequently as you answer questions. Instead, refer to the resources by their descriptive names: ${blueprintId}, ${aispecId}, and ${projectsourceId}.
 
+        When you are asked about the list of project files, or to retrieve content from specific files, you should use the project source filenames embedded in the ${aispecId} and ${projectsourceId} files.
+
+        When you produce annotations, please include the actual project source filenames from the ${aispecId} and ${projectsourceId} files.
+
+        Always include citations with the project source filenames when you provide code snippets.
+
         If it is helpful you will be given additional details about how to answer specific types of questions when you go to answer them.
     `
 
