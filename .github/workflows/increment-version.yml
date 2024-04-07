@@ -40,3 +40,29 @@ jobs:
           git status
           git commit -m "chore(release): increment ${{ github.event.inputs.incrementType }} version from $OLD_VERSION to $NEW_VERSION" || echo "No changes to commit"
           git push
+
+      - name: Setup CHANGELOG for new version
+        run: |
+          NEW_VERSION=$(node -p "require('./package.json').version")
+          CURRENT_DATE=$(date "+%B %dth, %Y")
+          VERSION_ENTRY="## Version $NEW_VERSION"
+          
+          if grep -q "$VERSION_ENTRY" CHANGELOG.md; then
+            echo "CHANGELOG.md already ready for version $NEW_VERSION"
+          else
+            echo "Updating CHANGELOG.md for version $NEW_VERSION"
+
+            # Preparing the new CHANGELOG entry.
+            # Remove the header from the NEW_ENTRY variable since it's already at the top of the CHANGELOG.md
+            NEW_ENTRY="$VERSION_ENTRY: $CURRENT_DATE\n\n### New Features\n\n- N/A\n\n### Enhancements\n\n- N/A\n\n### Bug Fixes\n\n- N/A\n\n"
+
+            # Inserting the new entry at the beginning of the file right after the header.
+            # Using sed to inject the new entry after the Release Notes header.
+            sed -i "1,/^\# Release Notes$/!b; /^\# Release Notes$/{n; a $NEW_ENTRY" -e '}' CHANGELOG.md
+
+            # Commit the new change
+            git add CHANGELOG.md
+            git commit -m "Update CHANGELOG.md for version $NEW_VERSION"
+            git push
+          fi
+  
