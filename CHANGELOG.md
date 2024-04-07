@@ -2,6 +2,20 @@
 
 # Release Notes
 
+## Version 0.20.4: April 6th, 2024
+
+### New Features
+
+- N/A
+
+### Enhancements
+
+- Improvements to Sara instructions for project source file retrieval and annotations.
+
+### Bug Fixes
+
+- N/A
+
 ## Version 0.20.3: April 5th, 2024
 
 ### New Features
