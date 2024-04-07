@@ -172,7 +172,7 @@ function getOpenAIAssistantInstructions(
       aiSpecStatus === 'Idle'
     ) {
       assistantPromptInstructions += `
-        You have access to a data file ${aispecId} that summarizes all of the project code.`
+        You have access to a data file ${aispecId} that summarizes all of the project code. This file contains short summaries of all of the important code in the project. Each summary includes the project source file name it summarizes, followed by the summary starting and ending with triple quotes.`
     } else {
       assistantPromptInstructions += `
         You are having trouble analyzing the project code to build a good understanding, but you hope to overcome these challenges soon.
