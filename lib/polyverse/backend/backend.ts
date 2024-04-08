@@ -33,7 +33,7 @@ export async function getProjectAssistantFileInfo(
     if (!res.ok) {
       const errText = await res.text()
       console.error(
-        `getProjectAssistantFileInfo: Got a failure response while trying to get file IDs for '${billingOrgName}/${projectId} for ${email}' - Status: ${res.status} - Error: ${errText}`,
+        `${email} ${billingOrgName} Project:${projectId} : getProjectAssistantFileInfo: Got a failure response while trying to get file IDs - Status: ${res.status} - Error: `, errText
       )
 
       return []
@@ -66,7 +66,7 @@ export async function getProjectAssistantFileInfo(
     }) as ProjectDataReference[]
   } catch (error) {
     console.error(
-      'getProjectAssistantFileInfo: Error making a request or parsing a response for project ID: ',
+      `${email} ${billingOrgName} Project:${projectId} : getProjectAssistantFileInfo: Error making a request or parsing a response for project`,
       error,
     )
   }
