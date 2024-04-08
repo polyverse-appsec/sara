@@ -12,6 +12,7 @@
 
 - Improve retrieval of project source files and annotations in the Assistant instructions
      - full references to project source files
+     - Assistant estimates of time to project analysis completion is more precise based on # of files
 
 ### Bug Fixes
 

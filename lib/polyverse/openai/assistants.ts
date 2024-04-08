@@ -107,16 +107,21 @@ function getOpenAIAssistantInstructions(
     } else if (projectStatus?.activelyUpdating) {
       assistantPromptInstructions += `You are currently updating your understanding of the project code, and have not fully completed your analysis.`
 
-      // TODO: This is somewhat incomplete and speculative since it doesn't track how many files have been already imported or analyzed
+        // if we have a good amount of files to process, we can give an estimate of the time it will take to synchronize
+      const childResources = projectStatus?.childResources
+      let percentageComplete = undefined
+      if (childResources && projectStatus?.possibleStagesRemaining && childResources > 2 && childResources > projectStatus.possibleStagesRemaining) {
+        percentageComplete = Math.floor((childResources - projectStatus.possibleStagesRemaining) / childResources * 100)
+      }
 
       const estimatedFilesToProcess = projectStatus?.possibleStagesRemaining
         ? projectStatus.possibleStagesRemaining
         : 0
-      if (estimatedFilesToProcess > 1000) {
+      if (estimatedFilesToProcess > 1000 || percentageComplete && percentageComplete < 10) {
         assistantPromptInstructions += `You have a very incomplete and light understanding of the project code and haven't seen most of the code yet.`
-      } else if (estimatedFilesToProcess > 100) {
+      } else if (estimatedFilesToProcess > 100 || percentageComplete && percentageComplete < 60) {
         assistantPromptInstructions += `You have a basic understanding of the project code. You have seen many files, but lack a deep understanding of the project.`
-      } else if (estimatedFilesToProcess > 10) {
+      } else if (estimatedFilesToProcess > 10 || percentageComplete && percentageComplete >= 60) {
         assistantPromptInstructions += `You have a good understanding of the project code. You have seen many files, and are close to a deep understanding of the project.`
       }
 
