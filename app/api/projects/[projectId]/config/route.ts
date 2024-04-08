@@ -5,7 +5,6 @@ import { Assistant } from 'openai/resources/beta/assistants/assistants'
 import { auth } from '../../../../../auth'
 import getProjectPromptFileInfoIds from '../../../../../lib/polyverse/db/get-project-prompt-file-info-ids'
 import authz from './../../../../../app/api/authz'
-import { type PromptFileInfo } from './../../../../../lib/data-model-types'
 import {
   getBoostOrgUserStatus,
   getProjectAssistantFileInfo,
@@ -18,7 +17,6 @@ import getProject from './../../../../../lib/polyverse/db/get-project'
 import getPromptFileInfo from './../../../../../lib/polyverse/db/get-prompt-file-info'
 import getUser from './../../../../../lib/polyverse/db/get-user'
 import updateProject from './../../../../../lib/polyverse/db/update-project'
-import { createBaseSaraObject } from './../../../../../lib/polyverse/db/utils'
 import {
   ASSISTANT_METADATA_CREATOR,
   createAssistant,
@@ -113,24 +111,24 @@ export const POST = auth(async (req: NextAuthRequest) => {
     // Start by gathering the file info for the project. If for some reason we
     // don't have the 3 file infos for the project (blueprint, AI spec, project
     // source) then fail as we won't refresh the project without them.
-    const boostFileInfos = await getProjectAssistantFileInfo(
+    const promptFileInfos = await getProjectAssistantFileInfo(
       org.name,
       project.id,
       user.email,
     )
 
-    if (!boostFileInfos || boostFileInfos.length !== 3) {
+    if (!promptFileInfos || promptFileInfos.length !== 3) {
       const logMsg =
-        boostFileInfos.length < 3
-          ? `Failing refresh for project '${project.id}' because got less than the 3 requisite file infos - total received: '${boostFileInfos.length}'`
+      promptFileInfos.length < 3
+          ? `Failing refresh for project '${project.id}' because got less than the 3 requisite file infos - total received: '${promptFileInfos.length}'`
           : `Failing refresh for project '${
               project.id
             }' because got more than the 3 requisite file infos - total received: '${
-              boostFileInfos.length
-            }' - file info dump: ${JSON.stringify(boostFileInfos)}`
+              promptFileInfos.length
+            }' - file info dump: ${JSON.stringify(promptFileInfos)}`
 
       // Getting more than 3 file infos is concerning - make sure to log it out as an error
-      if (boostFileInfos.length > 3) {
+      if (promptFileInfos.length > 3) {
         console.error(logMsg)
       }
 
@@ -139,24 +137,8 @@ export const POST = auth(async (req: NextAuthRequest) => {
       })
     }
 
-    // For now we need to convert the file info we get from Boost into instances
-    // of `PromptFileInfo` since we rely on persisting data that first has a
-    // basic structure based off of `BaseSaraObject` types.
-    const promptFileInfos = boostFileInfos.map((boostFileInfo) => {
-      const promptFileInfoBaseSaraObject = createBaseSaraObject()
-
-      const promptFileInfo: PromptFileInfo = {
-        // BaseSareObject properties...
-        ...promptFileInfoBaseSaraObject,
-
-        // PromptFileInfo properties...
-        //
-        // Note that spreading out the properties of Boost file info which is
-        // an instance of `ProjectDataReference` is replacing the ID that would
-        // be created as a result of spreading out the `BaseSaraObject`
-        ...boostFileInfo,
-        parentProjectId: project.id,
-      }
+    promptFileInfos.forEach((promptFileInfo) => {
+      promptFileInfo.parentProjectId = project.id
 
       // It isn't obvious what is going on here. When we make a call to the
       // Boost backend for `GET data_references` the objects returned also
@@ -165,8 +147,6 @@ export const POST = auth(async (req: NextAuthRequest) => {
       // doesn't appear wonky in our data (i.e. that `createdAt` is more recent
       // than `lastUpdatedAt`).
       promptFileInfo.createdAt = promptFileInfo.lastUpdatedAt
-
-      return promptFileInfo
     })
 
     // Get our cached file infos to see if we ought to update our prompt
@@ -231,7 +211,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
       // TODO: After we switch over to the new UI/UX workflows change this signature to take
       // PromptFileInfo
       await createAssistant(
-        boostFileInfos,
+        promptFileInfos,
         assistantMetadata,
         project,
         boostProjectStatus,

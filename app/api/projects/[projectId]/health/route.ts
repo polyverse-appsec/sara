@@ -27,7 +27,8 @@ import {
   getAssistant,
   type AssistantMetadata,
 } from './../../../../../lib/polyverse/openai/assistants'
-import { ProjectDataReference } from 'lib/polyverse/backend/types/BoostProjectDataReference'
+
+import { PromptFileInfo } from './../../../../../lib/data-model-types'
 
 const createProjectHealth = (
   projectId: string,
@@ -114,10 +115,10 @@ export const GET = auth(async (req: NextAuthRequest) => {
 
     // 1) Check that we are getting 3 files back from
     // `GET /api/user_project/${billingOrgName}/${projectId}/data_references`
-    let boostFileInfos: ProjectDataReference[] | null = null
+    let promptFileInfos: PromptFileInfo[] | null = null
 
     try {
-      boostFileInfos = await getProjectAssistantFileInfo(
+      promptFileInfos = await getProjectAssistantFileInfo(
         org.name,
         project.id,
         user.email,
@@ -137,7 +138,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
       })
     }
 
-    if (!boostFileInfos || boostFileInfos.length !== 3) {
+    if (!promptFileInfos || promptFileInfos.length !== 3) {
       const projectHealth = createProjectHealth(
         project.id,
         'UNHEALTHY',
@@ -234,7 +235,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
       assistant.file_ids.map((fileId) => fileId),
     )
     const sortedBoostFileIds = sortBy(
-      boostFileInfos.map((boostFileInfo) => boostFileInfo.id),
+      promptFileInfos.map((promptFileInfo) => promptFileInfo.id),
     )
     const fileIdsEqual = isEqual(sortedAssistantFileIds, sortedBoostFileIds)
 

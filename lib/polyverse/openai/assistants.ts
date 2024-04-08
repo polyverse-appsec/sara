@@ -3,27 +3,20 @@ import { Assistant } from 'openai/resources/beta/assistants/assistants'
 
 import packageInfo from '../../../package.json'
 import {
-  Project,
+  type Project,
   type PromptFileInfo,
+  type PromptFileInfoTypeString
 } from '../../data-model-types'
 import { BoostProjectStatusState } from '../backend/types/BoostProjectStatus'
-import { ProjectDataReference } from '../backend/types/BoostProjectDataReference'
 import { isRecord } from '../typescript/helpers'
 import { OPENAI_MODEL } from './constants'
 import { usFormatter } from '../backend/utils/log'
-import { ProjectDataType } from '../backend/types/BoostProjectDataType'
 
 export const ASSISTANT_METADATA_CREATOR = 'sara.frontend'
 
 export const getVersion = () => {
   // get the version off the runtime package.json
   return packageInfo.version
-}
-
-interface FileTypes {
-  blueprint: string
-  aispec: string
-  projectsource: string
 }
 
 export interface AssistantMetadata {
@@ -49,15 +42,15 @@ function createAssistantName(metadata: AssistantMetadata): string {
 // the new UI that consumes this new data model/Open AI logic  we ought to
 // update the other functions to use the new type.
 function getOpenAIAssistantInstructions(
-  fileInfos: ProjectDataReference[],
+  fileInfos: PromptFileInfo[],
   project: Project,
   projectStatus?: BoostProjectStatusState,
 ): string {
 
-  const namedFileInfo : Map<string, ProjectDataReference> = new Map()
-  fileInfos.map((fileInfo) => {
-    namedFileInfo.set(fileInfo.type, fileInfo)
-  })
+  const fileInfosByType = fileInfos.reduce((accumulator, fileInfo) => {
+    accumulator.set(fileInfo.type, fileInfo)
+    return accumulator
+  }, new Map() as Map<PromptFileInfoTypeString, PromptFileInfo>)
 
   const blueprintId = `"Architectural Blueprint Summary"`
   const aispecId = `"Code and Function Specifications"`
@@ -200,7 +193,7 @@ function getOpenAIAssistantInstructions(
     assistantPromptInstructions += `
     You have the following sets of data resources that will help you answer questions:`
 
-    const blueprintDataInfo : ProjectDataReference | undefined = namedFileInfo.get(ProjectDataType.ArchitecturalBlueprint)
+    const blueprintDataInfo : PromptFileInfo | undefined = fileInfosByType.get('ArchitecturalBlueprint')
 
     if (blueprintDataInfo) {
       if (
@@ -216,7 +209,7 @@ function getOpenAIAssistantInstructions(
       }
     }
 
-    const aispecDataInfo : ProjectDataReference | undefined = namedFileInfo.get(ProjectDataType.ProjectSpecification)
+    const aispecDataInfo : PromptFileInfo | undefined = fileInfosByType.get('ProjectSpecification')
 
     if (aispecDataInfo) {
       if (
@@ -232,7 +225,7 @@ function getOpenAIAssistantInstructions(
       }
     }
 
-    const projectsourceDataInfo : ProjectDataReference | undefined = namedFileInfo.get(ProjectDataType.ProjectSource)
+    const projectsourceDataInfo : PromptFileInfo | undefined = fileInfosByType.get('ProjectSource')
     if (projectsourceDataInfo) {
       if (
         projectsourceStatus === 'Complete' ||
@@ -319,7 +312,7 @@ const oaiClient = new OpenAI({
 })
 
 export async function createAssistant(
-  fileInfos: ProjectDataReference[],
+  fileInfos: PromptFileInfo[],
   assistantMetadata: AssistantMetadata,
   project: Project,
   boostProjectStatus?: BoostProjectStatusState,

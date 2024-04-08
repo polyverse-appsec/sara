@@ -1,6 +1,5 @@
 import Joi from 'joi'
 import { BoostProjectStatusState } from 'lib/polyverse/backend/types/BoostProjectStatus'
-import { ProjectDataReference } from './polyverse/backend/types/BoostProjectDataReference'
 
 ////////////////////////////
 // Core Sara Types - Start
@@ -272,13 +271,22 @@ export interface ChatQuery extends BaseSaraObject {
 }
 
 // TODO: Test
-export interface PromptFileInfo extends ProjectDataReference, BaseSaraObject {
+export enum PromptFileInfoType {
+  ProjectSpecification = "aispec",
+  ArchitecturalBlueprint = "blueprint",
+  ProjectSource = "projectsource"
+}
+
+export type PromptFileInfoTypeString = keyof typeof PromptFileInfoType
+
+// TODO: Test
+export interface PromptFileInfo extends BaseSaraObject {
   // Human semi-readable name
   name: string
 
   // for GET data_references
   // The type of file info
-  type: string
+  type: PromptFileInfoTypeString
 
   // The project that depends on this file info to be injected as part of the
   // prompt passed to the LLM
