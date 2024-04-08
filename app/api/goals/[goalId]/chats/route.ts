@@ -8,9 +8,8 @@ import authz from './../../../../../app/api/authz'
 import {
   type Chat,
   type ChatQuery,
-  type PromptFileInfo,
 } from './../../../../../lib/data-model-types'
-import { getProjectAssistantFileInfo } from './../../../../../lib/polyverse/backend/backend'
+import getProjectPromptFileInfos from './../../../../../lib/polyverse/backend/get-project-prompt-file-infos'
 import getBoostProjectStatus from './../../../../../lib/polyverse/backend/get-boost-project-status'
 import createChat from './../../../../../lib/polyverse/db/create-chat'
 import createChatQuery from './../../../../../lib/polyverse/db/create-chat-query'
@@ -132,24 +131,24 @@ export const POST = auth(async (req: NextAuthRequest) => {
     // Prepare to build the OpenAI Assistant for the project by getting the file
     // info from the Boost backend for the project we just created
     // TODO: Rename to getBoostFileInfo
-    const boostFileInfos = await getProjectAssistantFileInfo(
+    const promptFileInfos = await getProjectPromptFileInfos(
+      user.email,
       org.name,
       project.id,
-      user.email,
     )
 
-    if (!boostFileInfos || boostFileInfos.length !== 3) {
+    if (!promptFileInfos || promptFileInfos.length !== 3) {
       const logMsg =
-        boostFileInfos.length < 3
-          ? `Failing refresh for project '${project.id}' because got less than the 3 requisite file infos - total received: '${boostFileInfos.length}'`
+      promptFileInfos.length < 3
+          ? `Failing refresh for project '${project.id}' because got less than the 3 requisite file infos - total received: '${promptFileInfos.length}'`
           : `Failing refresh for project '${
               project.id
             }' because got more than the 3 requisite file infos - total received: '${
-              boostFileInfos.length
-            }' - file info dump: ${JSON.stringify(boostFileInfos)}`
+              promptFileInfos.length
+            }' - file info dump: ${JSON.stringify(promptFileInfos)}`
 
       // Getting more than 3 file infos is concerning - make sure to log it out as an error
-      if (boostFileInfos.length > 3) {
+      if (promptFileInfos.length > 3) {
         console.error(logMsg)
       }
 
@@ -158,30 +157,16 @@ export const POST = auth(async (req: NextAuthRequest) => {
       })
     }
 
-    // For now we need to convert the file info we get from Boost into instances
-    // of `PromptFileInfo` since we rely on persisting data that first has a
-    // basic structure based off of `BaseSaraObject` types.
-    const promptFileInfos = boostFileInfos.map((boostFileInfo) => {
-      const promptFileInfoBaseSaraObject = createBaseSaraObject()
+    promptFileInfos.forEach((promptFileInfo) => {
+      promptFileInfo.parentProjectId = project.id
 
-      const promptFileInfo: PromptFileInfo = {
-        // BaseSareObject properties...
-        ...promptFileInfoBaseSaraObject,
-
-        // PromptFileInfo properties...
-        //
-        // Note that spreading out the properties of Boost file info which is
-        // an instance of `ProjectDataReference` is replacing the ID that would
-        // be created as a result of spreading out the `BaseSaraObject`
-        ...boostFileInfo,
-        parentProjectId: project.id,
-      }
-
-      // We rename lastUpdatedAt to createdAt since we already have a
-      //    lastUpdatedAt field in the BaseSaraObject
+      // It isn't obvious what is going on here. When we make a call to the
+      // Boost backend for `GET data_references` the objects returned also
+      // contain the `lastUpdatedAt` property. Since we are persisting this info
+      // in our K/V set the `createdAt` value to that of `lastUpdatedAt` so it
+      // doesn't appear wonky in our data (i.e. that `createdAt` is more recent
+      // than `lastUpdatedAt`).
       promptFileInfo.createdAt = promptFileInfo.lastUpdatedAt
-
-      return promptFileInfo
     })
 
     // Get our cached file infos to see if we ought to update our prompt

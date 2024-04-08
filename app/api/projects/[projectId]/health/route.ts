@@ -19,7 +19,7 @@ import {
   type ProjectHealthConfigurationState,
   type ProjectHealthStatusValue,
 } from './../../../../../lib/data-model-types'
-import { getProjectAssistantFileInfo } from './../../../../../lib/polyverse/backend/backend'
+import getProjectPromptFileInfos from './../../../../../lib/polyverse/backend/get-project-prompt-file-infos'
 import getBoostProjectStatus from './../../../../../lib/polyverse/backend/get-boost-project-status'
 import {
   ASSISTANT_METADATA_CREATOR,
@@ -118,10 +118,10 @@ export const GET = auth(async (req: NextAuthRequest) => {
     let promptFileInfos: PromptFileInfo[] | null = null
 
     try {
-      promptFileInfos = await getProjectAssistantFileInfo(
+      promptFileInfos = await getProjectPromptFileInfos(
+        user.email,
         org.name,
         project.id,
-        user.email,
       )
     } catch (error) {
       const errMsg = `Failed to get data references for project '${project.id}' for org '${org.name}' because: ${error}`

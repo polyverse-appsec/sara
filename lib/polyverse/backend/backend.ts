@@ -1,7 +1,6 @@
 import { userInfo } from 'os'
 
 import { createSignedHeader, USER_SERVICE_URI } from './utils'
-import { PromptFileInfo } from './../../data-model-types'
 
 export interface BoostUserOrgStatusResponse {
   enabled?: boolean
@@ -11,65 +10,6 @@ export interface BoostUserOrgStatusResponse {
   billingUrl?: string | null
   githubUsername?: string
   backgroundAnalysisAuthorized?: boolean
-}
-
-export async function getProjectAssistantFileInfo(
-  billingOrgName: string,
-  projectId: string,
-  email: string,
-): Promise<PromptFileInfo[]> {
-  const url = `${USER_SERVICE_URI}/api/user_project/${billingOrgName}/${projectId}/data_references`
-
-  try {
-    const signedHeader = createSignedHeader(email)
-    const res = await fetch(url, {
-      method: 'GET',
-      headers: {
-        ...signedHeader,
-      },
-    })
-
-    if (!res.ok) {
-      const errText = await res.text()
-      console.error(
-        `${email} ${billingOrgName} Project:${projectId} : getProjectAssistantFileInfo: Got a failure response while trying to get file IDs - Status: ${res.status} - Error: `, errText
-      )
-
-      return []
-    }
-
-    const jsonRes = await res.json()
-
-    if (!jsonRes.body) {
-      throw new Error(`Response to GET ${url} doesn't have the 'body' property`)
-    }
-
-    const fileInfos = JSON.parse(jsonRes.body)
-
-    // Convert the response format from the Boost Node backend to what we expect
-    // for consumption in Sara
-    return fileInfos.map((fileInfo: any) => {
-      const mappedFileInfo = {
-        ...fileInfo,
-      } as any
-
-      // `GET /api/user_project/orgId/projectName/data_references` returns
-      // `lastUpdated` as a Unix timestamp in seconds. Lets convert it to
-      // milliseconds.
-      if (mappedFileInfo.lastUpdated) {
-        delete mappedFileInfo.lastUpdated
-        mappedFileInfo.lastUpdatedAt = new Date(fileInfo.lastUpdated * 1000)
-      }
-
-      return mappedFileInfo as PromptFileInfo
-    }) as PromptFileInfo[]
-  } catch (error) {
-    console.error(
-      `${email} ${billingOrgName} Project:${projectId} : getProjectAssistantFileInfo: Error making a request or parsing a response for project`,
-      error,
-    )
-  }
-  return []
 }
 
 export async function rediscoverProject(
