@@ -3,16 +3,15 @@
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { OrgDetailsTile } from 'app/(navigatable)/(orgs)/orgs/org-details-tile'
-import { getOrgStatus, getOrgUserStatus } from 'app/react-utils'
+import { getOrgUserStatus } from 'app/react-utils'
 import { SaraSession } from 'auth'
 import CollapsibleRenderableResourceContent from 'components/renderable-resource/collapsible-renderable-resource-content'
 import RenderableResourceContent from 'components/renderable-resource/renderable-resource-content'
-import { Goal } from 'lib/data-model-types'
 import { useAppContext } from 'lib/hooks/app-context'
 import { useSession } from 'next-auth/react'
 import toast from 'react-hot-toast'
 
+import { getResource } from './../../../../../app/saraClient'
 import auth1Image from './../../../../../public/auth1.png'
 import auth2Image from './../../../../../public/auth2.png'
 import auth3Image from './../../../../../public/auth3.png'
@@ -29,7 +28,6 @@ const SettingsGithubAppInstall = () => {
   const { activeBillingOrg } = useAppContext()
   const session = useSession()
   const saraSession = session.data ? (session.data as SaraSession) : null
-  const [orgsAndStatuses, setOrgsAndStatuses] = useState<OrgAndStatus[]>([])
 
   const [userGitHubAppInstalled, setUserGitHubAppInstalled] =
     useState<boolean>(true)
@@ -53,28 +51,6 @@ const SettingsGithubAppInstall = () => {
         setUserGitHubAppInstalled(
           orgUserStatus.gitHubAppInstalled === 'INSTALLED',
         )
-
-        // BEGIN NEW CODE
-
-        const res = await fetch('/api/orgs')
-
-        if (!res.ok) {
-          const errText = await res.text()
-
-          throw new Error(
-            `Failed to get a success response when fetching organizations because: ${errText}`,
-          )
-        }
-
-        const fetchedOrgs = await res.json()
-
-        const statusPromises = fetchedOrgs.map(async (org: Goal) => {
-          const orgStatus = await getOrgStatus(org.name) // Assuming this function returns the status
-          return { name: org.name, orgStatus }
-        })
-
-        const resOrgsAndStatuses = await Promise.all(statusPromises)
-        setOrgsAndStatuses(resOrgsAndStatuses)
       } catch (error) {
         toast.error(`Failed to fetch user status: ${error}`)
       }
