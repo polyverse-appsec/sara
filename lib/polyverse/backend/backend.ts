@@ -5,10 +5,9 @@ import { ProjectDataReference } from './types/BoostProjectDataReference'
 
 export interface BoostUserOrgStatusResponse {
   enabled?: boolean
-  // TODO: What could the values of these be?
-  status?: string
-  // TODO: What could the values of these be?
-  plan?: string
+  status?: string // paid, trial
+  plan?: string // premium, basic, trial
+  plan_name?: string // long display friendly name of plan
   billingUrl?: string | null
   githubUsername?: string
   backgroundAnalysisAuthorized?: boolean
