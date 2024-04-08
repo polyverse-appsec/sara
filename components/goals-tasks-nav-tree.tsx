@@ -124,9 +124,7 @@ const renderGoalOrTaskNode = ({
     <div
       style={{
         ...style,
-        textOverflow: 'ellipsis',
         whiteSpace: 'nowrap',
-        overflow: 'hidden',
       }}
       ref={dragHandle}
     >

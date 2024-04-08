@@ -2,6 +2,20 @@
 
 # Release Notes
 
+## Version 0.20.6: April 8th, 2024
+
+### New Features
+
+- N/A
+
+### Enhancements
+
+- Navbar can now be dragged to expand
+
+### Bug Fixes
+
+- Removed org id getting passed into boost user status instead of org name
+
 ## Version 0.20.5: April 7th, 2024
 
 ### New Features

@@ -14,7 +14,7 @@ const NavigatableLayout = ({ children }: NavigatableLayoutProps) => {
   return (
     <>
       <Theme>
-        <div className="w-[250px] fixed h-full overflow-y-auto">
+        <div className="w-[250px] fixed h-full overflow-y-auto z-50">
           <SidebarNav />
         </div>
         <div className="flex-1 ml-[250px] overflow-auto">{children}</div>

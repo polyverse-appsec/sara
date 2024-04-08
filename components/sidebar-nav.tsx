@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -48,6 +48,12 @@ const SidebarNav = () => {
     useState<boolean>(true)
   const [loadingBillingOrg, setLoadingBillingOrg] = useState<boolean>(true)
 
+  const [width, setWidth] = useState(225);
+  const [mouseDown, setMouseDown] = useState(false);
+
+  const dragRef = useRef(null);
+  const sidebarRef = useRef(null);
+
   useEffect(() => {
     const fetchAndSetActiveBillingOrg = async () => {
       if (!activeBillingOrg) {
@@ -92,13 +98,34 @@ const SidebarNav = () => {
     router,
   ])
 
+  const handleMouseUp = (_event: any) => {
+    setMouseDown(false);
+    window.removeEventListener('mousemove', handleMouseMove);
+    window.removeEventListener('mouseup', handleMouseUp);
+  };
+
+  const handleMouseMove = (event: any) => {
+    if (mouseDown) {
+      if (event.clientX + 10 >= 150) {
+        setWidth(event.clientX + 50);
+      }
+    }
+  };
+
+  const handleMouseDown = (e : any) => {
+    e.preventDefault()
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+    setMouseDown(true)
+  };
+
   return (
-    <motion.aside
-      className="flex flex-col h-screen fixed inset-y-0 left-0 border-r-2 border-orange-500 transition duration-200 ease-in-out"
-      initial={{ width: 0 }}
-      animate={{ width: 250 }}
-      exit={{ width: 0 }}
-      transition={{ type: 'spring', bounce: 0 }}
+    <div
+      ref={sidebarRef}
+      className="flex flex-col h-screen fixed inset-y-0 left-0 bg-white transition duration-200 ease-in-out"
+      onMouseUp={handleMouseUp}
+      onMouseMove={handleMouseMove}
+      style={{ width: `${width}px` }} // Use inline style for dynamic width
     >
       {/* Logo section */}
       <div className="flex flex-col items-center sticky top-0 z-10 p-4 m-5 rounded-full border-4 border-blue-500">
@@ -180,7 +207,7 @@ const SidebarNav = () => {
         <div className="w-1/2 border-t-2 rounded-xl border-blue-600 my-2"></div>
       </Flex>
 
-      <div className="flex-grow rounded-lg border border-blue-500 overflow-y-auto no-scrollbar m-2">
+      <div className="flex-grow rounded-lg border border-blue-500 no-scrollbar m-2 overflow-hidden">
         {/* Resource Loader */}
         {projectIdForConfiguration ? (
           <GoalsTaskNavTree
@@ -276,7 +303,13 @@ const SidebarNav = () => {
           </div>
         </div>
       </div>
-    </motion.aside>
+      <div
+        ref={dragRef}
+        className="absolute top-0 right-0 h-full w-1 bg-orange-500 cursor-col-resize"
+        style={{ zIndex: 1000 }} // Ensure drag handle is above all content for usability
+        onMouseDown={handleMouseDown}
+      ></div>
+    </div>
   )
 }
 
