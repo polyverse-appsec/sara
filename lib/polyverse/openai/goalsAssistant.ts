@@ -8,10 +8,6 @@ import createTask from './../../../lib/polyverse/db/create-task'
 import getGoal from './../../../lib/polyverse/db/get-goal'
 import updateGoal from './../../../lib/polyverse/db/update-goal'
 import { createBaseSaraObject } from './../../../lib/polyverse/db/utils'
-import {
-  mapPromptFileInfosToPromptFileTypes,
-  type PromptFileTypes,
-} from './../../../lib/polyverse/openai/utils'
 
 const oaiClient = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,

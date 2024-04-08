@@ -1,13 +1,13 @@
 import { kv } from '@vercel/kv'
 import Joi from 'joi'
 
-import { ProjectFileInfo } from './../../../lib/data-model-types'
+import { ProjectDataReference } from '../backend/types/BoostProjectDataReference'
 
 const getProjectUserFileInfos = async (
   projectName: string,
   userId: string,
   fileInfoKeys: string[],
-): Promise<ProjectFileInfo[]> => {
+): Promise<ProjectDataReference[]> => {
   if (Joi.array().validate(fileInfoKeys).error) {
     throw new Error(`'fileInfoIds' must be an array`)
   }
@@ -24,7 +24,7 @@ const getProjectUserFileInfos = async (
   // If we don't have a length then return early here as the Redis pipelines
   // don't like being empty when we execute them
   if (!fileInfoKeys.length) {
-    return [] as ProjectFileInfo[]
+    return [] as ProjectDataReference[]
   }
 
   const pipeline = kv.pipeline()
@@ -35,7 +35,7 @@ const getProjectUserFileInfos = async (
 
   const fileInfos = await pipeline.exec()
 
-  return fileInfos as ProjectFileInfo[]
+  return fileInfos as ProjectDataReference[]
 }
 
 export default getProjectUserFileInfos

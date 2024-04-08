@@ -2,14 +2,14 @@ import { kv } from '@vercel/kv'
 
 import {
   ProjectFileInfoSchema,
-  type ProjectFileInfo,
 } from './../../data-model-types'
 import { projectUserFileInfoKey } from './keys'
+import { ProjectDataReference } from '../backend/types/BoostProjectDataReference'
 
 const setProjectUserFileInfo = async (
   projectName: string,
   userId: string,
-  fileInfo: ProjectFileInfo,
+  fileInfo: ProjectDataReference,
 ): Promise<number> => {
   const validationError = ProjectFileInfoSchema.validate(fileInfo).error
 

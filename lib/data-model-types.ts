@@ -1,5 +1,6 @@
 import Joi from 'joi'
 import { BoostProjectStatusState } from 'lib/polyverse/backend/types/BoostProjectStatus'
+import { ProjectDataReference } from './polyverse/backend/types/BoostProjectDataReference'
 
 ////////////////////////////
 // Core Sara Types - Start
@@ -271,11 +272,10 @@ export interface ChatQuery extends BaseSaraObject {
 }
 
 // TODO: Test
-export interface PromptFileInfo extends BaseSaraObject {
+export interface PromptFileInfo extends ProjectDataReference, BaseSaraObject {
   // Human semi-readable name
   name: string
 
-  // TODO: Restrict this to string values as expected from the Boost backend
   // for GET data_references
   // The type of file info
   type: string
@@ -394,10 +394,3 @@ export const ProjectFileInfoSchema = Joi.object({
     .max(`now`)
     .required(),
 })
-
-export interface ProjectFileInfo extends Record<string, any> {
-  name: string
-  type: string
-  id: string
-  lastUpdatedAt: Date
-}

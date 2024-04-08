@@ -14,7 +14,6 @@ import getProject from '../../../../../lib/polyverse/db/get-project'
 import getUser from '../../../../../lib/polyverse/db/get-user'
 import authz from './../../../../../app/api/authz'
 import {
-  ProjectFileInfo,
   projectHealthScalarValuesByReadableValues,
   type ProjectHealth,
   type ProjectHealthConfigurationState,
@@ -28,6 +27,7 @@ import {
   getAssistant,
   type AssistantMetadata,
 } from './../../../../../lib/polyverse/openai/assistants'
+import { ProjectDataReference } from 'lib/polyverse/backend/types/BoostProjectDataReference'
 
 const createProjectHealth = (
   projectId: string,
@@ -114,7 +114,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
 
     // 1) Check that we are getting 3 files back from
     // `GET /api/user_project/${billingOrgName}/${projectId}/data_references`
-    let boostFileInfos: ProjectFileInfo[] | null = null
+    let boostFileInfos: ProjectDataReference[] | null = null
 
     try {
       boostFileInfos = await getProjectAssistantFileInfo(

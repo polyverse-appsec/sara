@@ -4,17 +4,14 @@ import { Assistant } from 'openai/resources/beta/assistants/assistants'
 import packageInfo from '../../../package.json'
 import {
   Project,
-  ProjectFileInfo,
   type PromptFileInfo,
 } from '../../data-model-types'
 import { BoostProjectStatusState } from '../backend/types/BoostProjectStatus'
+import { ProjectDataReference } from '../backend/types/BoostProjectDataReference'
 import { isRecord } from '../typescript/helpers'
-import {
-  mapPromptFileInfosToPromptFileTypes,
-  type PromptFileTypes,
-} from './../../../lib/polyverse/openai/utils'
 import { OPENAI_MODEL } from './constants'
 import { usFormatter } from '../backend/utils/log'
+import { ProjectDataType } from '../backend/types/BoostProjectDataType'
 
 export const ASSISTANT_METADATA_CREATOR = 'sara.frontend'
 
@@ -52,10 +49,20 @@ function createAssistantName(metadata: AssistantMetadata): string {
 // the new UI that consumes this new data model/Open AI logic  we ought to
 // update the other functions to use the new type.
 function getOpenAIAssistantInstructions(
-  fileTypes: FileTypes | PromptFileTypes,
+  fileInfos: ProjectDataReference[],
   project: Project,
   projectStatus?: BoostProjectStatusState,
 ): string {
+
+  const namedFileInfo : Map<string, ProjectDataReference> = new Map()
+  fileInfos.map((fileInfo) => {
+    namedFileInfo.set(fileInfo.type, fileInfo)
+  })
+
+  const blueprintId = `"Architectural Blueprint Summary"`
+  const aispecId = `"Code and Function Specifications"`
+  const projectsourceId = `"Project Source Code"`
+
   // This prompt was engineered to guide Sara on what she will be doing
   // overall when she is created as an OpenAI Assistant. When specific questions
   // are asked of her in a Thread and she is told to provide an answer to the
@@ -89,10 +96,6 @@ function getOpenAIAssistantInstructions(
     const projectsourceStatus = projectStatus?.resourcesState?.find(
       (resource) => resource[0] === 'projectsource',
     )?.[1]
-
-    const blueprintId = `"Architectural Blueprint Summary"`
-    const aispecId = `"Code and Function Specifications"`
-    const projectsourceId = `"Project Source Code"`
 
     // pretty print the last sync date and time in local time zone (note last synchronized is a Unix time in seconds
     const lastSynchronizedProjectDataAt = projectStatus?.lastSynchronized
@@ -188,43 +191,54 @@ function getOpenAIAssistantInstructions(
 
         If someone asks a more specific coding question about the project, unless otherwise explicitly told not to, you give answers that use the relevant frameworks, APIs, data structures, and other aspects of the existing code.
     `
-
     assistantPromptInstructions += `
-      There are at least three sets of data resources you have access to that will help you answer questions:`
-    if (
-      blueprintStatus === 'Complete' ||
-      blueprintStatus === 'Processing' ||
-      blueprintStatus === 'Idle'
-    ) {
-      assistantPromptInstructions += `
-        1. ${blueprintId} ${fileTypes.blueprint} is a very short summary of the overall architecture of the project. It talks about what programming languages are used, major frameworks, and so forth.`
-    } else {
-      assistantPromptInstructions += `
-        1. ${blueprintId} ${fileTypes.blueprint} should contain a short architectural summary of the project, but it is having an issue and may not be reliable. You should be extra cautious about incomplete analysis.`
+    You have the following sets of data resources that will help you answer questions:`
+
+    const blueprintDataInfo : ProjectDataReference | undefined = namedFileInfo.get(ProjectDataType.ArchitecturalBlueprint)
+
+    if (blueprintDataInfo) {
+      if (
+        blueprintStatus === 'Complete' ||
+        blueprintStatus === 'Processing' ||
+        blueprintStatus === 'Idle'
+      ) {
+        assistantPromptInstructions += `
+            1. ${blueprintId} ${blueprintDataInfo.name} is a very short summary of the overall architecture of the project. It talks about what programming languages are used, major frameworks, and so forth.`
+      } else {
+        assistantPromptInstructions += `
+            1. ${blueprintId} ${blueprintDataInfo.name} should contain a short architectural summary of the project, but it is having an issue and may not be reliable. You should be extra cautious about incomplete analysis.`
+      }
     }
 
-    if (
-      aiSpecStatus === 'Complete' ||
-      aiSpecStatus === 'Processing' ||
-      aiSpecStatus === 'Idle'
-    ) {
-      assistantPromptInstructions += `
-        2. ${aispecId} ${fileTypes.aispec} is another useful file that has short summaries of all of the important code in the project.`
-    } else {
-      assistantPromptInstructions += `
-        2. ${aispecId} ${fileTypes.aispec} should contain many short summaries of the functions, classes and data in the project code, but it is having an issue and may not be reliable. You should be extra cautious about incomplete architectural analysis.`
+    const aispecDataInfo : ProjectDataReference | undefined = namedFileInfo.get(ProjectDataType.ProjectSpecification)
+
+    if (aispecDataInfo) {
+      if (
+        aiSpecStatus === 'Complete' ||
+        aiSpecStatus === 'Processing' ||
+        aiSpecStatus === 'Idle'
+      ) {
+        assistantPromptInstructions += `
+          2. ${aispecId} ${aispecDataInfo.name} is another useful file that has short summaries of all of the important code in the project.`
+      } else {
+        assistantPromptInstructions += `
+          2. ${aispecId} ${aispecDataInfo.name} should contain many short summaries of the functions, classes and data in the project code, but it is having an issue and may not be reliable. You should be extra cautious about incomplete architectural analysis.`
+      }
     }
 
-    if (
-      projectsourceStatus === 'Complete' ||
-      projectsourceStatus === 'Processing' ||
-      projectsourceStatus === 'Idle'
-    ) {
-      assistantPromptInstructions += `
-        3. ${projectsourceId} ${fileTypes.projectsource} is the concatenation of all of the source code in the project.`
-    } else {
-      assistantPromptInstructions += `
-        3. ${projectsourceId} is not yet available. You should be extra cautious about citing code from this file.`
+    const projectsourceDataInfo : ProjectDataReference | undefined = namedFileInfo.get(ProjectDataType.ProjectSource)
+    if (projectsourceDataInfo) {
+      if (
+        projectsourceStatus === 'Complete' ||
+        projectsourceStatus === 'Processing' ||
+        projectsourceStatus === 'Idle'
+      ) {
+        assistantPromptInstructions += `
+          3. ${projectsourceId} ${projectsourceDataInfo.name} is the concatenation of all of the source code in the project.`
+      } else {
+        assistantPromptInstructions += `
+          3. ${projectsourceId} is not yet available. You should be extra cautious about citing code from this file.`
+      }
     }
 
     assistantPromptInstructions += `
@@ -239,8 +253,9 @@ function getOpenAIAssistantInstructions(
       assistantPromptInstructions += ` You should be extra cautious about citing code from ${projectsourceId} since it isn't fully available yet.`
     }
 
+    const doNotMentionFileNames = fileInfos.map(({ name }) => name).join(', ')
     assistantPromptInstructions += `
-        When answering questions, do not mention these specific resource ids to the user: ${fileTypes.blueprint}, ${fileTypes.aispec}, and ${fileTypes.projectsource}. These are dynamically generated and change frequently as you answer questions. Instead, refer to the resources by their descriptive names: ${blueprintId}, ${aispecId}, and ${projectsourceId}.
+        When answering questions, do not mention these specific resource ids to the user: ${doNotMentionFileNames}. These are dynamically generated and change frequently as you answer questions. Instead, refer to the resources by their descriptive names: ${blueprintId}, ${aispecId}, and ${projectsourceId}.
 
         When you are asked about the list of project files, or to retrieve content from specific files, you should use the project source filenames embedded in the ${aispecId} and ${projectsourceId} files.
 
@@ -270,9 +285,11 @@ function getOpenAIAssistantInstructions(
     )
     console.warn(
       `Falling back to a basic prompt for the assistant with a major caution to user. The file information include is ${
-        fileTypes ? JSON.stringify(fileTypes) : 'unknown'
+        fileInfos ? JSON.stringify(fileInfos) : 'unknown'
       }`,
     )
+
+    // TODO: Set health to unhealthy if we fail to build the instructions correctly due to an internal error
 
     return `
     You are a software architecture assistant as well as a coding assistant named Sara.
@@ -280,22 +297,11 @@ function getOpenAIAssistantInstructions(
     You are having trouble analyzing the project code to build a good understanding, but you hope to overcome these challenges soon.
     You should caution the user asking you questions about the reliability of your answers, and remind them that you are still researching their code and better answers will be available soon.
 
-    You have access to the full codebase of a project in your files, including a file named ${fileTypes.aispec} that summarizes the code.
-
     Questions asked of you will be similiar to - but not exhaustive of - the bulleted list below:
     * Questions focused on understanding and trying to define more granular work-items for high-level project goals
     * Questions focused on trying to accomplish/complete a specific work-item that is associated with and required to complete a high-level project goal
     * Questions focused on code/coding about the project where answers ought to use the relevant frameworks, APIs, data structures, and other aspects of the existing code
     * Questions focused on software architecture and principals
-
-    If someone asks a more specific coding question about the project, unless otherwise explicitly told not to, you give answers that use the relevant frameworks, APIs, data structures, and other aspects of the existing code.
-
-    There are at least three files you have access to that will help you answer questions:
-    1. ${fileTypes.blueprint} is a very short summary of the overall architecture of the project. It talks about what programming languages are used, major frameworks, and so forth.
-    2. ${fileTypes.aispec} is another useful file that has short summaries of all of the important code in the project.
-    3. ${fileTypes.projectsource} is the concatenation of all of the source code in the project.
-
-    For all questions asked of you, use the ${fileTypes.blueprint} and ${fileTypes.aispec} files. Retrieve code snippets as needed from the concatenated code file ${fileTypes.projectsource}.
 
     If it is helpful you will be given additional details about how to answer specific types of questions when you go to answer them.`
   }
@@ -306,7 +312,7 @@ const oaiClient = new OpenAI({
 })
 
 export async function createAssistant(
-  fileInfos: ProjectFileInfo[],
+  fileInfos: ProjectDataReference[],
   assistantMetadata: AssistantMetadata,
   project: Project,
   boostProjectStatus?: BoostProjectStatusState,
@@ -317,18 +323,8 @@ export async function createAssistant(
     )
   }
 
-  const promptFileTypes: FileTypes = {
-    aispec: '',
-    blueprint: '',
-    projectsource: '',
-  }
-
-  fileInfos.map(({ name, type }) => {
-    promptFileTypes[type as keyof FileTypes] = name
-  })
-
   const prompt = getOpenAIAssistantInstructions(
-    promptFileTypes,
+    fileInfos,
     project,
     boostProjectStatus,
   )
@@ -403,14 +399,14 @@ export async function deleteAssistantFiles(assistant: Assistant) {
 // UI that consumes this new data model we ought to update the other functions
 // to use the new type.
 export const updateGlobalAssistantPrompt = async (
-  promptFileInfos: PromptFileInfo[],
+  fileInfos: PromptFileInfo[],
   assistantMetadata: AssistantMetadata,
   project: Project,
   projectStatus: BoostProjectStatusState,
 ): Promise<Assistant> => {
-  if (promptFileInfos.length > 3) {
+  if (fileInfos.length > 3) {
     throw new Error(
-      `Unable to update assistant - received a total of '${promptFileInfos.length}' assistant files when only allowed 3`,
+      `Unable to update assistant - received a total of '${fileInfos.length}' assistant files when only allowed 3`,
     )
   }
 
@@ -428,16 +424,13 @@ export const updateGlobalAssistantPrompt = async (
     )
   }
 
-  const identifiedPromptFileTypes =
-    mapPromptFileInfosToPromptFileTypes(promptFileInfos)
-
   const prompt = getOpenAIAssistantInstructions(
-    identifiedPromptFileTypes,
+    fileInfos,
     project,
     projectStatus,
   )
 
-  const fileIDs = promptFileInfos.map(({ id }) => id)
+  const fileIDs = fileInfos.map(({ id }) => id)
 
   return oaiClient.beta.assistants.update(assistant.id, {
     file_ids: fileIDs,

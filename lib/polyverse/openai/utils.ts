@@ -5,19 +5,3 @@ export interface PromptFileTypes {
   aispec: string
   projectsource: string
 }
-
-export const mapPromptFileInfosToPromptFileTypes = (
-  promptFileInfos: PromptFileInfo[],
-): PromptFileTypes => {
-  let identifiedPromptFileTypes: PromptFileTypes = {
-    aispec: '',
-    blueprint: '',
-    projectsource: '',
-  }
-
-  promptFileInfos.map(({ name, type }) => {
-    identifiedPromptFileTypes[type as keyof PromptFileTypes] = name
-  })
-
-  return identifiedPromptFileTypes
-}
