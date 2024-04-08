@@ -10,7 +10,8 @@
 
 ### Enhancements
 
-- N/A
+- Improve retrieval of project source files and annotations in the Assistant instructions
+     - full references to project source files
 
 ### Bug Fixes
 
