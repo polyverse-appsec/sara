@@ -131,8 +131,6 @@ export const POST = auth(async (req: NextAuthRequest) => {
     // Update the prompt file infos that we have cached if necessary
     // Prepare to build the OpenAI Assistant for the project by getting the file
     // info from the Boost backend for the project we just created
-    // TODO: We really ought to be passing in the `ID` of the `project` instance
-    // but need to build more support out for using generic IDs in the backend
     // TODO: Rename to getBoostFileInfo
     const boostFileInfos = await getProjectAssistantFileInfo(
       org.name,
@@ -179,12 +177,8 @@ export const POST = auth(async (req: NextAuthRequest) => {
         parentProjectId: project.id,
       }
 
-      // It isn't obvious what is going on here. When we make a call to the
-      // Boost backend for `GET data_references` the objects returned also
-      // contain the `lastUpdatedAt` property. Since we are persisting this info
-      // in our K/V set the `createdAt` value to that of `lastUpdatedAt` so it
-      // doesn't appear wonky in our data (i.e. that `createdAt` is more recent
-      // than `lastUpdatedAt`).
+      // We rename lastUpdatedAt to createdAt since we already have a
+      //    lastUpdatedAt field in the BaseSaraObject
       promptFileInfo.createdAt = promptFileInfo.lastUpdatedAt
 
       return promptFileInfo
