@@ -103,7 +103,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
       Joi.string().required().validate(chat.tailChatQueryId).error
     ) {
       console.error(
-        `Checking chat '${chat.id}' for the tail chat query but none was found`,
+        `${user.email} ${org.name} Project=${project.id} : Checking chat '${chat.id}' for the tail chat query but none was found`,
       )
 
       return new Response(ReasonPhrases.INTERNAL_SERVER_ERROR, {
@@ -137,7 +137,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
       !reqBody.prevChatQueryId ||
       Joi.string().required().validate(reqBody.prevChatQueryId).error
     ) {
-      console.error(`Previous chat query wasn't identified`)
+      console.error(`${user.email} ${org.name} Project=${project.id} : Previous chat query wasn't identified`)
 
       return new Response(ReasonPhrases.BAD_REQUEST, {
         status: StatusCodes.BAD_REQUEST,
@@ -148,7 +148,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
       !reqBody.query ||
       Joi.string().required().validate(reqBody.query).error
     ) {
-      console.error(`No chat query was provided`)
+      console.error(`${user.email} ${org.name} Project=${project.id} : No chat query was provided`)
 
       return new Response(ReasonPhrases.BAD_REQUEST, {
         status: StatusCodes.BAD_REQUEST,
@@ -170,7 +170,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
     // Validate that the most recent chat query matches what the user supplied
     if (chat.tailChatQueryId !== reqBody.prevChatQueryId) {
       console.error(
-        `The ID of the previous chat query doesn't match that with the ID of the most recent chat query made`,
+        `${user.email} ${org.name} Project=${project.id} : The ID of the previous chat query doesn't match that with the ID of the most recent chat query made`,
       )
 
       return new Response(ReasonPhrases.BAD_REQUEST, {
@@ -197,7 +197,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
 
     if (!assistant) {
       console.debug(
-        `Failed to find an assistant when creating a new chat query for a chat with an ID of '${chat.id}'`,
+        `${user.email} ${org.name} Project=${project.id} : Failed to find an assistant when creating a new chat query for a chat with an ID of '${chat.id}'`,
       )
 
       return new Response(ReasonPhrases.INTERNAL_SERVER_ERROR, {
@@ -325,7 +325,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
     }
 
     console.debug(
-      `Updated assistant for project goal contextualization with a goal ID of '${goal.id}'`,
+      `${user.email} ${org.name} - Project=${project.id} : Updated assistant for project goal contextualization with a goal ID of '${goal.id}'`,
     )
 
     // Don't forget to indicate that we refreshed the project
@@ -416,7 +416,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
     })
   } catch (error) {
     console.error(
-      `Failed creating chat query for '${auth.user.username}' because: ${error}`,
+      `${auth.user.username} Failed creating chat query for because: `, error
     )
 
     return new Response('Failed to create project', {
