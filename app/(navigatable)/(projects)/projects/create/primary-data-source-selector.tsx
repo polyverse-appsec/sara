@@ -8,7 +8,7 @@ import {
   LockClosedIcon,
   LockOpen2Icon,
 } from '@radix-ui/react-icons'
-import { Badge, Callout } from '@radix-ui/themes'
+import { Badge, Callout, Skeleton } from '@radix-ui/themes'
 import { getGitHubOrgs, getOrgStatus } from 'app/react-utils'
 import { SaraSession } from 'auth'
 import { Button } from 'components/ui/button'
@@ -158,7 +158,11 @@ const PrimaryDataSourceSelector = ({
   }, [])
 
   if (shouldShowLoadingSpinner) {
-    return <LoadingSpinner />
+    return (
+      <div className="mb-4">
+        <LoadingSpinner />
+      </div>
+    )
   }
 
   return (
@@ -268,6 +272,11 @@ const PrimaryDataSourceSelector = ({
       {/* SECOND REPO DROPDOWN */}
       {selectedGithubOrg && (
         <div>
+          {!gitHubAppInstallStatusByOrgNames[selectedGithubOrg.login] && (
+            <div className="ml-2">
+              <LoadingSpinner />
+            </div>
+            )}
           {gitHubAppInstallStatusByOrgNames[selectedGithubOrg.login] ===
             'INSTALLED' && (
             <div className="p-4 space-y-1 text-sm border rounded-md">
@@ -328,7 +337,8 @@ const PrimaryDataSourceSelector = ({
               </DropdownMenu>
             </div>
           )}
-          {gitHubAppInstallStatusByOrgNames[selectedGithubOrg.login] !==
+          {gitHubAppInstallStatusByOrgNames[selectedGithubOrg.login] && 
+            gitHubAppInstallStatusByOrgNames[selectedGithubOrg.login] !==
             'INSTALLED' && (
             <Callout.Root color="orange">
               <Callout.Icon>
