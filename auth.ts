@@ -10,6 +10,8 @@ import { Session } from 'next-auth/types'
 import { updateBoostOrgUserStatus } from 'lib/polyverse/backend/backend'
 import getOrg from 'lib/polyverse/db/get-org'
 
+import logger, { type SaraLogContext } from './app/api/logger'
+
 export const {
   handlers: { GET, POST },
   auth
@@ -103,11 +105,10 @@ export const {
 
           // Update the backend user info - email, login time, OAuth token, etc.
           try {
-            // we don't need an org to update the username, since login is tied to email, but we'll pass an org (or email as org)
-            //      for now, since the backend requires it for all user APIs
-            const orgId = retrievedUser.orgIds.length > 0 ? retrievedUser.orgIds[0] : profile.email
-            const org = await getOrg(orgId)
-            await updateBoostOrgUserStatus(org.name, profile.email, profile.login as string)
+            // Since we don't use the org info in any meaningful way yet just
+            // pass along the email in place of it as we do when we first create
+            // the user.
+            await updateBoostOrgUserStatus(retrievedUser.email, retrievedUser.email, retrievedUser.username)
           } catch (error) {
             console.error(`Failed to update Boost org user status for ${profile.email} to ${profile.login} on sign in:`, error)
           }
@@ -136,12 +137,16 @@ export const {
 
             await createUser(newUser)
 
+            logger.infoWithContext(`User created`, {user: newUser} as SaraLogContext)
+
             // Update the backend user info - email, login time, OAuth token, etc.
             try {
-                const orgName = profile.email // placeholder since we don't know the org yet, and login is tied to email only
-                await updateBoostOrgUserStatus(orgName, profile.email, profile.login as string)
+              // Since the user was just created user the email as a placeholder
+              // for the org name since they haven't created any orgs yet. This
+              // is important as auth is tied to email.
+              await updateBoostOrgUserStatus(newUser.email, newUser.email, newUser.username)
             } catch (error) {
-                console.error(`Failed to update Boost org user status for ${profile.email} to ${profile.login} on sign in:`, error)
+                logger.errorWithContext(`Failed to update Boost org user status`, {user: newUser} as SaraLogContext)
             }
 
             token = {
