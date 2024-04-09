@@ -2,11 +2,8 @@ import { auth } from 'auth'
 import { ReasonPhrases, StatusCodes } from 'http-status-codes'
 import { UserOrgStatus } from 'lib/data-model-types'
 import { getBoostOrgStatus } from 'lib/polyverse/backend/backend'
+import getUser from 'lib/polyverse/db/get-user'
 import { NextAuthRequest } from 'next-auth/lib'
-
-import getOrg from '../../../../../lib/polyverse/db/get-org'
-import getUser from '../../../../../lib/polyverse/db/get-user'
-import authz from '../../../authz'
 
 export const GET = auth(async (req: NextAuthRequest) => {
   const { auth } = req
@@ -29,15 +26,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
     const requestedOrgName = reqUrlSlices[reqUrlSlices.length - 2]
 
     const user = await getUser(auth.user.email)
-
-    // try {
-    //   authz.userListedOnOrg(org, user.id)
-    //   authz.orgListedOnUser(user, org.id)
-    // } catch (error) {
-    //   return new Response(ReasonPhrases.FORBIDDEN, {
-    //     status: StatusCodes.FORBIDDEN,
-    //   })
-    // }
+    
     const boostOrgStatus = await getBoostOrgStatus(requestedOrgName, user.email)
 
     // Convert the response format from the Boost Node backend to something we

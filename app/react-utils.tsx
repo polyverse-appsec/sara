@@ -8,6 +8,7 @@ import {
   ProjectHealthStatusValue,
   UserOrgStatus,
 } from 'lib/data-model-types'
+import { getResource } from './saraClient'
 
 export type RenderableProjectHealthStatusValue =
   | ProjectHealthStatusValue
@@ -39,22 +40,21 @@ export const getOrgUserStatus = async (
 }
 
 export const getOrgStatus = async (orgName: string): Promise<UserOrgStatus> => {
-  const res = await fetch(`/api/orgs/${orgName}/status`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-
-  if (!res.ok) {
-    const errText = await res.text()
-    console.debug(`Failed to get org Status because: ${errText}`)
-
-    throw new Error(`Failed to get org status`)
+  let orgStatus;
+  try {
+    // Fetch GitHub repos for the current orgName using the getResource function
+    orgStatus = await getResource<UserOrgStatus>(
+      `/integrations/boost/orgs/${orgName}/status`,
+      `Failed to get GitHub repos for user`,
+    )
+    
+  } catch (error) {
+    console.error(
+      `Error fetching personal repos on data source select screen: `,
+      error,
+    )
   }
-
-  const orgStatus = await res.json()
-  return orgStatus
+  return orgStatus as UserOrgStatus;
 }
 
 export const getGitHubOrgs = async (): Promise<GitHubOrg[]> => {
