@@ -122,7 +122,7 @@ const SidebarNav = () => {
   return (
     <div
       ref={sidebarRef}
-      className="flex flex-col h-screen fixed inset-y-0 left-0 bg-white transition duration-200 ease-in-out"
+      className="flex flex-col h-screen fixed inset-y-0 left-0 bg-white dark:bg-black transition duration-200 ease-in-out"
       onMouseUp={handleMouseUp}
       onMouseMove={handleMouseMove}
       style={{ width: `${width}px` }} // Use inline style for dynamic width

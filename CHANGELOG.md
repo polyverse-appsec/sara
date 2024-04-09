@@ -2,6 +2,20 @@
 
 # Release Notes
 
+## Version 0.20.7: April 9th, 2024
+
+### New Features
+
+- N/A
+
+### Enhancements
+
+- N/A
+
+### Bug Fixes
+
+- Fixed navbar dark mode
+
 ## Version 0.20.6: April 8th, 2024
 
 ### New Features
