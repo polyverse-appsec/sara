@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { ExclamationTriangleIcon } from '@radix-ui/react-icons'
-import { getOrgStatus, getOrgUserStatus } from 'app/react-utils'
+import { getOrgUserStatus } from 'app/react-utils'
 import { SaraSession } from 'auth'
 import { ThemeToggle } from 'components/theme-toggle'
 import { Button } from 'components/ui/button'
