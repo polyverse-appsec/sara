@@ -8,9 +8,8 @@ import {
   ExclamationTriangleIcon,
   HamburgerMenuIcon,
 } from '@radix-ui/react-icons'
-import { getOrgStatus, getOrgUserStatus } from 'app/react-utils'
+import { getOrgUserStatus } from 'app/react-utils'
 import { type SaraSession } from 'auth'
-import { UserOrgStatus } from 'lib/data-model-types'
 import { useAppContext } from 'lib/hooks/app-context'
 import { type Session } from 'next-auth'
 import { signOut, useSession } from 'next-auth/react'

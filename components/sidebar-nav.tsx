@@ -12,12 +12,11 @@ import {
 import { Flex, HoverCard, Inset, Skeleton, Text } from '@radix-ui/themes'
 import { SaraSession } from 'auth'
 import ProjectStatusDetailsHoverCard from 'components/project-status/project-status-details-card'
-import { motion } from 'framer-motion'
-import { Org, type Project, type ProjectHealth } from 'lib/data-model-types'
+import { type Org } from 'lib/data-model-types'
 import { useSession } from 'next-auth/react'
 import toast from 'react-hot-toast'
 
-import { getOrgStatus, getOrgUserStatus } from './../app/react-utils'
+import { getOrgUserStatus } from './../app/react-utils'
 import { getResource } from './../app/saraClient'
 import { useAppContext } from './../lib/hooks/app-context'
 import SaraPortrait from './../public/Sara_Cartoon_Portrait.png'
@@ -48,11 +47,11 @@ const SidebarNav = () => {
     useState<boolean>(true)
   const [loadingBillingOrg, setLoadingBillingOrg] = useState<boolean>(true)
 
-  const [width, setWidth] = useState(225);
-  const [mouseDown, setMouseDown] = useState(false);
+  const [width, setWidth] = useState(225)
+  const [mouseDown, setMouseDown] = useState(false)
 
-  const dragRef = useRef(null);
-  const sidebarRef = useRef(null);
+  const dragRef = useRef(null)
+  const sidebarRef = useRef(null)
 
   useEffect(() => {
     const fetchAndSetActiveBillingOrg = async () => {
@@ -99,25 +98,25 @@ const SidebarNav = () => {
   ])
 
   const handleMouseUp = (_event: any) => {
-    setMouseDown(false);
-    window.removeEventListener('mousemove', handleMouseMove);
-    window.removeEventListener('mouseup', handleMouseUp);
-  };
+    setMouseDown(false)
+    window.removeEventListener('mousemove', handleMouseMove)
+    window.removeEventListener('mouseup', handleMouseUp)
+  }
 
   const handleMouseMove = (event: any) => {
     if (mouseDown) {
       if (event.clientX + 10 >= 150) {
-        setWidth(event.clientX + 50);
+        setWidth(event.clientX + 50)
       }
     }
-  };
+  }
 
-  const handleMouseDown = (e : any) => {
+  const handleMouseDown = (e: any) => {
     e.preventDefault()
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseup', handleMouseUp);
+    window.addEventListener('mousemove', handleMouseMove)
+    window.addEventListener('mouseup', handleMouseUp)
     setMouseDown(true)
-  };
+  }
 
   return (
     <div
