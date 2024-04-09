@@ -1,3 +1,5 @@
+// this is the old sign in page! currently not in use
+
 import Image from 'next/image'
 import { redirect } from 'next/navigation'
 

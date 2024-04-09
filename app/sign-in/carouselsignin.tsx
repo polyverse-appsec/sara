@@ -44,23 +44,11 @@ function Carousel({ images }: { images: StaticImageData[] }) {
   )
 }
 
-export default function SignInPage() {
+const CarouselSignIn = () => {
   const router = useRouter()
   const [color, setColor] = useState(false)
 
   useEffect(() => {
-    // TRIED TO ADAPT THE OLD await auth() code to client side code but it doesn't work
-    // const checkSession = async () => {
-    //   const currentSession = await auth();
-    //   // Redirect to home if user is already logged in
-    //   if (currentSession?.user) {
-    //     router.push('/');
-    //     return; // Early return to avoid adding scroll listener if user is redirected
-    //   }
-    // };
-
-    // checkSession();
-
     // This function will change the navbar color based on scroll position.
     const changeColor = () => {
       if (window.scrollY >= 500) {
@@ -76,13 +64,6 @@ export default function SignInPage() {
     // Cleanup function to remove the event listener when component unmounts
     return () => window.removeEventListener('scroll', changeColor)
   }, [router]) // Dependency array includes router to react to changes in routing
-
-  // THIS IS FROM THE OLD CODE, WONT WORK WITH 'use client'
-  // const session = await auth()
-  // // Redirect to home if user is already logged in
-  // if (session?.user) {
-  //   redirect('/')
-  // }
 
   const navigateToSection = (sectionId: string) => {
     const section = document.getElementById(sectionId)
@@ -270,3 +251,5 @@ export default function SignInPage() {
     </>
   )
 }
+
+export default CarouselSignIn

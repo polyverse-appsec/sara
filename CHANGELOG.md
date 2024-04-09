@@ -10,7 +10,7 @@
 
 ### Enhancements
 
-- N/A
+- Refreshed login page
 
 ### Bug Fixes
 
