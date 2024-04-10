@@ -206,7 +206,7 @@ const SidebarNav = () => {
         <div className="w-1/2 border-t-2 rounded-xl border-blue-600 my-2"></div>
       </Flex>
 
-      <div className="flex-grow rounded-lg border border-blue-500 no-scrollbar m-2 overflow-hidden">
+      <div className="grow rounded-lg border border-blue-500 no-scrollbar m-2 overflow-hidden">
         {/* Resource Loader */}
         {projectIdForConfiguration ? (
           <GoalsTaskNavTree
