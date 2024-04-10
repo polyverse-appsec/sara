@@ -4,7 +4,7 @@ import React, { Suspense, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { ArrowLeftIcon } from '@radix-ui/react-icons'
-import { Flex } from '@radix-ui/themes'
+import { Callout, Flex } from '@radix-ui/themes'
 import { getGitHubOrgs } from 'app/react-utils'
 import { SaraSession } from 'auth'
 import LoadingSpinner from 'components/loading-spinner'
@@ -15,6 +15,7 @@ import { Button } from './../../../../../components/ui/button'
 import { type GitHubOrg, type Org } from './../../../../../lib/data-model-types'
 import { useAppContext } from './../../../../../lib/hooks/app-context'
 import BusinessBillingContextCreator from './business-billing-context-creator'
+import OauthExplanation from 'components/oauth-explanation'
 
 const getBillingOrgs = async (): Promise<Org[]> => {
   const res = await fetch('/api/orgs')
@@ -179,6 +180,22 @@ const OrgCreate = () => {
               )}
             </div>
           </div>
+          <Callout.Root color="orange">
+              <Callout.Icon>
+                <OauthExplanation />
+              </Callout.Icon>
+              <Callout.Text>
+                If your orgs do not appear in the business billing section, configure Sara OAuth settings{' '}
+                <Link
+                  href="https://github.com/settings/connections/applications/b2fe85230b8f365e87f8"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline"
+                >
+                  here
+                </Link>
+              </Callout.Text>
+            </Callout.Root>
         </div>
       )}
       {selectedBusinessBilling && (

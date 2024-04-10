@@ -23,6 +23,10 @@ import { projectNameSchema } from './../../../../../lib/polyverse/db/validators'
 import DataSourceSelector from './data-source-selector'
 import GuidelineInputs from './guideline-inputs'
 import PrimaryDataSourceSelector from './primary-data-source-selector'
+import { Callout } from '@radix-ui/themes'
+import { InfoCircledIcon } from '@radix-ui/react-icons'
+import OauthExplanation from 'components/oauth-explanation'
+import Link from 'next/link'
 
 const ProjectCreate = () => {
   const router = useRouter()
@@ -134,6 +138,22 @@ const ProjectCreate = () => {
                 setControlledProjectDataSources(gitHubRepos)
               }
             />
+            <Callout.Root color="orange" className="mt-2">
+              <Callout.Icon>
+                <OauthExplanation />
+              </Callout.Icon>
+              <Callout.Text>
+                If your orgs do not appear in this dropdown, configure Sara OAuth settings{' '}
+                <Link
+                  href="https://github.com/settings/connections/applications/b2fe85230b8f365e87f8"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline"
+                >
+                  here
+                </Link>
+              </Callout.Text>
+            </Callout.Root>
           </div>
           {isAdvancedMenuOpen && (
             <div>

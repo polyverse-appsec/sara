@@ -3,13 +3,14 @@
 import React, { Suspense, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { ArrowLeftIcon } from '@radix-ui/react-icons'
-import { Flex } from '@radix-ui/themes'
+import { Callout, Flex, Link } from '@radix-ui/themes'
 import toast from 'react-hot-toast'
 
 import { Button } from './../../../../../components/ui/button'
 import { type GitHubOrg, type Org } from './../../../../../lib/data-model-types'
 import { useAppContext } from './../../../../../lib/hooks/app-context'
 import OrgSelector from './github-org-selector'
+import OauthExplanation from 'components/oauth-explanation'
 
 const BusinessBillingContextCreator = ({
   onUnselectBillingOrganization,
@@ -148,6 +149,22 @@ const BusinessBillingContextCreator = ({
             </Button>
           </div>
         </div>
+        <Callout.Root color="orange">
+          <Callout.Icon>
+            <OauthExplanation />
+          </Callout.Icon>
+          <Callout.Text>
+            If your orgs do not appear in the business billing section, configure Sara OAuth settings{' '}
+            <Link
+              href="https://github.com/settings/connections/applications/b2fe85230b8f365e87f8"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline"
+            >
+              here
+            </Link>
+          </Callout.Text>
+        </Callout.Root>
       </div>
     </div>
   )

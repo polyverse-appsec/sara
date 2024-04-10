@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { LoginButton } from '../../components/login-button'
 import PolyverseLogo from './../../public/Polyverse logo medium.jpg'
 import SaraPortrait from './../../public/Sara_Cartoon_Portrait.png'
+import OauthExplanation from 'components/oauth-explanation'
 
 const DefaultSignIn = () => {
   return (
@@ -30,7 +31,12 @@ const DefaultSignIn = () => {
           height={200}
         />
       </div>
-      <LoginButton />
+      <div className="flex items-center">
+        <LoginButton />
+        <div className="ml-2">
+          <OauthExplanation />
+        </div>
+      </div>
       <h2 className="text-xl text-blue-600 mt-8">What Superpowers Sara</h2>
       <div className="w-1/2 border-t-2 border-blue-600 my-2"></div>
       <div className="mt-4 p-4 border-2 border-blue-600 rounded-lg text-base text-center text-gray-700 w-1/2 mx-auto preserve-line-breaks">

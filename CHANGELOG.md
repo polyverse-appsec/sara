@@ -12,6 +12,7 @@
 
 - Refreshed login page
 - Added Sara OAuth App configuration page button in the settings page
+- Added Sara OAuth App info/redirection links to login screen, create project page, and billing context create page
 
 ### Bug Fixes
 

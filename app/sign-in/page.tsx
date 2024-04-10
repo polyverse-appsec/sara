@@ -12,6 +12,6 @@ export default async function SignInPage() {
     redirect('/')
   }
   return (
-    isPreviewFeatureEnabled('CarouselLoginPage') ? <CarouselSignIn /> : <DefaultSignIn /> // Fix conditional rendering syntax
+    isPreviewFeatureEnabled('CarouselLoginPage') ? <CarouselSignIn /> : <DefaultSignIn />
   )
 }
