@@ -1,7 +1,9 @@
 import { redirect } from 'next/navigation'
 
 import { auth } from './../../auth'
+import DefaultSignIn from './defaultsignin'
 import CarouselSignIn from './carouselsignin'
+import { isPreviewFeatureEnabled } from 'lib/utils' 
 
 export default async function SignInPage() {
   const session = await auth()
@@ -10,6 +12,6 @@ export default async function SignInPage() {
     redirect('/')
   }
   return (
-    <CarouselSignIn />
+    isPreviewFeatureEnabled('CarouselLoginPage') ? <CarouselSignIn /> : <DefaultSignIn /> // Fix conditional rendering syntax
   )
 }

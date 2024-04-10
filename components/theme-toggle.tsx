@@ -22,9 +22,7 @@ export function ThemeToggle() {
     >
       <div className="flex items-center">
         <p>Toggle Theme</p>
-        {!theme ? (
-          theme === 'light'
-        ) : theme === 'dark' ? (
+        {theme === 'dark' ? (
           <IconMoon className="transition-all ml-2" />
         ) : (
           <IconSun className="transition-all ml-2" />

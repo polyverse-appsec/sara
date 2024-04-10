@@ -1,19 +1,11 @@
 // this is the old sign in page! currently not in use
 
 import Image from 'next/image'
-import { redirect } from 'next/navigation'
-
-import { auth } from '../../auth'
 import { LoginButton } from '../../components/login-button'
 import PolyverseLogo from './../../public/Polyverse logo medium.jpg'
 import SaraPortrait from './../../public/Sara_Cartoon_Portrait.png'
 
-export default async function SignInPage() {
-  const session = await auth()
-  // Redirect to home if user is already logged in
-  if (session?.user) {
-    redirect('/')
-  }
+const DefaultSignIn = () => {
   return (
     <div className="flex flex-col items-center justify-center p-4">
       <Image
@@ -52,3 +44,5 @@ export default async function SignInPage() {
     </div>
   )
 }
+
+export default DefaultSignIn
