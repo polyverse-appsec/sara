@@ -118,7 +118,7 @@ const SettingsGithubAppInstall = () => {
             rel="noopener noreferrer"
             className="w-3/4"
           >
-            <div className="bg-blue-600 shadow-md rounded-lg block transform transition hover:scale-105 cursor-pointer">
+            <div className="bg-blue-600 shadow-md rounded-lg block transition hover:scale-105 cursor-pointer">
               <h3 className="text-lg font-semibold text-center text-white">
                 Authorize for User
               </h3>
