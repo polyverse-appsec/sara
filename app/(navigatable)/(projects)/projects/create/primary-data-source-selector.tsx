@@ -31,11 +31,13 @@ import {
 
 interface DataSourceSelectorProps {
   userIsPremium: boolean
+  disableInput: boolean
   setControlledProjectDataSources: (gitHubRepos: GitHubRepo[]) => void
 }
 
 const PrimaryDataSourceSelector = ({
   userIsPremium,
+  disableInput,
   setControlledProjectDataSources,
 }: DataSourceSelectorProps) => {
   const session = useSession()
@@ -169,7 +171,7 @@ const PrimaryDataSourceSelector = ({
     <div className="p-4 space-y-1 text-sm border rounded-md">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="pl-0 text-black-500">
+          <Button variant="ghost" className="pl-0 text-black-500" disabled={disableInput}>
             {personalReposSelected && (
               <span className="pl-1">Personal Repos</span>
             )}
@@ -218,7 +220,7 @@ const PrimaryDataSourceSelector = ({
         <div className="p-4 space-y-1 text-sm border rounded-md">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="pl-0 text-black-500">
+              <Button variant="ghost" className="pl-0 text-black-500" disabled={disableInput}>
                 {selectedGithubRepo ? (
                   <span className="pl-1">{selectedGithubRepo.name}</span>
                 ) : (
@@ -282,7 +284,7 @@ const PrimaryDataSourceSelector = ({
             <div className="p-4 space-y-1 text-sm border rounded-md">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="pl-0 text-black-500">
+                  <Button variant="ghost" className="pl-0 text-black-500" disabled={disableInput}>
                     {selectedGithubRepo ? (
                       <span className="pl-1">{selectedGithubRepo.name}</span>
                     ) : (

@@ -16,6 +16,7 @@ interface DataSourceCheckboxState {
 
 interface DataSourceSelectorProps {
   orgName: string
+  disableInput: boolean
   setControlledProjectDataSources: (gitHubRepos: GitHubRepo[]) => void
 }
 
@@ -36,6 +37,7 @@ const createInitialDataSourceCheckboxStates = (
 
 const DataSourceSelector = ({
   orgName,
+  disableInput,
   setControlledProjectDataSources,
 }: DataSourceSelectorProps) => {
   const [dataSourceCheckboxStates, setDataSourceCheckboxStates] = useState<
@@ -109,6 +111,7 @@ const DataSourceSelector = ({
 
                   setControlledProjectDataSources(selectedDataSources)
                 }}
+                disabled={disableInput}
               >
                 <Checkbox.Indicator>
                   <CheckIcon />

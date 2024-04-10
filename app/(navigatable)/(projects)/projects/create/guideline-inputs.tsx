@@ -5,10 +5,11 @@ import { Flex, TextArea } from '@radix-ui/themes'
 import { Button } from 'components/ui/button'
 
 interface ProjectGuidelinesProps {
+  disableInput: boolean
   setProjectGuidelines: (guidelines: string[]) => void
 }
 
-const GuidelineInputs = ({ setProjectGuidelines }: ProjectGuidelinesProps) => {
+const GuidelineInputs = ({ disableInput, setProjectGuidelines }: ProjectGuidelinesProps) => {
   const [guidelineValues, setGuidelineValues] = useState<string[]>([''])
 
   const handleAddGuideline = () => {
@@ -40,6 +41,7 @@ const GuidelineInputs = ({ setProjectGuidelines }: ProjectGuidelinesProps) => {
               value={guideline}
               onChange={(e) => handleGuidelineChange(index, e.target.value)}
               placeholder="Type guideline here"
+              disabled={disableInput}
             />
             <Button
               className="shrink-0 bg-red-500 hover:bg-red-700"

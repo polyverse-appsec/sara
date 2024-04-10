@@ -121,6 +121,7 @@ const ProjectCreate = () => {
               value={projectName}
               placeholder="Enter project name"
               onChange={(e) => setProjectName(e.target.value)}
+              disabled={!saveButtonEnabled}  
             />
           </div>
           {/* This is the primary data source selector */}
@@ -134,6 +135,7 @@ const ProjectCreate = () => {
             </div>
             <PrimaryDataSourceSelector
               userIsPremium={userIsPremium}
+              disableInput={!saveButtonEnabled}
               setControlledProjectDataSources={(gitHubRepos) =>
                 setControlledProjectDataSources(gitHubRepos)
               }
@@ -168,6 +170,7 @@ const ProjectCreate = () => {
                   value={projectDescription}
                   placeholder="Enter a description of your Project that Sara will use to guide her analysis"
                   onChange={(e) => setProjectDescription(e.target.value)}
+                  disabled={!saveButtonEnabled}
                 />
               </div>
               <div className="my-1">
@@ -176,6 +179,7 @@ const ProjectCreate = () => {
                   <p className="text-sm ml-2">(optional)</p>
                 </div>
                 <GuidelineInputs
+                  disableInput={!saveButtonEnabled}
                   setProjectGuidelines={(guidelines: string[]) =>
                     setControlledProjectGuidelines(guidelines)
                   }
@@ -193,6 +197,7 @@ const ProjectCreate = () => {
               change this */}
                 <DataSourceSelector
                   orgName={activeBillingOrg.name}
+                  disableInput={!saveButtonEnabled}
                   setControlledProjectDataSources={(gitHubRepos) =>
                     setControlledProjectDataSources(gitHubRepos)
                   }

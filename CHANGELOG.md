@@ -2,6 +2,20 @@
 
 # Release Notes
 
+## Version 0.20.8: April 10th, 2024
+
+### New Features
+
+- N/A
+
+### Enhancements
+
+- Disable inputs after pressing project create
+
+### Bug Fixes
+
+- N/A
+
 ## Version 0.20.7: April 9th, 2024
 
 ### New Features
