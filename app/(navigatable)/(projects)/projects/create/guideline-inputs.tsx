@@ -36,7 +36,7 @@ const GuidelineInputs = ({ setProjectGuidelines }: ProjectGuidelinesProps) => {
         {guidelineValues.map((guideline, index) => (
           <div key={index} className="flex items-center gap-2 w-full">
             <TextArea
-              className="flex-grow" // Tailwind CSS class to make TextArea grow
+              className="grow" // Tailwind CSS class to make TextArea grow
               value={guideline}
               onChange={(e) => handleGuidelineChange(index, e.target.value)}
               placeholder="Type guideline here"
@@ -51,7 +51,7 @@ const GuidelineInputs = ({ setProjectGuidelines }: ProjectGuidelinesProps) => {
         ))}
       </div>
       <Button
-        className="mt-2 px-2 py-2 bg-blue-500 hover:bg-blue-700"
+        className="mt-2 p-2 bg-blue-500 hover:bg-blue-700"
         onClick={handleAddGuideline}
       >
         Add Guideline

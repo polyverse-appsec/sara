@@ -57,7 +57,7 @@ const DataSourceSelector = ({
       setDataSourceCheckboxStates(checkboxStates)
       setShouldShowLoadingSpinner(false)
     })()
-  }, [])
+  }, [orgName])
 
   if (shouldShowLoadingSpinner) {
     return <LoadingSpinner />
