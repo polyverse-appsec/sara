@@ -11,6 +11,7 @@
 ### Enhancements
 
 - Refreshed login page
+- Added Sara OAuth App configuration page button in the settings page
 
 ### Bug Fixes
 

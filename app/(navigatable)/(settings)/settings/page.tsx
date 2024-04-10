@@ -92,7 +92,7 @@ const SettingsIndex = () => {
         <div className="bg-blue-500 shadow-md rounded-lg p-4 block transform transition hover:scale-105 cursor-pointer">
           <div className="flex items-center justify-center text-white">
             <h3 className="text-lg font-semibold flex-1 text-center">
-              Authorize Github Access:{' '}
+              Authorize Github Source Analysis:{' '}
               {userGitHubAppInstalled
                 ? 'Access Configured'
                 : 'Access Not Configured'}
@@ -110,6 +110,19 @@ const SettingsIndex = () => {
                 <p>✅</p>
               </div>
             )}
+          </div>
+        </div>
+      </Link>
+      <Link 
+        href="https://github.com/settings/connections/applications/b2fe85230b8f365e87f8"
+        target="_blank"
+        rel="noopener noreferrer" 
+        className="w-1/2">
+        <div className="bg-blue-500 shadow-md rounded-lg p-4 block transform transition hover:scale-105 cursor-pointer">
+          <div className="flex items-center justify-center text-white">
+            <h3 className="text-lg font-semibold flex-1 text-center">
+              Configure Sara OAuth Org Access
+            </h3>
           </div>
         </div>
       </Link>
