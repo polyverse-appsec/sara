@@ -2,6 +2,8 @@ import { ReasonPhrases, StatusCodes } from 'http-status-codes'
 import Joi from 'joi'
 import { NextAuthRequest } from 'next-auth/lib'
 
+
+import logger from './../../../../../app/api/logger'
 import { auth } from '../../../../../auth'
 import {
   type GitHubRepo,
@@ -90,6 +92,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
     // and you are a premium user. In the future we will more intelligently
     // allow projects to be created and thus making this workflow more
     // permissive.
+    logger.infoWithContext(`POST /api/orgs/${org.id}/projects invoking getBoostOrgUserStatus (/api/user/${org.name}/account)`, {user, org})
     const boostOrgUserStatus = await getBoostOrgUserStatus(org.name, user.email)
 
     // If the `username` data member shows up on the user status that means

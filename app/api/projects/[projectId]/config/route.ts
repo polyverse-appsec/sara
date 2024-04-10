@@ -2,6 +2,7 @@ import { ReasonPhrases, StatusCodes } from 'http-status-codes'
 import { NextAuthRequest } from 'next-auth/lib'
 import { Assistant } from 'openai/resources/beta/assistants/assistants'
 
+import logger from './../../../../../app/api/logger'
 import { auth } from '../../../../../auth'
 import getProjectPromptFileInfoIds from '../../../../../lib/polyverse/db/get-project-prompt-file-info-ids'
 import authz from './../../../../../app/api/authz'
@@ -74,6 +75,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
     // and you are a premium user. In the future we will more intelligently
     // allow projects to be refreshed and thus making this workflow more
     // permissive.
+    logger.infoWithContext(`POST /api/project/${project.id}/config invoking getBoostOrgUserStatus (/api/user/${org.name}/account)`, {user, org, project})
     const boostOrgUserStatus = await getBoostOrgUserStatus(org.name, user.email)
 
     // If the `username` data member shows up on the user status that means

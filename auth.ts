@@ -108,6 +108,7 @@ export const {
             // Since we don't use the org info in any meaningful way yet just
             // pass along the email in place of it as we do when we first create
             // the user.
+            logger.infoWithContext(`auth invoking updateBoostOrgUserStatus (/api/user/${retrievedUser.email}/account) for existing user`, {user: retrievedUser})
             await updateBoostOrgUserStatus(retrievedUser.email, retrievedUser.email, retrievedUser.username)
           } catch (error) {
             console.error(`Failed to update Boost org user status for ${profile.email} to ${profile.login} on sign in:`, error)
@@ -144,6 +145,7 @@ export const {
               // Since the user was just created user the email as a placeholder
               // for the org name since they haven't created any orgs yet. This
               // is important as auth is tied to email.
+              logger.infoWithContext(`auth invoking updateBoostOrgUserStatus (/api/user/${newUser.email}/account) for new user`, {user: newUser})
               await updateBoostOrgUserStatus(newUser.email, newUser.email, newUser.username)
             } catch (error) {
                 logger.errorWithContext(`Failed to update Boost org user status`, {user: newUser} as SaraLogContext)
