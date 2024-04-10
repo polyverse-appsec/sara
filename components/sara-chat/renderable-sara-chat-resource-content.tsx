@@ -43,7 +43,7 @@ const RenderableSaraChatResourceContent = <T extends Chatable>({
         )
       }
     })()
-  }, [])
+  }, [chatableResourceUrl])
 
   // We preseume that someone is only rendering this component if the renderable
   // resource exists so we ought not hit 404 errors.
