@@ -6,6 +6,7 @@ import RenderableSaraChatGuideContent from './renderable-sara-chat-guide-content
 
 interface RenderableInitialChatGuideContentProps {
   setInitialChatQuery: (initialChatQuery: string) => void
+  setAutoPromptClicked: (autoPromptClicked: boolean) => void
 }
 
 const conversationStarters = [
@@ -17,11 +18,13 @@ const conversationStarters = [
 const renderConversationStarter = (
   conversationStarter: string,
   setInitialChatQuery: (initialChatQuery: string) => void,
+  setAutoPromptClicked: (autoPromptClicked: boolean) => void,
 ) => (
   <Button
     variant="ghost"
     onClick={() => {
       setInitialChatQuery(conversationStarter)
+      setAutoPromptClicked(true)
     }}
   >
     <svg
@@ -44,6 +47,7 @@ const renderConversationStarter = (
 
 const RenderableInitialChatGuideContent = ({
   setInitialChatQuery,
+  setAutoPromptClicked,
 }: RenderableInitialChatGuideContentProps) => {
   return (
     <RenderableSaraChatGuideContent>
@@ -53,7 +57,7 @@ const RenderableInitialChatGuideContent = ({
       </Text>
       <Flex mt="3" direction="column" gapY="3" align="start">
         {conversationStarters.map((conversationStarter, index) =>
-          renderConversationStarter(conversationStarter, setInitialChatQuery),
+          renderConversationStarter(conversationStarter, setInitialChatQuery, setAutoPromptClicked),
         )}
       </Flex>
     </RenderableSaraChatGuideContent>

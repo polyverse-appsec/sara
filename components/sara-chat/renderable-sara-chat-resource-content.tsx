@@ -31,6 +31,8 @@ const RenderableSaraChatResourceContent = <T extends Chatable>({
     undefined,
   )
 
+  const [autoPromptClicked, setAutoPromptClicked] = useState(false);
+
   useEffect(() => {
     ;(async () => {
       try {
@@ -82,11 +84,15 @@ const RenderableSaraChatResourceContent = <T extends Chatable>({
           setInitialChatQuery={(initialChatQuery) => {
             setInitialChatQuery(initialChatQuery)
           }}
+          setAutoPromptClicked={(autoPromptClicked) => {
+            setAutoPromptClicked(autoPromptClicked)
+          }}
         />
         <SaraChat
           projectHealth={projectHealth}
           chatableResourceUrl={chatableResourceUrl}
           initialChatQuery={initialChatQuery}
+          autoPromptClicked={autoPromptClicked}
           onChatCreated={(chatId: string) => {
             const newChatableResource: T = {
               ...chatableResource,

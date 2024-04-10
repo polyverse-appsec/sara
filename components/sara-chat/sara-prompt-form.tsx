@@ -17,6 +17,7 @@ export interface SaraPromptFormProps
   extends Pick<UseChatHelpers, 'input' | 'setInput'> {
   onQuerySubmit: (query: string) => void
   saraConfigured: boolean
+  autoPromptClicked?: boolean
   projectHealth: ProjectHealthStatusValue
 }
 
@@ -26,12 +27,18 @@ const SaraPromptForm = ({
   input,
   setInput,
   saraConfigured,
+  autoPromptClicked,
   projectHealth,
 }: SaraPromptFormProps) => {
   const { formRef, onKeyDown } = useEnterSubmit()
   const inputRef = React.useRef<HTMLTextAreaElement>(null)
   const router = useRouter()
 
+  if (input.trim() && autoPromptClicked && saraConfigured) {
+    setInput(''); 
+    onQuerySubmit(input.trim());
+  }
+  
   React.useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus()

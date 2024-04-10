@@ -22,6 +22,7 @@ interface SaraChatProps {
   chatableResourceUrl: string
   existingChatId?: string
   initialChatQuery?: string
+  autoPromptClicked?: boolean
   onChatCreated?: (chatId: string) => void
 }
 
@@ -93,6 +94,7 @@ const SaraChat = <T extends Chatable>({
   chatableResourceUrl,
   existingChatId,
   initialChatQuery,
+  autoPromptClicked,
   onChatCreated,
 }: SaraChatProps) => {
   const [chatQueries, setChatQueries] = useState<ChatQuery[] | null>(null)
@@ -167,6 +169,7 @@ const SaraChat = <T extends Chatable>({
         projectHealth={projectHealth}
         input={chatQuery}
         setInput={setChatQuery}
+        autoPromptClicked={autoPromptClicked}
         onQuerySubmit={async (query: string) => {
           try {
             // Check to see if we have a chat in the first place...

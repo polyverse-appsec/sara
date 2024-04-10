@@ -17,6 +17,7 @@ export interface SaraChatPanelProps
   extends Pick<UseChatHelpers, 'input' | 'setInput'> {
   id?: string
   title?: string
+  autoPromptClicked?: boolean
   onQuerySubmit: (query: string) => void
   projectHealth: ProjectHealthStatusValue
 }
@@ -47,6 +48,7 @@ const renderChatAlert = (projectHealth: ProjectHealthStatusValue) => {
 const SaraChatPanel = ({
   input,
   setInput,
+  autoPromptClicked,
   onQuerySubmit,
   projectHealth,
 }: SaraChatPanelProps) => {
@@ -105,6 +107,7 @@ const SaraChatPanel = ({
             }}
             input={input}
             setInput={setInput}
+            autoPromptClicked={autoPromptClicked}
             saraConfigured={true}
           />
         </div>
