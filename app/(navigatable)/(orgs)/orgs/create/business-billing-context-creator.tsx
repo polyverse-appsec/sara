@@ -41,15 +41,15 @@ const BusinessBillingContextCreator = ({
         </button>
         <div className="grid grid-cols-1 gap-4">
           <div className="text-base my-1">
+            <h3 className="text-lg font-semibold">Select Business Billing Account Context</h3>
             <p>
-              Create an organization that will be billed. When a billing
-              organization is set as the active billing context all future
-              resources created will be associated with it. For example
-              projects, goals, tasks, and chats.
+              Select the organization or company that will be billed for your Sara analysis.
+            </p>
+            <p>
+              You may also be able to share Project analysis, Sara resources, Goals and Tasks across members of your organization.
             </p>
           </div>
           <div className="my-1">
-            <h3 className="text-lg font-semibold">Select Organization</h3>
             <OrgSelector
               setControlledGitHubOrg={(gitHubOrg) =>
                 setControlledGitHubOrg(gitHubOrg)

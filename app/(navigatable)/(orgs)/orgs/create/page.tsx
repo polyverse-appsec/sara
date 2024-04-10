@@ -102,9 +102,7 @@ const OrgCreate = () => {
                 </Link>
               </button>
             </div>
-            <p>
-              Select the type of Billing you would like to use.
-            </p>
+            <h3 className="text-lg font-semibold">Select the type of Billing you would like to use.</h3>
             <p>
               A Personal Billing Context is for your personal projects, and typically paid by you. You can only have one Personal Billing Context.
             </p>
