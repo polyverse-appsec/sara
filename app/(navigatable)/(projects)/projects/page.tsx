@@ -38,7 +38,7 @@ const ProjectIndex = () => {
       setProjects(projects)
       setIsLoading(false)
     })()
-  }, [activeBillingOrg])
+  }, [activeBillingOrg, router])
 
   // Make sure to clear the active project to ensure we don't render the nav
   // bar specific details to a previously selected project.
