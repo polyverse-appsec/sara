@@ -190,7 +190,7 @@ useEffect(() => {
               setPersonalReposSelected(true)
             }}
           >
-            <span className="font-semibold text-ellipsis whitespace-nowrap overflow-hidden">
+            <span className="font-semibold truncate whitespace-nowrap overflow-hidden">
               Personal Repos
             </span>
           </DropdownMenuItem>
@@ -204,7 +204,7 @@ useEffect(() => {
                   setSelectedGithubOrg(org)
                 }}
               >
-                <span className="ml-2 text-ellipsis whitespace-nowrap overflow-hidden">
+                <span className="ml-2 truncate whitespace-nowrap overflow-hidden">
                   {org.login}
                 </span>
               </DropdownMenuItem>
@@ -239,7 +239,7 @@ useEffect(() => {
                     }}
                     disabled={repo.private && !userIsPremium}
                   >
-                    <span className="mx-2 text-ellipsis whitespace-nowrap overflow-hidden">
+                    <span className="mx-2 truncate whitespace-nowrap overflow-hidden">
                       {repo.name}
                     </span>
                     {repo.private && !userIsPremium && (
@@ -259,7 +259,7 @@ useEffect(() => {
                 ))
               ) : (
                 <DropdownMenuItem>
-                  <span className="ml-2 text-ellipsis whitespace-nowrap overflow-hidden">
+                  <span className="ml-2 truncate whitespace-nowrap overflow-hidden">
                     No personal repos available
                   </span>
                 </DropdownMenuItem>
@@ -307,7 +307,7 @@ useEffect(() => {
                           }}
                           disabled={repo.private && !userIsPremium}
                         >
-                          <span className="mx-2 text-ellipsis whitespace-nowrap overflow-hidden">
+                          <span className="mx-2 truncate whitespace-nowrap overflow-hidden">
                             {repo.name}
                           </span>
                           {repo.private && !userIsPremium && (
@@ -328,7 +328,7 @@ useEffect(() => {
                     )
                   ) : (
                     <DropdownMenuItem>
-                      <span className="ml-2 text-ellipsis whitespace-nowrap overflow-hidden">
+                      <span className="ml-2 truncate whitespace-nowrap overflow-hidden">
                         No repos available for this org
                       </span>
                     </DropdownMenuItem>
