@@ -118,44 +118,44 @@ const PrimaryDataSourceSelector = ({
     setGitHubReposForOrgs(reposForOrgs)
   }
 
-  async function setAppInstalledStatusForOrgs(orgs: GitHubOrg[]) {
-    if (!saraSession) {
-      toast.error(`No session available`)
-      return
+useEffect(() => {
+    async function setAppInstalledStatusForOrgs(orgs: GitHubOrg[]) {
+        if (!saraSession) {
+            toast.error(`No session available`)
+            return
+        }
+
+        const appInstallationStatuses: Record<string, string> = {}
+
+        for (const org of orgs) {
+            try {
+                const orgStatus = await getOrgStatus(org.login)
+
+                // If successful, add the orgName as a key and its corresponding repos array as the value to the reposForOrgs record
+                appInstallationStatuses[org.login] = orgStatus.gitHubAppInstalled
+            } catch (error) {
+                console.error(
+                    `Error fetching installation status for ${org.login} on data source select screen: `,
+                    error,
+                )
+                appInstallationStatuses[org.login] = ''
+            }
+        }
+        setGitHubAppInstallStatusByOrgNames(appInstallationStatuses)
     }
 
-    const appInstallationStatuses: Record<string, string> = {}
-
-    for (const org of orgs) {
-      try {
-        const orgStatus = await getOrgStatus(org.login)
-
-        // If successful, add the orgName as a key and its corresponding repos array as the value to the reposForOrgs record
-        appInstallationStatuses[org.login] = orgStatus.gitHubAppInstalled
-      } catch (error) {
-        console.error(
-          `Error fetching installation status for ${org.login} on data source select screen: `,
-          error,
-        )
-        appInstallationStatuses[org.login] = ''
-      }
-    }
-    setGitHubAppInstallStatusByOrgNames(appInstallationStatuses)
-  }
-
-  useEffect(() => {
     ;(async () => {
-      const fetchedGitHubOrgs = await getGitHubOrgs()
+        const fetchedGitHubOrgs = await getGitHubOrgs()
 
-      setOrgs(fetchedGitHubOrgs)
+        setOrgs(fetchedGitHubOrgs)
 
-      fetchAndSetReposForOrgs(fetchedGitHubOrgs)
-      setAppInstalledStatusForOrgs(fetchedGitHubOrgs)
-      fetchAndSetReposForPersonal()
+        fetchAndSetReposForOrgs(fetchedGitHubOrgs)
+        setAppInstalledStatusForOrgs(fetchedGitHubOrgs)
+        fetchAndSetReposForPersonal()
 
-      setShouldShowLoadingSpinner(false)
+        setShouldShowLoadingSpinner(false)
     })()
-  }, [])
+}, [saraSession])
 
   if (shouldShowLoadingSpinner) {
     return (
