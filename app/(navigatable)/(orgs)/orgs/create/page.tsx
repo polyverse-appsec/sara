@@ -91,7 +91,7 @@ const OrgCreate = () => {
     <div>
       {!selectedBusinessBilling && (
         <div className="flex flex-col items-center">
-          <div className="bg-background shadow-md rounded-lg p-6 font-semibold text-base text-center my-2 mx-2">
+          <div className="bg-background shadow-md rounded-lg p-6 font-semibold text-base text-center m-2">
             <div className="text-left mb-2">
               <button className="btn-blue text-sm">
                 <Link href="/orgs">
