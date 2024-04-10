@@ -24,7 +24,7 @@ const CollapsibleRenderableResourceContent = ({
         onClick={toggleDropdown}
       >
         <span className="text-center flex-1 font-bold">{title}</span>
-        <ChevronDownIcon className="flex-shrink-0" />
+        <ChevronDownIcon className="shrink-0" />
       </div>
 
       {/* Conditional rendering of children based on `isOpen` state */}
