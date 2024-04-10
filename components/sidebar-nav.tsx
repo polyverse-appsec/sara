@@ -184,7 +184,9 @@ const SidebarNav = () => {
                 <Text size="2" weight="bold">
                   Active Project:
                 </Text>
-                <Text size="2">{activeProjectDetails?.project.name}</Text>
+                <Link href={`/projects/${activeProjectDetails?.id}`} className="hover:underline">
+                  <Text size="2">{activeProjectDetails?.project.name}</Text>
+                </Link>
               </>
             ) : (
               <Text size="2">No Project Selected</Text>
