@@ -103,10 +103,13 @@ const OrgCreate = () => {
               </button>
             </div>
             <p>
-              Create an organization that will be billed. When a billing
-              organization is set as the active billingcontext all future
-              resources created will be associated with it. For example
-              projects, goals, tasks, and chats.
+              Select the type of Billing you would like to use.
+            </p>
+            <p>
+              A Personal Billing Context is for your personal projects, and typically paid by you. You can only have one Personal Billing Context.
+            </p>
+            <p>
+              A Business Billing Context is for your company or group projects, and typically billed to your company. You can have multiple Business Billing Contexts.
             </p>
           </div>
           <div className="flex justify-content mt-16">
