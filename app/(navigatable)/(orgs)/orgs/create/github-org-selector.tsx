@@ -104,7 +104,7 @@ const OrgSelector = ({ setControlledGitHubOrg }: OrgSelectorProps) => {
                 setSelectedGitHubOrg(gitHubOrg)
               }}
             >
-              <span className="ml-2 text-ellipsis whitespace-nowrap overflow-hidden">
+              <span className="ml-2 truncate whitespace-nowrap overflow-hidden">
                 {gitHubOrg.login}
               </span>
             </DropdownMenuItem>
