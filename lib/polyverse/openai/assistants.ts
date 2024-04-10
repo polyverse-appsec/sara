@@ -5,12 +5,12 @@ import packageInfo from '../../../package.json'
 import {
   type Project,
   type PromptFileInfo,
-  type PromptFileInfoTypeString
+  type PromptFileInfoTypeString,
 } from '../../data-model-types'
 import { BoostProjectStatusState } from '../backend/types/BoostProjectStatus'
+import { usFormatter } from '../backend/utils/log'
 import { isRecord } from '../typescript/helpers'
 import { OPENAI_MODEL } from './constants'
-import { usFormatter } from '../backend/utils/log'
 
 export const ASSISTANT_METADATA_CREATOR = 'sara.frontend'
 
@@ -46,11 +46,13 @@ function getOpenAIAssistantInstructions(
   project: Project,
   projectStatus?: BoostProjectStatusState,
 ): string {
-
-  const fileInfosByType = fileInfos.reduce((accumulator, fileInfo) => {
-    accumulator.set(fileInfo.type, fileInfo)
-    return accumulator
-  }, new Map() as Map<PromptFileInfoTypeString, PromptFileInfo>)
+  const fileInfosByType = fileInfos.reduce(
+    (accumulator, fileInfo) => {
+      accumulator.set(fileInfo.type, fileInfo)
+      return accumulator
+    },
+    new Map() as Map<PromptFileInfoTypeString, PromptFileInfo>,
+  )
 
   const blueprintId = `"Architectural Blueprint Summary"`
   const aispecId = `"Code and Function Specifications"`
@@ -100,21 +102,39 @@ function getOpenAIAssistantInstructions(
     } else if (projectStatus?.activelyUpdating) {
       assistantPromptInstructions += `You are currently updating your understanding of the project code, and have not fully completed your analysis.`
 
-        // if we have a good amount of files to process, we can give an estimate of the time it will take to synchronize
+      // if we have a good amount of files to process, we can give an estimate of the time it will take to synchronize
       const childResources = projectStatus?.childResources
       let percentageComplete = undefined
-      if (childResources && projectStatus?.possibleStagesRemaining && childResources > 2 && childResources > projectStatus.possibleStagesRemaining) {
-        percentageComplete = Math.floor((childResources - projectStatus.possibleStagesRemaining) / childResources * 100)
+      if (
+        childResources &&
+        projectStatus?.possibleStagesRemaining &&
+        childResources > 2 &&
+        childResources > projectStatus.possibleStagesRemaining
+      ) {
+        percentageComplete = Math.floor(
+          ((childResources - projectStatus.possibleStagesRemaining) /
+            childResources) *
+            100,
+        )
       }
 
       const estimatedFilesToProcess = projectStatus?.possibleStagesRemaining
         ? projectStatus.possibleStagesRemaining
         : 0
-      if (estimatedFilesToProcess > 1000 || percentageComplete && percentageComplete < 10) {
+      if (
+        estimatedFilesToProcess > 1000 ||
+        (percentageComplete && percentageComplete < 10)
+      ) {
         assistantPromptInstructions += `You have a very incomplete and light understanding of the project code and haven't seen most of the code yet.`
-      } else if (estimatedFilesToProcess > 100 || percentageComplete && percentageComplete < 60) {
+      } else if (
+        estimatedFilesToProcess > 100 ||
+        (percentageComplete && percentageComplete < 60)
+      ) {
         assistantPromptInstructions += `You have a basic understanding of the project code. You have seen many files, but lack a deep understanding of the project.`
-      } else if (estimatedFilesToProcess > 10 || percentageComplete && percentageComplete >= 60) {
+      } else if (
+        estimatedFilesToProcess > 10 ||
+        (percentageComplete && percentageComplete >= 60)
+      ) {
         assistantPromptInstructions += `You have a good understanding of the project code. You have seen many files, and are close to a deep understanding of the project.`
       }
 
@@ -193,7 +213,9 @@ function getOpenAIAssistantInstructions(
     assistantPromptInstructions += `
     You have the following sets of data resources that will help you answer questions:`
 
-    const blueprintDataInfo : PromptFileInfo | undefined = fileInfosByType.get('ArchitecturalBlueprint')
+    const blueprintDataInfo: PromptFileInfo | undefined = fileInfosByType.get(
+      'ArchitecturalBlueprint',
+    )
 
     if (blueprintDataInfo) {
       if (
@@ -209,7 +231,9 @@ function getOpenAIAssistantInstructions(
       }
     }
 
-    const aispecDataInfo : PromptFileInfo | undefined = fileInfosByType.get('ProjectSpecification')
+    const aispecDataInfo: PromptFileInfo | undefined = fileInfosByType.get(
+      'ProjectSpecification',
+    )
 
     if (aispecDataInfo) {
       if (
@@ -225,7 +249,8 @@ function getOpenAIAssistantInstructions(
       }
     }
 
-    const projectsourceDataInfo : PromptFileInfo | undefined = fileInfosByType.get('ProjectSource')
+    const projectsourceDataInfo: PromptFileInfo | undefined =
+      fileInfosByType.get('ProjectSource')
     if (projectsourceDataInfo) {
       if (
         projectsourceStatus === 'Complete' ||

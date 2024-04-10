@@ -272,9 +272,9 @@ export interface ChatQuery extends BaseSaraObject {
 
 // TODO: Test
 export enum PromptFileInfoType {
-  ProjectSpecification = "aispec",
-  ArchitecturalBlueprint = "blueprint",
-  ProjectSource = "projectsource"
+  ProjectSpecification = 'aispec',
+  ArchitecturalBlueprint = 'blueprint',
+  ProjectSource = 'projectsource',
 }
 
 export type PromptFileInfoTypeString = keyof typeof PromptFileInfoType

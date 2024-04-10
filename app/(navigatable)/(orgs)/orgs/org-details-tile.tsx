@@ -70,7 +70,9 @@ export const OrgDetailsTile = ({ name, id }: OrgDetailsTileProps) => {
                 <Badge color="orange">Business</Badge>
               )}
             </div>
-            {orgIsSelected && <p className="text-xs text-blue-600 mt-2">Active</p>}
+            {orgIsSelected && (
+              <p className="text-xs text-blue-600 mt-2">Active</p>
+            )}
           </div>
           {orgIsPremium ? (
             <div className="flex flex-col items-center">
@@ -79,13 +81,13 @@ export const OrgDetailsTile = ({ name, id }: OrgDetailsTileProps) => {
                   <StarFilledIcon className="w-3 h-3 text-yellow-500" />
                 </div>
               </div>
-              <Badge color="green" className="mt-2">Premium</Badge>
+              <Badge color="green" className="mt-2">
+                Premium
+              </Badge>
             </div>
-          ) : 
-          (
+          ) : (
             <Badge color="gray">Free</Badge>
-          )
-          }
+          )}
         </div>
       </div>
     </Link>

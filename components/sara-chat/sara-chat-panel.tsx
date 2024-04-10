@@ -36,7 +36,8 @@ const renderChatAlert = (projectHealth: ProjectHealthStatusValue) => {
     return (
       <>
         <ExclamationTriangleIcon className="text-yellow-500" />
-        Sara is still Deep Learning - You May Ask Questions But Note Results Will Improve Over Time
+        Sara is still Deep Learning - You May Ask Questions But Note Results
+        Will Improve Over Time
       </>
     )
   }

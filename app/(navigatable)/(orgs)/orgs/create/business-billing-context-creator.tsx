@@ -4,13 +4,13 @@ import React, { Suspense, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { ArrowLeftIcon } from '@radix-ui/react-icons'
 import { Callout, Flex, Link } from '@radix-ui/themes'
+import OauthExplanation from 'components/oauth-explanation'
 import toast from 'react-hot-toast'
 
 import { Button } from './../../../../../components/ui/button'
 import { type GitHubOrg, type Org } from './../../../../../lib/data-model-types'
 import { useAppContext } from './../../../../../lib/hooks/app-context'
 import OrgSelector from './github-org-selector'
-import OauthExplanation from 'components/oauth-explanation'
 
 const BusinessBillingContextCreator = ({
   onUnselectBillingOrganization,
@@ -41,12 +41,16 @@ const BusinessBillingContextCreator = ({
         </button>
         <div className="grid grid-cols-1 gap-4">
           <div className="text-base my-1">
-            <h3 className="text-lg font-semibold">Select Business Billing Account Context</h3>
+            <h3 className="text-lg font-semibold">
+              Select Business Billing Account Context
+            </h3>
             <p>
-              Select the organization or company that will be billed for your Sara analysis.
+              Select the organization or company that will be billed for your
+              Sara analysis.
             </p>
             <p>
-              You may also be able to share Project analysis, Sara resources, Goals and Tasks across members of your organization.
+              You may also be able to share Project analysis, Sara resources,
+              Goals and Tasks across members of your organization.
             </p>
           </div>
           <div className="my-1">
@@ -154,7 +158,8 @@ const BusinessBillingContextCreator = ({
             <OauthExplanation />
           </Callout.Icon>
           <Callout.Text>
-            If your orgs do not appear in the business billing section, configure Sara OAuth settings{' '}
+            If your orgs do not appear in the business billing section,
+            configure Sara OAuth settings{' '}
             <Link
               href="https://github.com/settings/connections/applications/b2fe85230b8f365e87f8"
               target="_blank"

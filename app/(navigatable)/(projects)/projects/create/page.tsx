@@ -1,8 +1,12 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { InfoCircledIcon } from '@radix-ui/react-icons'
+import { Callout } from '@radix-ui/themes'
 import { getOrgUserStatus } from 'app/react-utils'
+import OauthExplanation from 'components/oauth-explanation'
 import { useSession } from 'next-auth/react'
 import toast from 'react-hot-toast'
 
@@ -23,10 +27,6 @@ import { projectNameSchema } from './../../../../../lib/polyverse/db/validators'
 import DataSourceSelector from './data-source-selector'
 import GuidelineInputs from './guideline-inputs'
 import PrimaryDataSourceSelector from './primary-data-source-selector'
-import { Callout } from '@radix-ui/themes'
-import { InfoCircledIcon } from '@radix-ui/react-icons'
-import OauthExplanation from 'components/oauth-explanation'
-import Link from 'next/link'
 
 const ProjectCreate = () => {
   const router = useRouter()
@@ -143,7 +143,8 @@ const ProjectCreate = () => {
                 <OauthExplanation />
               </Callout.Icon>
               <Callout.Text>
-                If your orgs do not appear in this dropdown, configure Sara OAuth settings{' '}
+                If your orgs do not appear in this dropdown, configure Sara
+                OAuth settings{' '}
                 <Link
                   href="https://github.com/settings/connections/applications/b2fe85230b8f365e87f8"
                   target="_blank"

@@ -52,19 +52,20 @@ const SettingsIndex = () => {
     <div className="flex flex-col items-center p-10 font-bold space-y-4">
       <p className="text-2xl font-bold">Account Settings</p>
       <div className="w-1/2 border-t-2 border-blue-600 my-2"></div>
-    <Link 
+      <Link
         href="https://github.com/settings/connections/applications/b2fe85230b8f365e87f8"
         target="_blank"
-        rel="noopener noreferrer" 
-        className="w-1/2">
+        rel="noopener noreferrer"
+        className="w-1/2"
+      >
         <div className="bg-blue-500 shadow-md rounded-lg p-4 block transition hover:scale-105 cursor-pointer">
-            <div className="flex items-center justify-center text-white">
-                <h3 className="text-lg font-semibold flex-1 text-center">
-                    Configure GitHub User Access
-                </h3>
-            </div>
+          <div className="flex items-center justify-center text-white">
+            <h3 className="text-lg font-semibold flex-1 text-center">
+              Configure GitHub User Access
+            </h3>
+          </div>
         </div>
-    </Link>
+      </Link>
       <Link href="/orgs" className="w-1/2">
         <div className="bg-blue-500 shadow-md rounded-lg p-4 block transition hover:scale-105 cursor-pointer">
           <div className="flex items-center justify-center text-white">
@@ -89,10 +90,7 @@ const SettingsIndex = () => {
               Billing Status: {orgIsPremium ? 'Premium Plan' : 'Free Plan'}
             </h3>
             {!orgIsPremium ? (
-              <div
-                title="No Premium Plan Configured."
-                className="shrink-0"
-              >
+              <div title="No Premium Plan Configured." className="shrink-0">
                 <ExclamationTriangleIcon className="w-8 h-8 text-red-500" />
               </div>
             ) : (

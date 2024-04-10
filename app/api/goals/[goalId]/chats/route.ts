@@ -9,8 +9,8 @@ import {
   type Chat,
   type ChatQuery,
 } from './../../../../../lib/data-model-types'
-import getProjectPromptFileInfos from './../../../../../lib/polyverse/backend/get-project-prompt-file-infos'
 import getBoostProjectStatus from './../../../../../lib/polyverse/backend/get-boost-project-status'
+import getProjectPromptFileInfos from './../../../../../lib/polyverse/backend/get-project-prompt-file-infos'
 import createChat from './../../../../../lib/polyverse/db/create-chat'
 import createChatQuery from './../../../../../lib/polyverse/db/create-chat-query'
 import createPromptFileInfo from './../../../../../lib/polyverse/db/create-prompt-file-info'
@@ -139,7 +139,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
 
     if (!promptFileInfos || promptFileInfos.length !== 3) {
       const logMsg =
-      promptFileInfos.length < 3
+        promptFileInfos.length < 3
           ? `Failing refresh for project '${project.id}' because got less than the 3 requisite file infos - total received: '${promptFileInfos.length}'`
           : `Failing refresh for project '${
               project.id

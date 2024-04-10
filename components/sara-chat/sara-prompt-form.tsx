@@ -35,10 +35,10 @@ const SaraPromptForm = ({
   const router = useRouter()
 
   if (input.trim() && autoPromptClicked && saraConfigured) {
-    setInput(''); 
-    onQuerySubmit(input.trim());
+    setInput('')
+    onQuerySubmit(input.trim())
   }
-  
+
   React.useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus()

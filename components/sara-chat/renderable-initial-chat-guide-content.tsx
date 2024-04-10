@@ -57,7 +57,11 @@ const RenderableInitialChatGuideContent = ({
       </Text>
       <Flex mt="3" direction="column" gapY="3" align="start">
         {conversationStarters.map((conversationStarter, index) =>
-          renderConversationStarter(conversationStarter, setInitialChatQuery, setAutoPromptClicked),
+          renderConversationStarter(
+            conversationStarter,
+            setInitialChatQuery,
+            setAutoPromptClicked,
+          ),
         )}
       </Flex>
     </RenderableSaraChatGuideContent>

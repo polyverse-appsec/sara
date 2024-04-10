@@ -15,20 +15,19 @@ import getUser from '../../../../../lib/polyverse/db/get-user'
 import authz from './../../../../../app/api/authz'
 import {
   projectHealthScalarValuesByReadableValues,
+  PromptFileInfo,
   type ProjectHealth,
   type ProjectHealthConfigurationState,
   type ProjectHealthStatusValue,
 } from './../../../../../lib/data-model-types'
-import getProjectPromptFileInfos from './../../../../../lib/polyverse/backend/get-project-prompt-file-infos'
 import getBoostProjectStatus from './../../../../../lib/polyverse/backend/get-boost-project-status'
+import getProjectPromptFileInfos from './../../../../../lib/polyverse/backend/get-project-prompt-file-infos'
 import {
   ASSISTANT_METADATA_CREATOR,
   findAssistantFromMetadata,
   getAssistant,
   type AssistantMetadata,
 } from './../../../../../lib/polyverse/openai/assistants'
-
-import { PromptFileInfo } from './../../../../../lib/data-model-types'
 
 const createProjectHealth = (
   projectId: string,

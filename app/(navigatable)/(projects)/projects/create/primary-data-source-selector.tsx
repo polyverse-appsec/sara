@@ -118,44 +118,44 @@ const PrimaryDataSourceSelector = ({
     setGitHubReposForOrgs(reposForOrgs)
   }
 
-useEffect(() => {
+  useEffect(() => {
     async function setAppInstalledStatusForOrgs(orgs: GitHubOrg[]) {
-        if (!saraSession) {
-            toast.error(`No session available`)
-            return
+      if (!saraSession) {
+        toast.error(`No session available`)
+        return
+      }
+
+      const appInstallationStatuses: Record<string, string> = {}
+
+      for (const org of orgs) {
+        try {
+          const orgStatus = await getOrgStatus(org.login)
+
+          // If successful, add the orgName as a key and its corresponding repos array as the value to the reposForOrgs record
+          appInstallationStatuses[org.login] = orgStatus.gitHubAppInstalled
+        } catch (error) {
+          console.error(
+            `Error fetching installation status for ${org.login} on data source select screen: `,
+            error,
+          )
+          appInstallationStatuses[org.login] = ''
         }
-
-        const appInstallationStatuses: Record<string, string> = {}
-
-        for (const org of orgs) {
-            try {
-                const orgStatus = await getOrgStatus(org.login)
-
-                // If successful, add the orgName as a key and its corresponding repos array as the value to the reposForOrgs record
-                appInstallationStatuses[org.login] = orgStatus.gitHubAppInstalled
-            } catch (error) {
-                console.error(
-                    `Error fetching installation status for ${org.login} on data source select screen: `,
-                    error,
-                )
-                appInstallationStatuses[org.login] = ''
-            }
-        }
-        setGitHubAppInstallStatusByOrgNames(appInstallationStatuses)
+      }
+      setGitHubAppInstallStatusByOrgNames(appInstallationStatuses)
     }
 
     ;(async () => {
-        const fetchedGitHubOrgs = await getGitHubOrgs()
+      const fetchedGitHubOrgs = await getGitHubOrgs()
 
-        setOrgs(fetchedGitHubOrgs)
+      setOrgs(fetchedGitHubOrgs)
 
-        fetchAndSetReposForOrgs(fetchedGitHubOrgs)
-        setAppInstalledStatusForOrgs(fetchedGitHubOrgs)
-        fetchAndSetReposForPersonal()
+      fetchAndSetReposForOrgs(fetchedGitHubOrgs)
+      setAppInstalledStatusForOrgs(fetchedGitHubOrgs)
+      fetchAndSetReposForPersonal()
 
-        setShouldShowLoadingSpinner(false)
+      setShouldShowLoadingSpinner(false)
     })()
-}, [saraSession])
+  }, [saraSession])
 
   if (shouldShowLoadingSpinner) {
     return (
@@ -276,7 +276,7 @@ useEffect(() => {
             <div className="ml-2">
               <LoadingSpinner />
             </div>
-            )}
+          )}
           {gitHubAppInstallStatusByOrgNames[selectedGithubOrg.login] ===
             'INSTALLED' && (
             <div className="p-4 space-y-1 text-sm border rounded-md">
@@ -337,27 +337,27 @@ useEffect(() => {
               </DropdownMenu>
             </div>
           )}
-          {gitHubAppInstallStatusByOrgNames[selectedGithubOrg.login] && 
+          {gitHubAppInstallStatusByOrgNames[selectedGithubOrg.login] &&
             gitHubAppInstallStatusByOrgNames[selectedGithubOrg.login] !==
-            'INSTALLED' && (
-            <Callout.Root color="orange">
-              <Callout.Icon>
-                <InfoCircledIcon />
-              </Callout.Icon>
-              <Callout.Text>
-                You will need to install the GitHub app for this org to access
-                it&apos;s repos.{' '}
-                <Link
-                  href="https://github.com/apps/polyverse-boost"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline"
-                >
-                  You can install here
-                </Link>
-              </Callout.Text>
-            </Callout.Root>
-          )}
+              'INSTALLED' && (
+              <Callout.Root color="orange">
+                <Callout.Icon>
+                  <InfoCircledIcon />
+                </Callout.Icon>
+                <Callout.Text>
+                  You will need to install the GitHub app for this org to access
+                  it&apos;s repos.{' '}
+                  <Link
+                    href="https://github.com/apps/polyverse-boost"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline"
+                  >
+                    You can install here
+                  </Link>
+                </Callout.Text>
+              </Callout.Root>
+            )}
         </div>
       )}
     </div>

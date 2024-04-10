@@ -1,10 +1,11 @@
 // this is the old sign in page! currently not in use
 
 import Image from 'next/image'
+import OauthExplanation from 'components/oauth-explanation'
+
 import { LoginButton } from '../../components/login-button'
 import PolyverseLogo from './../../public/Polyverse logo medium.jpg'
 import SaraPortrait from './../../public/Sara_Cartoon_Portrait.png'
-import OauthExplanation from 'components/oauth-explanation'
 
 const DefaultSignIn = () => {
   return (

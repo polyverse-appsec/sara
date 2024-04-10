@@ -1,9 +1,9 @@
 import { redirect } from 'next/navigation'
+import { isPreviewFeatureEnabled } from 'lib/utils'
 
 import { auth } from './../../auth'
-import DefaultSignIn from './defaultsignin'
 import CarouselSignIn from './carouselsignin'
-import { isPreviewFeatureEnabled } from 'lib/utils' 
+import DefaultSignIn from './defaultsignin'
 
 export default async function SignInPage() {
   const session = await auth()
@@ -11,7 +11,9 @@ export default async function SignInPage() {
   if (session?.user) {
     redirect('/')
   }
-  return (
-    isPreviewFeatureEnabled('CarouselLoginPage') ? <CarouselSignIn /> : <DefaultSignIn />
+  return isPreviewFeatureEnabled('CarouselLoginPage') ? (
+    <CarouselSignIn />
+  ) : (
+    <DefaultSignIn />
   )
 }

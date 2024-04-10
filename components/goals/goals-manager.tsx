@@ -49,7 +49,7 @@ const GoalsManager = ({ projectId, goals }: GoalsManagerProps) => {
           }}
         >
           <Link href={`/projects/${projectId}/goals/create`}>
-            Create New Goal 
+            Create New Goal
           </Link>
         </Button>
       </Flex>

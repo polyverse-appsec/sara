@@ -31,7 +31,7 @@ const RenderableSaraChatResourceContent = <T extends Chatable>({
     undefined,
   )
 
-  const [autoPromptClicked, setAutoPromptClicked] = useState(false);
+  const [autoPromptClicked, setAutoPromptClicked] = useState(false)
 
   useEffect(() => {
     ;(async () => {

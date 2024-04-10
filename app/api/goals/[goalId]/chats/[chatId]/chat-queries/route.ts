@@ -5,13 +5,13 @@ import updateChat from 'lib/polyverse/db/update-chat'
 import { NextAuthRequest } from 'next-auth/lib'
 
 import { auth } from '../../../../../../../auth'
+import getProjectPromptFileInfos from '../../../../../../../lib/polyverse/backend/get-project-prompt-file-infos'
 import getProjectPromptFileInfoIds from '../../../../../../../lib/polyverse/db/get-project-prompt-file-info-ids'
 import authz from './../../../../../../../app/api/authz'
 import {
   type ChatQuery,
   type PromptFileInfo,
 } from './../../../../../../../lib/data-model-types'
-import getProjectPromptFileInfos from '../../../../../../../lib/polyverse/backend/get-project-prompt-file-infos'
 import getBoostProjectStatus from './../../../../../../../lib/polyverse/backend/get-boost-project-status'
 import createPromptFileInfo from './../../../../../../../lib/polyverse/db/create-prompt-file-info'
 import deletePromptFileInfo from './../../../../../../../lib/polyverse/db/delete-prompt-file-info'
@@ -137,7 +137,9 @@ export const POST = auth(async (req: NextAuthRequest) => {
       !reqBody.prevChatQueryId ||
       Joi.string().required().validate(reqBody.prevChatQueryId).error
     ) {
-      console.error(`${user.email} ${org.name} Project=${project.id} : Previous chat query wasn't identified`)
+      console.error(
+        `${user.email} ${org.name} Project=${project.id} : Previous chat query wasn't identified`,
+      )
 
       return new Response(ReasonPhrases.BAD_REQUEST, {
         status: StatusCodes.BAD_REQUEST,
@@ -148,7 +150,9 @@ export const POST = auth(async (req: NextAuthRequest) => {
       !reqBody.query ||
       Joi.string().required().validate(reqBody.query).error
     ) {
-      console.error(`${user.email} ${org.name} Project=${project.id} : No chat query was provided`)
+      console.error(
+        `${user.email} ${org.name} Project=${project.id} : No chat query was provided`,
+      )
 
       return new Response(ReasonPhrases.BAD_REQUEST, {
         status: StatusCodes.BAD_REQUEST,
@@ -216,7 +220,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
 
     if (!promptFileInfos || promptFileInfos.length !== 3) {
       const logMsg =
-      promptFileInfos.length < 3
+        promptFileInfos.length < 3
           ? `Failing refresh for project '${project.id}' because got less than the 3 requisite file infos - total received: '${promptFileInfos.length}'`
           : `Failing refresh for project '${
               project.id
@@ -398,7 +402,8 @@ export const POST = auth(async (req: NextAuthRequest) => {
     })
   } catch (error) {
     console.error(
-      `${auth.user.username} Failed creating chat query for because: `, error
+      `${auth.user.username} Failed creating chat query for because: `,
+      error,
     )
 
     return new Response('Failed to create project', {

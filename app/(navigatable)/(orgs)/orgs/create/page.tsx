@@ -8,6 +8,7 @@ import { Callout, Flex } from '@radix-ui/themes'
 import { getGitHubOrgs } from 'app/react-utils'
 import { SaraSession } from 'auth'
 import LoadingSpinner from 'components/loading-spinner'
+import OauthExplanation from 'components/oauth-explanation'
 import { useSession } from 'next-auth/react'
 import toast from 'react-hot-toast'
 
@@ -15,7 +16,6 @@ import { Button } from './../../../../../components/ui/button'
 import { type GitHubOrg, type Org } from './../../../../../lib/data-model-types'
 import { useAppContext } from './../../../../../lib/hooks/app-context'
 import BusinessBillingContextCreator from './business-billing-context-creator'
-import OauthExplanation from 'components/oauth-explanation'
 
 const getBillingOrgs = async (): Promise<Org[]> => {
   const res = await fetch('/api/orgs')
@@ -102,12 +102,18 @@ const OrgCreate = () => {
                 </Link>
               </button>
             </div>
-            <h3 className="text-lg font-semibold">Select the type of Billing you would like to use.</h3>
+            <h3 className="text-lg font-semibold">
+              Select the type of Billing you would like to use.
+            </h3>
             <p>
-              A Personal Billing Context is for your personal projects, and typically paid by you. You can only have one Personal Billing Context.
+              A Personal Billing Context is for your personal projects, and
+              typically paid by you. You can only have one Personal Billing
+              Context.
             </p>
             <p>
-              A Business Billing Context is for your company or group projects, and typically billed to your company. You can have multiple Business Billing Contexts.
+              A Business Billing Context is for your company or group projects,
+              and typically billed to your company. You can have multiple
+              Business Billing Contexts.
             </p>
           </div>
           <div className="flex justify-content mt-16">
@@ -182,21 +188,22 @@ const OrgCreate = () => {
             </div>
           </div>
           <Callout.Root color="orange">
-              <Callout.Icon>
-                <OauthExplanation />
-              </Callout.Icon>
-              <Callout.Text>
-                If your orgs do not appear in the business billing section, configure Sara OAuth settings{' '}
-                <Link
-                  href="https://github.com/settings/connections/applications/b2fe85230b8f365e87f8"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline"
-                >
-                  here
-                </Link>
-              </Callout.Text>
-            </Callout.Root>
+            <Callout.Icon>
+              <OauthExplanation />
+            </Callout.Icon>
+            <Callout.Text>
+              If your orgs do not appear in the business billing section,
+              configure Sara OAuth settings{' '}
+              <Link
+                href="https://github.com/settings/connections/applications/b2fe85230b8f365e87f8"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline"
+              >
+                here
+              </Link>
+            </Callout.Text>
+          </Callout.Root>
         </div>
       )}
       {selectedBusinessBilling && (
