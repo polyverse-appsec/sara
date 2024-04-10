@@ -40,7 +40,7 @@ const SingleDataSourceSelector = ({
 
       setShouldShowLoadingSpinner(false)
     })()
-  }, [])
+  }, [orgName])
 
   if (shouldShowLoadingSpinner) {
     return <LoadingSpinner />
@@ -80,7 +80,7 @@ const SingleDataSourceSelector = ({
                   setControlledProjectDataSources([repo])
                 }}
               >
-                <span className="ml-2 text-ellipsis whitespace-nowrap overflow-hidden">
+                <span className="ml-2 truncate whitespace-nowrap overflow-hidden">
                   {repo.name}
                 </span>
               </DropdownMenuItem>
