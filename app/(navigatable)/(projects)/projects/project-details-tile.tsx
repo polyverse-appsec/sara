@@ -67,7 +67,7 @@ export const ProjectDetailsTile = ({
   return (
     <Link
       href={`/projects/${id}`}
-      className="block transform transition hover:scale-105"
+      className="block transition hover:scale-105"
     >
       <div className="flex justify-between bg-background shadow-md rounded-lg border border-blue-500 p-6 hover:bg-blue-500">
         <div>
