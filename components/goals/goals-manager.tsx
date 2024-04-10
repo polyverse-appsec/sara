@@ -43,13 +43,13 @@ const GoalsManager = ({ projectId, goals }: GoalsManagerProps) => {
           Goals
         </Heading>
         <Button
-          color="green"
+          className="btn-blue hover:bg-blue-700 hover:text-white transition duration-300"
           onClick={async (e) => {
             e.preventDefault()
           }}
         >
           <Link href={`/projects/${projectId}/goals/create`}>
-            Create New Goal
+            Create New Goal 
           </Link>
         </Button>
       </Flex>
