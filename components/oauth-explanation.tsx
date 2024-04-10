@@ -27,8 +27,8 @@ const OauthExplanation = () => {
                 <div className="flex flex-col align-start">
                     <p>🟢 The green checkmarked orgs means Sara can read those orgs</p>
                     <p>✖️ The X marked orgs means Sara cannot read those orgs</p>
-                    <p className="ml-4">- orgs with the "Request" button mean that you need to request the org owner to grant sara permission to read the org</p>
-                    <p className="ml-4">- orgs with the "Grant" button mean that you are the org owner and can grant sara permission to read the org</p>
+                    <p className="ml-4">- orgs with the &quot;Request&quot; button mean that you need to request the org owner to grant sara permission to read the org</p>
+                    <p className="ml-4">- orgs with the &quot;Grant&quot; button mean that you are the org owner and can grant sara permission to read the org</p>
                 </div>
             </div>
         </HoverCard.Content>
