@@ -50,7 +50,7 @@ const SettingsOrgUpgrade = () => {
 
       setOrgs(fetchedOrgs)
     })()
-  }, [])
+  }, [activeBillingOrg, saraSession])
 
   return (
     <div className="flex flex-col items-center p-10">
@@ -81,7 +81,7 @@ const SettingsOrgUpgrade = () => {
           rel="noopener noreferrer"
           className="inline-flex items-center justify-between w-full text-sm"
         >
-          <div className="flex justify-between items-center w-full font-semibold bg-white-600 shadow-md rounded-lg p-2 transform transition hover:scale-105 cursor-pointer">
+          <div className="flex justify-between items-center w-full font-semibold bg-white-600 shadow-md rounded-lg p-2 transition hover:scale-105 cursor-pointer">
             <p>Manage Billing Plan</p>
             <IconExternalLink className="w-4 h-4 ml-auto" />
           </div>
@@ -151,7 +151,7 @@ const SettingsOrgUpgrade = () => {
             rel="noopener noreferrer"
             className="inline-flex items-center justify-between w-full text-sm"
           >
-            <div className="flex justify-between items-center w-full font-semibold bg-white-600 shadow-md rounded-lg p-2 transform transition hover:scale-105 cursor-pointer">
+            <div className="flex justify-between items-center w-full font-semibold bg-white-600 shadow-md rounded-lg p-2 transition hover:scale-105 cursor-pointer">
               <p>Upgrade to premium plan for {activeBillingOrg?.name}</p>
               <IconExternalLink className="w-4 h-4 ml-auto" />
             </div>
