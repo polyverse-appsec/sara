@@ -6,7 +6,7 @@ import Link from 'next/link'
 export const ProjectCreateTile = () => {
   return (
     <Link href="/projects/create">
-      <div className="bg-background shadow-md rounded-lg border border-blue-500 p-6 block transform transition hover:scale-105">
+      <div className="bg-background shadow-md rounded-lg border border-blue-500 p-6 block transition hover:scale-105">
         <h3 className="text-lg font-semibold text-center">
           Create New Project
         </h3>
