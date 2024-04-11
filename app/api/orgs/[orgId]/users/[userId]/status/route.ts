@@ -7,7 +7,6 @@ import { getBoostOrgUserStatus } from '../../../../../../../lib/polyverse/backen
 import getOrg from '../../../../../../../lib/polyverse/db/get-org'
 import getUser from '../../../../../../../lib/polyverse/db/get-user'
 import authz from '../../../../../authz'
-import logger from './../../../../../logger'
 
 export const GET = auth(async (req: NextAuthRequest) => {
   const { auth } = req
@@ -41,10 +40,6 @@ export const GET = auth(async (req: NextAuthRequest) => {
       })
     }
 
-    logger.infoWithContext(
-      `GET /api/orgs/${org.id}/users/${user.id}/status invoking getBoostOrgUserStatus (/api/user/${org.name}/account)`,
-      { user, org },
-    )
     const boostOrgUserStatus = await getBoostOrgUserStatus(org.name, user.email)
 
     // Convert the response format from the Boost Node backend to something we

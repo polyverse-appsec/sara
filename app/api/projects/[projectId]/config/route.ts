@@ -5,7 +5,6 @@ import { Assistant } from 'openai/resources/beta/assistants/assistants'
 import { auth } from '../../../../../auth'
 import getProjectPromptFileInfoIds from '../../../../../lib/polyverse/db/get-project-prompt-file-info-ids'
 import authz from './../../../../../app/api/authz'
-import logger from './../../../../../app/api/logger'
 import { getBoostOrgUserStatus } from './../../../../../lib/polyverse/backend/backend'
 import getBoostProjectStatus from './../../../../../lib/polyverse/backend/get-boost-project-status'
 import getProjectPromptFileInfos from './../../../../../lib/polyverse/backend/get-project-prompt-file-infos'
@@ -73,10 +72,6 @@ export const POST = auth(async (req: NextAuthRequest) => {
     // and you are a premium user. In the future we will more intelligently
     // allow projects to be refreshed and thus making this workflow more
     // permissive.
-    logger.infoWithContext(
-      `POST /api/project/${project.id}/config invoking getBoostOrgUserStatus (/api/user/${org.name}/account)`,
-      { user, org, project },
-    )
     const boostOrgUserStatus = await getBoostOrgUserStatus(org.name, user.email)
 
     // If the `username` data member shows up on the user status that means
