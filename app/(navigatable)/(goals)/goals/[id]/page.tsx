@@ -5,42 +5,16 @@ import Link from 'next/link'
 import { ArrowLeftIcon } from '@radix-ui/react-icons'
 import { Flex } from '@radix-ui/themes'
 import { getResource } from 'app/saraClient'
-import LoadingSpinner from 'components/loading-spinner'
 import RenderableResource from 'components/renderable-resource/renderable-resource'
 import RenderableResourceContent from 'components/renderable-resource/renderable-resource-content'
 import RenderableSaraChatResourceContent from 'components/sara-chat/renderable-sara-chat-resource-content'
 import { useAppContext } from 'lib/hooks/app-context'
 
+import SaraLoading from './../../../../../components/sara-loading'
 import {
-  ProjectHealth,
-  ProjectHealthStatusValue,
   type Goal,
+  type ProjectHealth,
 } from './../../../../../lib/data-model-types'
-
-const renderChatForGoal = (
-  goal: Goal | null,
-  projectHealth: ProjectHealthStatusValue,
-) => {
-  if (!goal) {
-    return (
-      <RenderableResourceContent>
-        <div className="flex">
-          <h3 className="text-lg font-semibold text-center">
-            Building initial advice for your Goal
-          </h3>
-          <LoadingSpinner />
-        </div>
-      </RenderableResourceContent>
-    )
-  }
-
-  return (
-    <RenderableSaraChatResourceContent<Goal>
-      projectHealth={projectHealth}
-      chatableResourceUrl={`/api/goals/${goal.id}`}
-    />
-  )
-}
 
 const GoalIndex = ({ params: { id } }: { params: { id: string } }) => {
   const { setActiveGoalId, activeWorkspaceDetails } = useAppContext()
@@ -74,7 +48,7 @@ const GoalIndex = ({ params: { id } }: { params: { id: string } }) => {
   }
 
   if (!goal) {
-    return null
+    return <SaraLoading />
   }
 
   // 03/14/24: We are prepping for a demo and new customer on-boarding next

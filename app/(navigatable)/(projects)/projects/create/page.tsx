@@ -7,6 +7,7 @@ import { InfoCircledIcon } from '@radix-ui/react-icons'
 import { Callout } from '@radix-ui/themes'
 import { getOrgUserStatus } from 'app/react-utils'
 import OauthExplanation from 'components/oauth-explanation'
+import SaraLoading from 'components/sara-loading'
 import { useSession } from 'next-auth/react'
 import toast from 'react-hot-toast'
 
@@ -96,7 +97,7 @@ const ProjectCreate = () => {
   if (!activeBillingOrg) {
     toast.error(`Please select billing context`)
 
-    return null
+    return <SaraLoading />
   }
 
   return (

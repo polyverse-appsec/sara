@@ -7,6 +7,7 @@ import { Badge } from '@radix-ui/themes'
 import { getOrgUserStatus } from 'app/react-utils'
 import { SaraSession } from 'auth'
 import RenderableResourceContent from 'components/renderable-resource/renderable-resource-content'
+import SaraLoading from 'components/sara-loading'
 import { IconExternalLink } from 'components/ui/icons'
 import { useSession } from 'next-auth/react'
 
@@ -53,7 +54,7 @@ const OrgIndex = ({ params: { id } }: { params: { id: string } }) => {
   }, [id, saraSession])
 
   if (!org) {
-    return null
+    return <SaraLoading />
   }
 
   // Once we have loaded our data set the active billing context to it

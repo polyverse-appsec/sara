@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState } from 'react'
 import { type SaraSession } from 'auth' // Ensure this is correctly imported
+
+import SaraLoading from 'components/sara-loading'
 import { useSession } from 'next-auth/react'
 import { toast } from 'react-hot-toast'
 
@@ -148,7 +150,7 @@ const SaraChat = <T extends Chatable>({
   }, [initialChatQuery])
 
   if (!saraSession) {
-    return null
+    return <SaraLoading />
   }
 
   return (

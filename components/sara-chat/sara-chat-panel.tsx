@@ -4,6 +4,7 @@ import * as React from 'react'
 import { ExclamationTriangleIcon } from '@radix-ui/react-icons'
 // TODO: Do I need to use this package at all?
 import { type UseChatHelpers } from 'ai/react'
+import SaraLoading from 'components/sara-loading'
 
 import {
   type ChatQuery,
@@ -42,7 +43,7 @@ const renderChatAlert = (projectHealth: ProjectHealthStatusValue) => {
     )
   }
 
-  return null
+  return <SaraLoading />
 }
 
 // TODO: Add to this the little fly overs that tell users to configure whatever akin to how it shows stop message/regenerate message

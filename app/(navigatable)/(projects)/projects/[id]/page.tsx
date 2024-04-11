@@ -6,6 +6,7 @@ import { Flex } from '@radix-ui/themes'
 import GoalsManager from 'components/goals/goals-manager'
 import ProjectSourceSyncStatus from 'components/project-status/project-source-sync-status'
 import ProjectStatusCard from 'components/project-status/project-status-card'
+import SaraLoading from 'components/sara-loading'
 import { rediscoverProject } from 'lib/polyverse/backend/backend'
 import { isPreviewFeatureEnabled } from 'lib/utils'
 import { useSession } from 'next-auth/react'
@@ -144,11 +145,11 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
       toast('Loading Billing Context')
     }
 
-    return null
+    return <SaraLoading />
   }
 
   if (!project) {
-    return null
+    return <SaraLoading />
   }
 
   // Once we have loaded our data set the project that ought to be actively

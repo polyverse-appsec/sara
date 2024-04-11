@@ -1,6 +1,7 @@
 'use client'
 
 import { SaraSession } from 'auth'
+import SaraLoading from 'components/sara-loading'
 
 import { ChatQuery } from './../../lib/data-model-types'
 import { Separator } from './../ui/separator'
@@ -22,7 +23,7 @@ const SaraChatList = ({
   saraSession,
 }: SaraChatListProps) => {
   if (!chatQueries.length) {
-    return null
+    return <SaraLoading />
   }
 
   return (
