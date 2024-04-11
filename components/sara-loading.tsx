@@ -9,7 +9,9 @@ import SaraLoadingImg from './../public/Sara-Loading.png'
 const SaraLoading = () => {
   return (
     <Flex direction="column" align="center" justify="center" minHeight="100vh">
-      <Heading>I&apos;m preparing this content for you...</Heading>
+      <Heading size="9">I&apos;m preparing this content for you...</Heading>
+      <br />
+      <br />
       <Image
         src={SaraLoadingImg}
         alt="Sara Loading"
