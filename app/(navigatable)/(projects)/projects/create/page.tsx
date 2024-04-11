@@ -121,7 +121,7 @@ const ProjectCreate = () => {
               value={projectName}
               placeholder="Enter project name"
               onChange={(e) => setProjectName(e.target.value)}
-              disabled={!saveButtonEnabled}  
+              disabled={!saveButtonEnabled}
             />
           </div>
           {/* This is the primary data source selector */}
@@ -223,7 +223,11 @@ const ProjectCreate = () => {
           <Button
             variant="ghost"
             className={`${
-              !saveButtonEnabled || !userGitHubAppInstalled || !statusCheckDone || !projectName || !controlledProjectDataSources
+              !saveButtonEnabled ||
+              !userGitHubAppInstalled ||
+              !statusCheckDone ||
+              !projectName ||
+              !controlledProjectDataSources
                 ? 'bg-gray-500 hover:cursor-not-allowed'
                 : 'btn-blue hover:bg-blue-700 hover:text-white'
             } transition duration-300`}
@@ -295,13 +299,13 @@ const ProjectCreate = () => {
                     'Provide details that will help me learn about my project. This includes details about the code in my project as well as the software packages/libraries it consumes.',
                 }
 
-                await createResourceNoResponseBody(
+                const goal = await createResource<Goal>(
                   `/goals`,
                   goalBody,
                   `Failed to create default goal for project '${project.id}'`,
                 )
 
-                router.push(`/projects/${project.id}`)
+                router.push(`/goals/${goal.id}`)
               } catch (err) {
                 console.debug(
                   `Caught error when trying to create a project: ${err}`,
