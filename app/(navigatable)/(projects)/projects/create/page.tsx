@@ -223,8 +223,8 @@ const ProjectCreate = () => {
           <Button
             variant="ghost"
             className={`${
-              !saveButtonEnabled || !userGitHubAppInstalled || !statusCheckDone
-                ? 'bg-gray-500'
+              !saveButtonEnabled || !userGitHubAppInstalled || !statusCheckDone || !projectName || !controlledProjectDataSources
+                ? 'bg-gray-500 hover:cursor-not-allowed'
                 : 'btn-blue hover:bg-blue-700 hover:text-white'
             } transition duration-300`}
             onClick={async (e) => {
