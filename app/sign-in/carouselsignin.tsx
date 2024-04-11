@@ -9,6 +9,7 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 
 import { LoginButton } from '../../components/login-button'
+import { CaretDownIcon } from '@radix-ui/react-icons'
 
 import carousel1 from './../../public/carousel1.png'
 import carousel2 from './../../public/carousel2.png'
@@ -21,7 +22,7 @@ import githubReposImage from './../../public/githubrepos.png'
 import PolyverseLogo from './../../public/Polyverse logo medium.jpg'
 import SaraPortrait from './../../public/Sara_Cartoon_Portrait.png'
 
-function Carousel({ images }: { images: StaticImageData[] }) {
+/* function Carousel({ images }: { images: StaticImageData[] }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
   const handleMouseEnter = () => {
@@ -47,6 +48,65 @@ function Carousel({ images }: { images: StaticImageData[] }) {
       ))}
     </div>
   )
+}*/
+
+interface CarouselItem {
+  image: StaticImageData;
+  description: string;
+}
+
+// Initialize the CarouselData array with object literals
+const CarouselData: CarouselItem[] = [
+  {
+    image: carousel2,
+    description: 'Code Editing'
+  },
+  {
+    image: carousel1,
+    description: 'Full Codebase Analysis'
+  },
+  {
+    image: carousel3,
+    description: 'Track Goals and Tasks'
+  },
+  // Add more objects as needed
+];
+
+function Carousel({ items }: { items: CarouselItem[] }) {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % items.length);
+    }, 15000); 
+
+    return () => clearInterval(interval); // Clear the interval when the component unmounts
+  }, [items.length]);
+
+  return (
+    <div>
+      {items.map((item, index) => (
+        <div key={index} className="absolute left-4 top-40">
+          <div
+            className={`transition-opacity duration-1000 ease-in-out ${
+              index === currentImageIndex ? 'opacity-100' : 'opacity-0'
+            }`}
+          > 
+            <div className="text-center">
+              <p>{item.description}</p>
+            </div>
+            <Image
+              src={item.image}
+              alt={`Image ${index + 1}`}
+              width={1000}
+              height={1000}
+              className="rounded-lg overflow-hidden"
+            />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
 }
 
 const CarouselSignIn = () => {
@@ -111,7 +171,7 @@ const CarouselSignIn = () => {
           </div>
         </div>
       </div>
-      <div className="flex justify-between p-4 bg-gradient-to-tr from-orange-400 to-blue-500 min-h-screen">
+      <div className="w-full flex justify-between bg-gradient-to-tr from-orange-400 to-blue-500 min-h-screen">
         <div className="w-1/3 flex flex-col items-center justify-center mt-16">
           <Image
             src={SaraPortrait}
@@ -139,9 +199,9 @@ const CarouselSignIn = () => {
         </div>
         <div
           id="introimages"
-          className="w-2/3 relative flex items-center justify-content pl-40"
+          className="w-2/3 relative flex items-center justify-content mr-10"
         >
-          <Carousel images={[carousel2, carousel1, carousel3]} />
+          <Carousel items={CarouselData} />
           {/*<div className="rounded-lg overflow-auto">
             <Image
               src={auth1}
@@ -151,6 +211,17 @@ const CarouselSignIn = () => {
               height={700}
             />
           </div>*/}
+        </div>
+        <div className="w-full absolute bottom-0 flex justify-center pb-4">
+          <button
+            onClick={() => navigateToSection('about')}
+            className="mx-2 px-4 text-white text-lg hover:underline"
+          >
+            <div className="flex items-center">
+              <p>Learn More</p>
+              <CaretDownIcon className="text-white w-6 h-6" />
+            </div>
+          </button>
         </div>
       </div>
       <div id="about" className="flex flex-col items-center">
@@ -290,7 +361,10 @@ const CarouselSignIn = () => {
           </div>
           <div className="bg-background shadow-md rounded-lg p-6 border mb-4">
             <div className="flex flex-col items-start">
-              <p className="text-2xl font-semibold">Premium Plan</p>
+              <div className="w-full flex justify-between items-center">
+                <p className="text-2xl font-semibold">Premium Plan</p>
+                <p>100$/Month (per user)</p>
+              </div>
               <div className="text-xl mt-2">
                 <p>✅ Project creation to analyze GitHub repositories</p>
                 <p>✅ Project Goals can be set to guide Sara analysis</p>
@@ -306,7 +380,11 @@ const CarouselSignIn = () => {
       <div
         id="footer"
         className="h-44 bg-gradient-to-tr from-orange-400 to-blue-500 min-h-44"
-      ></div>
+      >
+        <div className="text-center pt-24">
+          <p>© 2024, Polyverse. All rights reserved.</p>
+        </div>
+      </div>
     </>
   )
 }

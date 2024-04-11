@@ -95,7 +95,7 @@ const SaraChatPanel = ({
   return (
     <div className="fixed bottom-[15px] left-[250px] right-0  animate-in duration-300 ease-in-out">
       <ButtonScrollToBottom />
-      <div className="mx-auto sm:max-w-2xl sm:px-4">
+      <div className="mx-40">
         {alertContent && (
           <div className="flex items-center justify-center h-12">
             {alertContent}

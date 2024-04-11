@@ -12,6 +12,7 @@
 
 - Update Sara to find the full list of project source files for cross-referencing in the 'Architectural Blueprint Summary'
 - Use a loading place holder on pages instead of returning null
+- Increase chat prompt form size
 
 ### Bug Fixes
 
