@@ -31,9 +31,15 @@ jobs:
       - name: Increment version
         run: |
           OLD_VERSION=$(node -p "require('./package.json').version")
-          NEW_VERSION=$(npm version ${{ github.event.inputs.incrementType }} --no-git-tag-version)
+          npm version ${{ github.event.inputs.incrementType }} --no-git-tag-version
+          NEW_VERSION=$(node -p "require('./package.json').version")
           echo "Old version: $OLD_VERSION"
           echo "New version: $NEW_VERSION"
+          
+          if [ "$OLD_VERSION" = "$NEW_VERSION" ]; then
+          echo "Error: Version number has not been incremented."
+          exit 1
+          fi
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add package.json
