@@ -266,7 +266,10 @@ function getOpenAIAssistantInstructions(
     }
 
     assistantPromptInstructions += `
-        For all questions asked of you, use the contents of ${blueprintId} and ${aispecId} files.`
+        For all questions asked of you, use the contents of ${blueprintId} and ${aispecId} resources.
+        
+        A complete list of all source files and their file paths in the software project is available in the ${blueprintId} resource. The summary of each of those files is in ${aispecId} resource. You can use the ${projectsourceId} resource to retrieve the code snippets for project source files.`
+
     if (
       projectsourceStatus === 'Complete' ||
       projectsourceStatus === 'Processing' ||

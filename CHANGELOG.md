@@ -10,7 +10,7 @@
 
 ### Enhancements
 
-- N/A
+- Update Sara to find the full list of project source files for cross-referencing in the 'Architectural Blueprint Summary'
 
 ### Bug Fixes
 
@@ -25,7 +25,7 @@
 ### Enhancements
 
 - Disable inputs after pressing project create
-- Increase real estate of sara chat on screen (from 50% to 85%)
+- Increase real estate of Sara chat on screen (from 50% to 85%)
 
 ### Bug Fixes
 
@@ -395,7 +395,7 @@
 
 ### Enhancements
 
-- Distinguished sara logo from user dropdown better
+- Distinguished Sara logo from user dropdown better
 - Create project page submit UX is less confusing
 
 ### Bug Fixes
