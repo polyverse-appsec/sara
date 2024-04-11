@@ -13,6 +13,9 @@ on:
         required: true
         default: 'patch'
 
+permissions:
+  contents: write
+
 jobs:
   increment-version:
     name: Increment Version
