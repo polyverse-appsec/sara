@@ -23,7 +23,7 @@ const SaraChatList = ({
   saraSession,
 }: SaraChatListProps) => {
   if (!chatQueries.length) {
-    return <SaraLoading />
+    return null
   }
 
   return (

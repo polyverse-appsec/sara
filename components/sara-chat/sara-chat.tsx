@@ -150,7 +150,7 @@ const SaraChat = <T extends Chatable>({
   }, [initialChatQuery])
 
   if (!saraSession) {
-    return <SaraLoading />
+    return null
   }
 
   return (

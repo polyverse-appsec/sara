@@ -43,7 +43,7 @@ const renderChatAlert = (projectHealth: ProjectHealthStatusValue) => {
     )
   }
 
-  return <SaraLoading />
+  return null
 }
 
 // TODO: Add to this the little fly overs that tell users to configure whatever akin to how it shows stop message/regenerate message
