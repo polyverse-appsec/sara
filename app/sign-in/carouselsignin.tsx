@@ -1,18 +1,23 @@
 'use client'
 
-import { Key, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   StaticImageData,
   StaticImport,
 } from 'next/dist/shared/lib/get-img-props'
 import Image from 'next/image'
-import { redirect, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 
-import { auth } from '../../auth'
 import { LoginButton } from '../../components/login-button'
-import auth1 from './../../public/auth1.png'
-import auth2 from './../../public/auth2.png'
-import auth3 from './../../public/auth3.png'
+
+import carousel1 from './../../public/carousel1.png'
+import carousel2 from './../../public/carousel2.png'
+import carousel3 from './../../public/carousel3.png'
+import codeSummaryImage from './../../public/codesummary.png'
+import goalsExplorerImage from './../../public/goalsexplorer.png'
+import guidelinesImage from './../../public/guidelines.png'
+import githubReposImage from './../../public/githubrepos.png'
+
 import PolyverseLogo from './../../public/Polyverse logo medium.jpg'
 import SaraPortrait from './../../public/Sara_Cartoon_Portrait.png'
 
@@ -28,15 +33,15 @@ function Carousel({ images }: { images: StaticImageData[] }) {
       {images.map((imageSrc: string | StaticImport, index: number) => (
         <div
           key={index}
-          className={`rounded-lg overflow-hidden absolute left-56 top-56 transition-opacity duration-500 ease-in-out ${
+          className={`mr-16 rounded-lg overflow-hidden absolute left-4 top-44 transition-opacity duration-500 ease-in-out ${
             index === currentImageIndex ? 'opacity-100' : 'opacity-0'
           }`}
         >
           <Image
             src={imageSrc}
             alt={`Image ${index + 1}`}
-            width={600}
-            height={600}
+            width={1000}
+            height={1000}
           />
         </div>
       ))}
@@ -136,8 +141,8 @@ const CarouselSignIn = () => {
           id="introimages"
           className="w-2/3 relative flex items-center justify-content pl-40"
         >
-          {/* <Carousel images={[auth1, auth2, auth3]} /> */}
-          <div className="rounded-lg overflow-auto">
+          <Carousel images={[carousel2, carousel1, carousel3]} />
+          {/*<div className="rounded-lg overflow-auto">
             <Image
               src={auth1}
               alt="temp image"
@@ -145,7 +150,7 @@ const CarouselSignIn = () => {
               width={700}
               height={700}
             />
-          </div>
+          </div>*/}
         </div>
       </div>
       <div id="about" className="flex flex-col items-center">
@@ -162,53 +167,107 @@ const CarouselSignIn = () => {
           documentation, updating specs, coding, or creating tests.
         </div>
       </div>
-      <div id="features" className="flex items-center mt-8">
-        <div className="w-1/2 flex flex-col items-center justify-evenly">
-          <div className="flex flex-col">
-            <h2 className="text-4xl font-bold text-orange-600">Features</h2>
-            <div className="w-full border-t-2 border-orange-600 my-2"></div>
-            <ul className="list-disc list-inside text-2xl font-semibold space-y-4">
-              <li>[insert feature here]</li>
-              <li>[insert another feature here]</li>
-              <li>[insert feature here]</li>
-            </ul>
+      <div className="px-16">
+        <div id="projectanalysis" className="flex items-center mt-8">
+          <div className="w-1/2 flex flex-col items-center justify-evenly">
+            <div className="flex flex-col">
+              <h2 className="text-4xl font-bold text-orange-600">Complete Project Analysis</h2>
+              <div className="w-full border-t-2 border-orange-600 my-2"></div>
+              <ul className="list-disc list-inside text-2xl font-semibold space-y-4">
+                <li>Answers scoped for entire codebase</li>
+                <li>Generate code/test cases</li>
+                <li>Explain architecture of your project</li>
+                <li>Summarize project features</li>
+              </ul>
+            </div>
+          </div>
+          <div className="w-1/2 flex flex-col items-center">
+            <div className="rounded-lg overflow-hidden">
+              <Image
+                src={codeSummaryImage}
+                alt="temp image"
+                title="temp image"
+                width={500}
+                height={500}
+              />
+            </div>
           </div>
         </div>
-        <div className="w-1/2 flex flex-col items-center">
-          <div className="rounded-lg overflow-hidden">
-            <Image
-              src={auth2}
-              alt="temp image"
-              title="temp image"
-              width={500}
-              height={500}
-            />
+        <div id="customizableassitant" className="flex items-center mt-8">
+          <div className="w-1/2 flex flex-col items-center">
+            <div className="rounded-lg overflow-hidden">
+              <Image
+                src={guidelinesImage}
+                alt="temp image"
+                title="temp image"
+                width={500}
+                height={500}
+              />
+            </div>
+          </div>
+          <div className="w-1/2 flex flex-col items-center justify-evenly">
+            <div className="flex flex-col">
+              <h2 className="text-4xl text-end font-bold text-blue-600">
+                Fully Customizable Assistant
+              </h2>
+              <div className="w-full border-t-2 border-blue-600 my-2"></div>
+              <ul className="list-disc list-inside text-2xl font-semibold space-y-4">
+                <li>Customizable project analysis guidelines</li>
+                <li>Train assistant answers through feedback</li>
+                <li>User inputted goals shape Sara analysis</li>
+                <li>Tailored responses based on LinkedIn profile</li>
+              </ul>
+            </div>
           </div>
         </div>
-      </div>
-      <div id="morefeatures" className="flex items-center mt-8">
-        <div className="w-1/2 flex flex-col items-center">
-          <div className="rounded-lg overflow-hidden">
-            <Image
-              src={auth2}
-              alt="temp image"
-              title="temp image"
-              width={500}
-              height={500}
-            />
+        <div id="goalsandtasks" className="flex items-center mt-8">
+          <div className="w-1/2 flex flex-col items-center justify-evenly">
+            <div className="flex flex-col">
+              <h2 className="text-4xl font-bold text-orange-600">Task Driven Productivity</h2>
+              <div className="w-full border-t-2 border-orange-600 my-2"></div>
+              <ul className="list-disc list-inside text-2xl font-semibold space-y-4">
+                <li>Generates tasks to achieve your project goals</li>
+                <li>Provide code changes according to tasks</li>
+                <li>Sara chats are contextualized with user goals in mind</li>
+              </ul>
+            </div>
+          </div>
+          <div className="w-1/2 flex flex-col items-center">
+            <div className="rounded-lg overflow-hidden">
+              <Image
+                src={goalsExplorerImage}
+                alt="temp image"
+                title="temp image"
+                width={500}
+                height={500}
+              />
+            </div>
           </div>
         </div>
-        <div className="w-1/2 flex flex-col items-center justify-evenly">
-          <div className="flex flex-col">
-            <h2 className="text-4xl text-end font-bold text-blue-600">
-              More Features
-            </h2>
-            <div className="w-full border-t-2 border-blue-600 my-2"></div>
-            <ul className="list-disc list-inside text-2xl font-semibold space-y-4">
-              <li>[insert feature here]</li>
-              <li>[insert another feature here]</li>
-              <li>[insert feature here]</li>
-            </ul>
+        <div id="githubintegration" className="flex items-center mt-8">
+          <div className="w-1/2 flex flex-col items-center">
+            <div className="rounded-lg overflow-hidden">
+              <Image
+                src={githubReposImage}
+                alt="temp image"
+                title="temp image"
+                width={500}
+                height={500}
+              />
+            </div>
+          </div>
+          <div className="w-1/2 flex flex-col items-center justify-evenly">
+            <div className="flex flex-col">
+              <h2 className="text-4xl text-end font-bold text-blue-600">
+                GitHub Integration
+              </h2>
+              <div className="w-full border-t-2 border-blue-600 my-2"></div>
+              <ul className="list-disc list-inside text-2xl font-semibold space-y-4">
+                <li>Projects are linked to GitHub Repos</li>
+                <li>Manual repo source synchronization</li>
+                <li>Projects can reference external libraries and repos</li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
