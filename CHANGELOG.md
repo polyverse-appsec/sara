@@ -2,6 +2,20 @@
 
 # Release Notes
 
+## Version 0.20.9: April 11th, 2024
+
+### New Features
+
+- N/A
+
+### Enhancements
+
+- N/A
+
+### Bug Fixes
+
+- Re-direct to goal page for default goal on project creation
+
 ## Version 0.20.8: April 10th, 2024
 
 ### New Features
@@ -57,8 +71,8 @@
 ### Enhancements
 
 - Improve retrieval of project source files and annotations in the Assistant instructions
-     - full references to project source files
-     - Assistant estimates of time to project analysis completion is more precise based on # of files
+  - full references to project source files
+  - Assistant estimates of time to project analysis completion is more precise based on # of files
 
 ### Bug Fixes
 
