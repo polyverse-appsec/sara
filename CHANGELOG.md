@@ -11,6 +11,7 @@
 ### Enhancements
 
 - Disable inputs after pressing project create
+- Increase real estate of sara chat on screen (from 50% to 85%)
 
 ### Bug Fixes
 

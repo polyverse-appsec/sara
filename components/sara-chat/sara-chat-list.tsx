@@ -26,7 +26,7 @@ const SaraChatList = ({
   }
 
   return (
-    <div className="relative mx-auto max-w-4xl px-4">
+    <div className="relative mx-16 px-4">
       {chatQueries.map((chatQuery, index) => {
         return (
           <div key={index}>
