@@ -54,7 +54,7 @@ const SettingsOrgUpgrade = () => {
   }, [activeBillingOrg, saraSession])
 
   return (
-    <div className="flex flex-col items-center p-10">
+    <div className="flex flex-col items-center pt-10 px-10">
       <p className="text-2xl font-bold">Billing Status</p>
       <div className="w-1/2 border-t-2 border-blue-600 my-2"></div>
       {activeBillingOrg ? (
@@ -92,7 +92,7 @@ const SettingsOrgUpgrade = () => {
         </p>
       </RenderableResourceContent>
       <RenderableResourceContent>
-        <div className="flex items-center">
+        <div className="flex items-center justify-center">
           {isPreviewFeatureEnabled('FreePlanEnabled') && (
           <div
             className={
@@ -119,11 +119,11 @@ const SettingsOrgUpgrade = () => {
             }
           >
             <div className="flex flex-col items-start">
-              <div>
-                <p>Premium Plan</p>
+              <div className="flex items-center">
+                <p className="mr-2">Premium Plan</p>
                 <div
                   title="Premium Plan"
-                  className="flex items-center justify-center mr-2 p-1 border border-yellow-500 rounded-full"
+                  className="flex items-center justify-center mr-2 p-1 border border-yellow-500 rounded-full w-5 h-5"
                 >
                   <StarFilledIcon className="w-2 h-2 text-yellow-500" />
                 </div>
@@ -136,6 +136,9 @@ const SettingsOrgUpgrade = () => {
               <p>✅ Access to private repositories for projects</p>
             </div>
           </div>
+        </div>
+        <div className="py-1 px-2 rounded-lg text-center text-orange-400 bg-orange-200">This is an alpha release of the new Boost with the Sara AI. The Boost service may change or be disrupted without notice.
+          During the alpha release no refunds can be made. Thank you.
         </div>
         {orgIsPremium ? (
           <div className="inline-flex items-center justify-between w-full text-sm">

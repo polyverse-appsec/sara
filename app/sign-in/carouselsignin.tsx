@@ -23,34 +23,6 @@ import PolyverseLogo from './../../public/Polyverse logo medium.jpg'
 import SaraPortrait from './../../public/Sara_Cartoon_Portrait.png'
 import { isPreviewFeatureEnabled } from 'lib/utils'
 
-/* function Carousel({ images }: { images: StaticImageData[] }) {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0)
-
-  const handleMouseEnter = () => {
-    setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length)
-  }
-
-  return (
-    <div onMouseEnter={handleMouseEnter}>
-      {images.map((imageSrc: string | StaticImport, index: number) => (
-        <div
-          key={index}
-          className={`mr-16 rounded-lg overflow-hidden absolute left-4 top-44 transition-opacity duration-500 ease-in-out ${
-            index === currentImageIndex ? 'opacity-100' : 'opacity-0'
-          }`}
-        >
-          <Image
-            src={imageSrc}
-            alt={`Image ${index + 1}`}
-            width={1000}
-            height={1000}
-          />
-        </div>
-      ))}
-    </div>
-  )
-}*/
-
 interface CarouselItem {
   image: StaticImageData;
   description: string;
@@ -93,7 +65,7 @@ function Carousel({ items }: { items: CarouselItem[] }) {
               index === currentImageIndex ? 'opacity-100' : 'opacity-0'
             }`}
           > 
-            <div className="text-center">
+            <div className="text-center text-white dark:text-white">
               <p>{item.description}</p>
             </div>
             <Image
@@ -377,6 +349,9 @@ const CarouselSignIn = () => {
               </div>
             </div>
           </div>
+        </div>
+        <div className="py-1 px-2 rounded-lg text-center text-orange-400 bg-orange-200">This is an alpha release of the new Boost with the Sara AI. The Boost service may change or be disrupted without notice.
+          During the alpha release no refunds can be made. Thank you.
         </div>
       </div>
       <div
