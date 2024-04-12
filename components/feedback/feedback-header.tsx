@@ -6,11 +6,14 @@ import { InfoCircledIcon } from '@radix-ui/react-icons'
 import * as Label from '@radix-ui/react-label'
 import { Button, Callout, Dialog, Flex, Link, Text } from '@radix-ui/themes'
 import { useAppContext } from 'lib/hooks/app-context'
+import { set } from 'lodash'
 import { useSession } from 'next-auth/react'
 
+import { createResourceNoResponseBody } from './../../app/saraClient'
 import { type SaraSession } from './../../auth'
 
 // TODO:
+// Environment
 // URL
 // User ID
 // User name
@@ -62,7 +65,10 @@ const FeedbackDialog = ({ saraSession }: FeedbackDialogProps) => {
       <Dialog.Content>
         <form
           onSubmit={(e) => {
-            wait().then(() => setOpen(false))
+            const reqBody = {}
+            createResourceNoResponseBody(`/feedback`, reqBody)
+              .then(() => setOpen(false))
+              .catch(() => setOpen(false))
             e.preventDefault()
           }}
         >
