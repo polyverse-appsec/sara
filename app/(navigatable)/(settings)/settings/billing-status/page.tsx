@@ -10,6 +10,7 @@ import RenderableResourceContent from 'components/renderable-resource/renderable
 import { IconExternalLink } from 'components/ui/icons'
 import { useAppContext } from 'lib/hooks/app-context'
 import { useSession } from 'next-auth/react'
+import { isPreviewFeatureEnabled } from 'lib/utils'
 
 const SettingsOrgUpgrade = () => {
   const { activeBillingOrg } = useAppContext()
@@ -92,6 +93,7 @@ const SettingsOrgUpgrade = () => {
       </RenderableResourceContent>
       <RenderableResourceContent>
         <div className="flex items-center">
+          {isPreviewFeatureEnabled('FreePlanEnabled') && (
           <div
             className={
               !orgIsPremium
@@ -108,7 +110,7 @@ const SettingsOrgUpgrade = () => {
               <p>❌ Project creation limit</p>
               <p>❌ Only public respositories for projects</p>
             </div>
-          </div>
+          </div>)}
           <div
             className={
               orgIsPremium

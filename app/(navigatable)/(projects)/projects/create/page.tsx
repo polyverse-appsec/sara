@@ -207,11 +207,18 @@ const ProjectCreate = () => {
             </div>
           )}
         </div>
+        {!userIsPremium ? (
+          <div className="text-left text-base text-red-500 my-1">
+            <p>
+              Please upgrade to premium to access create project features
+            </p>
+          </div>
+        ) : null}
         {!userGitHubAppInstalled ? (
           <div className="text-left text-base text-red-500 my-1">
             <p>
               Please install Boost GitHub App for your user before creating a
-              project.
+              project
             </p>
           </div>
         ) : null}
@@ -228,7 +235,8 @@ const ProjectCreate = () => {
               !userGitHubAppInstalled ||
               !statusCheckDone ||
               !projectName ||
-              !controlledProjectDataSources
+              !controlledProjectDataSources ||
+              !userIsPremium
                 ? 'bg-gray-500 hover:cursor-not-allowed'
                 : 'btn-blue hover:bg-blue-700 hover:text-white'
             } transition duration-300`}
@@ -318,7 +326,7 @@ const ProjectCreate = () => {
               }
             }}
             disabled={
-              !saveButtonEnabled || !userGitHubAppInstalled || !statusCheckDone
+              !saveButtonEnabled || !userGitHubAppInstalled || !statusCheckDone || !userIsPremium
             }
           >
             {saveButtonEnabled ? null : (

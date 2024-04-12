@@ -11,6 +11,8 @@
 ### Enhancements
 
 - Add feedback header UI component
+- Removed free plan from pricing references, blocked project creation if user is not premium
+- Made new login page the default
 
 ### Bug Fixes
 

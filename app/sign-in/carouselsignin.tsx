@@ -21,6 +21,7 @@ import githubReposImage from './../../public/githubrepos.png'
 
 import PolyverseLogo from './../../public/Polyverse logo medium.jpg'
 import SaraPortrait from './../../public/Sara_Cartoon_Portrait.png'
+import { isPreviewFeatureEnabled } from 'lib/utils'
 
 /* function Carousel({ images }: { images: StaticImageData[] }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
@@ -346,6 +347,7 @@ const CarouselSignIn = () => {
         <p className="text-4xl font-bold text-orange-600">Pricing Plan</p>
         <div className="w-1/2 border-t-2 border-orange-600 my-2"></div>
         <div className="flex items-center justify-evenly w-4/5 mt-6">
+          {isPreviewFeatureEnabled('FreePlanEnabled') && (
           <div className="bg-background shadow-md rounded-lg p-6 border mb-4">
             <div className="flex flex-col items-start">
               <p className="text-2xl font-semibold">Free Plan</p>
@@ -358,7 +360,7 @@ const CarouselSignIn = () => {
                 <p>❌ Only public respositories for projects</p>
               </div>
             </div>
-          </div>
+          </div>)}
           <div className="bg-background shadow-md rounded-lg p-6 border mb-4">
             <div className="flex flex-col items-start">
               <div className="w-full flex justify-between items-center">

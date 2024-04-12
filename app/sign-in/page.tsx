@@ -11,9 +11,7 @@ export default async function SignInPage() {
   if (session?.user) {
     redirect('/')
   }
-  return isPreviewFeatureEnabled('CarouselLoginPage') ? (
+  return (
     <CarouselSignIn />
-  ) : (
-    <DefaultSignIn />
   )
 }
