@@ -2,6 +2,20 @@
 
 # Release Notes
 
+## Version 0.20.10: April 12th, 2024
+
+### New Features
+
+- N/A
+
+### Enhancements
+
+- Add feedback header UI component
+
+### Bug Fixes
+
+- N/A
+
 ## Version 0.20.9: April 11th, 2024
 
 ### New Features

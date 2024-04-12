@@ -126,9 +126,9 @@ We used trunk based development where we all work out of `main` on a daily and d
 ### Feature-Flag Development
 
 We use feature flags to enable and disable customer-facing features (and avoid forking the code or creating feature branches).
-Feature flags are generally available by creating a name for the feature, and setting it in the environment variables at NEXT_PUBLIC_PREVIEW_FEATURES in the Vercel dashboard per deployment.
+Feature flags are generally available by creating a name for the feature, and setting it in the environment variables at `NEXT_PUBLIC_PREVIEW_FEATURES` in the Vercel dashboard per deployment.
 
-Then use the isPreviewFeatureEnabled function to determine if the feature is enabled or disabled in the UI.
+Then use the `isPreviewFeatureEnabled` function to determine if the feature is enabled or disabled in the UI.
 
 ### Debugging The Frontend
 

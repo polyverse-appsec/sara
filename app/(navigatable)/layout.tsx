@@ -2,8 +2,9 @@
 
 import '@radix-ui/themes/styles.css'
 
-import { Theme } from '@radix-ui/themes'
+import { Flex, Theme } from '@radix-ui/themes'
 
+import FeedbackHeader from './../../components/feedback/feedback-header'
 import SidebarNav from './../../components/sidebar-nav'
 
 interface NavigatableLayoutProps {
@@ -14,10 +15,13 @@ const NavigatableLayout = ({ children }: NavigatableLayoutProps) => {
   return (
     <>
       <Theme>
-        <div className="w-[250px] fixed h-full overflow-y-auto z-50">
-          <SidebarNav />
-        </div>
-        <div className="flex-1 ml-[250px] overflow-auto">{children}</div>
+        <Flex direction="column" height="h-screen">
+          <FeedbackHeader />
+          <div className="flex flex-1 overflow-hidden">
+            <SidebarNav />
+            <div className="flex-1 overflow-auto">{children}</div>
+          </div>
+        </Flex>
       </Theme>
     </>
   )
