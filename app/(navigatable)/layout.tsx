@@ -4,7 +4,7 @@ import '@radix-ui/themes/styles.css'
 
 import { Flex, Theme } from '@radix-ui/themes'
 
-import FeedbackHeader from './../../components/callouts/feedback-callout'
+import FeedbackCallout from './../../components/callouts/feedback-callout'
 import SidebarNav from './../../components/sidebar-nav'
 
 interface NavigatableLayoutProps {
@@ -16,7 +16,7 @@ const NavigatableLayout = ({ children }: NavigatableLayoutProps) => {
     <>
       <Theme>
         <Flex direction="column" height="h-screen">
-          <FeedbackHeader />
+          <FeedbackCallout />
           <div className="flex flex-1 overflow-hidden">
             <SidebarNav />
             <div className="flex-1 overflow-auto">{children}</div>

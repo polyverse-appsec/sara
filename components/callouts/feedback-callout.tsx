@@ -125,7 +125,7 @@ const FeedbackDialog = ({ saraSession }: FeedbackDialogProps) => {
   )
 }
 
-const FeedbackHeader = () => {
+const FeedbackCallout = () => {
   const session = useSession()
   const saraSession = session.data ? (session.data as SaraSession) : null
 
@@ -144,4 +144,4 @@ const FeedbackHeader = () => {
   )
 }
 
-export default FeedbackHeader
+export default FeedbackCallout
