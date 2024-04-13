@@ -2,6 +2,20 @@
 
 # Release Notes
 
+## Version 0.20.11: April 13th, 2024
+
+### New Features
+
+- N/A
+
+### Enhancements
+
+- Add `<ExperimentalCallout>` to the headers
+
+### Bug Fixes
+
+- N/A
+
 ## Version 0.20.10: April 12th, 2024
 
 ### New Features

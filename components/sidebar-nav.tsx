@@ -118,11 +118,23 @@ const SidebarNav = () => {
     setMouseDown(true)
   }
 
+  // We do dynamic class naming here to position the sticky elements and
+  // determine the height of the draggable <div>. This is because there are
+  // sticky headers that are positioned in the component <HeaderCallouts>. For
+  // more details around sizing see <HeaderCallouts>.
+  const topDivClassname = saraSession
+    ? 'sticky top-112 overflow-auto'
+    : 'sticky top-96 overflow-auto'
+
+  const draggableDivClassname = saraSession
+    ? 'flex flex-col h-[calc(100vh-112px)] bg-white dark:bg-black transition duration-200 ease-in-out'
+    : 'flex flex-col h-[calc(100vh-96px)] bg-white dark:bg-black transition duration-200 ease-in-out'
+
   return (
-    <div className="sticky top-64 overflow-auto">
+    <div className={topDivClassname}>
       <div
         ref={sidebarRef}
-        className="flex flex-col h-[calc(100vh-64px)] bg-white dark:bg-black transition duration-200 ease-in-out"
+        className={draggableDivClassname}
         onMouseUp={handleMouseUp}
         onMouseMove={handleMouseMove}
         style={{ width: `${width}px` }} // Use inline style for dynamic width

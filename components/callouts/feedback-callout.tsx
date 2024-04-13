@@ -15,7 +15,6 @@ import {
   TextField,
 } from '@radix-ui/themes'
 import { useAppContext } from 'lib/hooks/app-context'
-import { set } from 'lodash'
 import { useSession } from 'next-auth/react'
 
 import { createResourceNoResponseBody } from './../../app/saraClient'
@@ -125,22 +124,21 @@ const FeedbackDialog = ({ saraSession }: FeedbackDialogProps) => {
   )
 }
 
+// Positioning and sizing should be done in the <HeaderCallouts> component
 const FeedbackCallout = () => {
   const session = useSession()
   const saraSession = session.data ? (session.data as SaraSession) : null
 
   return (
-    <div className="sticky top-0 w-full z-50 h-[64px]">
-      <Callout.Root color="green">
-        <Callout.Text>
-          <Flex as="span" align="center" gap="4">
-            <ChatBubbleIcon />
-            {renderHeaderText(saraSession)}
-            <FeedbackDialog saraSession={saraSession} />
-          </Flex>
-        </Callout.Text>
-      </Callout.Root>
-    </div>
+    <Callout.Root color="green">
+      <Callout.Text>
+        <Flex as="span" align="center" gap="4">
+          <ChatBubbleIcon />
+          {renderHeaderText(saraSession)}
+          <FeedbackDialog saraSession={saraSession} />
+        </Flex>
+      </Callout.Text>
+    </Callout.Root>
   )
 }
 
