@@ -10,7 +10,7 @@
 
 ### Enhancements
 
-- N/A
+- Show Project Health in left-hand Navigation Bar
 
 ### Bug Fixes
 
@@ -25,7 +25,7 @@
 
 ### Enhancements
 
-- Add `<ExperimentalCallout>` to the headers
+- Add Early Pre-Release Service Availability and refund policy to the top of all pages
 
 ### Bug Fixes
 
@@ -39,10 +39,10 @@
 
 ### Enhancements
 
-- Add feedback header UI component
-- Removed free plan from pricing references, blocked project creation if user is not premium
-- Made new login page the default
-- Hook in REST API at `/api/feedback` to allow users to submit feedback on GitHub
+- Add Feedback bar to the top of all pages
+- Switch Support to Premium only - unpaid accounts can no longer create projects
+- Significant improvements to Sara Welcome & Login page
+- Enable Feedback to be submitted via Form
 
 ### Bug Fixes
 
