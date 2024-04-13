@@ -22,6 +22,7 @@ import githubReposImage from './../../public/githubrepos.png'
 import PolyverseLogo from './../../public/Polyverse logo medium.jpg'
 import SaraPortrait from './../../public/Sara_Cartoon_Portrait.png'
 import { isPreviewFeatureEnabled } from 'lib/utils'
+import { preReleaseServiceDisclaimer } from 'lib/disclaimers'
 
 interface CarouselItem {
   image: StaticImageData;
@@ -350,9 +351,7 @@ const CarouselSignIn = () => {
             </div>
           </div>
         </div>
-        <div className="py-1 px-2 rounded-lg text-center text-orange-400 bg-orange-200">This is an alpha release of the new Boost with the Sara AI. The Boost service may change or be disrupted without notice.
-          During the alpha release no refunds can be made. Thank you.
-        </div>
+        <div className="py-1 px-2 rounded-lg text-center text-orange-400 bg-orange-200">{preReleaseServiceDisclaimer}</div>
       </div>
       <div
         id="footer"

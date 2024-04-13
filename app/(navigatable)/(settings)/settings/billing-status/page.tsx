@@ -11,6 +11,7 @@ import { IconExternalLink } from 'components/ui/icons'
 import { useAppContext } from 'lib/hooks/app-context'
 import { useSession } from 'next-auth/react'
 import { isPreviewFeatureEnabled } from 'lib/utils'
+import { preReleaseServiceDisclaimer } from 'lib/disclaimers'
 
 const SettingsOrgUpgrade = () => {
   const { activeBillingOrg } = useAppContext()
@@ -137,9 +138,7 @@ const SettingsOrgUpgrade = () => {
             </div>
           </div>
         </div>
-        <div className="py-1 px-2 rounded-lg text-center text-orange-400 bg-orange-200">This is an alpha release of the new Boost with the Sara AI. The Boost service may change or be disrupted without notice.
-          During the alpha release no refunds can be made. Thank you.
-        </div>
+        <div className="py-1 px-2 rounded-lg text-center text-orange-400 bg-orange-200">{preReleaseServiceDisclaimer}</div>
         {orgIsPremium ? (
           <div className="inline-flex items-center justify-between w-full text-sm">
             <div className="flex justify-between items-center w-full font-semibold bg-white-600 shadow-md rounded-lg p-2 cursor-not-allowed opacity-50">
