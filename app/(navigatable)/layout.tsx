@@ -4,7 +4,7 @@ import '@radix-ui/themes/styles.css'
 
 import { Flex, Theme } from '@radix-ui/themes'
 
-import FeedbackHeader from './../../components/feedback/feedback-header'
+import FeedbackHeader from './../../components/headers/feedback-header'
 import SidebarNav from './../../components/sidebar-nav'
 
 interface NavigatableLayoutProps {
