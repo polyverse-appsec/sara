@@ -3,10 +3,10 @@
 import { useEffect, useState } from 'react'
 import {
   StaticImageData,
-  StaticImport,
 } from 'next/dist/shared/lib/get-img-props'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 import { LoginButton } from '../../components/login-button'
 import { CaretDownIcon } from '@radix-ui/react-icons'
@@ -127,7 +127,7 @@ const CarouselSignIn = () => {
       >
         <div className="flex justify-between items-center p-4">
           <div className="font-bold text-blue-800 text-2xl italic ml-4">
-            Sara
+            Sara AI by Polyverse
           </div>
           <div>
             <button
@@ -358,7 +358,9 @@ const CarouselSignIn = () => {
         className="h-44 bg-gradient-to-tr from-orange-400 to-blue-500 min-h-44"
       >
         <div className="text-center pt-24">
-          <p>© 2024, Polyverse. All rights reserved.</p>
+          <Link href="https://www.polyverse.com">
+            <p>© 2024, Polyverse. All rights reserved.</p>
+          </Link>
         </div>
       </div>
     </>
