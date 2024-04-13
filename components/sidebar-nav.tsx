@@ -16,7 +16,7 @@ import { type Org } from 'lib/data-model-types'
 import { useSession } from 'next-auth/react'
 import toast from 'react-hot-toast'
 
-import { getOrgUserStatus } from './../app/react-utils'
+import { getOrgUserStatus, renderHealthIcon, renderReadableHealthValue } from './../app/react-utils'
 import { getResource } from './../app/saraClient'
 import { useAppContext } from './../lib/hooks/app-context'
 import SaraPortrait from './../public/Sara_Cartoon_Portrait.png'
@@ -196,9 +196,10 @@ const SidebarNav = () => {
                 <>
                   <Link
                     href={`/projects/${activeProjectDetails?.id}`}
-                    className="hover:underline"
+                    className="hover:underline flex items-center"
                   >
-                    <Text size="2">{activeProjectDetails?.project.name}</Text>
+                    {activeProjectDetails ? renderHealthIcon(activeProjectDetails.health.readableValue) : null}
+                    <Text size="2" as="span" className="align-middle">{activeProjectDetails?.project.name}</Text>
                   </Link>
                 </>
               ) : (
