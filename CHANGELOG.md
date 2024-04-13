@@ -13,6 +13,7 @@
 - Add feedback header UI component
 - Removed free plan from pricing references, blocked project creation if user is not premium
 - Made new login page the default
+- Hook in REST API at `/api/feedback` to allow users to submit feedback on GitHub
 
 ### Bug Fixes
 

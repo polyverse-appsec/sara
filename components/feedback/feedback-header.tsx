@@ -4,21 +4,22 @@ import { useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { InfoCircledIcon } from '@radix-ui/react-icons'
 import * as Label from '@radix-ui/react-label'
-import { Button, Callout, Dialog, Flex, Link, Text } from '@radix-ui/themes'
+import {
+  Button,
+  Callout,
+  Dialog,
+  Flex,
+  Link,
+  Text,
+  TextArea,
+  TextField,
+} from '@radix-ui/themes'
 import { useAppContext } from 'lib/hooks/app-context'
 import { set } from 'lodash'
 import { useSession } from 'next-auth/react'
 
 import { createResourceNoResponseBody } from './../../app/saraClient'
 import { type SaraSession } from './../../auth'
-
-// TODO:
-// Environment
-// URL
-// User ID
-// User name
-// User email
-// If I can't get user email then pivot the UI to show our email address for support then
 
 const renderHeaderText = (saraSession: SaraSession | null) => {
   // If we don't have their session details then just display an email for
@@ -46,10 +47,13 @@ interface FeedbackDialogProps {
   saraSession: SaraSession | null
 }
 
-const wait = () => new Promise((resolve) => setTimeout(resolve, 5000))
-
 const FeedbackDialog = ({ saraSession }: FeedbackDialogProps) => {
+  const pathname = usePathname()
+  const { activeBillingOrg, activeProjectDetails } = useAppContext()
+
   const [open, setOpen] = useState<boolean>(false)
+  const [feedbackTitle, setFeedbackTitle] = useState<string>('')
+  const [feedbackDescription, setFeedbackDescription] = useState<string>('')
 
   // If we don't have their session details then don't provide the ability
   // to click the submit form and hope they email us :fingers-crossed:
@@ -65,10 +69,25 @@ const FeedbackDialog = ({ saraSession }: FeedbackDialogProps) => {
       <Dialog.Content>
         <form
           onSubmit={(e) => {
-            const reqBody = {}
+            const reqBody = {
+              feedbackTitle,
+              feedbackDescription,
+              path: pathname,
+              activeBillingOrg,
+              activeProjectDetails,
+            }
+
             createResourceNoResponseBody(`/feedback`, reqBody)
-              .then(() => setOpen(false))
-              .catch(() => setOpen(false))
+              .then(() => {
+                setOpen(false)
+                setFeedbackTitle('')
+                setFeedbackDescription('')
+              })
+              .catch(() => {
+                setOpen(false)
+                setFeedbackTitle('')
+                setFeedbackDescription('')
+              })
             e.preventDefault()
           }}
         >
@@ -79,14 +98,26 @@ const FeedbackDialog = ({ saraSession }: FeedbackDialogProps) => {
             Please provide feedback on how Sara can add more value to you or how
             she can fix a bug in herself. Please be as detailed as you can.
           </Dialog.Description>
-          <Flex>
-            <Label.Root>Feedback/Feature Request/Bug Report</Label.Root>
-          </Flex>
-          <Flex justify="end" gap="3">
-            <Dialog.Close>
-              <Button color="gray">Cancel</Button>
-            </Dialog.Close>
-            <Button type="submit">Submit</Button>
+          <Flex direction="column" gap="3">
+            <>
+              <Label.Root>Title</Label.Root>
+              <TextField.Root
+                onChange={(e) => setFeedbackTitle(e.target.value)}
+              />
+            </>
+            <>
+              <Label.Root>Description</Label.Root>
+              <TextArea
+                style={{ height: '200px' }}
+                onChange={(e) => setFeedbackDescription(e.target.value)}
+              />
+            </>
+            <Flex justify="end" gap="3">
+              <Dialog.Close>
+                <Button color="gray">Cancel</Button>
+              </Dialog.Close>
+              <Button type="submit">Submit</Button>
+            </Flex>
           </Flex>
         </form>
       </Dialog.Content>
@@ -95,14 +126,8 @@ const FeedbackDialog = ({ saraSession }: FeedbackDialogProps) => {
 }
 
 const FeedbackHeader = () => {
-  const pathname = usePathname()
   const session = useSession()
   const saraSession = session.data ? (session.data as SaraSession) : null
-
-  const { activeBillingOrg, activeProjectDetails } = useAppContext()
-
-  console.log(`***** pathanem: ${pathname}`)
-  console.log(`***** saraSession: ${JSON.stringify(saraSession)}`)
 
   return (
     <div className="sticky top-0 w-full z-50 h-[64px]">
@@ -111,7 +136,6 @@ const FeedbackHeader = () => {
           <Flex as="span" align="center" gap="4">
             <InfoCircledIcon />
             {renderHeaderText(saraSession)}
-            {/*renderFeedbackDialog(saraSession)*/}
             <FeedbackDialog saraSession={saraSession} />
           </Flex>
         </Callout.Text>
