@@ -194,9 +194,6 @@ const SidebarNav = () => {
             <Flex gap="2" align="center" direction="column">
               {projectIdForConfiguration ? (
                 <>
-                  <Text size="2" weight="bold">
-                    Active Project:
-                  </Text>
                   <Link
                     href={`/projects/${activeProjectDetails?.id}`}
                     className="hover:underline"
