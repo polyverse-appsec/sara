@@ -33,11 +33,11 @@ const HeaderCallouts = () => {
   return (
     <div className="sticky z-50">
       <Flex direction="column">
+      <div className={experimentalClassname}>
+          <ExperimentalCallout />
+        </div>
         <div className={feedbackClassname}>
           <FeedbackCallout />
-        </div>
-        <div className={experimentalClassname}>
-          <ExperimentalCallout />
         </div>
       </Flex>
     </div>
