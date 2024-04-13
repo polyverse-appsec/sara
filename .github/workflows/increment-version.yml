@@ -78,7 +78,9 @@ jobs:
 
             # Inserting the new entry at the beginning of the file right after the header.
             # Using sed to inject the new entry after the Release Notes header.
-            sed -i "1,/^\# Release Notes$/!b; /^\# Release Notes$/{n; a $NEW_ENTRY" -e '}' CHANGELOG.md
+            sed -i "1,/^\# Release Notes$/!b; /^\# Release Notes$/{n; a\
+            $NEW_ENTRY
+            }" CHANGELOG.md
 
             # Commit the new change
             git add CHANGELOG.md
