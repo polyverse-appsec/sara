@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { usePathname } from 'next/navigation'
-import { InfoCircledIcon } from '@radix-ui/react-icons'
+import { ChatBubbleIcon } from '@radix-ui/react-icons'
 import * as Label from '@radix-ui/react-label'
 import {
   Button,
@@ -134,7 +134,7 @@ const FeedbackHeader = () => {
       <Callout.Root color="green">
         <Callout.Text>
           <Flex as="span" align="center" gap="4">
-            <InfoCircledIcon />
+            <ChatBubbleIcon />
             {renderHeaderText(saraSession)}
             <FeedbackDialog saraSession={saraSession} />
           </Flex>
