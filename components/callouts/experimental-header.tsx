@@ -11,9 +11,9 @@ const ExperimentalCallout = () => {
         <Flex as="span" align="center" gap="4">
           <InfoCircledIcon />
           <Text>
-            Sara is in an experimental launch phase. Service may be interrupted
-            in the future. If you need any assistance or have any questions
-            please contact <Link>support@polyverse.com</Link>.
+            This is an alpha release of the new Boost with the Sara AI. The
+            Boost service may change or be disrupted without notice. During the
+            alpha release no refunds can be made. Thank you.
           </Text>
         </Flex>
       </Callout.Text>
