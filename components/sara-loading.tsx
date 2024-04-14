@@ -1,15 +1,18 @@
 'use client'
 
 import Image from 'next/image'
-import { Box, Button, Flex, Heading, Text } from '@radix-ui/themes'
-import RenderableResourceContent from 'components/renderable-resource/renderable-resource-content'
+import { Flex, Heading, Text } from '@radix-ui/themes'
 
 import SaraLoadingImg from './../public/Sara-Loading.png'
 
-const SaraLoading = () => {
+interface SaraLoadingProps {
+  message?: string; // The question mark makes the property optional.
+}
+
+const SaraLoading = ({message = `I'm preparing this content for you...`}: SaraLoadingProps) => {
   return (
     <Flex direction="column" align="center" justify="center" minHeight="100vh">
-      <Heading size="9">I&apos;m preparing this content for you...</Heading>
+      <Heading size="9">{message}</Heading>
       <br />
       <br />
       <Image

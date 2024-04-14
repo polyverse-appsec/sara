@@ -141,16 +141,18 @@ const SidebarNav = () => {
       >
         {/* Logo section */}
         <div className="flex flex-col items-center sticky top-0 z-10 p-4 m-5 rounded-full border-4 border-blue-500">
-          <Image
-            src={SaraPortrait}
-            alt="Sara's AI Assistant"
-            title="Sara's AI Assistant"
-            width={100}
-            height={100}
-            className="rounded-full"
-          />
-          <p className="text-lg mt-2">Sara</p>
-          <p className="text-sm italic">AI Assistant</p>
+          <Link href="/about">
+            <Image
+              src={SaraPortrait}
+              alt="Sara's AI Assistant"
+              title="Sara's AI Assistant"
+              width={100}
+              height={100}
+              className="rounded-full"
+            />
+            <p className="text-lg mt-2 text-center">Sara</p>
+            <p className="text-sm italic text-center">AI Assistant</p>
+          </Link>
         </div>
 
         {/* Navigation Buttons */}

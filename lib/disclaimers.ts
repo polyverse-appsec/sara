@@ -1,2 +1,0 @@
-export const preReleaseServiceDisclaimer =
-    `This is an early pre-release of the new Polyverse Boost with Sara AI. The Sara and Boost services may change or be disrupted without notice. During the pre-release no refunds can be made.`

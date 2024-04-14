@@ -11,7 +11,7 @@ import { IconExternalLink } from 'components/ui/icons'
 import { useAppContext } from 'lib/hooks/app-context'
 import { useSession } from 'next-auth/react'
 import { isPreviewFeatureEnabled } from 'lib/utils'
-import { preReleaseServiceDisclaimer } from 'lib/disclaimers'
+import { preReleaseServiceDisclaimer } from 'lib/productDescriptions'
 
 const SettingsOrgUpgrade = () => {
   const { activeBillingOrg } = useAppContext()
@@ -69,12 +69,11 @@ const SettingsOrgUpgrade = () => {
         {orgIsPremium ? (
           <p className="text-md font-bold text-green-600 mb-2">
             User {saraSession?.name} on {activeBillingOrg?.name} is on the
-            premium plan
+            Premium Plan monthly subscription
           </p>
         ) : (
           <p className="text-md font-bold mb-2">
-            User {saraSession?.name} on {activeBillingOrg?.name} is on the free
-            plan
+            User {saraSession?.name} on {activeBillingOrg?.name} is on the Free Trial monthly plan
           </p>
         )}
         <Link
@@ -89,7 +88,7 @@ const SettingsOrgUpgrade = () => {
           </div>
         </Link>
         <p className="text-xs text-blue-600 mt-2">
-          Note, this will redirect you to Stripe
+          Note, this will redirect you to Stripe.com website for secure billing and account information.
         </p>
       </RenderableResourceContent>
       <RenderableResourceContent>
@@ -143,7 +142,7 @@ const SettingsOrgUpgrade = () => {
           <div className="inline-flex items-center justify-between w-full text-sm">
             <div className="flex justify-between items-center w-full font-semibold bg-white-600 shadow-md rounded-lg p-2 cursor-not-allowed opacity-50">
               <p>
-                You are already on premium plan for {activeBillingOrg?.name}
+                You are already subscribed to Premium Plan for {activeBillingOrg?.name}
               </p>
               <IconExternalLink className="w-4 h-4 ml-auto" />
             </div>
@@ -156,14 +155,14 @@ const SettingsOrgUpgrade = () => {
             className="inline-flex items-center justify-between w-full text-sm"
           >
             <div className="flex justify-between items-center w-full font-semibold bg-white-600 shadow-md rounded-lg p-2 transition hover:scale-105 cursor-pointer">
-              <p>Upgrade to premium plan for {activeBillingOrg?.name}</p>
+              <p>Upgrade to Premium Plan monthly subscription for {activeBillingOrg?.name}</p>
               <IconExternalLink className="w-4 h-4 ml-auto" />
+              <p className="text-xs text-blue-600 mt-2">
+                Note, this will redirect you to Stripe.com website for secure billing and account information.
+              </p>
             </div>
           </Link>
         )}
-        <p className="text-xs text-blue-600 mt-2">
-          Note, this will redirect you to Stripe
-        </p>
       </RenderableResourceContent>
     </div>
   )

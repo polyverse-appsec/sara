@@ -11,6 +11,8 @@
 ### Enhancements
 
 - Show Project Health in left-hand Navigation Bar
+- Added About Sara page for more information - including payment and data retention policy, 3rd party services used, and FAQ
+- Improved page load transitions with Sara hints
 
 ### Bug Fixes
 
@@ -486,7 +488,7 @@
 - Upon log in, user will be redirected to the projects page of their first org if applicable
 - Added project name and project status display to the nav bar
 - UI improvements to the Sara status messages
-- Added premium plan logo next to org on nav bar and applicable orgs in billing contexts page
+- Added Premium Plan logo next to org on nav bar and applicable orgs in billing contexts page
 - Show plan status inside each org page and if the org isn't premium, include link to upgrade
 - Show project health for each of the projects in the projects list page
 - Encourage Sara NOT to use the specific vector store filenames in her answers to the user - and instead use more general resource names like "Software Architectural Blueprint" - which are names also in the raw resources uploaded by Backend

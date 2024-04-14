@@ -101,7 +101,7 @@ export function UserMenu({ user }: UserMenuProps) {
               </div>
             ) : null}
             {!userIsPremium ? (
-              <div title="The User is not on a premium plan.">
+              <div title="The User is not subscribed to the Premium Plan.">
                 <ExclamationTriangleIcon className="w-4 h-4 text-yellow-500" />
               </div>
             ) : null}
@@ -142,7 +142,7 @@ export function UserMenu({ user }: UserMenuProps) {
                 <IconExternalLink className="w-3 h-3 ml-auto" />
               </a>
               {!userIsPremium ? (
-                <div title="The User is not on a premium plan.">
+                <div title="The User is not subscribed to the Premium Plan.">
                   <ExclamationTriangleIcon className="w-4 h-4 text-yellow-500" />
                 </div>
               ) : null}

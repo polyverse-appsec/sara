@@ -11,7 +11,7 @@ import SaraLoading from 'components/sara-loading'
 import { IconExternalLink } from 'components/ui/icons'
 import { useSession } from 'next-auth/react'
 
-import { UserOrgStatus, type Org } from './../../../../../lib/data-model-types'
+import { type Org } from './../../../../../lib/data-model-types'
 import { useAppContext } from './../../../../../lib/hooks/app-context'
 
 const OrgIndex = ({ params: { id } }: { params: { id: string } }) => {
@@ -144,7 +144,7 @@ const OrgIndex = ({ params: { id } }: { params: { id: string } }) => {
           <div className="inline-flex items-center justify-between w-full text-sm">
             <div className="flex justify-between items-center w-full font-semibold bg-white-600 shadow-md rounded-lg p-2 cursor-not-allowed opacity-50">
               <p>
-                You are already on premium plan for {activeBillingOrg?.name}
+                You are already subscribed to Premium Plan for {activeBillingOrg?.name}
               </p>
               <IconExternalLink className="w-4 h-4 ml-auto" />
             </div>
@@ -156,15 +156,15 @@ const OrgIndex = ({ params: { id } }: { params: { id: string } }) => {
             rel="noopener noreferrer"
             className="inline-flex items-center justify-between w-full text-sm"
           >
-            <div className="flex justify-between items-center w-full font-semibold bg-white-600 shadow-md rounded-lg p-2 transform transition hover:scale-105 cursor-pointer">
-              <p>Upgrade to premium plan for {activeBillingOrg?.name}</p>
+            <div className="flex justify-between items-center w-full font-semibold bg-white-600 shadow-md rounded-lg p-2 transition hover:scale-105 cursor-pointer">
+              <p>Upgrade to Premium Plan for {activeBillingOrg?.name}</p>
               <IconExternalLink className="w-4 h-4 ml-auto" />
             </div>
+            <p className="text-xs text-blue-600 mt-2">
+              Note, this will redirect you to the Stripe.com website for secure billing and account information.
+            </p>
           </Link>
         )}
-        <p className="text-xs text-blue-600 mt-2">
-          Note, this will redirect you to Stripe
-        </p>
       </RenderableResourceContent>
     </div>
   )

@@ -2,7 +2,7 @@
 
 import { InfoCircledIcon } from '@radix-ui/react-icons'
 import { Callout, Flex, Link, Text } from '@radix-ui/themes'
-import { preReleaseServiceDisclaimer } from 'lib/disclaimers'
+import { preReleaseServiceDisclaimer } from 'lib/productDescriptions'
 
 // Positioning and sizing should be done in the <HeaderCallouts> component
 const ExperimentalCallout = () => {
@@ -12,7 +12,10 @@ const ExperimentalCallout = () => {
         <Flex as="span" align="center" gap="4">
           <InfoCircledIcon />
           <Text>
-            {preReleaseServiceDisclaimer}
+            {preReleaseServiceDisclaimer}&nbsp;
+            <Link href="/about" target="_blank">
+              Learn more
+            </Link>
           </Text>
         </Flex>
       </Callout.Text>

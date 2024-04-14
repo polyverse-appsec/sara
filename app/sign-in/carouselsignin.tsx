@@ -22,7 +22,7 @@ import githubReposImage from './../../public/githubrepos.png'
 import PolyverseLogo from './../../public/Polyverse logo medium.jpg'
 import SaraPortrait from './../../public/Sara_Cartoon_Portrait.png'
 import { isPreviewFeatureEnabled } from 'lib/utils'
-import { preReleaseServiceDisclaimer } from 'lib/disclaimers'
+import { preReleaseServiceDisclaimer, saraProductDescription } from 'lib/productDescriptions'
 
 interface CarouselItem {
   image: StaticImageData;
@@ -204,12 +204,7 @@ const CarouselSignIn = () => {
         </h2>
         <div className="w-1/2 border-t-2 border-blue-600 my-2"></div>
         <div className="mt-4 p-2 text-2xl font-semibold text-center w-3/4 mx-auto preserve-line-breaks">
-          Sara partners with you and your team - your skills, strengths and
-          challenges - to help you deliver your best work, and accelerate your
-          roadmap and business goals. Sara leverages the advanced Polyverse
-          Boost AI Services to analyze your codebase and workflows, providing
-          real-time, customized task plans and direct assistance writing
-          documentation, updating specs, coding, or creating tests.
+            {saraProductDescription}
         </div>
       </div>
       <div className="px-16">
@@ -230,8 +225,8 @@ const CarouselSignIn = () => {
             <div className="rounded-lg overflow-hidden">
               <Image
                 src={codeSummaryImage}
-                alt="temp image"
-                title="temp image"
+                alt="Code Editing Summary"
+                title="Code Editing Summary"
                 width={500}
                 height={500}
               />
@@ -243,8 +238,8 @@ const CarouselSignIn = () => {
             <div className="rounded-lg overflow-hidden">
               <Image
                 src={guidelinesImage}
-                alt="temp image"
-                title="temp image"
+                alt="Advanced Analysis Customization"
+                title="Advanced Analysis Customization"
                 width={500}
                 height={500}
               />
@@ -281,8 +276,8 @@ const CarouselSignIn = () => {
             <div className="rounded-lg overflow-hidden">
               <Image
                 src={goalsExplorerImage}
-                alt="temp image"
-                title="temp image"
+                alt="Achieve Your Project Goals"
+                title="Achieve Your Project Goals"
                 width={500}
                 height={500}
               />
@@ -294,8 +289,8 @@ const CarouselSignIn = () => {
             <div className="rounded-lg overflow-hidden">
               <Image
                 src={githubReposImage}
-                alt="temp image"
-                title="temp image"
+                alt="GitHub.com Integration"
+                title="GitHub.com Integration"
                 width={500}
                 height={500}
               />

@@ -8,6 +8,7 @@ import toast from 'react-hot-toast'
 import { getResource } from './../../../../app/saraClient'
 import { useAppContext } from './../../../../lib/hooks/app-context'
 import ProjectDashboard from './project-dashboard'
+import SaraLoading from 'components/sara-loading'
 
 const ProjectIndex = () => {
   const router = useRouter()
@@ -47,11 +48,7 @@ const ProjectIndex = () => {
   }
 
   if (isLoading) {
-    return (
-      <div className="flex justify-center items-center pt-20">
-        Sara is refreshing your projects...
-      </div>
-    )
+    return <SaraLoading message="Sara is refreshing your projects..." />
   }
 
   return (
