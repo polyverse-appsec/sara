@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation'
-import { isPreviewFeatureEnabled } from 'lib/utils'
+import { isPreviewFeatureEnabled } from 'lib/service-utils'
 
 import { auth } from './../../auth'
 import CarouselSignIn from './carouselsignin'

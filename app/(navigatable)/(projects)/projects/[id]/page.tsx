@@ -7,7 +7,7 @@ import ProjectSourceSyncStatus from 'components/project-status/project-source-sy
 import ProjectStatusCard from 'components/project-status/project-status-card'
 import SaraLoading from 'components/sara-loading'
 import { rediscoverProject } from 'lib/polyverse/backend/backend'
-import { isPreviewFeatureEnabled } from 'lib/utils'
+import { isPreviewFeatureEnabled } from 'lib/service-utils'
 import { useSession } from 'next-auth/react'
 import toast from 'react-hot-toast'
 

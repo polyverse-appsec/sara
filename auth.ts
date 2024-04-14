@@ -11,7 +11,7 @@ import { updateBoostOrgUserStatus } from 'lib/polyverse/backend/backend'
 import getOrg from 'lib/polyverse/db/get-org'
 
 import logger, { type SaraLogContext } from './app/api/logger'
-import { isPreviewFeatureEnabled } from 'lib/utils'
+import { isPreviewFeatureEnabled } from 'lib/service-utils'
 
 export const {
   handlers: { GET, POST },

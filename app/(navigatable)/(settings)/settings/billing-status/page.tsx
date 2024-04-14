@@ -9,7 +9,7 @@ import RenderableResourceContent from 'components/renderable-resource/renderable
 import { IconExternalLink } from 'components/ui/icons'
 import { useAppContext } from 'lib/hooks/app-context'
 import { useSession } from 'next-auth/react'
-import { isPreviewFeatureEnabled } from 'lib/utils'
+import { isPreviewFeatureEnabled } from 'lib/service-utils'
 import { preReleaseServiceDisclaimer } from 'lib/productDescriptions'
 
 const SettingsOrgUpgrade = () => {

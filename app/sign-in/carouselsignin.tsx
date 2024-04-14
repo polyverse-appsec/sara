@@ -21,7 +21,7 @@ import githubReposImage from './../../public/githubrepos.png'
 
 import PolyverseLogo from './../../public/Polyverse logo medium.jpg'
 import SaraPortrait from './../../public/Sara_Cartoon_Portrait.png'
-import { isPreviewFeatureEnabled } from 'lib/utils'
+import { isPreviewFeatureEnabled } from 'lib/service-utils'
 import { preReleaseServiceDisclaimer, saraProductDescription } from 'lib/productDescriptions'
 
 interface CarouselItem {

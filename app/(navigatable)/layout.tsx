@@ -7,7 +7,7 @@ import { useEffect } from 'react'
 
 import HeaderCallouts from './../../components/callouts/header-callouts'
 import SidebarNav from './../../components/sidebar-nav'
-import { isPreviewFeatureEnabled } from 'lib/utils'
+import { isPreviewFeatureEnabled } from 'lib/service-utils'
 import SaraLoading from 'components/sara-loading'
 import { SaraSession } from 'auth'
 import { useSession } from 'next-auth/react'
