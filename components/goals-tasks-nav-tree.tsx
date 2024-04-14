@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { Flex } from '@radix-ui/themes'
 import * as Label from '@radix-ui/react-label'
 import { Text } from '@radix-ui/themes'
 import { NodeRendererProps, Tree } from 'react-arborist'
@@ -214,6 +215,9 @@ const GoalsTaskNavTree = ({
           Goals & Tasks Explorer
         </Label.Root>
       </div>
+      <Flex direction="column" align="center">
+        <div className="w-1/2 border-t-2 rounded-xl border-blue-600 my-2"></div>
+      </Flex>
       <Tree data={goalsTasksTreeData}>{renderGoalOrTaskNode}</Tree>
     </>
   )

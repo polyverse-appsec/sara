@@ -201,11 +201,11 @@ const SidebarNav = () => {
                     className="hover:underline flex items-center"
                   >
                     {activeProjectDetails ? renderHealthIcon(activeProjectDetails.health.readableValue) : null}
-                    <Text size="2" as="span" className="align-middle">{activeProjectDetails?.project.name}</Text>
+                    <Text size="2" as="span" className="align-middle" weight="bold">{activeProjectDetails?.project.name}</Text>
                   </Link>
                 </>
               ) : (
-                <Text size="2">No Project Selected</Text>
+                <Text size="2" className="italic text-gray-500">No Project Selected</Text>
               )}
             </Flex>
           </HoverCard.Trigger>
@@ -220,9 +220,6 @@ const SidebarNav = () => {
             </HoverCard.Content>
           ) : null}
         </HoverCard.Root>
-        <Flex direction="column" align="center">
-          <div className="w-1/2 border-t-2 rounded-xl border-blue-600 my-2"></div>
-        </Flex>
 
         <div className="grow rounded-lg border border-blue-500 no-scrollbar m-2 overflow-hidden">
           {/* Resource Loader */}
@@ -237,10 +234,16 @@ const SidebarNav = () => {
               }
             />
           ) : (
-            <div>
+            <div className="flex flex-col h-full">
               <p className="text-center font-semibold">
                 Goals & Tasks Explorer
               </p>
+              <Flex direction="column" align="center">
+                <div className="w-1/2 border-t-2 rounded-xl border-blue-600 my-2"></div>
+              </Flex>
+              <Text size="2" className="text-center italic text-gray-500">
+                None
+              </Text>
             </div>
           )}
         </div>
