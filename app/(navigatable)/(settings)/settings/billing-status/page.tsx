@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { StarFilledIcon } from '@radix-ui/react-icons'
-import { OrgDetailsTile } from 'app/(navigatable)/(orgs)/orgs/org-details-tile'
 import { getOrgUserStatus } from 'app/react-utils'
 import { SaraSession } from 'auth'
 import RenderableResourceContent from 'components/renderable-resource/renderable-resource-content'

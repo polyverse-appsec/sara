@@ -103,6 +103,25 @@
   .plain-border {
     @apply border;
   }
+  .section {
+    @apply mx-auto my-8 p-4 border border-blue-500 rounded-md shadow-lg max-w-4xl;
+  }
+
+  .question {
+    @apply font-bold;
+  }
+
+  .answer {
+    @apply ml-4;
+  }
+
+  .text-block {
+    @apply mb-6;
+  }
+
+  .spacer {
+    height: 20px;
+  }
 }
 
 @layer utilities {
