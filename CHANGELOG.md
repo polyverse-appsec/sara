@@ -16,8 +16,7 @@
 
 ### Bug Fixes
 
-- N/A
-
+- Remove flashing error on Navigation Bar Account Status during loading
 
 ## Version 0.20.11: April 13th, 2024
 

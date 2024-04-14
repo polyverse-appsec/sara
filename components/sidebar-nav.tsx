@@ -42,9 +42,9 @@ const SidebarNav = () => {
   const session = useSession()
   const saraSession = session.data ? (session.data as SaraSession) : null
 
-  const [orgIsPremium, setOrgIsPremium] = useState(false)
+  const [orgIsPremium, setOrgIsPremium] = useState<undefined | boolean>(undefined)
   const [userGitHubAppInstalled, setUserGitHubAppInstalled] =
-    useState<boolean>(true)
+    useState<undefined | boolean>(undefined)
   const [loadingBillingOrg, setLoadingBillingOrg] = useState<boolean>(true)
 
   const [width, setWidth] = useState(225)
@@ -54,25 +54,30 @@ const SidebarNav = () => {
   const sidebarRef = useRef(null)
 
   useEffect(() => {
+    // Effect to fetch the active billing organization
     const fetchAndSetActiveBillingOrg = async () => {
       if (!activeBillingOrg) {
-        const orgs = await getResource<Org[]>(`/orgs`)
-
+        const orgs = await getResource<Org[]>(`/orgs`);
         if (orgs.length > 0) {
-          setLoadingBillingOrg(false)
-          setActiveBillingOrg(orgs[0])
+          setLoadingBillingOrg(false);
+          setActiveBillingOrg(orgs[0]);
+        } else {
+          setLoadingBillingOrg(false);
         }
       }
     }
 
-    fetchAndSetActiveBillingOrg()
+    fetchAndSetActiveBillingOrg();
+  }, [activeBillingOrg, setActiveBillingOrg])
 
+  useEffect(() => {
+    // Effect to fetch GitHub App and Premium status
     const fetchGitHubAppAndPremiumStatus = async () => {
-      try {
-        if (!activeBillingOrg || !saraSession) {
-          return
-        }
+      if (!activeBillingOrg || !saraSession) {
+        return;
+      }
 
+      try {
         const orgUserStatus = await getOrgUserStatus(
           activeBillingOrg.id,
           saraSession.id,
@@ -81,21 +86,14 @@ const SidebarNav = () => {
         setUserGitHubAppInstalled(
           orgUserStatus.gitHubAppInstalled === 'INSTALLED',
         )
-
-        setOrgIsPremium(orgUserStatus.isPremium === 'PREMIUM')
+        setOrgIsPremium(orgUserStatus.isPremium === 'PREMIUM');
       } catch (err) {
-        console.debug(`Failed to fetch premium status because: ${err}`)
+        console.debug(`${saraSession.email} Failed to fetch premium status because: ${err}`);
       }
     }
 
-    fetchGitHubAppAndPremiumStatus()
-  }, [
-    activeBillingOrg,
-    setActiveBillingOrg,
-    projectIdForConfiguration,
-    saraSession,
-    router,
-  ])
+    fetchGitHubAppAndPremiumStatus();
+  }, [activeBillingOrg, saraSession])
 
   const handleMouseUp = (_event: any) => {
     setMouseDown(false)
@@ -129,6 +127,8 @@ const SidebarNav = () => {
   const draggableDivClassname = saraSession
     ? 'flex flex-col h-[calc(100vh-112px)] bg-white dark:bg-black transition duration-200 ease-in-out'
     : 'flex flex-col h-[calc(100vh-96px)] bg-white dark:bg-black transition duration-200 ease-in-out'
+
+  const allDataLoaded = orgIsPremium !== undefined && userGitHubAppInstalled !== undefined;
 
   return (
     <div className={topDivClassname}>
@@ -275,15 +275,19 @@ const SidebarNav = () => {
                   router.push('/settings')
                 }}
               />
-              {(!orgIsPremium || !userGitHubAppInstalled) && (
-                <span className="absolute top-0 right-0 block w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
-              )}
+              <Skeleton loading={!allDataLoaded}>
+                {(allDataLoaded && (!orgIsPremium || !userGitHubAppInstalled)) && (
+                  <span className="absolute top-0 right-0 block w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+                )}
+              </Skeleton>
             </div>
-            {(!orgIsPremium || !userGitHubAppInstalled) && (
-              <div title="Sara not properly configured" className="ml-2">
-                <ExclamationTriangleIcon className="w-4 h-4 text-red-500" />
-              </div>
-            )}
+            <Skeleton loading={!allDataLoaded}>
+              {(allDataLoaded && (!orgIsPremium || !userGitHubAppInstalled)) && (
+                <div title="Sara not properly configured" className="ml-2">
+                  <ExclamationTriangleIcon className="w-4 h-4 text-red-500" />
+                </div>
+              )}
+            </Skeleton>
           </div>
 
           {/* Organization Info */}
