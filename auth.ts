@@ -11,6 +11,7 @@ import { updateBoostOrgUserStatus } from 'lib/polyverse/backend/backend'
 import getOrg from 'lib/polyverse/db/get-org'
 
 import logger, { type SaraLogContext } from './app/api/logger'
+import { isPreviewFeatureEnabled } from 'lib/utils'
 
 export const {
   handlers: { GET, POST },
@@ -135,6 +136,12 @@ export const {
               lastSignedInAt: baseSaraObject.createdAt,
             }
 
+            const areNewSignupsDisabled = isPreviewFeatureEnabled('DisableNewSignups', profile.email)
+            if (areNewSignupsDisabled) {
+              logger.infoWithContext(`New signups are disabled for ${profile.email}`, {user: newUser} as SaraLogContext)
+              throw new Error(`New signups are tempoarily disabled`)
+            }
+            
             await createUser(newUser)
 
             logger.infoWithContext(`User created`, {user: newUser} as SaraLogContext)
