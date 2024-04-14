@@ -74,7 +74,7 @@ jobs:
 
             # Preparing the new CHANGELOG entry.
             # Remove the header from the NEW_ENTRY variable since it's already at the top of the CHANGELOG.md
-            NEW_ENTRY="$VERSION_ENTRY: $CURRENT_DATE\n\n### New Features\n\n- N/A\n\n### Enhancements\n\n- N/A\n\n### Bug Fixes\n\n- N/A\n\n"
+            NEW_ENTRY="$VERSION_ENTRY: $CURRENT_DATE\n\n### New Features\n\n- N/A\n\n### Enhancements\n\n- N/A\n\n### Bug Fixes\n\n- N/A\n"
 
             # Inserting the new entry at the beginning of the file right after the header.
             # Using sed to inject the new entry after the Release Notes header.
