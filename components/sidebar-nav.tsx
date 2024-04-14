@@ -198,15 +198,19 @@ const SidebarNav = () => {
             <Flex gap="2" align="center" direction="column">
               <Skeleton loading={projectIdForConfiguration === undefined}>
                 {projectIdForConfiguration ? (
-                  <>
-                    <Link
-                      href={`/projects/${activeProjectDetails?.id}`}
-                      className="hover:underline flex items-center"
-                    >
-                      {activeProjectDetails ? renderHealthIcon(activeProjectDetails.health.readableValue) : null}
-                      <Text size="2" as="span" className="align-middle" weight="bold">{activeProjectDetails?.project.name}</Text>
-                    </Link>
-                  </>
+                  activeProjectDetails ? (
+                    <>
+                      <Link
+                          href={`/projects/${activeProjectDetails?.id}`}
+                          className="hover:underline flex items-center"
+                      >
+                          {activeProjectDetails ? renderHealthIcon(activeProjectDetails.health.readableValue) : null}
+                          <Text size="2" as="span" className="align-middle" weight="bold">{activeProjectDetails?.project.name}</Text>
+                      </Link>
+                    </>
+                  ) : (
+                    <Text size="2" className="italic text-gray-500">Loading...</Text>
+                  )
                 ) : (
                   <Text size="2" className="italic text-gray-500">No Project Selected</Text>
                 )}

@@ -6,6 +6,7 @@ import { Flex } from '@radix-ui/themes'
 import * as Label from '@radix-ui/react-label'
 import { Text } from '@radix-ui/themes'
 import { NodeRendererProps, Tree } from 'react-arborist'
+import Skeleton from '@radix-ui/themes'
 
 import { type Goal, type Task } from '../lib/data-model-types'
 import { getResource } from './../app/saraClient'
@@ -145,8 +146,8 @@ const GoalsTaskNavTree = ({
   activeTaskId,
 }: GoalsTaskNavTreeProps) => {
   const [goalsTasksTreeData, setGoalsTasksTreeData] = useState<
-    NavigatableGoalOrTaskResource[]
-  >([])
+    undefined | NavigatableGoalOrTaskResource[]
+  >(undefined)
 
   useEffect(() => {
     let isMounted = true
@@ -218,7 +219,14 @@ const GoalsTaskNavTree = ({
       <Flex direction="column" align="center">
         <div className="w-1/2 border-t-2 rounded-xl border-blue-600 my-2"></div>
       </Flex>
-      <Tree data={goalsTasksTreeData}>{renderGoalOrTaskNode}</Tree>
+      {(goalsTasksTreeData === undefined) ? (
+        <div className="flex flex-col items-center">
+        <Text size="2" className="text-center italic text-gray-500">
+          Loading
+        </Text>
+        </div>) : (
+        <Tree data={goalsTasksTreeData}>{renderGoalOrTaskNode}</Tree>
+      )}
     </>
   )
 }
