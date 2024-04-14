@@ -62,15 +62,22 @@ const ProjectCreate = () => {
   const toggleDropdown = () => setIsAdvancedMenuOpen(!isAdvancedMenuOpen)
 
   useEffect(() => {
+    if (!activeBillingOrg) {
+      return
+    }
+    if (!saraSession) {
+      return
+    }
+  }, [activeBillingOrg, saraSession])
+
+  useEffect(() => {
     const fetchUserStatus = async () => {
       try {
         if (!activeBillingOrg) {
-          toast.error(`No active billing context set`)
           return
         }
 
         if (!saraSession) {
-          toast.error(`No session available`)
           return
         }
 
@@ -92,11 +99,13 @@ const ProjectCreate = () => {
     fetchUserStatus()
   }, [activeBillingOrg, saraSession])
 
+  if (!saraSession) {
+    return <SaraLoading />
+  }
+
   // Force a user to select an active billing context first before they can create
   // a project
   if (!activeBillingOrg) {
-    toast.error(`Please select billing context`)
-
     return <SaraLoading />
   }
 

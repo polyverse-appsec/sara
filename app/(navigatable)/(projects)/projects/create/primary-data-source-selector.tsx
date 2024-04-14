@@ -28,6 +28,7 @@ import {
   Org,
   type GitHubRepo,
 } from './../../../../../lib/data-model-types'
+import { use } from 'chai'
 
 interface DataSourceSelectorProps {
   userIsPremium: boolean
@@ -121,9 +122,14 @@ const PrimaryDataSourceSelector = ({
   }
 
   useEffect(() => {
+    if (!saraSession) {
+      return
+    }
+  }, [saraSession])
+
+  useEffect(() => {
     async function setAppInstalledStatusForOrgs(orgs: GitHubOrg[]) {
       if (!saraSession) {
-        toast.error(`No session available`)
         return
       }
 
@@ -158,6 +164,10 @@ const PrimaryDataSourceSelector = ({
       setShouldShowLoadingSpinner(false)
     })()
   }, [saraSession])
+
+  if (!saraSession) {
+    return null
+  }
 
   if (shouldShowLoadingSpinner) {
     return (

@@ -17,6 +17,7 @@
 ### Bug Fixes
 
 - Remove flashing error on Navigation Bar Account Status during loading
+- Remove flashing Billing or User Session errors during loading
 
 ## Version 0.20.11: April 13th, 2024
 

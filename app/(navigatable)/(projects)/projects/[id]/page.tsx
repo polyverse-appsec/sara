@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { Flex } from '@radix-ui/themes'
 import GoalsManager from 'components/goals/goals-manager'
 import ProjectSourceSyncStatus from 'components/project-status/project-source-sync-status'
@@ -43,29 +42,20 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
   const [toastedInactiveBillingOrg, setToastedInactiveBillingOrg] =
     useState<boolean>(false)
 
+  useEffect(() => {
+    if (!activeBillingOrg) {
+      return;
+    }
+    
+    if (!saraSession) {
+      // just wait until we have a saraSession ready
+      return;
+    }
+  }, [activeBillingOrg, saraSession, toastedInactiveBillingOrg]);
+      
   // This use effect is to just get the project details...
   useEffect(() => {
     let isMounted = true
-
-    const fetchUserStatus = async () => {
-      try {
-        if (!activeBillingOrg) {
-          // Just return here as hopefully the billing context is being loaded in
-          // the background
-
-          return
-        }
-
-        if (!saraSession) {
-          toast.error(`No session available`)
-          return
-        }
-      } catch (error) {
-        toast.error(`Failed to fetch user status: ${error}`)
-      }
-    }
-
-    fetchUserStatus()
 
     const fetchProjectDeatilsFrequencyMilliseconds = 5000
 
@@ -132,6 +122,14 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
       isMounted = false
     }
   }, [id, activeBillingOrg, saraSession])
+
+  if (!activeBillingOrg) {
+    return <SaraLoading />
+  }
+
+  if (!saraSession) {
+    return <SaraLoading />
+  }
 
   if (activeWorkspaceDetails && activeWorkspaceDetails.goalId !== null) {
     setActiveGoalId(null)
