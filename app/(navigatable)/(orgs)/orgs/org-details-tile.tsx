@@ -49,12 +49,12 @@ export const OrgDetailsTile = ({ name, id }: OrgDetailsTileProps) => {
     setOrgIsPersonal(name === saraSession?.username)
 
     fetchUserStatus()
-  }, [activeBillingOrg])
+  }, [activeBillingOrg, id, name, saraSession])
 
   return (
     <Link
       href={`/orgs/${id}`}
-      className="block transform transition hover:scale-105"
+      className="block transition hover:scale-105"
     >
       <div className="bg-background shadow-md rounded-lg p-6 border border-blue-500">
         <div className="flex justify-between">
