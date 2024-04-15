@@ -107,7 +107,7 @@ const SaraChat = <T extends Chatable>({
 
   useEffect(() => {
     let isMounted = true
-    const fetchChatQueriesFrequencyMilliseconds = 5000
+    const fetchChatQueriesFrequencyMilliseconds = 20000
 
     const fetchChatQueries = async () => {
       if (!chatId) {
