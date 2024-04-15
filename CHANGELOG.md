@@ -2,7 +2,7 @@
 
 # Release Notes
 
-## Version 0.20.14: April 15th, 2024
+## Version 0.20.13: April 15th, 2024
 
 ### New Features
 
@@ -14,21 +14,7 @@
 
 ### Bug Fixes
 
-- N/A
-
-## Version 0.20.13: April 14th, 2024
-
-### New Features
-
-- N/A
-
-### Enhancements
-
-- N/A
-
-### Bug Fixes
-
-- N/A
+- Update scrolling of About page
 
 ## Version 0.20.12: April 13th, 2024
 
