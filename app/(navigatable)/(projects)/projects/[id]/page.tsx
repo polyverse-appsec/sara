@@ -205,9 +205,6 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
                   console.error(
                     `${project.id} Missing required billing and user information.`,
                   )
-                  toast.error(
-                    'Required billing and user information is missing.',
-                  )
                   return
                 }
 
