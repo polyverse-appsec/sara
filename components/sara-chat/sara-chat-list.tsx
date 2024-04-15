@@ -9,19 +9,10 @@ import SaraChatQueryContent from './sara-chat-query-content'
 
 export interface SaraChatListProps {
   chatQueries: ChatQuery[]
-
-  /**
-   * Indicates whether we are currently in the midst of a chat with OpenAI.
-   */
-  isLoading: boolean
   saraSession: SaraSession
 }
 
-const SaraChatList = ({
-  chatQueries,
-  isLoading,
-  saraSession,
-}: SaraChatListProps) => {
+const SaraChatList = ({ chatQueries, saraSession }: SaraChatListProps) => {
   if (!chatQueries.length) {
     return null
   }
