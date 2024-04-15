@@ -134,12 +134,7 @@ export const {
               orgIds: [],
               username: profile.login as string,
               lastSignedInAt: baseSaraObject.createdAt,
-            }
-
-            const waitlistEnabled = isPreviewFeatureEnabled('Waitlist')
-
-            if (waitlistEnabled) {
-              newUser.waitlisted = true
+              waitlisted: isPreviewFeatureEnabled('Waitlist')
             }
             
             await createUser(newUser)
