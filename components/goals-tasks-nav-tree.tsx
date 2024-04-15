@@ -225,7 +225,7 @@ const GoalsTaskNavTree = ({
           Loading
         </Text>
         </div>) : (
-        <Tree data={goalsTasksTreeData}>{renderGoalOrTaskNode}</Tree>
+        <Tree className="overflow-y-auto overflow-x-visible" data={goalsTasksTreeData}>{renderGoalOrTaskNode}</Tree>
       )}
     </>
   )

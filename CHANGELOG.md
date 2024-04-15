@@ -10,7 +10,7 @@
 
 ### Enhancements
 
-- N/A
+- Improve nav bar UI
 
 ### Bug Fixes
 

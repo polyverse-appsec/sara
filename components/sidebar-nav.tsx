@@ -140,7 +140,7 @@ const SidebarNav = () => {
         style={{ width: `${width}px` }} // Use inline style for dynamic width
       >
         {/* Logo section */}
-        <div className="flex flex-col items-center sticky top-0 z-10 p-4 m-5 rounded-full border-4 border-blue-500">
+        <div className="flex flex-col items-center sticky top-0 z-10 p-4 mx-5 mt-5 rounded-full border-4 border-blue-500">
           <Link href="/about">
             <Image
               src={SaraPortrait}
@@ -191,7 +191,7 @@ const SidebarNav = () => {
         </nav>
 
         <Flex direction="column" align="center">
-          <div className="w-1/2 border-t-2 rounded-xl border-blue-600 my-2"></div>
+          <div className="w-1/2 border-t-2 rounded-xl border-blue-600 mb-2"></div>
         </Flex>
         <HoverCard.Root>
           <HoverCard.Trigger>
@@ -229,7 +229,7 @@ const SidebarNav = () => {
           ) : null}
         </HoverCard.Root>
 
-        <div className="grow rounded-lg border border-blue-500 no-scrollbar m-2 overflow-hidden">
+        <div className="grow rounded-lg border border-blue-500 no-scrollbar m-2 overflow-y-auto">
           {/* Resource Loader */}
           {projectIdForConfiguration ? (
             <GoalsTaskNavTree
