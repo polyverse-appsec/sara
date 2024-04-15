@@ -136,10 +136,10 @@ export const {
               lastSignedInAt: baseSaraObject.createdAt,
             }
 
-            const areNewSignupsDisabled = isPreviewFeatureEnabled('DisableNewSignups', profile.email)
-            if (areNewSignupsDisabled) {
-              logger.infoWithContext(`New signups are disabled for ${profile.email}`, {user: newUser} as SaraLogContext)
-              throw new Error(`New signups are tempoarily disabled`)
+            const waitlistEnabled = isPreviewFeatureEnabled('Waitlist')
+
+            if (waitlistEnabled) {
+              newUser.waitlisted = true
             }
             
             await createUser(newUser)
@@ -207,4 +207,5 @@ export interface SaraSession extends Session {
   username: string
   email: string
   picture: string
+  waitlisted?: boolean
 }

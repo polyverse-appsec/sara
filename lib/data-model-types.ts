@@ -1,4 +1,4 @@
-import Joi from 'joi'
+import Joi, { boolean } from 'joi'
 import { BoostProjectStatusState } from 'lib/polyverse/backend/types/BoostProjectStatus'
 
 ////////////////////////////
@@ -62,6 +62,10 @@ export interface Org extends BaseSaraObject {
   // grants to users to access those projects. That is determined on the
   // project itself.
   projectIds: string[]
+
+  // Flag to denote if the user is on the waitlist and can access Sara yet. If
+  // set to 'true' user will be re-directed to some waiting page.
+  waitlisted: boolean
 }
 
 // TODO: Test this with a Joi schema
