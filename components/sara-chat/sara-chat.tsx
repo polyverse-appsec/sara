@@ -107,7 +107,18 @@ const SaraChat = <T extends Chatable>({
 
   useEffect(() => {
     let isMounted = true
-    const fetchChatQueriesFrequencyMilliseconds = 20000
+    let fetchChatQueriesFrequencyMilliseconds = 20000
+
+    if (process.env.DEFAULT_CHAT_POLLING_CYCLE_SECS) {
+      try {
+        fetchChatQueriesFrequencyMilliseconds =
+          Number(process.env.DEFAULT_CHAT_POLLING_CYCLE_SECS) * 1000
+      } catch (error) {
+        console.error(
+          'Failed to convert `DEFAULT_CHAT_POLLING_CYCLE_SECS` to a number',
+        )
+      }
+    }
 
     const fetchChatQueries = async () => {
       if (!chatId) {
