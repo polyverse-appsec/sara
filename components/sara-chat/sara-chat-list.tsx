@@ -36,7 +36,6 @@ const SaraChatList = ({
               content={chatQuery.query}
               contentType="QUERY"
               timestamp={chatQuery.querySubmittedAt}
-              shouldRenderLoadingSpinner={false}
               chatAvatarDetails={
                 saraSession.picture
                   ? { pictureSrc: saraSession.picture, name: saraSession.name }
@@ -50,9 +49,6 @@ const SaraChatList = ({
                   content={chatQuery.response}
                   contentType="RESPONSE"
                   timestamp={chatQuery.responseReceivedAt}
-                  shouldRenderLoadingSpinner={
-                    chatQuery.status === 'QUERY_SUBMITTED'
-                  }
                   chatAvatarDetails={
                     saraSession.picture
                       ? {
@@ -74,7 +70,6 @@ const SaraChatList = ({
                   content={''}
                   contentType="RESPONSE"
                   timestamp={new Date()}
-                  shouldRenderLoadingSpinner={true}
                   chatQueryStatus={
                     index === chatQueries.length - 1
                       ? chatQuery.status
