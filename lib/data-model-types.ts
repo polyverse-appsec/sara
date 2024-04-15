@@ -231,6 +231,8 @@ export interface Chat extends BaseSaraObject {
   openAiThreadRunId: string | null
 }
 
+export type ChatQueryStatus = 'QUERY_RECEIVED' | 'QUERY_SUBMITTED' | 'RESPONSE_RECEIVED' | 'ERROR'
+
 // TODO: Test this with a Joi schema
 export interface ChatQuery extends BaseSaraObject {
   // Crucial to identity management/RBAC
@@ -248,7 +250,7 @@ export interface ChatQuery extends BaseSaraObject {
   // The prompt used when the query was submitted to the LLM
   processingPrompt: string
 
-  status: 'QUERY_RECEIVED' | 'QUERY_SUBMITTED' | 'RESPONSE_RECEIVED' | 'ERROR'
+  status: ChatQueryStatus
 
   // Empty/invalid if status not equal to 'ERROR'
   errorText: string | null

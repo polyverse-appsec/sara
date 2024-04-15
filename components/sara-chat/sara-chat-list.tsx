@@ -61,6 +61,11 @@ const SaraChatList = ({
                         }
                       : undefined
                   }
+                  chatQueryStatus={
+                    index === chatQueries.length - 1
+                      ? chatQuery.status
+                      : undefined
+                  }
                 />
               </>
             ) : (
@@ -70,6 +75,11 @@ const SaraChatList = ({
                   contentType="RESPONSE"
                   timestamp={new Date()}
                   shouldRenderLoadingSpinner={true}
+                  chatQueryStatus={
+                    index === chatQueries.length - 1
+                      ? chatQuery.status
+                      : undefined
+                  }
                 />
               </>
             )}
