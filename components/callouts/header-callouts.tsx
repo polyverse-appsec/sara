@@ -6,34 +6,34 @@ import { useSession } from 'next-auth/react'
 import { type SaraSession } from './../../auth'
 import ExperimentalCallout from './experimental-header'
 import FeedbackCallout from './feedback-callout'
+import DeploymentStageCallout from './deployment-header'
 
 const HeaderCallouts = () => {
   const session = useSession()
   const saraSession = session.data ? (session.data as SaraSession) : null
 
-  // This is cumbersome logic but will suffice for now. The <FeedbackCallout>
-  // grows in size as a result of the session data being present from 48px to
-  // 64 px. Adjust the height dynamically as a result.
-  const feedbackClassname = saraSession
-    ? 'top-0 w-full h-[64px]'
-    : 'top-0 w-full h-[48px]'
+  const isProduction = process.env.SARA_STAGE?.toLowerCase() === 'prod'
 
-  const experimentalClassname = saraSession
-    ? 'top-64 w-full h-[48px]'
-    : 'top-48 w-full h-[48px]'
+  // DeploymentStageCallout only appears when not in production
+  const deploymentStageClassname = 'top-0 w-full h-[48px]'
+
+  // ExperimentalCallout appears below the DeploymentStageCallout if it is rendered
+  const experimentalClassname = isProduction ? 'top-0 w-full h-[48px]' : 'top-48 w-full h-[48px]'
+
+  // FeedbackCallout position and height depend on whether saraSession exists
+  const feedbackClassname = saraSession ? 'top-48 w-full h-[64px]' : 'top-48 w-full h-[48px]'
 
   // Callouts as headers need to be sticky so they stay in position as the
   // user scrolls.
-  //
-  // Give each callout the largest rendered height that you observe in the DOM
-  // explorer of the developers console.
-  //
-  // Position each in in the top of the view port based on the sum height of
-  // all of the callouts that were rendered before them.
   return (
     <div className="sticky z-50">
       <Flex direction="column">
-      <div className={experimentalClassname}>
+        {!isProduction && (
+          <div className={deploymentStageClassname}>
+            <DeploymentStageCallout />
+          </div>
+        )}
+        <div className={experimentalClassname}>
           <ExperimentalCallout />
         </div>
         <div className={feedbackClassname}>
@@ -42,18 +42,6 @@ const HeaderCallouts = () => {
       </Flex>
     </div>
   )
-
-  //     <div className="sticky top-0 w-full z-50 h-[64px]">
-  //     <Callout.Root color="green">
-  //       <Callout.Text>
-  //         <Flex as="span" align="center" gap="4">
-  //           <ChatBubbleIcon />
-  //           {renderHeaderText(saraSession)}
-  //           <FeedbackDialog saraSession={saraSession} />
-  //         </Flex>
-  //       </Callout.Text>
-  //     </Callout.Root>
-  //   </div>
 }
 
 export default HeaderCallouts
