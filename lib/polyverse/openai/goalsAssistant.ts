@@ -283,12 +283,12 @@ export const getChatQueryResponseFromThread = async (
   const { data: messages } =
     await oaiClient.beta.threads.messages.list(threadId)
 
-  console.log(`***** getChatQueryResponseFromThread - messages: ${JSON.stringify(messages)}`)
-
+  console.log(`***** getChatQueryResponseFromThread - messages.length: ${messages.length}`)
 
   // Find the index of the user query to OpenAI that we are tracking in our
   // datastore as a chat query
   const chatQueryIndex = messages.findIndex((message) => {
+    console.log(`***** getChatQueryResponseFromThread - messages.findIndex: ${JSON.stringify(message)}`)
     const metadata = message.metadata as { chatQueryId: string }
 
     if (
