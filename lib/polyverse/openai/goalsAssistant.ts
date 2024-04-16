@@ -310,7 +310,7 @@ export const getChatQueryResponseFromThread = async (
   // the index wasn't found but we also want to ensure that the corresponding
   // user query isn't the first one in the messages array. This would denote
   // that there aren't any assistant responses either.
-  if (chatQueryIndex < 1) {
+  if (chatQueryIndex < 0) {
     throw new Error(
       `Unable to locate user chat query with an ID of '${chatQueryId}'`,
     )
