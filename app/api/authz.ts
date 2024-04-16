@@ -12,7 +12,7 @@ interface SaraAuthZ {
 }
 
 const orgListedOnUser = (user: User, orgId: string) => {
-  if (isPreviewFeatureEnabled('DeveloperAuthZBypass=chris@polyverse.com')) {
+  if (isPreviewFeatureEnabled('DeveloperAuthZBypass', 'chris@polyverse.com')) {
     return
   }
 
@@ -40,7 +40,7 @@ const orgListedOnUser = (user: User, orgId: string) => {
 }
 
 const soleUserOnProject = (project: Project, userId: string) => {
-  if (isPreviewFeatureEnabled('DeveloperAuthZBypass=chris@polyverse.com')) {
+  if (isPreviewFeatureEnabled('DeveloperAuthZBypass', 'chris@polyverse.com')) {
     return
   }
 
@@ -74,7 +74,7 @@ const soleUserOnProject = (project: Project, userId: string) => {
 }
 
 const userListedOnOrg = (org: Org, userId: string) => {
-  if (isPreviewFeatureEnabled('DeveloperAuthZBypass=chris@polyverse.com')) {
+  if (isPreviewFeatureEnabled('DeveloperAuthZBypass', 'chris@polyverse.com')) {
     return
   }
 
@@ -102,7 +102,7 @@ const userListedOnOrg = (org: Org, userId: string) => {
 }
 
 const userListedOnProject = (project: Project, userId: string) => {
-  if (isPreviewFeatureEnabled('DeveloperAuthZBypass=chris@polyverse.com')) {
+  if (isPreviewFeatureEnabled('DeveloperAuthZBypass', 'chris@polyverse.com')) {
     return
   }
 
