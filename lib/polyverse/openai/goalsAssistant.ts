@@ -287,13 +287,19 @@ export const getChatQueryResponseFromThread = async (
   console.log(`***** getChatQueryResponseFromThread - chatQueryId: ${chatQueryId}`)
   console.log(`***** getChatQueryResponseFromThread - messages.length: ${messages.length}`)
 
+  messages.forEach((message, index) => {
+    const metadata = message.metadata as { chatQueryId: string }
+
+    console.log(`***** getChatQueryResponseFromThread - messages.forEach index: ${index}`)
+    console.log(`***** getChatQueryResponseFromThread - messages.forEach message.content: ${JSON.stringify(message.content)}`)
+    console.log(`***** getChatQueryResponseFromThread - messages.forEach message.role: ${message.role}`)
+    console.log(`***** getChatQueryResponseFromThread - messages.forEach metadata: ${JSON.stringify(metadata)}`)
+  })
+
   // Find the index of the user query to OpenAI that we are tracking in our
   // datastore as a chat query
   const chatQueryIndex = messages.findIndex((message, index) => {
-    console.log(`***** getChatQueryResponseFromThread - messages.findIndex index: ${index}`)
     const metadata = message.metadata as { chatQueryId: string }
-
-    console.log(`***** getChatQueryResponseFromThread - messages.findIndex metadata: ${JSON.stringify(metadata)}`)
 
     if (
       metadata.chatQueryId &&
