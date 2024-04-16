@@ -2,6 +2,20 @@
 
 # Release Notes
 
+## Version 0.20.14: April 16th, 2024
+
+### New Features
+
+- N/A
+
+### Enhancements
+
+- Add REST API `PATCH /api/chats/[chatId]/chat-queries/[chatQueryId]`
+
+### Bug Fixes
+
+- N/A
+
 ## Version 0.20.13: April 15th, 2024
 
 ### New Features

@@ -6,6 +6,7 @@ export interface SaraLogContext {
   user?: User
   org?: Org
   project?: Project
+  other?: {}
   error?: any
 }
 
@@ -17,6 +18,7 @@ const buildMergingObjectFromContext = (context: SaraLogContext) => ({
     orgName: context.org?.name,
     projectId: context.project?.id,
     projectName: context.project?.name,
+    other: context.other,
     error: context.error,
   },
 })

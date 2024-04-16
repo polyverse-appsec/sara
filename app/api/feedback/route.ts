@@ -82,6 +82,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
     body += reqBody.activeBillingOrg
       ? '```\n' + JSON.stringify(reqBody.activeBillingOrg, null, 2) + '\n```'
       : 'Unknown\n'
+
     body += '\nActive Project Details:\n\n'
     body += reqBody.activeProjectDetails
       ? '```\n' +
