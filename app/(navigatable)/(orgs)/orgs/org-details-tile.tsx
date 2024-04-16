@@ -52,10 +52,7 @@ export const OrgDetailsTile = ({ name, id }: OrgDetailsTileProps) => {
   }, [activeBillingOrg, id, name, saraSession])
 
   return (
-    <Link
-      href={`/orgs/${id}`}
-      className="block transition hover:scale-105"
-    >
+    <Link href={`/orgs/${id}`} className="block transition hover:scale-105">
       <div className="bg-background shadow-md rounded-lg p-6 border border-blue-500">
         <div className="flex justify-between">
           <div className="flex flex-col">

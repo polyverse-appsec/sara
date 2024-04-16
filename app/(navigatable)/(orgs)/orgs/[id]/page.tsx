@@ -144,7 +144,8 @@ const OrgIndex = ({ params: { id } }: { params: { id: string } }) => {
           <div className="inline-flex items-center justify-between w-full text-sm">
             <div className="flex justify-between items-center w-full font-semibold bg-white-600 shadow-md rounded-lg p-2 cursor-not-allowed opacity-50">
               <p>
-                You are already subscribed to Premium Plan for {activeBillingOrg?.name}
+                You are already subscribed to Premium Plan for{' '}
+                {activeBillingOrg?.name}
               </p>
               <IconExternalLink className="w-4 h-4 ml-auto" />
             </div>
@@ -161,7 +162,8 @@ const OrgIndex = ({ params: { id } }: { params: { id: string } }) => {
               <IconExternalLink className="w-4 h-4 ml-auto" />
             </div>
             <p className="text-xs text-blue-600 mt-2">
-              Note, this will redirect you to the Stripe.com website for secure billing and account information.
+              Note, this will redirect you to the Stripe.com website for secure
+              billing and account information.
             </p>
           </Link>
         )}

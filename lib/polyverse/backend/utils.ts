@@ -63,16 +63,15 @@ export const getBodyFromBoostServiceResponse = async <DeserializedType>(
 }
 
 export const getTextBodyFromBoostServiceResponse = async (
-    res: Response,
-  ): Promise<string> => {
-    const boostJsonRes = (await res.json()) as BoostServiceResponseJsonBody
-  
-    if (!boostJsonRes.body) {
-      throw new Error(
-        `Boost service response doesn't contain 'body' in JSON response`,
-      )
-    }
-  
-    return boostJsonRes.body as string
+  res: Response,
+): Promise<string> => {
+  const boostJsonRes = (await res.json()) as BoostServiceResponseJsonBody
+
+  if (!boostJsonRes.body) {
+    throw new Error(
+      `Boost service response doesn't contain 'body' in JSON response`,
+    )
   }
-  
+
+  return boostJsonRes.body as string
+}

@@ -2,12 +2,12 @@
 
 import { SaraSession } from 'auth'
 import SaraLoading from 'components/sara-loading'
+import { IconRefresh } from 'components/ui/icons'
+import { isPreviewFeatureEnabled } from 'lib/service-utils'
 
 import { ChatQuery } from './../../lib/data-model-types'
 import { Separator } from './../ui/separator'
 import SaraChatQueryContent from './sara-chat-query-content'
-import { IconRefresh } from 'components/ui/icons'
-import { isPreviewFeatureEnabled } from 'lib/service-utils'
 
 export interface SaraChatListProps {
   chatQueries: ChatQuery[]
@@ -57,12 +57,10 @@ const SaraChatList = ({ chatQueries, saraSession }: SaraChatListProps) => {
                   }
                 />
                 {isPreviewFeatureEnabled('RegenerateResponse') && (
-                 <button
-                  className="flex items-center p-2 border-2 border-invisible hover:border-black text-sm leading-5 font-medium rounded-md text-black mb-2"
-                >
-                  <IconRefresh className="mr-2" />
-                  <p>Regenerate response</p>
-                </button>
+                  <button className="flex items-center p-2 border-2 border-invisible hover:border-black text-sm leading-5 font-medium rounded-md text-black mb-2">
+                    <IconRefresh className="mr-2" />
+                    <p>Regenerate response</p>
+                  </button>
                 )}
               </div>
             ) : (

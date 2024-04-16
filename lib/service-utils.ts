@@ -1,4 +1,3 @@
-
 export const isPreviewFeatureEnabled = (
   feature: string,
   email: string = '',

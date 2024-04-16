@@ -218,9 +218,7 @@ const ProjectCreate = () => {
         </div>
         {!userIsPremium ? (
           <div className="text-left text-base text-red-500 my-1">
-            <p>
-              Please upgrade to premium to access create project features
-            </p>
+            <p>Please upgrade to premium to access create project features</p>
           </div>
         ) : null}
         {!userGitHubAppInstalled ? (
@@ -335,7 +333,10 @@ const ProjectCreate = () => {
               }
             }}
             disabled={
-              !saveButtonEnabled || !userGitHubAppInstalled || !statusCheckDone || !userIsPremium
+              !saveButtonEnabled ||
+              !userGitHubAppInstalled ||
+              !statusCheckDone ||
+              !userIsPremium
             }
           >
             {saveButtonEnabled ? null : (

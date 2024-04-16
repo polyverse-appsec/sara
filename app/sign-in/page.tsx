@@ -11,7 +11,5 @@ export default async function SignInPage() {
   if (session?.user) {
     redirect('/')
   }
-  return (
-    <CarouselSignIn />
-  )
+  return <CarouselSignIn />
 }

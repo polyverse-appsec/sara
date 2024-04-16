@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import SaraLoading from 'components/sara-loading'
 import { useAppContext } from 'lib/hooks/app-context'
 
 import OrgDashboard from './orgs/org-dashboard'
-import SaraLoading from 'components/sara-loading'
 
 const IndexPage = () => {
   const router = useRouter()

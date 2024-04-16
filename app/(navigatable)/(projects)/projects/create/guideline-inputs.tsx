@@ -9,7 +9,10 @@ interface ProjectGuidelinesProps {
   setProjectGuidelines: (guidelines: string[]) => void
 }
 
-const GuidelineInputs = ({ disableInput, setProjectGuidelines }: ProjectGuidelinesProps) => {
+const GuidelineInputs = ({
+  disableInput,
+  setProjectGuidelines,
+}: ProjectGuidelinesProps) => {
   const [guidelineValues, setGuidelineValues] = useState<string[]>([''])
 
   const handleAddGuideline = () => {

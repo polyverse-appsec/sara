@@ -8,9 +8,9 @@ import { SaraSession } from 'auth'
 import RenderableResourceContent from 'components/renderable-resource/renderable-resource-content'
 import { IconExternalLink } from 'components/ui/icons'
 import { useAppContext } from 'lib/hooks/app-context'
-import { useSession } from 'next-auth/react'
-import { isPreviewFeatureEnabled } from 'lib/service-utils'
 import { preReleaseServiceDisclaimer } from 'lib/productDescriptions'
+import { isPreviewFeatureEnabled } from 'lib/service-utils'
+import { useSession } from 'next-auth/react'
 
 const SettingsOrgUpgrade = () => {
   const { activeBillingOrg } = useAppContext()
@@ -72,7 +72,8 @@ const SettingsOrgUpgrade = () => {
           </p>
         ) : (
           <p className="text-md font-bold mb-2">
-            User {saraSession?.name} on {activeBillingOrg?.name} is on the Free Trial monthly plan
+            User {saraSession?.name} on {activeBillingOrg?.name} is on the Free
+            Trial monthly plan
           </p>
         )}
         <Link
@@ -87,29 +88,31 @@ const SettingsOrgUpgrade = () => {
           </div>
         </Link>
         <p className="text-xs text-blue-600 mt-2">
-          Note, this will redirect you to Stripe.com website for secure billing and account information.
+          Note, this will redirect you to Stripe.com website for secure billing
+          and account information.
         </p>
       </RenderableResourceContent>
       <RenderableResourceContent>
         <div className="flex items-center justify-center">
           {isPreviewFeatureEnabled('FreePlanEnabled') && (
-          <div
-            className={
-              !orgIsPremium
-                ? 'bg-background shadow-md rounded-lg p-6 border-2 border-orange-500 mb-4'
-                : 'bg-background shadow-md rounded-lg p-6 border mb-4'
-            }
-          >
-            <div className="flex flex-col items-start">
-              <p>Free Plan</p>
-              <p>✅ Project creation to analyze GitHub repositories</p>
-              <p>✅ Project Goals can be set to guide Sara analysis</p>
-              <p>✅ Sara generated Task-plans to achieve Goals</p>
-              <p>✅ Manual GitHub source synchronization</p>
-              <p>❌ Project creation limit</p>
-              <p>❌ Only public respositories for projects</p>
+            <div
+              className={
+                !orgIsPremium
+                  ? 'bg-background shadow-md rounded-lg p-6 border-2 border-orange-500 mb-4'
+                  : 'bg-background shadow-md rounded-lg p-6 border mb-4'
+              }
+            >
+              <div className="flex flex-col items-start">
+                <p>Free Plan</p>
+                <p>✅ Project creation to analyze GitHub repositories</p>
+                <p>✅ Project Goals can be set to guide Sara analysis</p>
+                <p>✅ Sara generated Task-plans to achieve Goals</p>
+                <p>✅ Manual GitHub source synchronization</p>
+                <p>❌ Project creation limit</p>
+                <p>❌ Only public respositories for projects</p>
+              </div>
             </div>
-          </div>)}
+          )}
           <div
             className={
               orgIsPremium
@@ -136,12 +139,15 @@ const SettingsOrgUpgrade = () => {
             </div>
           </div>
         </div>
-        <div className="py-1 px-2 rounded-lg text-center text-orange-400 bg-orange-200">{preReleaseServiceDisclaimer}</div>
+        <div className="py-1 px-2 rounded-lg text-center text-orange-400 bg-orange-200">
+          {preReleaseServiceDisclaimer}
+        </div>
         {orgIsPremium ? (
           <div className="inline-flex items-center justify-between w-full text-sm">
             <div className="flex justify-between items-center w-full font-semibold bg-white-600 shadow-md rounded-lg p-2 cursor-not-allowed opacity-50">
               <p>
-                You are already subscribed to Premium Plan for {activeBillingOrg?.name}
+                You are already subscribed to Premium Plan for{' '}
+                {activeBillingOrg?.name}
               </p>
               <IconExternalLink className="w-4 h-4 ml-auto" />
             </div>
@@ -154,10 +160,14 @@ const SettingsOrgUpgrade = () => {
             className="inline-flex items-center justify-between w-full text-sm"
           >
             <div className="flex justify-between items-center w-full font-semibold bg-white-600 shadow-md rounded-lg p-2 transition hover:scale-105 cursor-pointer">
-              <p>Upgrade to Premium Plan monthly subscription for {activeBillingOrg?.name}</p>
+              <p>
+                Upgrade to Premium Plan monthly subscription for{' '}
+                {activeBillingOrg?.name}
+              </p>
               <IconExternalLink className="w-4 h-4 ml-auto" />
               <p className="text-xs text-blue-600 mt-2">
-                Note, this will redirect you to Stripe.com website for secure billing and account information.
+                Note, this will redirect you to Stripe.com website for secure
+                billing and account information.
               </p>
             </div>
           </Link>

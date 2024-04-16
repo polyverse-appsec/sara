@@ -11,6 +11,7 @@ import {
 import { Badge, Callout, Skeleton } from '@radix-ui/themes'
 import { getGitHubOrgs, getOrgStatus } from 'app/react-utils'
 import { SaraSession } from 'auth'
+import { use } from 'chai'
 import { Button } from 'components/ui/button'
 import { useSession } from 'next-auth/react'
 import toast from 'react-hot-toast'
@@ -28,7 +29,6 @@ import {
   Org,
   type GitHubRepo,
 } from './../../../../../lib/data-model-types'
-import { use } from 'chai'
 
 interface DataSourceSelectorProps {
   userIsPremium: boolean
@@ -181,7 +181,11 @@ const PrimaryDataSourceSelector = ({
     <div className="p-4 space-y-1 text-sm border rounded-md">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="pl-0 text-black-500" disabled={disableInput}>
+          <Button
+            variant="ghost"
+            className="pl-0 text-black-500"
+            disabled={disableInput}
+          >
             {personalReposSelected && (
               <span className="pl-1">Personal Repos</span>
             )}
@@ -230,7 +234,11 @@ const PrimaryDataSourceSelector = ({
         <div className="p-4 space-y-1 text-sm border rounded-md">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="pl-0 text-black-500" disabled={disableInput}>
+              <Button
+                variant="ghost"
+                className="pl-0 text-black-500"
+                disabled={disableInput}
+              >
                 {selectedGithubRepo ? (
                   <span className="pl-1">{selectedGithubRepo.name}</span>
                 ) : (
@@ -294,7 +302,11 @@ const PrimaryDataSourceSelector = ({
             <div className="p-4 space-y-1 text-sm border rounded-md">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="pl-0 text-black-500" disabled={disableInput}>
+                  <Button
+                    variant="ghost"
+                    className="pl-0 text-black-500"
+                    disabled={disableInput}
+                  >
                     {selectedGithubRepo ? (
                       <span className="pl-1">{selectedGithubRepo.name}</span>
                     ) : (

@@ -13,16 +13,20 @@ import { Flex, HoverCard, Inset, Skeleton, Text } from '@radix-ui/themes'
 import { SaraSession } from 'auth'
 import ProjectStatusDetailsHoverCard from 'components/project-status/project-status-details-card'
 import { type Org } from 'lib/data-model-types'
+import { isPreviewFeatureEnabled } from 'lib/service-utils'
 import { useSession } from 'next-auth/react'
 import toast from 'react-hot-toast'
 
-import { getOrgUserStatus, renderHealthIcon, renderReadableHealthValue } from './../app/react-utils'
+import {
+  getOrgUserStatus,
+  renderHealthIcon,
+  renderReadableHealthValue,
+} from './../app/react-utils'
 import { getResource } from './../app/saraClient'
 import { useAppContext } from './../lib/hooks/app-context'
 import SaraPortrait from './../public/Sara_Cartoon_Portrait.png'
 import GoalsTaskNavTree from './goals-tasks-nav-tree'
 import LoadingCircle from './loading-spinner'
-import { isPreviewFeatureEnabled } from 'lib/service-utils'
 
 function getUserInitials(name: string) {
   const [firstName, lastName] = name.split(' ')
@@ -43,9 +47,12 @@ const SidebarNav = () => {
   const session = useSession()
   const saraSession = session.data ? (session.data as SaraSession) : null
 
-  const [orgIsPremium, setOrgIsPremium] = useState<undefined | boolean>(undefined)
-  const [userGitHubAppInstalled, setUserGitHubAppInstalled] =
-    useState<undefined | boolean>(undefined)
+  const [orgIsPremium, setOrgIsPremium] = useState<undefined | boolean>(
+    undefined,
+  )
+  const [userGitHubAppInstalled, setUserGitHubAppInstalled] = useState<
+    undefined | boolean
+  >(undefined)
   const [loadingBillingOrg, setLoadingBillingOrg] = useState<boolean>(true)
 
   const [width, setWidth] = useState(235)
@@ -58,24 +65,24 @@ const SidebarNav = () => {
     // Effect to fetch the active billing organization
     const fetchAndSetActiveBillingOrg = async () => {
       if (!activeBillingOrg) {
-        const orgs = await getResource<Org[]>(`/orgs`);
+        const orgs = await getResource<Org[]>(`/orgs`)
         if (orgs.length > 0) {
-          setLoadingBillingOrg(false);
-          setActiveBillingOrg(orgs[0]);
+          setLoadingBillingOrg(false)
+          setActiveBillingOrg(orgs[0])
         } else {
-          setLoadingBillingOrg(false);
+          setLoadingBillingOrg(false)
         }
       }
     }
 
-    fetchAndSetActiveBillingOrg();
+    fetchAndSetActiveBillingOrg()
   }, [activeBillingOrg, setActiveBillingOrg])
 
   useEffect(() => {
     // Effect to fetch GitHub App and Premium status
     const fetchGitHubAppAndPremiumStatus = async () => {
       if (!activeBillingOrg || !saraSession) {
-        return;
+        return
       }
 
       try {
@@ -87,13 +94,15 @@ const SidebarNav = () => {
         setUserGitHubAppInstalled(
           orgUserStatus.gitHubAppInstalled === 'INSTALLED',
         )
-        setOrgIsPremium(orgUserStatus.isPremium === 'PREMIUM');
+        setOrgIsPremium(orgUserStatus.isPremium === 'PREMIUM')
       } catch (err) {
-        console.debug(`${saraSession.email} Failed to fetch premium status because: ${err}`);
+        console.debug(
+          `${saraSession.email} Failed to fetch premium status because: ${err}`,
+        )
       }
     }
 
-    fetchGitHubAppAndPremiumStatus();
+    fetchGitHubAppAndPremiumStatus()
   }, [activeBillingOrg, saraSession])
 
   const handleMouseUp = (_event: any) => {
@@ -129,7 +138,8 @@ const SidebarNav = () => {
     ? 'flex flex-col h-[calc(100vh-112px)] bg-white dark:bg-black transition duration-200 ease-in-out'
     : 'flex flex-col h-[calc(100vh-96px)] bg-white dark:bg-black transition duration-200 ease-in-out'
 
-  const allDataLoaded = orgIsPremium !== undefined && userGitHubAppInstalled !== undefined;
+  const allDataLoaded =
+    orgIsPremium !== undefined && userGitHubAppInstalled !== undefined
 
   return (
     <div className={topDivClassname}>
@@ -202,18 +212,33 @@ const SidebarNav = () => {
                   activeProjectDetails ? (
                     <>
                       <Link
-                          href={`/projects/${activeProjectDetails?.id}`}
-                          className="hover:underline flex items-center"
+                        href={`/projects/${activeProjectDetails?.id}`}
+                        className="hover:underline flex items-center"
                       >
-                          {activeProjectDetails ? renderHealthIcon(activeProjectDetails.health.readableValue) : null}
-                          <Text size="2" as="span" className="align-middle" weight="bold">{activeProjectDetails?.project.name}</Text>
+                        {activeProjectDetails
+                          ? renderHealthIcon(
+                              activeProjectDetails.health.readableValue,
+                            )
+                          : null}
+                        <Text
+                          size="2"
+                          as="span"
+                          className="align-middle"
+                          weight="bold"
+                        >
+                          {activeProjectDetails?.project.name}
+                        </Text>
                       </Link>
                     </>
                   ) : (
-                    <Text size="2" className="italic text-gray-500">Loading...</Text>
+                    <Text size="2" className="italic text-gray-500">
+                      Loading...
+                    </Text>
                   )
                 ) : (
-                  <Text size="2" className="italic text-gray-500">No Project Selected</Text>
+                  <Text size="2" className="italic text-gray-500">
+                    No Project Selected
+                  </Text>
                 )}
               </Skeleton>
             </Flex>
@@ -288,13 +313,14 @@ const SidebarNav = () => {
                 }}
               />
               <Skeleton loading={!allDataLoaded}>
-                {(allDataLoaded && (!orgIsPremium || !userGitHubAppInstalled)) && (
-                  <span className="absolute top-0 right-0 block w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
-                )}
+                {allDataLoaded &&
+                  (!orgIsPremium || !userGitHubAppInstalled) && (
+                    <span className="absolute top-0 right-0 block w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+                  )}
               </Skeleton>
             </div>
             <Skeleton loading={!allDataLoaded}>
-              {(allDataLoaded && (!orgIsPremium || !userGitHubAppInstalled)) && (
+              {allDataLoaded && (!orgIsPremium || !userGitHubAppInstalled) && (
                 <div title="Sara not properly configured" className="ml-2">
                   <ExclamationTriangleIcon className="w-4 h-4 text-red-500" />
                 </div>
@@ -341,18 +367,18 @@ const SidebarNav = () => {
           </div>
         </div>
         {isPreviewFeatureEnabled('DraggableNav') ? (
-        <div
-          ref={dragRef}
-          className="absolute top-0 right-0 h-full w-1 bg-orange-500 cursor-col-resize"
-          style={{ zIndex: 1000 }} // Ensure drag handle is above all content for usability
-          onMouseDown={handleMouseDown}
-        ></div>)
-        : 
-        <div
-          className="absolute top-0 right-0 h-full w-1 bg-orange-500"
-          style={{ zIndex: 1000 }}
-        ></div>
-        }
+          <div
+            ref={dragRef}
+            className="absolute top-0 right-0 h-full w-1 bg-orange-500 cursor-col-resize"
+            style={{ zIndex: 1000 }} // Ensure drag handle is above all content for usability
+            onMouseDown={handleMouseDown}
+          ></div>
+        ) : (
+          <div
+            className="absolute top-0 right-0 h-full w-1 bg-orange-500"
+            style={{ zIndex: 1000 }}
+          ></div>
+        )}
       </div>
     </div>
   )

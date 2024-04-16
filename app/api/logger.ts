@@ -17,7 +17,7 @@ const buildMergingObjectFromContext = (context: SaraLogContext) => ({
     orgName: context.org?.name,
     projectId: context.project?.id,
     projectName: context.project?.name,
-    error: context.error
+    error: context.error,
   },
 })
 

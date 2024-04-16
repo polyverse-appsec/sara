@@ -6,10 +6,12 @@ import { Flex, Heading, Text } from '@radix-ui/themes'
 import SaraLoadingImg from './../public/Sara-Loading.png'
 
 interface SaraLoadingProps {
-  message?: string; // The question mark makes the property optional.
+  message?: string // The question mark makes the property optional.
 }
 
-const SaraLoading = ({message = `I'm preparing this content for you...`}: SaraLoadingProps) => {
+const SaraLoading = ({
+  message = `I'm preparing this content for you...`,
+}: SaraLoadingProps) => {
   return (
     <Flex direction="column" align="center" justify="center" minHeight="100vh">
       <Heading size="9">{message}</Heading>

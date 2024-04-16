@@ -1,61 +1,60 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import {
-  StaticImageData,
-} from 'next/dist/shared/lib/get-img-props'
+import { StaticImageData } from 'next/dist/shared/lib/get-img-props'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { CaretDownIcon } from '@radix-ui/react-icons'
+import {
+  preReleaseServiceDisclaimer,
+  saraProductDescription,
+} from 'lib/productDescriptions'
+import { isPreviewFeatureEnabled } from 'lib/service-utils'
 
 import { LoginButton } from '../../components/login-button'
-import { CaretDownIcon } from '@radix-ui/react-icons'
-
 import carousel1 from './../../public/carousel1.png'
 import carousel2 from './../../public/carousel2.png'
 import carousel3 from './../../public/carousel3.png'
 import codeSummaryImage from './../../public/codesummary.png'
+import githubReposImage from './../../public/githubrepos.png'
 import goalsExplorerImage from './../../public/goalsexplorer.png'
 import guidelinesImage from './../../public/guidelines.png'
-import githubReposImage from './../../public/githubrepos.png'
-
 import PolyverseLogo from './../../public/Polyverse logo medium.jpg'
 import SaraPortrait from './../../public/Sara_Cartoon_Portrait.png'
-import { isPreviewFeatureEnabled } from 'lib/service-utils'
-import { preReleaseServiceDisclaimer, saraProductDescription } from 'lib/productDescriptions'
 
 interface CarouselItem {
-  image: StaticImageData;
-  description: string;
+  image: StaticImageData
+  description: string
 }
 
 // Initialize the CarouselData array with object literals
 const CarouselData: CarouselItem[] = [
   {
     image: carousel2,
-    description: 'Code Editing'
+    description: 'Code Editing',
   },
   {
     image: carousel1,
-    description: 'Full Codebase Analysis'
+    description: 'Full Codebase Analysis',
   },
   {
     image: carousel3,
-    description: 'Track Goals and Tasks'
+    description: 'Track Goals and Tasks',
   },
   // Add more objects as needed
-];
+]
 
 function Carousel({ items }: { items: CarouselItem[] }) {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % items.length);
-    }, 15000); 
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % items.length)
+    }, 15000)
 
-    return () => clearInterval(interval); // Clear the interval when the component unmounts
-  }, [items.length]);
+    return () => clearInterval(interval) // Clear the interval when the component unmounts
+  }, [items.length])
 
   return (
     <div>
@@ -65,7 +64,7 @@ function Carousel({ items }: { items: CarouselItem[] }) {
             className={`transition-opacity duration-1000 ease-in-out ${
               index === currentImageIndex ? 'opacity-100' : 'opacity-0'
             }`}
-          > 
+          >
             <div className="text-center text-white dark:text-white">
               <p>{item.description}</p>
             </div>
@@ -80,7 +79,7 @@ function Carousel({ items }: { items: CarouselItem[] }) {
         </div>
       ))}
     </div>
-  );
+  )
 }
 
 const CarouselSignIn = () => {
@@ -204,14 +203,16 @@ const CarouselSignIn = () => {
         </h2>
         <div className="w-1/2 border-t-2 border-blue-600 my-2"></div>
         <div className="mt-4 p-2 text-2xl font-semibold text-center w-3/4 mx-auto preserve-line-breaks">
-            {saraProductDescription}
+          {saraProductDescription}
         </div>
       </div>
       <div className="px-16">
         <div id="projectanalysis" className="flex items-center mt-8">
           <div className="w-1/2 flex flex-col items-center justify-evenly">
             <div className="flex flex-col">
-              <h2 className="text-4xl font-bold text-orange-600">Complete Project Analysis</h2>
+              <h2 className="text-4xl font-bold text-orange-600">
+                Complete Project Analysis
+              </h2>
               <div className="w-full border-t-2 border-orange-600 my-2"></div>
               <ul className="list-disc list-inside text-2xl font-semibold space-y-4">
                 <li>Answers scoped for entire codebase</li>
@@ -263,7 +264,9 @@ const CarouselSignIn = () => {
         <div id="goalsandtasks" className="flex items-center mt-8">
           <div className="w-1/2 flex flex-col items-center justify-evenly">
             <div className="flex flex-col">
-              <h2 className="text-4xl font-bold text-orange-600">Task Driven Productivity</h2>
+              <h2 className="text-4xl font-bold text-orange-600">
+                Task Driven Productivity
+              </h2>
               <div className="w-full border-t-2 border-orange-600 my-2"></div>
               <ul className="list-disc list-inside text-2xl font-semibold space-y-4">
                 <li>Generates tasks to achieve your project goals</li>
@@ -316,19 +319,20 @@ const CarouselSignIn = () => {
         <div className="w-1/2 border-t-2 border-orange-600 my-2"></div>
         <div className="flex items-center justify-evenly w-4/5 mt-6">
           {isPreviewFeatureEnabled('FreePlanEnabled') && (
-          <div className="bg-background shadow-md rounded-lg p-6 border mb-4">
-            <div className="flex flex-col items-start">
-              <p className="text-2xl font-semibold">Free Plan</p>
-              <div className="text-xl mt-2">
-                <p>✅ Project creation to analyze GitHub repositories</p>
-                <p>✅ Project Goals can be set to guide Sara analysis</p>
-                <p>✅ Sara generated Task-plans to achieve Goals</p>
-                <p>✅ Manual GitHub source synchronization</p>
-                <p>❌ Project creation limit</p>
-                <p>❌ Only public respositories for projects</p>
+            <div className="bg-background shadow-md rounded-lg p-6 border mb-4">
+              <div className="flex flex-col items-start">
+                <p className="text-2xl font-semibold">Free Plan</p>
+                <div className="text-xl mt-2">
+                  <p>✅ Project creation to analyze GitHub repositories</p>
+                  <p>✅ Project Goals can be set to guide Sara analysis</p>
+                  <p>✅ Sara generated Task-plans to achieve Goals</p>
+                  <p>✅ Manual GitHub source synchronization</p>
+                  <p>❌ Project creation limit</p>
+                  <p>❌ Only public respositories for projects</p>
+                </div>
               </div>
             </div>
-          </div>)}
+          )}
           <div className="bg-background shadow-md rounded-lg p-6 border mb-4">
             <div className="flex flex-col items-start">
               <div className="w-full flex justify-between items-center">
@@ -346,7 +350,9 @@ const CarouselSignIn = () => {
             </div>
           </div>
         </div>
-        <div className="py-1 px-2 rounded-lg text-center text-orange-400 bg-orange-200">{preReleaseServiceDisclaimer}</div>
+        <div className="py-1 px-2 rounded-lg text-center text-orange-400 bg-orange-200">
+          {preReleaseServiceDisclaimer}
+        </div>
       </div>
       <div
         id="footer"

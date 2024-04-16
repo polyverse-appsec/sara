@@ -44,15 +44,15 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
 
   useEffect(() => {
     if (!activeBillingOrg) {
-      return;
+      return
     }
-    
+
     if (!saraSession) {
       // just wait until we have a saraSession ready
-      return;
+      return
     }
-  }, [activeBillingOrg, saraSession, toastedInactiveBillingOrg]);
-      
+  }, [activeBillingOrg, saraSession, toastedInactiveBillingOrg])
+
   // This use effect is to just get the project details...
   useEffect(() => {
     let isMounted = true

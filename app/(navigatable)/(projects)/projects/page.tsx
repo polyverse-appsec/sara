@@ -2,13 +2,13 @@
 
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import SaraLoading from 'components/sara-loading'
 import { Project } from 'lib/data-model-types'
 import toast from 'react-hot-toast'
 
 import { getResource } from './../../../../app/saraClient'
 import { useAppContext } from './../../../../lib/hooks/app-context'
 import ProjectDashboard from './project-dashboard'
-import SaraLoading from 'components/sara-loading'
 
 const ProjectIndex = () => {
   const router = useRouter()

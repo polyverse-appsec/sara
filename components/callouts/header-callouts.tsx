@@ -4,9 +4,9 @@ import { Flex } from '@radix-ui/themes'
 import { useSession } from 'next-auth/react'
 
 import { type SaraSession } from './../../auth'
+import DeploymentStageCallout from './deployment-header'
 import ExperimentalCallout from './experimental-header'
 import FeedbackCallout from './feedback-callout'
-import DeploymentStageCallout from './deployment-header'
 
 const HeaderCallouts = () => {
   const session = useSession()
@@ -18,10 +18,14 @@ const HeaderCallouts = () => {
   const deploymentStageClassname = 'top-0 w-full h-[48px]'
 
   // ExperimentalCallout appears below the DeploymentStageCallout if it is rendered
-  const experimentalClassname = isProduction ? 'top-0 w-full h-[48px]' : 'top-48 w-full h-[48px]'
+  const experimentalClassname = isProduction
+    ? 'top-0 w-full h-[48px]'
+    : 'top-48 w-full h-[48px]'
 
   // FeedbackCallout position and height depend on whether saraSession exists
-  const feedbackClassname = saraSession ? 'top-48 w-full h-[64px]' : 'top-48 w-full h-[48px]'
+  const feedbackClassname = saraSession
+    ? 'top-48 w-full h-[64px]'
+    : 'top-48 w-full h-[48px]'
 
   // Callouts as headers need to be sticky so they stay in position as the
   // user scrolls.

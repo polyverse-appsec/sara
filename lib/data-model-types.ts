@@ -231,7 +231,11 @@ export interface Chat extends BaseSaraObject {
   openAiThreadRunId: string | null
 }
 
-export type ChatQueryStatus = 'QUERY_RECEIVED' | 'QUERY_SUBMITTED' | 'RESPONSE_RECEIVED' | 'ERROR'
+export type ChatQueryStatus =
+  | 'QUERY_RECEIVED'
+  | 'QUERY_SUBMITTED'
+  | 'RESPONSE_RECEIVED'
+  | 'ERROR'
 
 // TODO: Test this with a Joi schema
 export interface ChatQuery extends BaseSaraObject {
