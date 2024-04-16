@@ -39,7 +39,7 @@ const GoalIndex = ({ params: { id } }: { params: { id: string } }) => {
       setHealth(health)
 
       const project = await getResource<Goal>(
-        `/goals/${id}/parentproject`,
+        `/projects/${goal.parentProjectId}`,
         `Failed to get a success response when fetching parent project for goal '${id}'`,
       )
       setProjectIdForConfiguration(project.id)
