@@ -22,6 +22,7 @@ import { useAppContext } from './../lib/hooks/app-context'
 import SaraPortrait from './../public/Sara_Cartoon_Portrait.png'
 import GoalsTaskNavTree from './goals-tasks-nav-tree'
 import LoadingCircle from './loading-spinner'
+import { isPreviewFeatureEnabled } from 'lib/service-utils'
 
 function getUserInitials(name: string) {
   const [firstName, lastName] = name.split(' ')
@@ -47,7 +48,7 @@ const SidebarNav = () => {
     useState<undefined | boolean>(undefined)
   const [loadingBillingOrg, setLoadingBillingOrg] = useState<boolean>(true)
 
-  const [width, setWidth] = useState(225)
+  const [width, setWidth] = useState(235)
   const [mouseDown, setMouseDown] = useState(false)
 
   const dragRef = useRef(null)
@@ -339,12 +340,19 @@ const SidebarNav = () => {
             </div>
           </div>
         </div>
+        {isPreviewFeatureEnabled('DraggableNav') ? (
         <div
           ref={dragRef}
           className="absolute top-0 right-0 h-full w-1 bg-orange-500 cursor-col-resize"
           style={{ zIndex: 1000 }} // Ensure drag handle is above all content for usability
           onMouseDown={handleMouseDown}
+        ></div>)
+        : 
+        <div
+          className="absolute top-0 right-0 h-full w-1 bg-orange-500"
+          style={{ zIndex: 1000 }}
         ></div>
+        }
       </div>
     </div>
   )
