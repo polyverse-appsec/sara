@@ -22,6 +22,8 @@ import goalsExplorerImage from './../../public/goalsexplorer.png'
 import guidelinesImage from './../../public/guidelines.png'
 import PolyverseLogo from './../../public/Polyverse logo medium.jpg'
 import SaraPortrait from './../../public/Sara_Cartoon_Portrait.png'
+import { Badge, Button, TextArea } from '@radix-ui/themes'
+import { createResourceNoResponseBody } from 'app/saraClient'
 
 interface CarouselItem {
   image: StaticImageData
@@ -85,6 +87,18 @@ function Carousel({ items }: { items: CarouselItem[] }) {
 const CarouselSignIn = () => {
   const router = useRouter()
   const [color, setColor] = useState(false)
+
+  const [ email, setEmail ] = useState('')
+  const [ emailSubmitButtonOpen, setEmailSubmitButtonOpen ] = useState(true)
+  const [ displayEmailEntrySuccess, setDisplayEmailEntrySuccess ] = useState(false)
+
+  const displayEmailEntrySuccessMessage = () => {
+    setDisplayEmailEntrySuccess(true);
+  
+    setTimeout(() => {
+      setDisplayEmailEntrySuccess(false);
+    }, 5000);  
+  }
 
   useEffect(() => {
     // This function will change the navbar color based on scroll position.
@@ -353,6 +367,53 @@ const CarouselSignIn = () => {
         <div className="py-1 px-2 rounded-lg text-center text-orange-400 bg-orange-200">
           {preReleaseServiceDisclaimer}
         </div>
+      </div>
+      <div id="emailsubmit" className="flex flex-col items-center my-24">
+        <h2 className="text-4xl font-bold text-blue-600 mt-8">
+          Subscribe to Our Product Updates!
+        </h2>
+        <div className="w-1/2 border-t-2 border-blue-600 my-2"></div>
+        <form
+            className="mt-16"
+            onSubmit={async (e) => {
+              const reqBody = {
+                email,
+              }
+  
+              createResourceNoResponseBody(`/waitlist`, reqBody)
+                .then(() => {
+                  setEmailSubmitButtonOpen(false)
+                  setEmail('')
+                  displayEmailEntrySuccessMessage()
+                  console.log(`SUCCESSFULLY SET THE EMAIL IN CLIENT CODE`)
+                })
+                .catch(() => {
+                  setEmailSubmitButtonOpen(false)
+                  setEmail('')
+                })
+              e.preventDefault()
+            }}
+          >
+            <div className="flex items-center">
+            <>
+              <div className="flex flex-col pr-16">
+                <TextArea
+                  placeholder="Enter your email…"
+                  onChange={(e) => setEmail(e.target.value)}
+                  disabled={!emailSubmitButtonOpen}
+                />
+              </div>
+            </>
+              <button
+                type="submit"
+                className="p-1 bg-blue-500 hover:bg-blue-700 rounded-lg"
+                disabled={!emailSubmitButtonOpen}
+              >Submit</button>
+          </div>
+        </form>
+        {displayEmailEntrySuccess && (
+          <div className="px-3 py-2 bg-green-200 text-green-500 rounded-lg">SUBMITTED EMAIL</div>
+        )}
       </div>
       <div
         id="footer"

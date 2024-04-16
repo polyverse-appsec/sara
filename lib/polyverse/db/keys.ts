@@ -22,6 +22,8 @@ export const globalOrgIdsSetKey = () => `global:org:ids`
 // TODO: Test
 export const globalProjectIdsSetKey = () => `global:project:ids`
 
+export const globalEmailsSetKey = () => `global:email:ids`
+
 // TODO: Test
 export const globalProjectDataSourceIdsSetKey = () =>
   `global:project-data-source:ids`
@@ -73,6 +75,8 @@ export const orgKey = (orgId: string) => `org:${orgId}`
 
 // TODO: Test
 export const projectKey = (projectId: string) => `project:${projectId}`
+
+export const emailKey = (email: string) => `email:${email}`
 
 // TODO: Test
 export const projectDataSourceKey = (projectDataSourceId: string) =>

@@ -12,6 +12,7 @@
 
 - Add REST API `PATCH /api/chats/[chatId]/chat-queries/[chatQueryId]`
 - Resubmit chat queries that end in an `ERROR` state automatically
+- Add email updates entry in sign in page
 
 ### Bug Fixes
 
