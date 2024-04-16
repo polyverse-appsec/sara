@@ -283,19 +283,6 @@ export const getChatQueryResponseFromThread = async (
   const { data: messages } =
     await oaiClient.beta.threads.messages.list(threadId)
 
-
-  console.log(`***** getChatQueryResponseFromThread - chatQueryId: ${chatQueryId}`)
-  console.log(`***** getChatQueryResponseFromThread - messages.length: ${messages.length}`)
-
-  messages.forEach((message, index) => {
-    const metadata = message.metadata as { chatQueryId: string }
-
-    console.log(`***** getChatQueryResponseFromThread - messages.forEach index: ${index}`)
-    console.log(`***** getChatQueryResponseFromThread - messages.forEach message.content: ${JSON.stringify(message.content)}`)
-    console.log(`***** getChatQueryResponseFromThread - messages.forEach message.role: ${message.role}`)
-    console.log(`***** getChatQueryResponseFromThread - messages.forEach metadata: ${JSON.stringify(metadata)}`)
-  })
-
   // Find the index of the user query to OpenAI that we are tracking in our
   // datastore as a chat query
   const chatQueryIndex = messages.findIndex((message, index) => {
@@ -316,7 +303,7 @@ export const getChatQueryResponseFromThread = async (
   // the index wasn't found but we also want to ensure that the corresponding
   // user query isn't the first one in the messages array. This would denote
   // that there aren't any assistant responses either.
-  if (chatQueryIndex < 0) {
+  if (chatQueryIndex < 1) {
     throw new Error(
       `Unable to locate user chat query with an ID of '${chatQueryId}'`,
     )
@@ -414,6 +401,17 @@ export const getChatQueryResponseFromThread = async (
       Promise.resolve(''),
     )
   ).trim()
+
+  // Protect against the edge case where it appears our thread run is complete
+  // but ChatGPT doesn't actually show we have a response. It isn't clear how
+  // we can get in this state but it has been observed once and the result is
+  // bad. We won't properly render chats (they will appear blank) and we will
+  // stop querying for updated future chats.
+  if (chatQueryResponse.length === 0) {
+    throw new Error(
+      `Chat query with an ID of '${chatQueryId}' is empty`,
+    )
+  }
 
   return chatQueryResponse
 }

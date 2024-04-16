@@ -10,11 +10,6 @@ interface SaraAuthZ {
 }
 
 const orgListedOnUser = (user: User, orgId: string) => {
-  // TODO: TEMP TO DEBUG
-  if (process.env.SARA_STAGE && process.env.SARA_STAGE === 'dev') {
-    return
-  }
-
   if (Joi.any().required().not(null).validate(user).error) {
     throw new Error('User instance null/undefined')
   }
@@ -39,11 +34,6 @@ const orgListedOnUser = (user: User, orgId: string) => {
 }
 
 const soleUserOnProject = (project: Project, userId: string) => {
-  // TODO: TEMP TO DEBUG
-  if (process.env.SARA_STAGE && process.env.SARA_STAGE === 'dev') {
-    return
-  }
-
   if (Joi.any().required().not(null).validate(project).error) {
     throw new Error('Project instance null/undefined')
   }
@@ -74,11 +64,6 @@ const soleUserOnProject = (project: Project, userId: string) => {
 }
 
 const userListedOnOrg = (org: Org, userId: string) => {
-  // TODO: TEMP TO DEBUG
-  if (process.env.SARA_STAGE && process.env.SARA_STAGE === 'dev') {
-    return
-  }
-
   if (Joi.any().required().not(null).validate(org).error) {
     throw new Error('Org instance null/undefined')
   }
@@ -103,11 +88,6 @@ const userListedOnOrg = (org: Org, userId: string) => {
 }
 
 const userListedOnProject = (project: Project, userId: string) => {
-  // TODO: TEMP TO DEBUG
-  if (process.env.SARA_STAGE && process.env.SARA_STAGE === 'dev') {
-    return
-  }
-
   if (Joi.any().required().not(null).validate(project).error) {
     throw new Error('Project instance null/undefined')
   }
