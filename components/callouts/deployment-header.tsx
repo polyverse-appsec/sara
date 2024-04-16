@@ -9,9 +9,7 @@ export const deploymentStage =
     ? 'Pre-Production Preview (Non-Customer Facing)'
     : process.env.SARA_STAGE?.toLowerCase() === 'prod'
       ? 'Customer-Facing Production'
-      : process.env.SARA_STAGE?.toLowerCase() === 'dev'
-        ? 'Internal Engineering Development (Non-Customer Facing)'
-        : 'Local System Developer (Non-Customer Facing)'
+      : 'Internal Engineering Development (Non-Customer Facing)'
 
 // Positioning and sizing should be done in the <HeaderCallouts> component
 const DeploymentStageCallout = () => {
