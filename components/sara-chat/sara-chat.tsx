@@ -3,12 +3,11 @@
 import React, { useEffect, useState } from 'react'
 import { type SaraSession } from 'auth' // Ensure this is correctly imported
 
-import SaraLoading from 'components/sara-loading'
 import { useSession } from 'next-auth/react'
 import { toast } from 'react-hot-toast'
 
 import { ChatScrollAnchor } from '../chat-scroll-anchor'
-import { getResource } from './../../app/saraClient'
+import { getResource, updateResource } from './../../app/saraClient'
 import {
   type Chat,
   type Chatable,
@@ -91,6 +90,9 @@ const buildChatQueriesUrl = (chatableResourceUrl: string, chatId: string) =>
     ? `${chatableResourceUrl}chats/${chatId}/chat-queries`
     : `${chatableResourceUrl}/chats/${chatId}/chat-queries`
 
+const buildChatQueryUrl = (chatId: string, chatQueryId: string) =>
+  `/api/chats/${chatId}/chat-queries/${chatQueryId}`
+
 const SaraChat = <T extends Chatable>({
   projectHealth,
   chatableResourceUrl,
@@ -132,6 +134,24 @@ const SaraChat = <T extends Chatable>({
 
       try {
         const chatQueries = await getResource<ChatQuery[]>(chatQueriesUrl)
+        const tailChatQuery = chatQueries[chatQueries.length - 1]
+
+        // If the chat ended in an error state then re-submit the chat for the
+        // user
+        if (isMounted && tailChatQuery.status === 'ERROR') {
+          const chatQueryUrl = buildChatQueryUrl(chatId, tailChatQuery.id)
+          const patchReqBody = {
+            status: 'QUERY_RECEIVED',
+          }
+
+          const resubmittedChatQuery = await updateResource<ChatQuery>(
+            chatQueryUrl,
+            patchReqBody,
+            `Failed to re-submit chat query '${tailChatQuery.id}' when in an 'ERROR' state`,
+          )
+
+          chatQueries[chatQueries.length - 1] = resubmittedChatQuery
+        }
 
         if (isMounted) {
           setChatQueries(chatQueries)

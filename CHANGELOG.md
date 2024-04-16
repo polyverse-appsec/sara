@@ -11,6 +11,7 @@
 ### Enhancements
 
 - Add REST API `PATCH /api/chats/[chatId]/chat-queries/[chatQueryId]`
+- Resubmit chat queries that end in an `ERROR` state automatically
 
 ### Bug Fixes
 

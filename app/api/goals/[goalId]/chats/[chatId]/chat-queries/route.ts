@@ -4,6 +4,7 @@ import createChatQuery from 'lib/polyverse/db/create-chat-query'
 import updateChat from 'lib/polyverse/db/update-chat'
 import { NextAuthRequest } from 'next-auth/lib'
 
+import logger, { type SaraLogContext } from 'app/api/logger'
 import { auth } from '../../../../../../../auth'
 import getProjectPromptFileInfos from '../../../../../../../lib/polyverse/backend/get-project-prompt-file-infos'
 import getProjectPromptFileInfoIds from '../../../../../../../lib/polyverse/db/get-project-prompt-file-info-ids'
@@ -608,9 +609,17 @@ export const GET = auth(async (req: NextAuthRequest) => {
         status: StatusCodes.OK,
       })
     } else if (threadRunStatus !== 'completed') {
-      console.error(
-        `Chat '${chat.id}' was requested and we encountered an unhandled thread run status of '${threadRunStatus}'`,
-      )
+      const logContext: SaraLogContext = {
+        user,
+        org,
+        project,
+        other: {
+          chat,
+          tailChatQuery
+        }
+      }
+
+      logger.errorWithContext(`Unhandled thread run status of '${threadRunStatus}' encountered`, logContext)
 
       return new Response(ReasonPhrases.INTERNAL_SERVER_ERROR, {
         status: StatusCodes.INTERNAL_SERVER_ERROR,

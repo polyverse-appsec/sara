@@ -1,3 +1,4 @@
+type PATCHRequestBody = Record<any, any>
 type POSTRequestBody = Record<any, any>
 
 const prefixResourcePath = (resourcePath: string) => {
@@ -83,6 +84,26 @@ export const getResource = async <T>(
   const prefixedResourcePath = prefixResourcePath(resourcePath)
 
   const res = await fetch(prefixedResourcePath)
+
+  await throwIfResNotOk(res, errorMessage)
+
+  return (await res.json()) as T
+}
+
+export const updateResource = async <T>(
+  resourcePath: string,
+  reqBody: PATCHRequestBody,
+  errorMessage: string = '',
+): Promise<T> => {
+  const prefixedResourcePath = prefixResourcePath(resourcePath)
+
+  const res = await fetch(prefixedResourcePath, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(reqBody),
+  })
 
   await throwIfResNotOk(res, errorMessage)
 

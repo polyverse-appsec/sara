@@ -94,7 +94,7 @@ export const PATCH = auth(async (req: NextAuthRequest) => {
     // Currently we only allow setting the chat query status to 'QUERY_RECEIVED'
     const reqBody = (await req.json()) as ModifyChatQueryRequestBody
 
-    if (Joi.string().valid('ERROR').required().validate(reqBody.status).error) {
+    if (Joi.string().valid('QUERY_RECEIVED').required().validate(reqBody.status).error) {
       return new Response(
         `'status' is only allowed to have the 'QUERY_RECEIVED' value`,
         {
