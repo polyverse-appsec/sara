@@ -32,16 +32,24 @@ const NavigatableLayout = ({ children }: NavigatableLayoutProps) => {
     return null
   }
 
-  const waitlistEnabled = isPreviewFeatureEnabled('Waitlist')
+  const waitlistEnabled = isPreviewFeatureEnabled('WaitlistNewCustomers')
 
-  if (waitlistEnabled && saraSession && true === saraSession.waitlisted) {
-    // This is example code of how this could work. We need to route to a page
-    // that doesn't exist under (navigatable) as it will always return null
-    // as a result. That or return some component that would show the waitlist
-    // details.
-    // router.push(`/about`)
-    // return null
-  }
+  if (waitlistEnabled && true === saraSession?.waitlisted) {
+
+    const waitlistMessage =
+      `Sara appreciates your interest! She is currently at her maximum capacity for new users. You have been automatically added to the waitlist (${saraSession.email}). We will let you know as soon as she has capacity. Please contact sales@polyverse.com for any questions.`
+
+    return (
+        <Theme>
+          <Flex direction="column" height="h-screen">
+            <HeaderCallouts />
+            <div className="flex flex-1 overflow-hidden">
+                <SaraLoading message={waitlistMessage} />
+            </div>
+          </Flex>
+        </Theme>
+      )
+    }
 
   const isMaintenanceMode = isPreviewFeatureEnabled(
     'EmergencyMaintenanceMode',

@@ -6,7 +6,7 @@
 
 ### New Features
 
-- N/A
+- Waitlist support for when Sara reaches her capacity with new users
 
 ### Enhancements
 

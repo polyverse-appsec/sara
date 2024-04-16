@@ -134,7 +134,7 @@ export const {
               orgIds: [],
               username: profile.login as string,
               lastSignedInAt: baseSaraObject.createdAt,
-              waitlisted: isPreviewFeatureEnabled('Waitlist')
+              waitlisted: isPreviewFeatureEnabled('WaitlistNewCustomers')
             }
             
             await createUser(newUser)
