@@ -13,6 +13,8 @@
 - Add REST API `PATCH /api/chats/[chatId]/chat-queries/[chatQueryId]`
 - Resubmit chat queries that end in an `ERROR` state automatically
 - Add email updates entry in sign in page
+- goals in navbar now show when they are hovered on
+- goals will reload correctly in goals/tasks explorer on goals page refresh
 
 ### Bug Fixes
 
