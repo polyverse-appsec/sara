@@ -47,6 +47,12 @@ const RenderableSaraChatResourceContent = <T extends Chatable>({
     })()
   }, [chatableResourceUrl])
 
+  console.debug(
+    `***** <RenderableSaraChatResourceContent> chatableResource: ${JSON.stringify(
+      chatableResource,
+    )}`,
+  )
+
   // We preseume that someone is only rendering this component if the renderable
   // resource exists so we ought not hit 404 errors.
   if (getChatableResourceError) {
