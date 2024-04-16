@@ -19,6 +19,5 @@ export const Default: Story = {
         content: 'Some content',
         contentType: 'QUERY',
         timestamp: new Date(),
-        shouldRenderLoadingSpinner: true,
     }
 }
