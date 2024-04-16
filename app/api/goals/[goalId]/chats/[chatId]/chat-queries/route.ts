@@ -533,6 +533,8 @@ export const GET = auth(async (req: NextAuthRequest) => {
       chat.openAiThreadRunId,
     )
 
+    console.log(`****** /api/goals/[goalId]/chats/[chatId]/chat-queries threadRun: ${JSON.stringify(threadRun)}`)
+
     const { status: threadRunStatus } = threadRun
 
     // If we require some action to be taken respond to the client that we are
