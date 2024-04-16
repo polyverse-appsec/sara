@@ -629,10 +629,25 @@ export const GET = auth(async (req: NextAuthRequest) => {
     // If we get to this point we must be dealing with a thread run in the
     // 'completed' status. If so then gather the messages from OpenAI and update
     // the most recent chat query.
-    const chatQueryResponse = await getChatQueryResponseFromThread(
-      chat.openAiThreadId,
-      chat.tailChatQueryId,
-    )
+    //
+    // Surround with a try/catch as the errors we are dealing with are largely
+    // out of our control. We will set it in an `ERROR` state and at which point
+    // one can retry generating the response.
+    let chatQueryResponse = null
+    try {
+      chatQueryResponse = await getChatQueryResponseFromThread(
+        chat.openAiThreadId,
+        chat.tailChatQueryId,
+      )
+    } catch (error) {
+      tailChatQuery.status = 'ERROR'
+
+      await updateChatQuery(tailChatQuery)
+
+      return new Response(ReasonPhrases.INTERNAL_SERVER_ERROR, {
+        status: StatusCodes.INTERNAL_SERVER_ERROR,
+      })
+    }
 
     tailChatQuery.response = chatQueryResponse
     tailChatQuery.responseReceivedAt = new Date()
