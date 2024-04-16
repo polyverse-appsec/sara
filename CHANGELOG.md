@@ -11,6 +11,7 @@
 ### Enhancements
 
 - Improve nav bar UI
+- Add chat status card to last chat query in chat thread
 
 ### Bug Fixes
 
