@@ -6,6 +6,7 @@ import SaraLoading from 'components/sara-loading'
 import { ChatQuery } from './../../lib/data-model-types'
 import { Separator } from './../ui/separator'
 import SaraChatQueryContent from './sara-chat-query-content'
+import { IconRefresh } from 'components/ui/icons'
 
 export interface SaraChatListProps {
   chatQueries: ChatQuery[]
@@ -35,7 +36,7 @@ const SaraChatList = ({ chatQueries, saraSession }: SaraChatListProps) => {
             />
             <br></br>
             {chatQuery.response ? (
-              <>
+              <div className="flex flex-col items-center">
                 <SaraChatQueryContent
                   content={chatQuery.response}
                   contentType="RESPONSE"
@@ -54,7 +55,13 @@ const SaraChatList = ({ chatQueries, saraSession }: SaraChatListProps) => {
                       : undefined
                   }
                 />
-              </>
+                 <button
+                  className="flex items-center p-2 border-2 border-invisible hover:border-black text-sm leading-5 font-medium rounded-md text-black mb-2"
+                >
+                  <IconRefresh className="mr-2" />
+                  <p>Regenerate response</p>
+                </button>
+              </div>
             ) : (
               <>
                 <SaraChatQueryContent
