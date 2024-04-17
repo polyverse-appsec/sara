@@ -6,7 +6,7 @@ env:
 
 permissions:
   contents: write
-  
+
 on:
   workflow_run:
     workflows:
@@ -30,7 +30,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v2
         with:
-          version: latest
+          version: 8.6.3
 
       - name: Setup Node
         uses: actions/setup-node@v4
