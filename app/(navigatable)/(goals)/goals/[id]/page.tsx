@@ -45,7 +45,7 @@ const GoalIndex = ({ params: { id } }: { params: { id: string } }) => {
       setProjectIdForConfiguration(project.id)
 
     })()
-  }, [id])
+  }, [id, setProjectIdForConfiguration])
 
   if (
     (activeWorkspaceDetails && id !== activeWorkspaceDetails.goalId) ||
