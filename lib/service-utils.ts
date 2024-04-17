@@ -1,3 +1,5 @@
+import logger from "./logger"
+
 export const isPreviewFeatureEnabled = (
   feature: string,
   email: string = '',
@@ -19,9 +21,8 @@ export const isPreviewFeatureEnabled = (
   const featuresEnabled = publicPreviewFeatures.split(',')
 
   if (featuresEnabled.includes(feature)) {
-    console.log(
-      `[${process.env.SARA_STAGE} Deployment] Preview Feature: ${feature} = ENABLED for all users`,
-    )
+    logger.debug(`[${process.env.SARA_STAGE} Deployment] Preview Feature: ${feature} = ENABLED for all users`)
+
     return true
   }
 
@@ -33,25 +34,22 @@ export const isPreviewFeatureEnabled = (
       if (featureKey === feature) {
         if (!emailValue) {
           // if the feature is enabled for all users, return true
-          console.log(
-            `[${process.env.SARA_STAGE} Deployment] Preview Feature: ${feature} = ENABLED for all users`,
-          )
+          logger.debug(`[${process.env.SARA_STAGE} Deployment] Preview Feature: ${feature} = ENABLED for all users`)
+
           return true
         }
 
         // if the feature is enabled for a specific user, check if the current user matches
         if (emailValue === email) {
-          console.log(
-            `[${process.env.SARA_STAGE} Deployment] Preview Feature: ${feature} = ENABLED for ${email}`,
-          )
+          logger.debug(`[${process.env.SARA_STAGE} Deployment] Preview Feature: ${feature} = ENABLED for ${email}`)
+
           return true
         } else if (emailValue.includes('@') && email.includes('@')) {
           // if the feature is enabled for a domain, check if the current user's email domain matches
           const domain = email.split('@')[1] || ''
           if (emailValue === `@${domain}`) {
-            console.log(
-              `[${process.env.SARA_STAGE} Deployment] Preview Feature: ${feature} = ENABLED for @${domain}`,
-            )
+            logger.debug(`[${process.env.SARA_STAGE} Deployment] Preview Feature: ${feature} = ENABLED for @${domain}`)
+
             return true
           }
         }
@@ -61,16 +59,12 @@ export const isPreviewFeatureEnabled = (
     })
 
     if (!featureEnabled) {
-      console.log(
-        `[${process.env.SARA_STAGE} Deployment] Preview Feature: ${feature} = DISABLED`,
-      )
+      logger.debug(`[${process.env.SARA_STAGE} Deployment] Preview Feature: ${feature} = DISABLED`)
     }
 
     return featureEnabled
   } catch (error) {
-    console.error(
-      `Error checking if preview feature ${feature} for ${email} with ${process.env.NEXT_PUBLIC_PREVIEW_FEATURES} is enabled: ${error}`,
-    )
+    logger.error(`Error checking if preview feature ${feature} for ${email} with ${process.env.NEXT_PUBLIC_PREVIEW_FEATURES} is enabled: ${error}`)
     return false
   }
 }

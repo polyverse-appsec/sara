@@ -49,6 +49,10 @@ class SaraLogger {
 
     this.logger.info(mergingObject, message)
   }
+
+  debug(message: string) {
+    this.logger.debug(message)
+  }
 }
 
 const logger = new SaraLogger()
