@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import { Card, Flex, Text } from '@radix-ui/themes'
 import GreenSolidCheckIcon from 'components/icons/GreenSolidCheckIcon'
+import RedSolidStopIcon from 'components/icons/RedSolidStopIcon'
 import RedSolidXIcon from 'components/icons/RedSolidXIcon'
 import LoadingSpinner from 'components/loading-spinner'
 import { ChatQueryStatus } from 'lib/data-model-types'
@@ -52,7 +53,7 @@ const renderChatQueryStatusIcon = (chatQueryStatus: ChatQueryStatus) => {
     case 'ERROR':
       return <RedSolidXIcon />
     case 'CANCELLED':
-      return <RedSolidXIcon />
+      return <RedSolidStopIcon />
   }
 }
 
