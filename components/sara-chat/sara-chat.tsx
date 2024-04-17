@@ -86,7 +86,8 @@ const cancelChatQuery = async (
 const FOUR_MINS_IN_MILLIS = 4 * 60 * 1000
 
 const querySubmissionExpired = (querySubmittedAt: Date) =>
-  new Date().getTime() - querySubmittedAt.getTime() >= FOUR_MINS_IN_MILLIS
+  new Date().getTime() - new Date(querySubmittedAt).getTime() >=
+  FOUR_MINS_IN_MILLIS
 
 const buildChatQueriesUrl = (chatableResourceUrl: string, chatId: string) =>
   chatableResourceUrl.endsWith('/')
