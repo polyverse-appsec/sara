@@ -190,9 +190,31 @@ const SaraChat = <T extends Chatable>({
         {chatQueries && chatQueries.length ? (
           <>
             <SaraChatList
-              chatId={chatId}
               chatQueries={chatQueries}
               saraSession={saraSession}
+              handleResubmitChatQuery={async (chatQueryId: string) => {
+                // If the chat ID isn't yet return
+                if (!chatId) {
+                  return
+                }
+
+                const chatQueryUrl = buildChatQueryUrl(chatId, chatQueryId)
+                const patchReqBody = {
+                  status: 'QUERY_RECEIVED',
+                }
+
+                const resubmittedChatQuery = await updateResource<ChatQuery>(
+                  chatQueryUrl,
+                  patchReqBody,
+                  `Failed to re-submit chat query '${chatQueryId}'`,
+                )
+
+                // By default the we only allow resubmitting on the last chat
+                // query so we can locally update our state here while waiting
+                // for the next refresh
+                chatQueries[chatQueries.length - 1] = resubmittedChatQuery
+                setChatQueries(chatQueries)
+              }}
             />
             <ChatScrollAnchor trackVisibility={false} />
           </>
