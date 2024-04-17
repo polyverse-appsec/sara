@@ -51,6 +51,8 @@ const renderChatQueryStatusIcon = (chatQueryStatus: ChatQueryStatus) => {
       return <GreenSolidCheckIcon />
     case 'ERROR':
       return <RedSolidXIcon />
+    case 'CANCELLED':
+      return <RedSolidXIcon />
   }
 }
 
@@ -90,6 +92,15 @@ const renderChatQueryStatusText = (chatQueryStatus: ChatQueryStatus) => {
             {'Status: '}
           </Text>
           <Text size="2">Error</Text>
+        </>
+      )
+    case 'CANCELLED':
+      return (
+        <>
+          <Text size="2" weight="bold">
+            {'Status: '}
+          </Text>
+          <Text size="2">Cancelled</Text>
         </>
       )
   }
