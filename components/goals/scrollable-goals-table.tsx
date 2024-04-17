@@ -56,7 +56,7 @@ const ScrollableGoalsTable = ({
   handleGoalUnchecked,
 }: ScrollableGoalsTableProps) => {
   return (
-    <ScrollArea.Root className="h-40 overflow-auto">
+    <ScrollArea.Root className="h-40 overflow-auto grow">
       <ScrollArea.Viewport>
         <Table.Root variant="surface">
           <Table.Header>
