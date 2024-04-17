@@ -1,8 +1,7 @@
 import Joi from 'joi'
+import { isPreviewFeatureEnabled } from 'lib/service-utils'
 
 import { Org, Project, User } from './../../lib/data-model-types'
-
-import { isPreviewFeatureEnabled } from 'lib/service-utils'
 
 interface SaraAuthZ {
   orgListedOnUser: (user: User, orgId: string) => void

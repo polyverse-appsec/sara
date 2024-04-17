@@ -1,6 +1,6 @@
 import { kv } from '@vercel/kv'
 
-import { globalEmailsSetKey, emailKey } from './keys'
+import { emailKey, globalEmailsSetKey } from './keys'
 
 const createEmail = async (email: string): Promise<void> => {
   // Create the new org...

@@ -1,10 +1,10 @@
+import logger, { type SaraLogContext } from 'app/api/logger'
 import { ReasonPhrases, StatusCodes } from 'http-status-codes'
 import Joi from 'joi'
 import createChatQuery from 'lib/polyverse/db/create-chat-query'
 import updateChat from 'lib/polyverse/db/update-chat'
 import { NextAuthRequest } from 'next-auth/lib'
 
-import logger, { type SaraLogContext } from 'app/api/logger'
 import { auth } from '../../../../../../../auth'
 import getProjectPromptFileInfos from '../../../../../../../lib/polyverse/backend/get-project-prompt-file-infos'
 import getProjectPromptFileInfoIds from '../../../../../../../lib/polyverse/db/get-project-prompt-file-info-ids'
@@ -615,11 +615,14 @@ export const GET = auth(async (req: NextAuthRequest) => {
         project,
         other: {
           chat,
-          tailChatQuery
-        }
+          tailChatQuery,
+        },
       }
 
-      logger.errorWithContext(`Unhandled thread run status of '${threadRunStatus}' encountered`, logContext)
+      logger.errorWithContext(
+        `Unhandled thread run status of '${threadRunStatus}' encountered`,
+        logContext,
+      )
 
       return new Response(ReasonPhrases.INTERNAL_SERVER_ERROR, {
         status: StatusCodes.INTERNAL_SERVER_ERROR,

@@ -3,6 +3,8 @@
 import React, { useEffect, useState } from 'react'
 import { Flex } from '@radix-ui/themes'
 import GoalsManager from 'components/goals/goals-manager'
+import DisabledResyncIcon from 'components/icons/DisabledResyncIcon'
+import EnabledResyncIcon from 'components/icons/EnabledResyncIcon'
 import ProjectSourceSyncStatus from 'components/project-status/project-source-sync-status'
 import ProjectStatusCard from 'components/project-status/project-status-card'
 import SaraLoading from 'components/sara-loading'
@@ -21,8 +23,6 @@ import {
   type ProjectHealth,
 } from './../../../../../lib/data-model-types'
 import { useAppContext } from './../../../../../lib/hooks/app-context'
-import EnabledResyncIcon from 'components/icons/EnabledResyncIcon'
-import DisabledResyncIcon from 'components/icons/DisabledResyncIcon'
 
 const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
   const session = useSession()
@@ -190,49 +190,49 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
             ) && (
               <Flex>
                 <div className="mr-2">
-                    <ProjectSourceSyncStatus
+                  <ProjectSourceSyncStatus
                     health={health}
                     projectResources={[]}
-                    />
+                  />
                 </div>
                 <Button
-              variant="ghost"
-              className="hover:bg-red-200"
-              onClick={async (e) => {
-                e.preventDefault()
+                  variant="ghost"
+                  className="hover:bg-red-200"
+                  onClick={async (e) => {
+                    e.preventDefault()
 
-                setRediscoverButtonEnabled(false)
+                    setRediscoverButtonEnabled(false)
 
-                if (!activeBillingOrg || !saraSession) {
-                  console.error(
-                    `${project.id} Missing required billing and user information.`,
-                  )
-                  return
-                }
+                    if (!activeBillingOrg || !saraSession) {
+                      console.error(
+                        `${project.id} Missing required billing and user information.`,
+                      )
+                      return
+                    }
 
-                try {
-                  await rediscoverProject(
-                    activeBillingOrg.id,
-                    project.id,
-                    saraSession.email,
-                  )
-                } catch (err) {
-                  console.error(
-                    `${activeBillingOrg.id} ${saraSession.email} ${project.id} Caught error when trying to rediscover a project: ${err}`,
-                  )
-                }
-              }}
-            >
-              <Flex gap="2">
-                {rediscoverButtonEnabled ? (
-                  <EnabledResyncIcon />
-                ) : (
-                  <DisabledResyncIcon />
-                )}
-                {rediscoverButtonEnabled ? 'Resync Source' : 'Synchronized'}
+                    try {
+                      await rediscoverProject(
+                        activeBillingOrg.id,
+                        project.id,
+                        saraSession.email,
+                      )
+                    } catch (err) {
+                      console.error(
+                        `${activeBillingOrg.id} ${saraSession.email} ${project.id} Caught error when trying to rediscover a project: ${err}`,
+                      )
+                    }
+                  }}
+                >
+                  <Flex gap="2">
+                    {rediscoverButtonEnabled ? (
+                      <EnabledResyncIcon />
+                    ) : (
+                      <DisabledResyncIcon />
+                    )}
+                    {rediscoverButtonEnabled ? 'Resync Source' : 'Synchronized'}
+                  </Flex>
+                </Button>
               </Flex>
-            </Button>
-            </Flex>
             )}
           </Flex>
         </div>

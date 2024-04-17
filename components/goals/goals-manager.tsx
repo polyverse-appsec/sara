@@ -37,7 +37,12 @@ const GoalsManager = ({ projectId, goals }: GoalsManagerProps) => {
   }
 
   return (
-    <Flex direction="column" gapY="3" className="grow overflow-autos" style={{ minHeight: '50vh' }}>
+    <Flex
+      direction="column"
+      gapY="3"
+      className="grow overflow-autos"
+      style={{ minHeight: '50vh' }}
+    >
       <Flex justify="between">
         <Heading as="h3" weight="medium">
           Goals

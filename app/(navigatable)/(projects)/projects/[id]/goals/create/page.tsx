@@ -6,7 +6,10 @@ import Joi from 'joi'
 import { type Goal, type Project } from 'lib/data-model-types'
 import toast from 'react-hot-toast'
 
-import { createResource, getResource } from './../../../../../../../app/saraClient'
+import {
+  createResource,
+  getResource,
+} from './../../../../../../../app/saraClient'
 import RenderableResource from './../../../../../../../components/renderable-resource/renderable-resource'
 import RenderableResourceContent from './../../../../../../../components/renderable-resource/renderable-resource-content'
 import { Button } from './../../../../../../../components/ui/button'
@@ -23,7 +26,7 @@ const ProjectGoalCreate = ({ params: { id } }: { params: { id: string } }) => {
   const [displayRequiredText, setDisplayRequiredText] = useState(false)
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       try {
         const project = await getResource<Project>(
           `/projects/${id}`,
@@ -50,9 +53,12 @@ const ProjectGoalCreate = ({ params: { id } }: { params: { id: string } }) => {
 
   // Validate input data
   const validate = () => {
-    const { error } = schema.validate({ name, description, acceptanceCriteria }, { abortEarly: false })
+    const { error } = schema.validate(
+      { name, description, acceptanceCriteria },
+      { abortEarly: false },
+    )
     if (error) {
-      error.details.forEach(detail => {
+      error.details.forEach((detail) => {
         toast.error(detail.message)
       })
       return false
@@ -92,7 +98,7 @@ const ProjectGoalCreate = ({ params: { id } }: { params: { id: string } }) => {
   return (
     <RenderableResource>
       <RenderableResourceContent>
-      <div className="text-base my-1">
+        <div className="text-base my-1">
           <p>
             Create a new high-level Goal for your Software Project that Sara
             will help you complete.
@@ -149,8 +155,7 @@ const ProjectGoalCreate = ({ params: { id } }: { params: { id: string } }) => {
           <Button
             variant="ghost"
             className={`${
-              isButtonDisabled ||
-              !name
+              isButtonDisabled || !name
                 ? 'bg-gray-500 hover:cursor-not-allowed'
                 : 'btn-blue hover:bg-blue-700 hover:text-white'
             } transition duration-300`}
@@ -170,9 +175,7 @@ const ProjectGoalCreate = ({ params: { id } }: { params: { id: string } }) => {
 
               setIsButtonDisabled(false)
             }}
-            disabled={
-              isButtonDisabled
-            }
+            disabled={isButtonDisabled}
           >
             {!isButtonDisabled ? null : (
               <svg

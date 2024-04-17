@@ -6,6 +6,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { CaretDownIcon } from '@radix-ui/react-icons'
+import { Badge, Button, TextArea } from '@radix-ui/themes'
+import { createResourceNoResponseBody } from 'app/saraClient'
 import {
   preReleaseServiceDisclaimer,
   saraProductDescription,
@@ -22,8 +24,6 @@ import goalsExplorerImage from './../../public/goalsexplorer.png'
 import guidelinesImage from './../../public/guidelines.png'
 import PolyverseLogo from './../../public/Polyverse logo medium.jpg'
 import SaraPortrait from './../../public/Sara_Cartoon_Portrait.png'
-import { Badge, Button, TextArea } from '@radix-ui/themes'
-import { createResourceNoResponseBody } from 'app/saraClient'
 
 interface CarouselItem {
   image: StaticImageData
@@ -88,16 +88,17 @@ const CarouselSignIn = () => {
   const router = useRouter()
   const [color, setColor] = useState(false)
 
-  const [ email, setEmail ] = useState('')
-  const [ emailSubmitButtonOpen, setEmailSubmitButtonOpen ] = useState(true)
-  const [ displayEmailEntrySuccess, setDisplayEmailEntrySuccess ] = useState(false)
+  const [email, setEmail] = useState('')
+  const [emailSubmitButtonOpen, setEmailSubmitButtonOpen] = useState(true)
+  const [displayEmailEntrySuccess, setDisplayEmailEntrySuccess] =
+    useState(false)
 
   const displayEmailEntrySuccessMessage = () => {
-    setDisplayEmailEntrySuccess(true);
-  
+    setDisplayEmailEntrySuccess(true)
+
     setTimeout(() => {
-      setDisplayEmailEntrySuccess(false);
-    }, 5000);  
+      setDisplayEmailEntrySuccess(false)
+    }, 5000)
   }
 
   useEffect(() => {
@@ -374,27 +375,27 @@ const CarouselSignIn = () => {
         </h2>
         <div className="w-1/2 border-t-2 border-blue-600 my-2"></div>
         <form
-            className="mt-16"
-            onSubmit={async (e) => {
-              const reqBody = {
-                email,
-              }
-  
-              createResourceNoResponseBody(`/waitlist`, reqBody)
-                .then(() => {
-                  setEmailSubmitButtonOpen(false)
-                  setEmail('')
-                  displayEmailEntrySuccessMessage()
-                  console.log(`SUCCESSFULLY SET THE EMAIL IN CLIENT CODE`)
-                })
-                .catch(() => {
-                  setEmailSubmitButtonOpen(false)
-                  setEmail('')
-                })
-              e.preventDefault()
-            }}
-          >
-            <div className="flex items-center">
+          className="mt-16"
+          onSubmit={async (e) => {
+            const reqBody = {
+              email,
+            }
+
+            createResourceNoResponseBody(`/waitlist`, reqBody)
+              .then(() => {
+                setEmailSubmitButtonOpen(false)
+                setEmail('')
+                displayEmailEntrySuccessMessage()
+                console.log(`SUCCESSFULLY SET THE EMAIL IN CLIENT CODE`)
+              })
+              .catch(() => {
+                setEmailSubmitButtonOpen(false)
+                setEmail('')
+              })
+            e.preventDefault()
+          }}
+        >
+          <div className="flex items-center">
             <>
               <div className="flex flex-col pr-16">
                 <TextArea
@@ -404,15 +405,19 @@ const CarouselSignIn = () => {
                 />
               </div>
             </>
-              <button
-                type="submit"
-                className="p-1 bg-blue-500 hover:bg-blue-700 rounded-lg"
-                disabled={!emailSubmitButtonOpen}
-              >Submit</button>
+            <button
+              type="submit"
+              className="p-1 bg-blue-500 hover:bg-blue-700 rounded-lg"
+              disabled={!emailSubmitButtonOpen}
+            >
+              Submit
+            </button>
           </div>
         </form>
         {displayEmailEntrySuccess && (
-          <div className="px-3 py-2 bg-green-200 text-green-500 rounded-lg">SUBMITTED EMAIL</div>
+          <div className="px-3 py-2 bg-green-200 text-green-500 rounded-lg">
+            SUBMITTED EMAIL
+          </div>
         )}
       </div>
       <div

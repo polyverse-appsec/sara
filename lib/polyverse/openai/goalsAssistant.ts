@@ -8,7 +8,7 @@ import createTask from './../../../lib/polyverse/db/create-task'
 import getGoal from './../../../lib/polyverse/db/get-goal'
 import updateGoal from './../../../lib/polyverse/db/update-goal'
 import { createBaseSaraObject } from './../../../lib/polyverse/db/utils'
-import { aispecId, projectsourceId, blueprintId } from './utils'
+import { aispecId, blueprintId, projectsourceId } from './utils'
 
 const oaiClient = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -414,9 +414,7 @@ export const getChatQueryResponseFromThread = async (
   // bad. We won't properly render chats (they will appear blank) and we will
   // stop querying for updated future chats.
   if (chatQueryResponse.length === 0) {
-    throw new Error(
-      `Chat query with an ID of '${chatQueryId}' is empty`,
-    )
+    throw new Error(`Chat query with an ID of '${chatQueryId}' is empty`)
   }
 
   return chatQueryResponse

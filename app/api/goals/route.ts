@@ -74,9 +74,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
 
     // Prep details from the request for our goal that we will write to the K/V
     const name = reqBody.name.trim()
-    const description = reqBody.description
-      ? reqBody.description.trim()
-      : null
+    const description = reqBody.description ? reqBody.description.trim() : null
     const acceptanceCriteria = reqBody.acceptanceCriteria
       ? reqBody.acceptanceCriteria.trim()
       : null

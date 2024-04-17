@@ -132,7 +132,11 @@ const renderGoalOrTaskNode = ({
         <span>
           {node.data.type === 'GOAL' ? renderGoalIcon() : renderTaskIcon()}
         </span>
-        <span className={node.data.type === 'GOAL' ? 'hover:text-orange-500' : ''}>{renderNodeName(node.data)}</span>
+        <span
+          className={node.data.type === 'GOAL' ? 'hover:text-orange-500' : ''}
+        >
+          {renderNodeName(node.data)}
+        </span>
       </div>
     </div>
   )

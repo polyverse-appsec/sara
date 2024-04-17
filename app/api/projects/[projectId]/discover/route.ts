@@ -1,13 +1,12 @@
 import { ReasonPhrases, StatusCodes } from 'http-status-codes'
-
-import { auth } from '../../../../../auth'
 import { NextAuthRequest } from 'next-auth/lib'
 
+import { auth } from '../../../../../auth'
+import authz from './../../../../../app/api/authz'
 import { rediscoverProject } from './../../../../../lib/polyverse/backend/backend'
+import getOrg from './../../../../../lib/polyverse/db/get-org'
 import getProject from './../../../../../lib/polyverse/db/get-project'
 import getUser from './../../../../../lib/polyverse/db/get-user'
-import getOrg from './../../../../../lib/polyverse/db/get-org'
-import authz from './../../../../../app/api/authz'
 
 export const maxDuration = 30
 
@@ -39,19 +38,22 @@ export const POST = auth(async (req: NextAuthRequest) => {
       authz.orgListedOnUser(user, org.id)
       authz.userListedOnProject(project, userId)
     } catch (error) {
-        return new Response(ReasonPhrases.FORBIDDEN, {
-            status: StatusCodes.FORBIDDEN,
-          })
+      return new Response(ReasonPhrases.FORBIDDEN, {
+        status: StatusCodes.FORBIDDEN,
+      })
     }
 
     // Call the rediscoverProject function
     await rediscoverProject(org.id, project.id, userEmail)
 
     return new Response('Project rediscovery initiated successfully.', {
-        status: StatusCodes.OK,
-        })
-  } catch (err : any) {
-    console.error(`${userEmail} ${projectId} Caught error when trying to rediscover a project: `, err.stack || err)
+      status: StatusCodes.OK,
+    })
+  } catch (err: any) {
+    console.error(
+      `${userEmail} ${projectId} Caught error when trying to rediscover a project: `,
+      err.stack || err,
+    )
     return new Response('Failed to initiate project rediscovery.', {
       status: StatusCodes.INTERNAL_SERVER_ERROR,
     })

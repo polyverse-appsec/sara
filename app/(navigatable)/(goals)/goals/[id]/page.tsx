@@ -17,7 +17,11 @@ import {
 } from './../../../../../lib/data-model-types'
 
 const GoalIndex = ({ params: { id } }: { params: { id: string } }) => {
-  const { setProjectIdForConfiguration, setActiveGoalId, activeWorkspaceDetails } = useAppContext()
+  const {
+    setProjectIdForConfiguration,
+    setActiveGoalId,
+    activeWorkspaceDetails,
+  } = useAppContext()
 
   const [goal, setGoal] = useState<Goal | null>(null)
   const [health, setHealth] = useState<ProjectHealth | null>(null)
@@ -43,7 +47,6 @@ const GoalIndex = ({ params: { id } }: { params: { id: string } }) => {
         `Failed to get a success response when fetching parent project for goal '${id}'`,
       )
       setProjectIdForConfiguration(project.id)
-
     })()
   }, [id, setProjectIdForConfiguration])
 

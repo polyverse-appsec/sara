@@ -11,7 +11,7 @@ import { BoostProjectStatusState } from '../backend/types/BoostProjectStatus'
 import { usFormatter } from '../backend/utils/log'
 import { isRecord } from '../typescript/helpers'
 import { OPENAI_MODEL } from './constants'
-import { blueprintId, projectsourceId, aispecId } from './utils'
+import { aispecId, blueprintId, projectsourceId } from './utils'
 
 export const ASSISTANT_METADATA_CREATOR = 'sara.frontend'
 

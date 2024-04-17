@@ -189,7 +189,11 @@ const SaraChat = <T extends Chatable>({
       <div className={cn('pb-[200px] pt-4')}>
         {chatQueries && chatQueries.length ? (
           <>
-            <SaraChatList chatId={chatId} chatQueries={chatQueries} saraSession={saraSession} />
+            <SaraChatList
+              chatId={chatId}
+              chatQueries={chatQueries}
+              saraSession={saraSession}
+            />
             <ChatScrollAnchor trackVisibility={false} />
           </>
         ) : null}

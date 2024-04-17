@@ -1,5 +1,6 @@
 'use client'
 
+import { updateResource } from 'app/saraClient'
 import { SaraSession } from 'auth'
 import SaraLoading from 'components/sara-loading'
 import { IconRefresh } from 'components/ui/icons'
@@ -7,7 +8,6 @@ import { IconRefresh } from 'components/ui/icons'
 import { ChatQuery } from './../../lib/data-model-types'
 import { Separator } from './../ui/separator'
 import SaraChatQueryContent from './sara-chat-query-content'
-import { updateResource } from 'app/saraClient'
 
 export interface SaraChatListProps {
   chatId: string | undefined
@@ -18,7 +18,11 @@ export interface SaraChatListProps {
 const buildChatQueryUrl = (chatId: string, chatQueryId: string) =>
   `/api/chats/${chatId}/chat-queries/${chatQueryId}`
 
-const SaraChatList = ({ chatId, chatQueries, saraSession }: SaraChatListProps) => {
+const SaraChatList = ({
+  chatId,
+  chatQueries,
+  saraSession,
+}: SaraChatListProps) => {
   if (!chatQueries.length) {
     return null
   }
@@ -60,26 +64,30 @@ const SaraChatList = ({ chatId, chatQueries, saraSession }: SaraChatListProps) =
                       : undefined
                   }
                 />
-                {(index == chatQueries.length - 1) && (
-                  <button 
+                {index == chatQueries.length - 1 && (
+                  <button
                     className="flex items-center p-2 border-2 border-invisible hover:border-grey text-sm leading-5 font-medium rounded-md text-grey mb-2"
                     onClick={async (e) => {
-                      const chatQueryUrl = buildChatQueryUrl(chatId!, chatQuery.id)
+                      const chatQueryUrl = buildChatQueryUrl(
+                        chatId!,
+                        chatQuery.id,
+                      )
                       const patchReqBody = {
                         status: 'QUERY_RECEIVED',
                       }
 
-                      const resubmittedChatQuery = await updateResource<ChatQuery>(
-                        chatQueryUrl,
-                        patchReqBody,
-                        `Failed to re-submit chat query '${chatQuery.id}' when in an 'ERROR' state`,
-                      )
+                      const resubmittedChatQuery =
+                        await updateResource<ChatQuery>(
+                          chatQueryUrl,
+                          patchReqBody,
+                          `Failed to re-submit chat query '${chatQuery.id}' when in an 'ERROR' state`,
+                        )
 
                       chatQueries[chatQueries.length - 1] = resubmittedChatQuery
                     }}
-                    >
-                      <IconRefresh className="mr-2" />
-                      <p>Regenerate response</p>
+                  >
+                    <IconRefresh className="mr-2" />
+                    <p>Regenerate response</p>
                   </button>
                 )}
               </div>
