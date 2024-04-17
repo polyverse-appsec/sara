@@ -648,6 +648,15 @@ export const GET = auth(async (req: NextAuthRequest) => {
 
       await updateChatQuery(tailChatQuery)
 
+      const logContext: SaraLogContext = {
+        user,
+        org,
+        project,
+        error
+      }
+
+      logger.errorWithContext(`Failed to get chat query response from thread`, logContext)
+
       return new Response(ReasonPhrases.INTERNAL_SERVER_ERROR, {
         status: StatusCodes.INTERNAL_SERVER_ERROR,
       })
@@ -675,9 +684,11 @@ export const GET = auth(async (req: NextAuthRequest) => {
       status: StatusCodes.OK,
     })
   } catch (error) {
-    console.error(
-      `Failed fetching chat queries for '${auth.user.email}' because: ${error}`,
-    )
+    const logContext: SaraLogContext = {
+      error
+    }
+
+    logger.errorWithContext(`Failed fetching chat queries for '${auth.user.email}'`, logContext)
 
     return new Response('Failed to fetch chat queries', {
       status: StatusCodes.INTERNAL_SERVER_ERROR,
