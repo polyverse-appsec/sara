@@ -474,7 +474,8 @@ export const GET = auth(async (req: NextAuthRequest) => {
 
     const tailChatQuery = await getChatQuery(chat.tailChatQueryId)
 
-    // TODO: Consider what I want the DX to be if the chat query is in an 'ERROR' status
+    // If we aren't in the `QUERY_SUBMITTED` state then we don't need to try to
+    // query for any responses
     if (tailChatQuery.status !== 'QUERY_SUBMITTED') {
       // This REST API doesn't support paging yet but we are returning results
       // like we do. Something for us to build on.

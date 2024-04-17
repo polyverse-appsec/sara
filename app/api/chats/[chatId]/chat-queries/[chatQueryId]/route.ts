@@ -175,7 +175,6 @@ export const PATCH = auth(async (req: NextAuthRequest) => {
 
     // Handle the logic to transition a chat query to the `CANCELLED` state
     if (reqBody.status === 'CANCELLED' && !chat.openAiThreadRunId) {
-        // TODO: Need to handle this logic in our handler that gets the chats
         // Just return here since we haven't actually started the thread run yet
         chatQuery.status = 'CANCELLED'
         await updateChatQuery(chatQuery)
@@ -186,7 +185,6 @@ export const PATCH = auth(async (req: NextAuthRequest) => {
     }
 
     if (reqBody.status === 'CANCELLED' && chat.openAiThreadRunId) {
-        // TODO: Need to handle this logic in our handler that gets the chats
         await cancelThreadRunForProjectGoalChatting(chat.openAiThreadId, chat.openAiThreadRunId)
 
         chatQuery.status = 'CANCELLED'
