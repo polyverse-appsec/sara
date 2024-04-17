@@ -99,6 +99,14 @@ const OrgIndex = ({ params: { id } }: { params: { id: string } }) => {
         </div>
       ) : (
         <div className="bg-background shadow-md rounded-lg p-6 my-10">
+           { /* FreePlanEnabled feature flag is OFF*/}
+{/*
+          <h3 className="text-lg font-semibold text-center">
+            Your Account has no current subscription. Please activate Premium Plan
+            to enable Sara, Project Creation, and Goals/Task Analysis.
+          </h3>
+*/}
+          { /* FreePlanEnabled feature flag is ON*/}
           <h3 className="text-lg font-semibold text-center">
             Your Account is currently a Free Subscription with supported
             features noted below.
@@ -114,6 +122,7 @@ const OrgIndex = ({ params: { id } }: { params: { id: string } }) => {
                 : 'bg-background shadow-md rounded-lg p-6 border mb-4'
             }
           >
+            { /* FreePlanEnabled feature flag is ON*/}
             <div className="flex flex-col items-start">
               <p>Free Plan</p>
               <p>✅ Project creation to analyze GitHub repositories</p>

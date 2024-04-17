@@ -12,7 +12,7 @@ const HeaderCallouts = () => {
   const session = useSession()
   const saraSession = session.data ? (session.data as SaraSession) : null
 
-  const isProduction = process.env.SARA_STAGE?.toLowerCase() === 'prod'
+  const isProduction = process.env.NEXT_PUBLIC_SARA_STAGE?.toLowerCase() === 'prod'
 
   // DeploymentStageCallout only appears when not in production
   const deploymentStageClassname = 'top-0 w-full h-[32px]'
