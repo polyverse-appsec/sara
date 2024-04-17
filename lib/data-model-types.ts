@@ -151,7 +151,7 @@ export interface Goal extends Chatable {
   orgId: string
 
   name: string
-  description: string | undefined
+  description: string | null
 
   // Consider this as an extension or additional instructions to the
   // description which can be used to determine what needs to be done to

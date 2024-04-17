@@ -190,7 +190,7 @@ export const PATCH = auth(async (req: NextAuthRequest) => {
     // Now start a run on the thread for the query we just added
     const threadRun = await createThreadRunForProjectGoalChatting(
       goal.name,
-      goal.description,
+      goal.description === null ? undefined : goal.description,
       assistant.id,
       chat.openAiThreadId,
     )

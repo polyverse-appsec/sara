@@ -315,7 +315,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
     // Now start a run on the thread we just created with our assistant
     const threadRun = await createThreadRunForProjectGoalChatting(
       goal.name,
-      goal.description,
+      (goal.description === null)?undefined:goal.description,
       assistant.id,
       chat.openAiThreadId,
     )

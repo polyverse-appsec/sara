@@ -57,14 +57,6 @@ export const POST = auth(async (req: NextAuthRequest) => {
       })
     }
 
-    // Crucial to helping Sara contextualize the goal (i.e. used for prompt
-    // engineering)
-    if (!reqBody.description || reqBody.description.trim().length === 0) {
-      return new Response(`Request body is missing 'description'`, {
-        status: StatusCodes.BAD_REQUEST,
-      })
-    }
-
     // AuthZ: Check that the user has access to the org
     const org = await getOrg(reqBody.orgId)
     const user = await getUser(auth.user.email)
@@ -82,7 +74,9 @@ export const POST = auth(async (req: NextAuthRequest) => {
 
     // Prep details from the request for our goal that we will write to the K/V
     const name = reqBody.name.trim()
-    const description = reqBody.description.trim()
+    const description = reqBody.description
+      ? reqBody.description.trim()
+      : null
     const acceptanceCriteria = reqBody.acceptanceCriteria
       ? reqBody.acceptanceCriteria.trim()
       : null
