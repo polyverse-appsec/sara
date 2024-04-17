@@ -15,6 +15,7 @@
 - Add email updates entry in sign in page
 - goals in navbar now show when they are hovered on
 - goals will reload correctly in goals/tasks explorer on goals page refresh
+- Add regenerate response feature for last chat query in a thread
 
 ### Bug Fixes
 

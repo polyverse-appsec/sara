@@ -104,8 +104,8 @@ export const PATCH = auth(async (req: NextAuthRequest) => {
     }
 
     // Currently we only allow modifying the status of a chat query out of the
-    // `ERROR` terminal state.
-    if (chatQuery.status !== 'ERROR') {
+    // `ERROR` terminal state and "RESPONSE_RECEIVED' state
+    if (chatQuery.status === 'QUERY_RECEIVED') {
       return new Response(`Requested chat query isn't in an 'ERROR'`, {
         status: StatusCodes.BAD_REQUEST,
       })
