@@ -281,8 +281,9 @@ export const PATCH = auth(async (req: NextAuthRequest) => {
 
     // Make sure to capture details about the processing prompt used when Sara
     // answers this question and mark our chat query as submitted
-    chatQuery.processingPrompt = threadRun.instructions
     chatQuery.status = 'QUERY_SUBMITTED'
+    chatQuery.querySubmittedAt = new Date()
+    chatQuery.processingPrompt = threadRun.instructions
 
     // Blank the existing response if there was one
     chatQuery.response = null
