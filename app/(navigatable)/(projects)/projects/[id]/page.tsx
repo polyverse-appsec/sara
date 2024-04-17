@@ -186,14 +186,14 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
               'ProjectSourceSyncStatus',
               saraSession?.email,
             ) && (
-              <div className="mr-2">
-                <ProjectSourceSyncStatus
-                  health={health}
-                  projectResources={[]}
-                />
-              </div>
-            )}
-            <Button
+              <Flex>
+                <div className="mr-2">
+                    <ProjectSourceSyncStatus
+                    health={health}
+                    projectResources={[]}
+                    />
+                </div>
+                <Button
               variant="ghost"
               className="hover:bg-red-200"
               onClick={async (e) => {
@@ -258,6 +258,8 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
                 {rediscoverButtonEnabled ? 'Resync Source' : 'Synchronized'}
               </Flex>
             </Button>
+            </Flex>
+            )}
           </Flex>
         </div>
       </RenderableResourceContent>
