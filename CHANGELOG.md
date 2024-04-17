@@ -24,7 +24,9 @@
 
 ### Enhancements
 
-- N/A
+- Navbar styling enhancements
+- Fix for chats overflow outside of their boxes
+- Added back to billing orgs button from the /orgs/id pages
 
 ### Bug Fixes
 

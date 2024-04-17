@@ -42,7 +42,8 @@ const SaraChatList = ({
             />
             <br></br>
             {chatQuery.response ? (
-              <div className="flex flex-col items-center">
+              // overflow auto for now, but need to figure out how to wrap this response text properly
+              <div className="flex flex-col items-start overflow-auto">
                 <SaraChatQueryContent
                   content={chatQuery.response}
                   contentType="RESPONSE"
@@ -62,17 +63,19 @@ const SaraChatList = ({
                   }
                 />
                 {index == chatQueries.length - 1 && (
-                  <button
-                    className="flex items-center p-2 border-2 border-invisible hover:border-grey text-sm leading-5 font-medium rounded-md text-grey mb-2"
-                    onClick={() => {
-                      if (handleResubmitChatQuery) {
-                        handleResubmitChatQuery(chatQuery.id)
-                      }
-                    }}
-                  >
-                    <IconRefresh className="mr-2" />
-                    <p>Regenerate response</p>
-                  </button>
+                  <div className="w-full flex items-center justify-center">
+                    <button
+                      className="flex items-center p-2 border-2 border-invisible hover:border-black text-sm leading-5 font-medium rounded-md text-grey"
+                      onClick={() => {
+                        if (handleResubmitChatQuery) {
+                          handleResubmitChatQuery(chatQuery.id)
+                        }
+                      }}
+                    >
+                      <IconRefresh className="mr-2" />
+                      <p>Regenerate response</p>
+                    </button>
+                  </div>
                 )}
               </div>
             ) : (

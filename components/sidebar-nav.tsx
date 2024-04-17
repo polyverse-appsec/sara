@@ -55,7 +55,7 @@ const SidebarNav = () => {
   >(undefined)
   const [loadingBillingOrg, setLoadingBillingOrg] = useState<boolean>(true)
 
-  const [width, setWidth] = useState(235)
+  const [width, setWidth] = useState(240)
   const [mouseDown, setMouseDown] = useState(false)
 
   const dragRef = useRef(null)
@@ -131,12 +131,12 @@ const SidebarNav = () => {
   // sticky headers that are positioned in the component <HeaderCallouts>. For
   // more details around sizing see <HeaderCallouts>.
   const topDivClassname = saraSession
-    ? 'sticky top-112 overflow-auto'
-    : 'sticky top-96 overflow-auto'
+    ? 'sticky top-112 overflow-hidden'
+    : 'sticky top-96 overflow-hidden'
 
   const draggableDivClassname = saraSession
-    ? 'flex flex-col h-[calc(100vh-112px)] bg-white dark:bg-black transition duration-200 ease-in-out'
-    : 'flex flex-col h-[calc(100vh-96px)] bg-white dark:bg-black transition duration-200 ease-in-out'
+    ? 'flex flex-col h-[calc(100vh-112px)] bg-white dark:bg-black transition duration-200 ease-in-out border-r-2 border-orange-500'
+    : 'flex flex-col h-[calc(100vh-96px)] bg-white dark:bg-black transition duration-200 ease-in-out border-r-2 border-orange-500'
 
   const allDataLoaded =
     orgIsPremium !== undefined && userGitHubAppInstalled !== undefined
@@ -202,7 +202,7 @@ const SidebarNav = () => {
         </nav>
 
         <Flex direction="column" align="center">
-          <div className="w-1/2 border-t-2 rounded-xl border-blue-600 mb-2"></div>
+          <div className="w-1/2 border-t rounded-xl border-blue-600 mb-2"></div>
         </Flex>
         <HoverCard.Root>
           <HoverCard.Trigger>
@@ -273,7 +273,7 @@ const SidebarNav = () => {
                 Goals & Tasks Explorer
               </p>
               <Flex direction="column" align="center">
-                <div className="w-1/2 border-t-2 rounded-xl border-blue-600 my-2"></div>
+                <div className="w-1/2 border-t rounded-xl border-blue-600 my-2"></div>
               </Flex>
               <Text size="2" className="text-center italic text-gray-500">
                 None
@@ -283,8 +283,8 @@ const SidebarNav = () => {
         </div>
 
         {/* Bottom Section */}
-        <div className="w-3/4 mx-auto border-t-4 rounded-xl border-blue-600 mt-2"></div>
-        <div className="flex flex-col items-center sticky bottom-0 z-10 w-full p-2 bg-orange-200">
+        <div className="w-full mx-auto border-t rounded-xl border-blue-600 mt-2"></div>
+        <div className="flex flex-col items-center sticky bottom-0 z-10 w-full p-2">
           <div className="flex items-center">
             {/* Github User Info */}
             {!saraSession ? (
@@ -374,10 +374,11 @@ const SidebarNav = () => {
             onMouseDown={handleMouseDown}
           ></div>
         ) : (
-          <div
+          /*<div
             className="absolute top-0 right-0 h-full w-1 bg-orange-500"
             style={{ zIndex: 1000 }}
-          ></div>
+          ></div>*/
+          null
         )}
       </div>
     </div>

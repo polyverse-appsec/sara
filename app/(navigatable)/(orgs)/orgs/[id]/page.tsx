@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { StarFilledIcon } from '@radix-ui/react-icons'
-import { Badge } from '@radix-ui/themes'
+import { ArrowLeftIcon, StarFilledIcon } from '@radix-ui/react-icons'
+import { Badge, Flex } from '@radix-ui/themes'
 import { getOrgUserStatus } from 'app/react-utils'
 import { SaraSession } from 'auth'
 import RenderableResourceContent from 'components/renderable-resource/renderable-resource-content'
@@ -62,6 +62,16 @@ const OrgIndex = ({ params: { id } }: { params: { id: string } }) => {
 
   return (
     <div className="flex-1 flex-col gap-4 p-10 text-2xl font-bold">
+      <div className="text-left mb-2">
+        <button className="btn-blue text-sm">
+          <Link href="/orgs">
+            <Flex align="center">
+              <ArrowLeftIcon className="mr-2" />
+              Back to Billing Contexts
+            </Flex>
+          </Link>
+        </button>
+      </div>
       <RenderableResourceContent>
         <div className="flex flex-col items-center">
           <h3>Current Billing Context</h3>

@@ -16,6 +16,7 @@ import { Button } from './../../../../../components/ui/button'
 import { type GitHubOrg, type Org } from './../../../../../lib/data-model-types'
 import { useAppContext } from './../../../../../lib/hooks/app-context'
 import BusinessBillingContextCreator from './business-billing-context-creator'
+import RenderableResourceContent from 'components/renderable-resource/renderable-resource-content'
 
 const getBillingOrgs = async (): Promise<Org[]> => {
   const res = await fetch('/api/orgs')
@@ -91,7 +92,7 @@ const OrgCreate = () => {
     <div>
       {!selectedBusinessBilling && (
         <div className="flex flex-col items-center">
-          <div className="bg-background shadow-md rounded-lg p-6 font-semibold text-base text-center m-2">
+          <RenderableResourceContent>
             <div className="text-left mb-2">
               <button className="btn-blue text-sm">
                 <Link href="/orgs">
@@ -102,7 +103,7 @@ const OrgCreate = () => {
                 </Link>
               </button>
             </div>
-            <h3 className="text-lg font-semibold">
+            <h3 className="text-lg text-center font-semibold">
               Select the type of Billing you would like to use.
             </h3>
             <p>
@@ -115,7 +116,7 @@ const OrgCreate = () => {
               and typically billed to your company. You can have multiple
               Business Billing Contexts.
             </p>
-          </div>
+          </RenderableResourceContent>
           <div className="flex justify-content mt-16">
             <div className="flex flex-col items-center">
               <Button
