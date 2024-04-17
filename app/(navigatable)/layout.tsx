@@ -12,6 +12,7 @@ import { useSession } from 'next-auth/react'
 
 import HeaderCallouts from './../../components/callouts/header-callouts'
 import SidebarNav from './../../components/sidebar-nav'
+import Link from 'next/link'
 
 interface NavigatableLayoutProps {
   children: React.ReactNode
@@ -37,16 +38,18 @@ const NavigatableLayout = ({ children }: NavigatableLayoutProps) => {
   if (waitlistEnabled && true === saraSession?.waitlisted) {
 
     const waitlistMessage =
-      `Sara appreciates your interest! She is currently at her maximum capacity for new users. You have been automatically added to the waitlist (${saraSession.email}). We will let you know as soon as she has capacity. Please contact sales@polyverse.com for any questions.`
+      `Sara appreciates your interest!  She is currently at her maximum capacity for new users.  Your email (${saraSession.email}) has been automatically added to the waitlist.  We will let you know as soon as she has capacity. Please contact sales@polyverse.com for any questions.`
 
     return (
         <Theme>
-          <Flex direction="column" height="h-screen">
-            <HeaderCallouts />
-            <div className="flex flex-1 overflow-hidden">
+            <Flex direction="column" style={{ minHeight: '100vh', width: '100vw' }}>
+              <HeaderCallouts />
+              <Flex className="flex flex-1 overflow-auto" style={{ width: '100%' }}>
+                <Link href="mailto:sales@polyverse.com" className="block transition hover:scale-105" style={{ width: '100%' }}>
                 <SaraLoading message={waitlistMessage} />
-            </div>
-          </Flex>
+                </Link>
+              </Flex>
+            </Flex>
         </Theme>
       )
     }
