@@ -163,6 +163,7 @@ export const PATCH = auth(async (req: NextAuthRequest) => {
           chatQuery,
         },
       }
+
       logger.errorWithContext(
         `Chat missing thread when modifying chat query`,
         logContext,
@@ -179,6 +180,18 @@ export const PATCH = auth(async (req: NextAuthRequest) => {
         chatQuery.status = 'CANCELLED'
         await updateChatQuery(chatQuery)
 
+        const logConext: SaraLogContext = {
+            user,
+            org,
+            project,
+            other: {
+                chat,
+                chatQuery
+            }
+        }
+
+        logger.infoWithContext(`'CANCELLED' chat query '${chatQuery.id}' that didn't have a thread run`, logConext)
+
         return new Response(ReasonPhrases.OK, {
             status: StatusCodes.OK,
         })
@@ -193,19 +206,24 @@ export const PATCH = auth(async (req: NextAuthRequest) => {
         chat.openAiThreadRunId = null
         await updateChat(chat)
 
+        const logConext: SaraLogContext = {
+            user,
+            org,
+            project,
+            other: {
+                chat,
+                chatQuery
+            }
+        }
+
+        logger.infoWithContext(`'CANCELLED' chat query '${chatQuery.id}'`, logConext)
+
         return new Response(ReasonPhrases.OK, {
             status: StatusCodes.OK,
         })
     }
 
     // Handle the logic to transition a chat query to the `QUERY_RECEIVED` state
-    chatQuery.response = null
-    chatQuery.status = 'QUERY_RECEIVED'
-
-    // Make sure to update the chat query here when it is in a 'QUERY_RECEIVED'
-    // state. Doing so allows us to retry the creation of the thread run below
-    // if for some reason we encounter an error along the way while doing so.
-    await updateChatQuery(chatQuery)
 
     // Find the Assistant and start a new thread run to re-run a chat query that
     // ended in the 'ERROR' state
@@ -265,7 +283,12 @@ export const PATCH = auth(async (req: NextAuthRequest) => {
     // answers this question and mark our chat query as submitted
     chatQuery.processingPrompt = threadRun.instructions
     chatQuery.status = 'QUERY_SUBMITTED'
+
+    // Blank the existing response if there was one
+    chatQuery.response = null
     await updateChatQuery(chatQuery)
+
+    logger.info(`'QUERY_SUBMITTED' for chat query '${chatQuery.id}'`)
 
     // Return the chat query we created to the user...
     return new Response(JSON.stringify(chatQuery), {

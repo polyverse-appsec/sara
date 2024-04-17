@@ -85,7 +85,7 @@ const cancelChatQuery = async (
 
 const FOUR_MINS_IN_MILLIS = 4 * 60 * 1000
 
-const querySubmissionExpired = (querySubmittedAt: Date) =>
+const querySubmissionExpired = (querySubmittedAt: Date): boolean =>
   new Date().getTime() - new Date(querySubmittedAt).getTime() >=
   FOUR_MINS_IN_MILLIS
 
@@ -302,6 +302,13 @@ const SaraChat = <T extends Chatable>({
               reqBody,
               'Failed to make new chat query',
             )
+
+            // To increase responsiveness immediately query for chat queries and
+            // render them. We will get updated ones in the future when our
+            // `useEffect` works
+            const updateChatQueries =
+              await getResource<ChatQuery[]>(chatQueriesUrl)
+            setChatQueries(updateChatQueries)
           } catch (error) {
             toast.error(`Failed to make chat query because: ${error}`)
           }
