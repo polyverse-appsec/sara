@@ -1,4 +1,4 @@
-import logger, { type SaraLogContext } from 'app/api/logger'
+import logger, { type SaraLogContext } from 'lib/logger'
 import { ReasonPhrases, StatusCodes } from 'http-status-codes'
 import Joi from 'joi'
 import createChatQuery from 'lib/polyverse/db/create-chat-query'

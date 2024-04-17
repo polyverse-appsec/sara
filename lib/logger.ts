@@ -1,6 +1,6 @@
 import pino from 'pino'
 
-import { Org, Project, User } from './../../lib/data-model-types'
+import { Org, Project, User } from './../lib/data-model-types'
 
 export interface SaraLogContext {
   user?: User

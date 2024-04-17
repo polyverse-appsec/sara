@@ -10,7 +10,7 @@ import { Session } from 'next-auth/types'
 import { updateBoostOrgUserStatus } from 'lib/polyverse/backend/backend'
 import getOrg from 'lib/polyverse/db/get-org'
 
-import logger, { type SaraLogContext } from './app/api/logger'
+import logger, { type SaraLogContext } from 'lib/logger'
 import { isPreviewFeatureEnabled } from 'lib/service-utils'
 
 export const {

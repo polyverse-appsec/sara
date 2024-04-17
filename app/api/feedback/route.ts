@@ -4,7 +4,7 @@ import { ReasonPhrases, StatusCodes } from 'http-status-codes'
 import getUser from 'lib/polyverse/db/get-user'
 import { NextAuthRequest } from 'next-auth/lib'
 
-import logger, { type SaraLogContext } from '../logger'
+import logger, { type SaraLogContext } from 'lib/logger'
 import {
   type Org,
   type Project,

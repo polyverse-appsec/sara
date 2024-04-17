@@ -1,4 +1,4 @@
-import logger from 'app/api/logger'
+import logger from 'lib/logger'
 import { ReasonPhrases, StatusCodes } from 'http-status-codes'
 import { NextAuthRequest } from 'next-auth/lib'
 
