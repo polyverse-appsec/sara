@@ -62,7 +62,7 @@ const SaraChatList = ({ chatId, chatQueries, saraSession }: SaraChatListProps) =
                 />
                 {(index == chatQueries.length - 1) && (
                   <button 
-                    className="flex items-center p-2 border-2 border-invisible hover:border-black text-sm leading-5 font-medium rounded-md text-black mb-2"
+                    className="flex items-center p-2 border-2 border-invisible hover:border-grey text-sm leading-5 font-medium rounded-md text-grey mb-2"
                     onClick={async (e) => {
                       const chatQueryUrl = buildChatQueryUrl(chatId!, chatQuery.id)
                       const patchReqBody = {
