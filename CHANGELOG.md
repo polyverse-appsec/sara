@@ -10,16 +10,14 @@
 
 ### Enhancements
 
-- Add REST API `PATCH /api/chats/[chatId]/chat-queries/[chatQueryId]`
-- Resubmit chat queries that end in an `ERROR` state automatically
-- Add email updates entry in sign in page
-- goals in navbar now show when they are hovered on
-- goals will reload correctly in goals/tasks explorer on goals page refresh
-- Add regenerate response feature for last chat query in a thread
+- Make Goal Description an optional field when creating a new Goal
+- Automatic retry of Chat requests that error out
+- Enable customers to subscribe to news and updates via email on the Sara login page
+- Highlight currently viewed Goal in the Navigation Bar
 
 ### Bug Fixes
 
-- N/A
+- Fix Goal rendering in Navigation Bar when viewing a Goal page
 
 ## Version 0.20.13: April 15th, 2024
 
@@ -29,8 +27,8 @@
 
 ### Enhancements
 
-- Improve nav bar UI
-- Add chat status card to last chat query in chat thread
+- Improve Navigation Bar UI
+- Show Chat Request Status next to latest Chat Response UI
 
 ### Bug Fixes
 

@@ -8,6 +8,7 @@ import createTask from './../../../lib/polyverse/db/create-task'
 import getGoal from './../../../lib/polyverse/db/get-goal'
 import updateGoal from './../../../lib/polyverse/db/update-goal'
 import { createBaseSaraObject } from './../../../lib/polyverse/db/utils'
+import { aispecId, projectsourceId, blueprintId } from './utils'
 
 const oaiClient = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -180,11 +181,15 @@ export const handleRequiresActionStatusForProjectGoalChatting = async (
 
 export const createOpenAIAssistantPromptForGoals = (
   goalName: string,
-  goalDescription: string,
+  goalDescription?: string,
   goalAcceptanceCriteria?: string,
 ): string => `
       You will be asked a question in the context of trying to accomplish the high-level project goal named ${goalName}.
-      The description of the goal named ${goalName} is as follows: ${goalDescription}
+      ${
+        goalDescription
+          ? 'The description of the goal is as follows: ' + goalDescription
+          : ''
+      }
       ${
         goalAcceptanceCriteria
           ? 'The acceptance criteria that needs to be satisfied to accomplish the goal is as follows: ' +
@@ -193,9 +198,10 @@ export const createOpenAIAssistantPromptForGoals = (
       }
 
       The answers you provide to asked questions ought to focus on trying to:
-      1. Provide knowledge around understanding the project goal named ${goalName}
+      1. Provide knowledge around understanding the Project goal named ${goalName}
       2. Remove any ambiguity around understanding the project goal named ${goalName}
       3. Identify individual work items that will be required to complete the project goal name ${goalName}
+      4. For each Task identified, please note the list of relative paths to Project source file paths from ${projectsourceId}
 
       Important: When asked a question that identifies invidiual work items required to complete the project goal named ${goalName} you should record the 
       individual work items in our database using the submitWorkItemsForGoal function provided to you. Each individual work item needs the following details:
@@ -239,7 +245,7 @@ export const createThreadForProjectGoalChatting = async (
 
 export const createThreadRunForProjectGoalChatting = async (
   goalName: string,
-  goalDescription: string,
+  goalDescription: string | undefined,
   assistantId: string,
   threadId: string,
 ): Promise<Run> => {

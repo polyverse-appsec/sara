@@ -37,7 +37,7 @@ const GoalsManager = ({ projectId, goals }: GoalsManagerProps) => {
   }
 
   return (
-    <Flex direction="column" gapY="3">
+    <Flex direction="column" gapY="3" className="grow">
       <Flex justify="between">
         <Heading as="h3" weight="medium">
           Goals

@@ -11,6 +11,7 @@ import { BoostProjectStatusState } from '../backend/types/BoostProjectStatus'
 import { usFormatter } from '../backend/utils/log'
 import { isRecord } from '../typescript/helpers'
 import { OPENAI_MODEL } from './constants'
+import { blueprintId, projectsourceId, aispecId } from './utils'
 
 export const ASSISTANT_METADATA_CREATOR = 'sara.frontend'
 
@@ -53,10 +54,6 @@ function getOpenAIAssistantInstructions(
     },
     new Map() as Map<PromptFileInfoTypeString, PromptFileInfo>,
   )
-
-  const blueprintId = `"Architectural Blueprint Summary"`
-  const aispecId = `"Code and Function Specifications"`
-  const projectsourceId = `"Project Source Code"`
 
   // This prompt was engineered to guide Sara on what she will be doing
   // overall when she is created as an OpenAI Assistant. When specific questions
