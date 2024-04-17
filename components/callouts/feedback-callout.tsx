@@ -130,7 +130,7 @@ const FeedbackCallout = () => {
   const saraSession = session.data ? (session.data as SaraSession) : null
 
   return (
-    <Callout.Root color="green">
+    <Callout.Root color="green" style={{ padding: '6px 12px' }}>
       <Callout.Text>
         <Flex as="span" align="center" gap="4">
           <ChatBubbleIcon />

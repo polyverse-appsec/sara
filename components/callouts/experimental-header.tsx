@@ -7,7 +7,7 @@ import { preReleaseServiceDisclaimer } from 'lib/productDescriptions'
 // Positioning and sizing should be done in the <HeaderCallouts> component
 const ExperimentalCallout = () => {
   return (
-    <Callout.Root color="amber">
+    <Callout.Root color="amber" style={{ padding: '6px 12px' }}>
       <Callout.Text>
         <Flex as="span" align="center" gap="4">
           <InfoCircledIcon />

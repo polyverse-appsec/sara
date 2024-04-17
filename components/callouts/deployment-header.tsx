@@ -1,7 +1,7 @@
 'use client'
 
 import { InfoCircledIcon } from '@radix-ui/react-icons'
-import { Callout, Flex, Link, Text } from '@radix-ui/themes'
+import { Callout, Flex, Text } from '@radix-ui/themes'
 
 // Set the URL_BASE to the appropriate value for the env variable SARA_STAGE or default to local
 export const deploymentStage =
@@ -14,7 +14,7 @@ export const deploymentStage =
 // Positioning and sizing should be done in the <HeaderCallouts> component
 const DeploymentStageCallout = () => {
   return (
-    <Callout.Root color="tomato">
+    <Callout.Root color="tomato" style={{ padding: '6px 12px' }}>
       <Callout.Text>
         <Flex as="span" align="center" gap="4">
           <InfoCircledIcon />

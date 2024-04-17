@@ -15,17 +15,17 @@ const HeaderCallouts = () => {
   const isProduction = process.env.SARA_STAGE?.toLowerCase() === 'prod'
 
   // DeploymentStageCallout only appears when not in production
-  const deploymentStageClassname = 'top-0 w-full h-[48px]'
+  const deploymentStageClassname = 'top-0 w-full h-[32px]'
 
   // ExperimentalCallout appears below the DeploymentStageCallout if it is rendered
   const experimentalClassname = isProduction
-    ? 'top-0 w-full h-[48px]'
-    : 'top-48 w-full h-[48px]'
+    ? 'top-0 w-full h-[32px]'
+    : 'top-32 w-full h-[32px]'
 
   // FeedbackCallout position and height depend on whether saraSession exists
   const feedbackClassname = saraSession
-    ? 'top-48 w-full h-[64px]'
-    : 'top-48 w-full h-[48px]'
+    ? 'top-32 w-full h-[40px]'
+    : 'top-32 w-full h-[32px]'
 
   // Callouts as headers need to be sticky so they stay in position as the
   // user scrolls.
