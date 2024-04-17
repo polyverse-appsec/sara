@@ -23,15 +23,19 @@ const ProjectGoalCreate = ({ params: { id } }: { params: { id: string } }) => {
   const [displayRequiredText, setDisplayRequiredText] = useState(false)
 
   useEffect(() => {
-    ;(async () => {
-      const project = await getResource<Project>(
-        `/projects/${id}`,
-        'Failed to load project details',
-      )
+    (async () => {
+      try {
+        const project = await getResource<Project>(
+          `/projects/${id}`,
+          'Failed to load project details',
+        )
+      } catch (error) {
+        console.error(`Failed to load project ${id} details because: ${error}`)
+      }
 
       setProject(project)
     })()
-  }, [id])
+  }, [id, project])
 
   if (!project) {
     return null
