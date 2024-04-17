@@ -7,7 +7,12 @@ import { useSession } from 'next-auth/react'
 import { toast } from 'react-hot-toast'
 
 import { ChatScrollAnchor } from '../chat-scroll-anchor'
-import { getResource, updateResource } from './../../app/saraClient'
+import {
+  createResource,
+  createResourceNoResponseBody,
+  getResource,
+  updateResource,
+} from './../../app/saraClient'
 import {
   type Chat,
   type Chatable,
@@ -39,50 +44,11 @@ const buildChat = async (
     ? `${chatableResourceUrl}chats`
     : `${chatableResourceUrl}/chats`
 
-  const postChatRes = await fetch(postChatUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(chatBody),
-  })
-
-  if (!postChatRes.ok) {
-    const resErrText = await postChatRes.text()
-    const errMsg = `Failed to build chat for resource '${chatableResourceUrl}' because: ${resErrText}`
-    console.debug(errMsg)
-    throw new Error(errMsg)
-  }
-
-  const chat = (await postChatRes.json()) as Chat
-
-  return chat
-}
-
-const submitQueryToExistingChat = async (
-  query: string,
-  prevChatQueryId: string,
-  chatQueriesUrl: string,
-) => {
-  const reqBody = {
-    prevChatQueryId,
-    query,
-  }
-
-  const postChatQueryRes = await fetch(`${chatQueriesUrl}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(reqBody),
-  })
-
-  if (!postChatQueryRes.ok) {
-    const resErrText = await postChatQueryRes.text()
-    const errMsg = `Failed to make new chat query: ${resErrText}`
-    console.debug(errMsg)
-    throw new Error(errMsg)
-  }
+  return await createResource<Chat>(
+    postChatUrl,
+    chatBody,
+    `Failed to build chat for '${chatableResourceUrl}'`,
+  )
 }
 
 const buildChatQueriesUrl = (chatableResourceUrl: string, chatId: string) =>
@@ -279,10 +245,15 @@ const SaraChat = <T extends Chatable>({
 
             const prevChatQueryId = chatQueries[chatQueries.length - 1].id
 
-            await submitQueryToExistingChat(
-              query,
+            const reqBody = {
               prevChatQueryId,
+              query,
+            }
+
+            await createResourceNoResponseBody(
               chatQueriesUrl,
+              reqBody,
+              'Failed to make new chat query',
             )
           } catch (error) {
             toast.error(`Failed to make chat query because: ${error}`)
