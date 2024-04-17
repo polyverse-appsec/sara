@@ -426,3 +426,10 @@ export const getThreadRunForProjectGoalChatting = async (
 ): Promise<Run> => {
   return oaiClient.beta.threads.runs.retrieve(threadId, threadRunId)
 }
+
+export const cancelThreadRunForProjectGoalChatting = async (
+  threadId: string,
+  threadRunId: string,
+): Promise<void> => {
+  await oaiClient.beta.threads.runs.cancel(threadId, threadRunId)
+}

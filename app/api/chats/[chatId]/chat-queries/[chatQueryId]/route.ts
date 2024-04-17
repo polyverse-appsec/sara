@@ -1,7 +1,7 @@
-import logger, { type SaraLogContext } from 'lib/logger'
 import { ReasonPhrases, StatusCodes } from 'http-status-codes'
 import Joi from 'joi'
 import { type ChatQueryStatus } from 'lib/data-model-types'
+import logger, { type SaraLogContext } from 'lib/logger'
 import getChat from 'lib/polyverse/db/get-chat'
 import getChatQuery from 'lib/polyverse/db/get-chat-query'
 import getGoal from 'lib/polyverse/db/get-goal'
@@ -21,6 +21,7 @@ import {
 } from './../../../../../../lib/polyverse/openai/assistants'
 import {
   addQueryToThreadForProjectGoalChatting,
+  cancelThreadRunForProjectGoalChatting,
   createThreadRunForProjectGoalChatting,
 } from './../../../../../../lib/polyverse/openai/goalsAssistant'
 
@@ -91,27 +92,59 @@ export const PATCH = auth(async (req: NextAuthRequest) => {
       })
     }
 
-    // Currently we only allow setting the chat query status to 'QUERY_RECEIVED'
+    // Validate the request body
     const reqBody = (await req.json()) as ModifyChatQueryRequestBody
 
     if (
-      Joi.string().valid('QUERY_RECEIVED').required().validate(reqBody.status)
-        .error
+      Joi.string()
+        .valid('QUERY_RECEIVED', 'CANCELLED')
+        .required()
+        .validate(reqBody.status).error
     ) {
       return new Response(
-        `'status' is only allowed to have the 'QUERY_RECEIVED' value`,
+        `'status' is only allowed to have the 'QUERY_RECEIVED' or 'CANCELLED' value`,
         {
           status: StatusCodes.BAD_REQUEST,
         },
       )
     }
 
-    // Currently we only allow modifying the status of a chat query out of the
-    // `ERROR` terminal state and "RESPONSE_RECEIVED' state
-    if (chatQuery.status === 'QUERY_RECEIVED') {
-      return new Response(`Requested chat query isn't in an 'ERROR'`, {
-        status: StatusCodes.BAD_REQUEST,
-      })
+    // Verify that the requested `status` state change is allowed to transition
+    // given the curren status of the chat query
+    if (
+      reqBody.status === 'CANCELLED' &&
+      chatQuery.status !== 'QUERY_RECEIVED' &&
+      chatQuery.status !== 'QUERY_SUBMITTED'
+    ) {
+      return new Response(
+        `Unable to cancel chat query that isn't in a 'QUERY_RECEIVED' or 'QUERY_SUBMITTED' state`,
+        {
+          status: StatusCodes.BAD_REQUEST,
+        },
+      )
+    }
+
+    if (
+      reqBody.status === 'QUERY_RECEIVED' &&
+      chatQuery.status !== 'CANCELLED' &&
+      chatQuery.status !== 'ERROR' &&
+      chatQuery.status !== 'RESPONSE_RECEIVED'
+    ) {
+      return new Response(
+        `Unable to receive query submission when existing chat query isn't in an 'ERROR', 'CANCELLED' or 'RESPONSE_RECEIVED' state`,
+        {
+          status: StatusCodes.BAD_REQUEST,
+        },
+      )
+    }
+
+    if (reqBody.status !== 'QUERY_RECEIVED' && reqBody.status !== 'CANCELLED') {
+        return new Response(
+            `Chat query 'status' can only be set to 'QUERY_RECEIVED' or 'CANCELLED'`,
+            {
+              status: StatusCodes.BAD_REQUEST,
+            },
+        )
     }
 
     // Validate that there is an OpenAI Thread associated with the chat for
@@ -140,7 +173,34 @@ export const PATCH = auth(async (req: NextAuthRequest) => {
       })
     }
 
-    // Modify the chat query state
+    // Handle the logic to transition a chat query to the `CANCELLED` state
+    if (reqBody.status === 'CANCELLED' && !chat.openAiThreadRunId) {
+        // TODO: Need to handle this logic in our handler that gets the chats
+        // Just return here since we haven't actually started the thread run yet
+        chatQuery.status = 'CANCELLED'
+        await updateChatQuery(chatQuery)
+
+        return new Response(ReasonPhrases.OK, {
+            status: StatusCodes.OK,
+        })
+    }
+
+    if (reqBody.status === 'CANCELLED' && chat.openAiThreadRunId) {
+        // TODO: Need to handle this logic in our handler that gets the chats
+        await cancelThreadRunForProjectGoalChatting(chat.openAiThreadId, chat.openAiThreadRunId)
+
+        chatQuery.status = 'CANCELLED'
+        await updateChatQuery(chatQuery)
+
+        chat.openAiThreadRunId = null
+        await updateChat(chat)
+
+        return new Response(ReasonPhrases.OK, {
+            status: StatusCodes.OK,
+        })
+    }
+
+    // Handle the logic to transition a chat query to the `QUERY_RECEIVED` state
     chatQuery.response = null
     chatQuery.status = 'QUERY_RECEIVED'
 

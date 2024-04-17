@@ -235,6 +235,7 @@ export type ChatQueryStatus =
   | 'QUERY_RECEIVED'
   | 'QUERY_SUBMITTED'
   | 'RESPONSE_RECEIVED'
+  | 'CANCELLED'
   | 'ERROR'
 
 // TODO: Test this with a Joi schema

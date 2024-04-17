@@ -51,6 +51,43 @@ const buildChat = async (
   )
 }
 
+const resubmitChatQuery = async (
+  chatId: string,
+  tailChatQueryId: string,
+): Promise<ChatQuery> => {
+  const chatQueryUrl = buildChatQueryUrl(chatId, tailChatQueryId)
+  const patchReqBody = {
+    status: 'QUERY_RECEIVED',
+  }
+
+  return await updateResource<ChatQuery>(
+    chatQueryUrl,
+    patchReqBody,
+    `Failed to re-submit chat query '${tailChatQueryId}'`,
+  )
+}
+
+const cancelChatQuery = async (
+  chatId: string,
+  tailChatQueryId: string,
+): Promise<ChatQuery> => {
+  const chatQueryUrl = buildChatQueryUrl(chatId, tailChatQueryId)
+  const patchReqBody = {
+    status: 'CANCELLED',
+  }
+
+  return await updateResource<ChatQuery>(
+    chatQueryUrl,
+    patchReqBody,
+    `Failed to cancel chat query '${tailChatQueryId}'`,
+  )
+}
+
+const FOUR_MINS_IN_MILLIS = 4 * 60 * 1000
+
+const querySubmissionExpired = (querySubmittedAt: Date) =>
+  new Date().getTime() - querySubmittedAt.getTime() >= FOUR_MINS_IN_MILLIS
+
 const buildChatQueriesUrl = (chatableResourceUrl: string, chatId: string) =>
   chatableResourceUrl.endsWith('/')
     ? `${chatableResourceUrl}chats/${chatId}/chat-queries`
@@ -105,18 +142,27 @@ const SaraChat = <T extends Chatable>({
         // If the chat ended in an error state then re-submit the chat for the
         // user
         if (isMounted && tailChatQuery.status === 'ERROR') {
-          const chatQueryUrl = buildChatQueryUrl(chatId, tailChatQuery.id)
-          const patchReqBody = {
-            status: 'QUERY_RECEIVED',
-          }
-
-          const resubmittedChatQuery = await updateResource<ChatQuery>(
-            chatQueryUrl,
-            patchReqBody,
-            `Failed to re-submit chat query '${tailChatQuery.id}' when in an 'ERROR' state`,
+          const resubmittedChatQuery = await resubmitChatQuery(
+            chatId,
+            tailChatQuery.id,
           )
 
           chatQueries[chatQueries.length - 1] = resubmittedChatQuery
+        }
+
+        // If the chat has ran for to long then we will cancel it and the user
+        // can re-submit it themselves if they would like
+        if (
+          isMounted &&
+          tailChatQuery.status === 'QUERY_SUBMITTED' &&
+          querySubmissionExpired(tailChatQuery.querySubmittedAt)
+        ) {
+          const cancelledChatQuery = await cancelChatQuery(
+            chatId,
+            tailChatQuery.id,
+          )
+
+          chatQueries[chatQueries.length - 1] = cancelledChatQuery
         }
 
         if (isMounted) {

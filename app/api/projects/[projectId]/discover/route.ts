@@ -69,4 +69,3 @@ export const POST = auth(async (req: NextAuthRequest) => {
 // Type error: Route "app/api/orgs/route.ts" has an invalid export:
 //   "unknown" is not a valid GET return type:
 //     Expected "void | Response | Promise<void | Response>", got "unknown".
-

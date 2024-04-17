@@ -1,5 +1,5 @@
-import logger from 'lib/logger'
 import { ReasonPhrases, StatusCodes } from 'http-status-codes'
+import logger from 'lib/logger'
 import { NextAuthRequest } from 'next-auth/lib'
 
 import { auth } from '../../../../../auth'
