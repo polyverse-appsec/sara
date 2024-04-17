@@ -5,9 +5,9 @@ import { Callout, Flex, Text } from '@radix-ui/themes'
 
 // Set the URL_BASE to the appropriate value for the env variable SARA_STAGE or default to local
 export const deploymentStage =
-  process.env.SARA_STAGE?.toLowerCase() === 'preview'
+  process.env.NEXT_PUBLIC_SARA_STAGE?.toLowerCase() === 'preview'
     ? 'Pre-Production Preview (Non-Customer Facing)'
-    : process.env.SARA_STAGE?.toLowerCase() === 'prod'
+    : process.env.NEXT_PUBLIC_SARA_STAGE?.toLowerCase() === 'prod'
       ? 'Customer-Facing Production'
       : 'Internal Engineering Development (Non-Customer Facing)'
 
