@@ -204,7 +204,7 @@ const renderNodeName = (navigatableResource: NavigatableGoalOrTaskResource) => {
                 <div className="flex flex-col">
                     {navigatableResource.type === 'GOAL' ? (
                         <Link href={`/goals/${navigatableResource.id}`}>
-                            <p className="mb-2 font-semibold">Goal: {navigatableResource.name}</p>
+                            <p className="mb-2 font-semibold hover:text-orange-500">Goal: {navigatableResource.name}</p>
                         </Link>
                     ) : (
                         <p className="mb-2 font-semibold">Task: {navigatableResource.name}</p>
