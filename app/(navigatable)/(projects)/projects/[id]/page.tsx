@@ -23,6 +23,8 @@ import {
   type ProjectHealth,
 } from './../../../../../lib/data-model-types'
 import { useAppContext } from './../../../../../lib/hooks/app-context'
+import Link from 'next/link'
+import { ArrowLeftIcon } from '@radix-ui/react-icons'
 import CopyToClipboardIcon from 'components/icons/CopyToClipboardIcon'
 
 const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
@@ -171,6 +173,16 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
   return (
     <RenderableResource>
       <RenderableResourceContent>
+        <div className="text-left mb-2">
+          <button className="btn-blue text-sm">
+            <Link href="/projects">
+              <Flex align="center">
+                <ArrowLeftIcon className="mr-2" />
+                Back to Projects
+              </Flex>
+            </Link>
+          </button>
+        </div>
         <div className="my-1 flex justify-between w-full">
           <div className="flex flex-col">
             <div className="flex items-center">

@@ -303,10 +303,10 @@ const SidebarNav = () => {
                 {saraSession.name ? getUserInitials(saraSession.name) : null}
               </div>
             )}
-            <span className="ml-2 dark:text-black">{saraSession?.name}</span>
+            <span className="ml-2 dark:text-white">{saraSession?.name}</span>
             <div className="relative w-5 h-5 ml-2">
               <GearIcon
-                className="w-full h-full transition-opacity duration-300 rounded-full select-none ring-1 ring-zinc-100/10 dark:text-black hover:opacity-50"
+                className="w-full h-full transition-opacity duration-300 rounded-full select-none ring-1 ring-zinc-100/10 dark:text-white hover:opacity-50"
                 onClick={() => {
                   setProjectIdForConfiguration(null)
                   router.push('/settings')
@@ -343,7 +343,7 @@ const SidebarNav = () => {
                 </div>
               )}
               <Skeleton loading={loadingBillingOrg}>
-                <span className="text-sm truncate dark:text-black">
+                <span className="text-sm truncate dark:text-white">
                   {activeBillingOrg ? (
                     <Link href={`/orgs/${activeBillingOrg.id}`}>
                       {activeBillingOrg.name === saraSession?.username ? (

@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { StarFilledIcon } from '@radix-ui/react-icons'
-import { Badge } from '@radix-ui/themes'
+import { Badge, Skeleton } from '@radix-ui/themes'
 import { getOrgUserStatus } from 'app/react-utils'
 import { SaraSession } from 'auth'
 import { UserOrgStatus } from 'lib/data-model-types'
@@ -24,6 +24,7 @@ export const OrgDetailsTile = ({ name, id }: OrgDetailsTileProps) => {
   const [orgIsPremium, setOrgIsPremium] = useState(false)
   const [orgIsSelected, setOrgIsSelected] = useState(false)
   const [orgIsPersonal, setOrgIsPersonal] = useState(false)
+  const [loadingData, setLoadingData] = useState(true)
 
   useEffect(() => {
     const fetchUserStatus = async () => {
@@ -41,6 +42,7 @@ export const OrgDetailsTile = ({ name, id }: OrgDetailsTileProps) => {
         setOrgIsPremium(orgUserStatus.isPremium === 'PREMIUM')
 
         setOrgIsSelected(activeBillingOrg.id === id)
+        setLoadingData(false)
       } catch (error) {
         toast.error(`Failed to fetch user status: ${error}`)
       }
@@ -49,6 +51,7 @@ export const OrgDetailsTile = ({ name, id }: OrgDetailsTileProps) => {
     setOrgIsPersonal(name === saraSession?.username)
 
     fetchUserStatus()
+
   }, [activeBillingOrg, id, name, saraSession])
 
   return (
@@ -71,20 +74,22 @@ export const OrgDetailsTile = ({ name, id }: OrgDetailsTileProps) => {
               <p className="text-xs text-blue-600 mt-2">Active</p>
             )}
           </div>
-          {orgIsPremium ? (
-            <div className="flex flex-col items-center">
-              <div title="Premium Plan" className="ml-1">
-                <div className="p-1 border border-yellow-500 rounded-full">
-                  <StarFilledIcon className="w-3 h-3 text-yellow-500" />
+          <Skeleton loading={loadingData}>
+            {orgIsPremium ? (
+              <div className="flex flex-col items-center">
+                <div title="Premium Plan" className="ml-1">
+                  <div className="p-1 border border-yellow-500 rounded-full">
+                    <StarFilledIcon className="w-3 h-3 text-yellow-500" />
+                  </div>
                 </div>
+                <Badge color="green" className="mt-2">
+                  Premium
+                </Badge>
               </div>
-              <Badge color="green" className="mt-2">
-                Premium
-              </Badge>
-            </div>
-          ) : (
-            <Badge color="gray">Free</Badge>
-          )}
+            ) : (
+              <Badge color="gray">Inactive</Badge>
+            )}
+          </Skeleton>
         </div>
       </div>
     </Link>

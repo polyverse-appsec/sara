@@ -15,10 +15,17 @@
 - Added navigation from Billing Account setup page to the parent Billing accounts page
 - Added clipboard copy buttons to the Project and Goals pages for troubleshooting
 - Enable Clipboard Copy of Project and Goal ids for troubleshooting
+- Navbar styling enhancements
+- Fix for chats overflow outside of their boxes
+- Added back to billing orgs button from the /orgs/id pages
+- Fixed the nav bar scrolling off when it's sibiling component expanded
+- Added back to projects button from the projects/id pages
+- Show pricing on premium plan
 
 ### Bug Fixes
 
 - Fix issue with Navigation Bar scrolling
+- Navbar footer text in dark mode now displays correctly
 
 ## Version 0.20.15: April 17th, 2024
 
