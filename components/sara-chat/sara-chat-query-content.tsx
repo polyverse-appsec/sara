@@ -132,9 +132,6 @@ const renderChatQueryStatusCard = (
     return null
   }
 
-  console.log(`renderChatQueryStatusCard chatQueryStatus: ${chatQueryStatus}`)
-  console.log(`renderChatQueryStatusCard querySubmittedAt: ${querySubmittedAt}`)
-
   return (
     <Card>
       <Flex direction="column" gap="1">
