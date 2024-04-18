@@ -2,23 +2,6 @@
 
 # Release Notes
 
-## Version 0.20.17: April 17th, 2024
-
-### New Features
-
-- N/A
-
-### Enhancements
-
-- Navbar styling enhancements
-- Fix for chats overflow outside of their boxes
-- Added back to billing orgs button from the /orgs/id pages
-- Fixed the nav bar scrolling off when it's sibiling component expanded
-
-### Bug Fixes
-
-- N/A
-
 ## Version 0.20.16: April 17th, 2024
 
 ### New Features
@@ -27,11 +10,14 @@
 
 ### Enhancements
 
-- N/A
+- Improve Navigation Bar UI
+- Improve Status/Chat UI
+- Added navigation from Billing Account setup page to the parent Billing accounts page
+- Added clipboard copy buttons to the Project and Goals pages for troubleshooting
 
 ### Bug Fixes
 
-- N/A
+- Fix issue with Navigation Bar scrolling
 
 ## Version 0.20.15: April 17th, 2024
 
@@ -41,7 +27,9 @@
 
 ### Enhancements
 
-- N/A
+- Improvements to Navigation Bar UI
+- Improvements to Status/Chat UI
+- Enable Navigation from Billing Account setup page to the parent Billing accounts page
 
 ### Bug Fixes
 
