@@ -26,22 +26,22 @@ export interface SaraChatPanelProps
 const renderChatAlert = (projectHealth: ProjectHealthStatusValue) => {
   if (projectHealth === 'UNHEALTHY') {
     return (
-      <div className="flex items-center py-1 px-2 bg-gray-400 bg-opacity-50">
+      <div className="flex items-center py-1 px-2 bg-gray-400 bg-opacity-50/50 rounded-lg">
         <ExclamationTriangleIcon className="mr-2 text-red-500" />
         Project Unhealthy - Sara is attempting a fix
       </div>
     )
   }
 
-  if (projectHealth === 'PARTIALLY_HEALTHY') {
-    return (
-      <div className="flex items-center py-1 px-2 bg-gray-400 bg-opacity-50 rounded-lg">
-        <ExclamationTriangleIcon className="mr-2 text-yellow-500" />
-        Sara is still Deep Learning - You May Ask Questions But Note Results
-        Will Improve Over Time
-      </div>
+if (projectHealth === 'PARTIALLY_HEALTHY') {
+  return (
+    <div className="flex items-center py-1 px-2 bg-gray-400 bg-opacity-50/50 rounded-lg">
+      <ExclamationTriangleIcon className="mr-2 text-yellow-500" />
+      Sara is still Deep Learning - You May Ask Questions But Note Results
+      Will Improve Over Time
+    </div>
     )
-  }
+}
 
   return null
 }
