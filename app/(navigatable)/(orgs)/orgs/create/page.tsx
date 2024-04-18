@@ -50,6 +50,7 @@ const OrgCreate = () => {
     useState<boolean>(true)
 
   const [fetchedGitHubOrgs, setFetchedGitHubOrgs] = useState<GitHubOrg[]>([])
+  const [disableButton, setDisableButton] = useState<boolean>(false)
 
   const handleUnselectBillingOrganization = () => {
     setSelectedBusinessBilling(false)
@@ -63,6 +64,7 @@ const OrgCreate = () => {
 
       try {
         const fetchedBillingOrgs = await getBillingOrgs()
+        setDisableButton(fetchedBillingOrgs.length == 0)
 
         const personalBillingExists = fetchedBillingOrgs.some(
           (org) => org.name === saraSession.username,
@@ -94,7 +96,7 @@ const OrgCreate = () => {
         <div className="flex flex-col items-center">
           <RenderableResourceContent>
             <div className="text-left mb-2">
-              <button className="btn-blue text-sm">
+              <button className={!disableButton ? "btn-blue text-sm" : "btn-gray text-sm"} disabled={disableButton}>
                 <Link href="/orgs">
                   <Flex align="center">
                     <ArrowLeftIcon className="mr-2" />

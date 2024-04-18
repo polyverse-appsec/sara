@@ -26,6 +26,7 @@
 
 - Fix issue with Navigation Bar scrolling
 - Navbar footer text in dark mode now displays correctly
+- Disable back to billing orgs button on orgs/create if no existing billing org
 
 ## Version 0.20.15: April 17th, 2024
 

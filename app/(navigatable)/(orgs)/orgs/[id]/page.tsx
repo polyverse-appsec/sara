@@ -164,8 +164,8 @@ const OrgIndex = ({ params: { id } }: { params: { id: string } }) => {
           </div>
         </div>
         {orgIsPremium ? (
-          <div className="inline-flex items-center justify-between w-full text-sm">
-            <div className="flex justify-between items-center w-full font-semibold bg-white-600 shadow-md rounded-lg p-2 cursor-not-allowed opacity-50">
+          <div className="inline-flex items-center justify-center w-full text-sm">
+            <div className="flex justify-between items-center w-1/2 font-semibold bg-white-600 shadow-md rounded-lg p-2 cursor-not-allowed opacity-50">
               <p>
                 You are already subscribed to Premium Plan for{' '}
                 {activeBillingOrg?.name}
@@ -174,21 +174,23 @@ const OrgIndex = ({ params: { id } }: { params: { id: string } }) => {
             </div>
           </div>
         ) : (
-          <Link
-            href="https://buy.stripe.com/8wM9AY9hAe4y5fa000"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-between w-full text-sm"
-          >
-            <div className="flex justify-between items-center w-full font-semibold bg-white-600 shadow-md rounded-lg p-2 transition hover:scale-105 cursor-pointer">
-              <p>Upgrade to Premium Plan for {activeBillingOrg?.name}</p>
-              <IconExternalLink className="w-4 h-4 ml-auto" />
-            </div>
+          <div className="flex flex-col items-center">
+            <Link
+              href="https://buy.stripe.com/8wM9AY9hAe4y5fa000"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-between w-1/2 text-sm"
+            >
+              <div className="flex justify-between items-center w-full font-semibold bg-white-600 shadow-md rounded-lg p-2 transition hover:border border-black dark:border-white hover:scale-105 cursor-pointer">
+                <p>Upgrade to Premium Plan for {activeBillingOrg?.name}</p>
+                <IconExternalLink className="w-4 h-4 ml-auto" />
+              </div>
+            </Link>
             <p className="text-xs text-blue-600 mt-2">
               Note, this will redirect you to the Stripe.com website for secure
               billing and account information.
             </p>
-          </Link>
+          </div>
         )}
       </RenderableResourceContent>
     </div>
