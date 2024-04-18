@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { Card, Flex, Text } from '@radix-ui/themes'
+import { Card, Flex, Progress, Text } from '@radix-ui/themes'
 import GreenSolidCheckIcon from 'components/icons/GreenSolidCheckIcon'
 import RedSolidStopIcon from 'components/icons/RedSolidStopIcon'
 import RedSolidXIcon from 'components/icons/RedSolidXIcon'
@@ -27,6 +27,7 @@ export interface SaraChatQueryContentProps {
   timestamp: Date | null
   chatAvatarDetails?: ChatAvatarDetails
   chatQueryStatus?: ChatQueryStatus
+  querySubmittedAt?: Date
 }
 
 const renderChatQueryStatusIcon = (chatQueryStatus: ChatQueryStatus) => {
@@ -107,16 +108,43 @@ const renderChatQueryStatusText = (chatQueryStatus: ChatQueryStatus) => {
   }
 }
 
-const renderChatQueryStatusCard = (chatQueryStatus?: ChatQueryStatus) => {
+const FOUR_MINS_IN_MILLIS = 4 * 60 * 1000
+
+const renderChatQueryProgressBar = (querySubmittedAt: Date) => {
+  const progressPercentage = Math.floor(
+    ((new Date().getTime() - new Date(querySubmittedAt).getTime()) /
+      FOUR_MINS_IN_MILLIS) *
+      100,
+  )
+
+  return (
+    <Flex maxWidth="160px">
+      <Progress value={progressPercentage} />
+    </Flex>
+  )
+}
+
+const renderChatQueryStatusCard = (
+  chatQueryStatus?: ChatQueryStatus,
+  querySubmittedAt?: Date,
+) => {
   if (!chatQueryStatus) {
     return null
   }
 
+  console.log(`renderChatQueryStatusCard chatQueryStatus: ${chatQueryStatus}`)
+  console.log(`renderChatQueryStatusCard querySubmittedAt: ${querySubmittedAt}`)
+
   return (
     <Card>
-      <Flex gap="1" align="center">
-        {renderChatQueryStatusIcon(chatQueryStatus)}
-        {renderChatQueryStatusText(chatQueryStatus)}
+      <Flex direction="column" gap="1">
+        <Flex gap="1" align="center">
+          {renderChatQueryStatusIcon(chatQueryStatus)}
+          {renderChatQueryStatusText(chatQueryStatus)}
+        </Flex>
+        {chatQueryStatus === 'QUERY_SUBMITTED' && querySubmittedAt
+          ? renderChatQueryProgressBar(querySubmittedAt)
+          : null}
       </Flex>
     </Card>
   )
@@ -127,6 +155,7 @@ function renderSideChatDetails(
   timestamp: Date | null,
   chatAvatarDetails?: ChatAvatarDetails,
   chatQueryStatus?: ChatQueryStatus,
+  querySubmittedAt?: Date,
 ) {
   return (
     <div className={'flex flex-col items-start w-[180px]'}>
@@ -168,7 +197,7 @@ function renderSideChatDetails(
           {new Date(timestamp).toLocaleTimeString()}
         </div>
       ) : null}
-      {renderChatQueryStatusCard(chatQueryStatus)}
+      {renderChatQueryStatusCard(chatQueryStatus, querySubmittedAt)}
     </div>
   )
 }
@@ -179,6 +208,7 @@ const SaraChatQueryContent = ({
   timestamp,
   chatAvatarDetails,
   chatQueryStatus,
+  querySubmittedAt,
   ...props
 }: SaraChatQueryContentProps) => {
   return (
@@ -188,6 +218,7 @@ const SaraChatQueryContent = ({
         timestamp,
         chatAvatarDetails,
         chatQueryStatus,
+        querySubmittedAt,
       )}
       <div className="flex-1 px-1 ml-4 space-y-2 overflow-hidden">
         <MemoizedReactMarkdown

@@ -89,6 +89,7 @@ const SaraChatList = ({
                       ? chatQuery.status
                       : undefined
                   }
+                  querySubmittedAt={chatQuery.querySubmittedAt}
                 />
               </>
             )}
