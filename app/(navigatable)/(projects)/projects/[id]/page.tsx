@@ -57,7 +57,7 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
       // just wait until we have a saraSession ready
       return
     }
-  }, [activeBillingOrg, saraSession, toastedInactiveBillingOrg])
+  }, [activeBillingOrg, saraSession])
 
   // This use effect is to just get the project details...
   useEffect(() => {
