@@ -18,6 +18,5 @@ export const Default: Story = {
     args: {
         content: 'Some content',
         contentType: 'QUERY',
-        timestamp: new Date(),
     }
 }
