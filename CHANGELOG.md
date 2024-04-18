@@ -12,6 +12,7 @@
 
 - Show progress of Chat request/question processing
 - Add Goal and Task Details in Navigation Bar to view Description, Acceptance Criteria and Status
+- Improvements to Chat Response UI and Code Block rendering
 
 ### Bug Fixes
 
