@@ -9,6 +9,10 @@ import RenderableResource from 'components/renderable-resource/renderable-resour
 import RenderableResourceContent from 'components/renderable-resource/renderable-resource-content'
 import RenderableSaraChatResourceContent from 'components/sara-chat/renderable-sara-chat-resource-content'
 import { useAppContext } from 'lib/hooks/app-context'
+import CopyToClipboardIcon from 'components/icons/CopyToClipboardIcon'
+import { useSession } from 'next-auth/react'
+
+import { type SaraSession } from './../../../../../auth'
 
 import SaraLoading from './../../../../../components/sara-loading'
 import {
@@ -17,6 +21,10 @@ import {
 } from './../../../../../lib/data-model-types'
 
 const GoalIndex = ({ params: { id } }: { params: { id: string } }) => {
+
+  const session = useSession()
+  const saraSession = session.data ? (session.data as SaraSession) : null
+  
   const {
     setProjectIdForConfiguration,
     setActiveGoalId,
@@ -25,6 +33,14 @@ const GoalIndex = ({ params: { id } }: { params: { id: string } }) => {
 
   const [goal, setGoal] = useState<Goal | null>(null)
   const [health, setHealth] = useState<ProjectHealth | null>(null)
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    if (!saraSession) {
+      // just wait until we have a saraSession ready
+      return
+    }
+  }, [saraSession])
 
   useEffect(() => {
     ;(async () => {
@@ -50,6 +66,10 @@ const GoalIndex = ({ params: { id } }: { params: { id: string } }) => {
     })()
   }, [id, setProjectIdForConfiguration])
 
+  if (!saraSession) {
+    return <SaraLoading />
+  }
+
   if (
     (activeWorkspaceDetails && id !== activeWorkspaceDetails.goalId) ||
     !activeWorkspaceDetails
@@ -65,6 +85,16 @@ const GoalIndex = ({ params: { id } }: { params: { id: string } }) => {
   // week. As a result we are cutting the usage of this rendered page for now.
   // To make sure it renders we just hardcoded `HEALTHY` into the rendering of
   // the <SaraChat.projectHealth> variable
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000); // Reset icon after 2 seconds
+    }, (err) => {
+      console.error(`${saraSession.email} Failed to copy ID to clipboard:`, err);
+      setCopied(false);
+    });
+  };
 
   return (
     <RenderableResource>
@@ -85,7 +115,10 @@ const GoalIndex = ({ params: { id } }: { params: { id: string } }) => {
             </div>
             <div className="my-1 flex items-center">
               <h3 className="text-xs text-gray-500 italic">ID</h3>
-              <p className="text-xs text-gray-500 italic ml-2">{goal.id}</p>
+              <div className="flex items-center cursor-pointer" onClick={() => copyToClipboard(goal.id)}>
+                <p className="text-xs text-gray-500 italic ml-2">{goal.id}</p>
+                <CopyToClipboardIcon copied={copied} />
+              </div>
             </div>
             {goal.description ? (
               <div className="my-1 flex items-center">

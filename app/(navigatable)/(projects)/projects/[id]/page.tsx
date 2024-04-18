@@ -23,6 +23,7 @@ import {
   type ProjectHealth,
 } from './../../../../../lib/data-model-types'
 import { useAppContext } from './../../../../../lib/hooks/app-context'
+import CopyToClipboardIcon from 'components/icons/CopyToClipboardIcon'
 
 const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
   const session = useSession()
@@ -40,6 +41,7 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
   const [rediscoverButtonEnabled, setRediscoverButtonEnabled] =
     useState<boolean>(true)
   const [goals, setGoals] = useState<Goal[]>([])
+  const [copied, setCopied] = useState(false);
 
   const [toastedInactiveBillingOrg, setToastedInactiveBillingOrg] =
     useState<boolean>(false)
@@ -156,6 +158,16 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
   // refreshed
   setProjectIdForConfiguration(project.id)
 
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000); // Reset icon after 2 seconds
+    }, (err) => {
+      console.error(`${saraSession.email} Failed to copy ID to clipboard:`, err);
+      setCopied(false);
+    });
+  };
+
   return (
     <RenderableResource>
       <RenderableResourceContent>
@@ -167,7 +179,10 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
             </div>
             <div className="my-1 flex items-center">
               <h3 className="text-xs text-gray-500 italic">ID</h3>
-              <p className="text-xs text-gray-500 italic ml-2">{project.id}</p>
+              <div className="flex items-center cursor-pointer" onClick={() => copyToClipboard(project.id)}>
+                <p className="text-xs text-gray-500 italic ml-2">{project.id}</p>
+                <CopyToClipboardIcon copied={copied} />
+              </div>
             </div>
             {project.description ? (
               <div className="my-1 flex items-center">
