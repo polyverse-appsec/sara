@@ -14,7 +14,7 @@ const OauthExplanation = () => {
           <InfoCircledIcon />
         </HoverCard.Trigger>
         <HoverCard.Content>
-          <div className="flex flex-col p-2 bg-white rounded-lg border border-black">
+          <div className="flex flex-col p-2 bg-background rounded-lg border border-black">
             <div className="flex flex-col items-center">
               <p className="mb-2 font-semibold">Sara Oauth Tip</p>
               <p>There are 3 kinds of permission states for orgs</p>
