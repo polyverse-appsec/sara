@@ -2,7 +2,7 @@
 
 # Release Notes
 
-## Version 0.20.18: April 18th, 2024
+## Version 0.20.18: April 19th, 2024
 
 ### New Features
 
@@ -10,7 +10,7 @@
 
 ### Enhancements
 
-- N/A
+- Show progress of Chat request/question processing
 
 ### Bug Fixes
 

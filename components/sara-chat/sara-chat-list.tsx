@@ -25,7 +25,7 @@ const SaraChatList = ({
   }
 
   return (
-    <div className="relative mx-16 px-4">
+    <div className="relative mx-8 px-4">
       {chatQueries.map((chatQuery, index) => {
         return (
           <div key={index}>
@@ -33,7 +33,7 @@ const SaraChatList = ({
             <SaraChatQueryContent
               content={chatQuery.query}
               contentType="QUERY"
-              timestamp={chatQuery.querySubmittedAt}
+              querySubmittedAt={chatQuery.querySubmittedAt}
               chatAvatarDetails={
                 saraSession.picture
                   ? { pictureSrc: saraSession.picture, name: saraSession.name }
@@ -47,7 +47,11 @@ const SaraChatList = ({
                 <SaraChatQueryContent
                   content={chatQuery.response}
                   contentType="RESPONSE"
-                  timestamp={chatQuery.responseReceivedAt}
+                  responseReceivedAt={
+                    chatQuery.responseReceivedAt
+                      ? chatQuery.responseReceivedAt
+                      : undefined
+                  }
                   chatAvatarDetails={
                     saraSession.picture
                       ? {
@@ -83,7 +87,6 @@ const SaraChatList = ({
                 <SaraChatQueryContent
                   content={''}
                   contentType="RESPONSE"
-                  timestamp={new Date()}
                   chatQueryStatus={
                     index === chatQueries.length - 1
                       ? chatQuery.status

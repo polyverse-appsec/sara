@@ -24,13 +24,111 @@ export interface ChatAvatarDetails {
 export interface SaraChatQueryContentProps {
   content: string
   contentType: 'QUERY' | 'RESPONSE'
-  timestamp: Date | null
   chatAvatarDetails?: ChatAvatarDetails
   chatQueryStatus?: ChatQueryStatus
   querySubmittedAt?: Date
+  responseReceivedAt?: Date
 }
 
-const renderChatQueryStatusIcon = (chatQueryStatus: ChatQueryStatus) => {
+const renderAvatar = (
+  contentType: 'QUERY' | 'RESPONSE',
+  chatAvatarDetails?: ChatAvatarDetails,
+) => {
+  if (contentType === 'QUERY' && chatAvatarDetails) {
+    return (
+      <Image
+        src={chatAvatarDetails.pictureSrc}
+        alt={chatAvatarDetails.name}
+        title={chatAvatarDetails.name}
+        width={32}
+        height={32}
+        className="rounded-full"
+      />
+    )
+  }
+
+  if (contentType === 'QUERY') {
+    return <IconUser />
+  }
+
+  return (
+    <Image
+      src={Sara32x32}
+      alt="Sara Architecture Assistant"
+      title="Sara Architecture Assistant"
+    />
+  )
+}
+
+const renderQuerySubmittedAt = (querySubmittedAt?: Date) => {
+  const date = querySubmittedAt
+    ? `${new Date(querySubmittedAt).toLocaleDateString()} ${new Date(
+        querySubmittedAt,
+      ).toLocaleTimeString()}`
+    : 'Unknown'
+
+  return (
+    <Flex gap="1">
+      <Text size="2" weight="bold">
+        {'Submitted: '}
+      </Text>
+      <Text size="2">{date}</Text>
+    </Flex>
+  )
+}
+
+const renderLastCheckedAt = (responseReceivedAt?: Date) => {
+  const date = `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`
+
+  return (
+    <Flex gap="1">
+      <Text size="2" weight="bold">
+        {'Last Checked: '}
+      </Text>
+      <Text size="2">{date}</Text>
+    </Flex>
+  )
+}
+
+const renderResponseReceivedAt = (responseReceivedAt?: Date) => {
+  const date = responseReceivedAt
+    ? `${new Date(responseReceivedAt).toLocaleDateString()} ${new Date(
+        responseReceivedAt,
+      ).toLocaleTimeString()}`
+    : 'Unknown'
+
+  return (
+    <Flex gap="1">
+      <Text size="2" weight="bold">
+        {'Received: '}
+      </Text>
+      <Text size="2">{date}</Text>
+    </Flex>
+  )
+}
+
+const renderTimestamp = (
+  contentType: 'QUERY' | 'RESPONSE',
+  querySubmittedAt?: Date,
+  responseReceivedAt?: Date,
+) => {
+  if (contentType === 'QUERY') {
+    return renderQuerySubmittedAt(querySubmittedAt)
+  }
+
+  // If we don't have a response time yet then just show the last updated time
+  if (!responseReceivedAt) {
+    return renderLastCheckedAt()
+  }
+
+  return renderResponseReceivedAt(responseReceivedAt)
+}
+
+const renderChatQueryStatusIcon = (chatQueryStatus?: ChatQueryStatus) => {
+  if (!chatQueryStatus) {
+    return null
+  }
+
   switch (chatQueryStatus) {
     case 'QUERY_RECEIVED':
       return (
@@ -58,7 +156,11 @@ const renderChatQueryStatusIcon = (chatQueryStatus: ChatQueryStatus) => {
   }
 }
 
-const renderChatQueryStatusText = (chatQueryStatus: ChatQueryStatus) => {
+const renderChatQueryStatusText = (chatQueryStatus?: ChatQueryStatus) => {
+  if (!chatQueryStatus) {
+    return null
+  }
+
   switch (chatQueryStatus) {
     case 'QUERY_RECEIVED':
       return (
@@ -118,104 +220,114 @@ const renderChatQueryProgressBar = (querySubmittedAt: Date) => {
   )
 
   return (
-    <Flex maxWidth="160px">
+    <Flex maxWidth="260px">
       <Progress value={progressPercentage} />
     </Flex>
   )
 }
 
-const renderChatQueryStatusCard = (
-  chatQueryStatus?: ChatQueryStatus,
-  querySubmittedAt?: Date,
-) => {
-  if (!chatQueryStatus) {
-    return null
-  }
-
-  return (
-    <Card>
-      <Flex direction="column" gap="1">
-        <Flex gap="1" align="center">
-          {renderChatQueryStatusIcon(chatQueryStatus)}
-          {renderChatQueryStatusText(chatQueryStatus)}
-        </Flex>
-        {chatQueryStatus === 'QUERY_SUBMITTED' && querySubmittedAt
-          ? renderChatQueryProgressBar(querySubmittedAt)
-          : null}
-      </Flex>
-    </Card>
+const renderChatQueryProgressUpdate = (querySubmittedAt: Date) => {
+  const progressPercentage = Math.floor(
+    ((new Date().getTime() - new Date(querySubmittedAt).getTime()) /
+      FOUR_MINS_IN_MILLIS) *
+      100,
   )
+
+  switch (true) {
+    case progressPercentage <= 20:
+      return (
+        <Flex gap="1">
+          <Text size="2" weight="bold">
+            {'Update: '}
+          </Text>
+          <Text size="2">Analyzing Question</Text>
+        </Flex>
+      )
+    case progressPercentage <= 40:
+      return (
+        <Flex gap="1">
+          <Text size="2" weight="bold">
+            {'Update: '}
+          </Text>
+          <Text size="2">Researching Question</Text>
+        </Flex>
+      )
+    case progressPercentage <= 60:
+      return (
+        <Flex gap="1">
+          <Text size="2" weight="bold">
+            {'Update: '}
+          </Text>
+          <Text size="2">Answering Question</Text>
+        </Flex>
+      )
+    case progressPercentage <= 80:
+      return (
+        <Flex gap="1">
+          <Text size="2" weight="bold">
+            {'Update: '}
+          </Text>
+          <Text size="2">Formatting Answer</Text>
+        </Flex>
+      )
+    case progressPercentage <= 100:
+      return (
+        <Flex gap="1">
+          <Text size="2" weight="bold">
+            {'Update: '}
+          </Text>
+          <Text size="2">Returning Answer</Text>
+        </Flex>
+      )
+  }
 }
 
 function renderSideChatDetails(
   contentType: 'QUERY' | 'RESPONSE',
-  timestamp: Date | null,
   chatAvatarDetails?: ChatAvatarDetails,
   chatQueryStatus?: ChatQueryStatus,
   querySubmittedAt?: Date,
+  responseReceivedAt?: Date,
 ) {
   return (
-    <div className={'flex flex-col items-start w-[180px]'}>
-      <div
-        className={cn(
-          'flex h-8 w-8 shrink-0 select-none items-center justify-center rounded-md border shadow',
-          contentType === 'QUERY'
-            ? 'bg-background'
-            : 'bg-primary text-primary-foreground',
-        )}
-      >
-        {contentType === 'QUERY' ? (
-          chatAvatarDetails ? (
-            <Image
-              src={chatAvatarDetails.pictureSrc}
-              alt={chatAvatarDetails.name}
-              title={chatAvatarDetails.name}
-              width={32}
-              height={32}
-              className="rounded-full"
-            />
-          ) : (
-            <IconUser />
-          )
-        ) : (
-          <>
-            <Image
-              src={Sara32x32}
-              alt="Sara Architecture Assistant"
-              title="Sara Architecture Assistant"
-            />
-          </>
-        )}
-      </div>
-      {timestamp ? (
-        <div className="prose">
-          {new Date(timestamp).toLocaleDateString()}
-          <br />
-          {new Date(timestamp).toLocaleTimeString()}
-        </div>
-      ) : null}
-      {renderChatQueryStatusCard(chatQueryStatus, querySubmittedAt)}
-    </div>
+    <Flex direction="column" maxWidth="280px">
+      <Card>
+        <Flex direction="column" width="260px" gap="1">
+          {renderAvatar(contentType, chatAvatarDetails)}
+          {renderTimestamp(contentType, querySubmittedAt, responseReceivedAt)}
+          <Flex align="center" gap="1">
+            {renderChatQueryStatusIcon(chatQueryStatus)}
+            {renderChatQueryStatusText(chatQueryStatus)}
+          </Flex>
+          {chatQueryStatus === 'QUERY_SUBMITTED' && querySubmittedAt
+            ? renderChatQueryProgressBar(querySubmittedAt)
+            : null}
+          {chatQueryStatus === 'QUERY_SUBMITTED' && querySubmittedAt
+            ? renderChatQueryProgressUpdate(querySubmittedAt)
+            : null}
+        </Flex>
+      </Card>
+    </Flex>
   )
 }
 
 const SaraChatQueryContent = ({
   content,
   contentType,
-  timestamp,
   chatAvatarDetails,
   chatQueryStatus,
   querySubmittedAt,
+  responseReceivedAt,
   ...props
 }: SaraChatQueryContentProps) => {
   return (
     <div className={cn('group relative mb-4 flex items-start')} {...props}>
       {renderSideChatDetails(
         contentType,
-        timestamp,
         chatAvatarDetails,
         chatQueryStatus,
         querySubmittedAt,
+        responseReceivedAt,
       )}
       <div className="flex-1 px-1 ml-4 space-y-2 overflow-hidden">
         <MemoizedReactMarkdown
