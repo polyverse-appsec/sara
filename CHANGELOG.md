@@ -16,31 +16,22 @@
 
 - N/A
 
-## Version 0.20.16: April 17th, 2024
+## Version 0.20.16: April 18th, 2024
 
 ### New Features
 
 - N/A
-
-### Enhancements
 
 - Improve Navigation Bar UI
 - Improve Status/Chat UI
 - Added navigation from Billing Account setup page to the parent Billing accounts page
 - Added clipboard copy buttons to the Project and Goals pages for troubleshooting
 - Enable Clipboard Copy of Project and Goal ids for troubleshooting
-- Navbar styling enhancements
-- Fix for chats overflow outside of their boxes
-- Added back to billing orgs button from the /orgs/id pages
-- Fixed the nav bar scrolling off when it's sibiling component expanded
-- Added back to projects button from the projects/id pages
-- Show pricing on premium plan
 
 ### Bug Fixes
 
 - Fix issue with Navigation Bar scrolling
-- Navbar footer text in dark mode now displays correctly
-- Disable back to billing orgs button on orgs/create if no existing billing org
+- Dark Mode UI fixes
 
 ## Version 0.20.15: April 17th, 2024
 
