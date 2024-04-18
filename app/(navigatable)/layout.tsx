@@ -36,7 +36,7 @@ const NavigatableLayout = ({ children }: NavigatableLayoutProps) => {
       setCalloutHeight(100)
     }
 
-  }, [saraSession])
+  }, [saraSession, isProduction])
 
   if (!saraSession) {
     return null
