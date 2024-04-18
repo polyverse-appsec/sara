@@ -11,6 +11,7 @@
 ### Enhancements
 
 - Show progress of Chat request/question processing
+- Add Goal and Task Details in Navigation Bar to view Description, Acceptance Criteria and Status
 
 ### Bug Fixes
 
