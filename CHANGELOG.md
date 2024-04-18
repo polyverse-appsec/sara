@@ -2,20 +2,6 @@
 
 # Release Notes
 
-## Version 0.20.18: April 17th, 2024
-
-### New Features
-
-- N/A
-
-### Enhancements
-
-- N/A
-
-### Bug Fixes
-
-- N/A
-
 ## Version 0.20.17: April 17th, 2024
 
 ### New Features
@@ -27,6 +13,7 @@
 - Navbar styling enhancements
 - Fix for chats overflow outside of their boxes
 - Added back to billing orgs button from the /orgs/id pages
+- Fixed the nav bar scrolling off when it's sibiling component expanded
 
 ### Bug Fixes
 

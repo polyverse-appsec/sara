@@ -71,7 +71,7 @@ const NavigatableLayout = ({ children }: NavigatableLayoutProps) => {
           ) : (
             <>
               <SidebarNav />
-              <div className="flex-1 overflow-auto">{children}</div>
+              <div className="flex-1 overflow-auto" style={{ marginLeft: '240px', marginTop: '100px' }}>{children}</div>
             </>
           )}
         </div>

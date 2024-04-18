@@ -131,8 +131,8 @@ const SidebarNav = () => {
   // sticky headers that are positioned in the component <HeaderCallouts>. For
   // more details around sizing see <HeaderCallouts>.
   const topDivClassname = saraSession
-    ? 'sticky top-112 overflow-hidden'
-    : 'sticky top-96 overflow-hidden'
+    ? 'fixed top-112 overflow-hidden'
+    : 'fixed top-96 overflow-hidden'
 
   const draggableDivClassname = saraSession
     ? 'flex flex-col h-[calc(100vh-112px)] bg-white dark:bg-black transition duration-200 ease-in-out border-r-2 border-orange-500'
@@ -142,7 +142,7 @@ const SidebarNav = () => {
     orgIsPremium !== undefined && userGitHubAppInstalled !== undefined
 
   return (
-    <div className={topDivClassname}>
+    <div className={topDivClassname} style={{ marginTop: '112px' }}>
       <div
         ref={sidebarRef}
         className={draggableDivClassname}
