@@ -24,7 +24,7 @@ const ProjectIndex = () => {
     setProjectIdForConfiguration,
   } = useAppContext()
 
-  const [projects, setProjects] = useState<Project[]>([])
+  const [projects, setProjects] = useState<Project[] | undefined>(undefined)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
@@ -69,7 +69,10 @@ const ProjectIndex = () => {
     <div className="flex-1 p-10 text-2xl font-bold">
       <ProjectDashboard
         projects={projects}
-        onProjectDelete={(deletedProjectId) => {
+        onProjectDelete={(deletedProjectId : any) => {
+          if (!projects) {
+            return
+          }
           setProjects(projects.filter((project) => project.id !== deletedProjectId))
         }}
       />

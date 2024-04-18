@@ -1,13 +1,15 @@
 'use client'
 
-import React, { useState } from 'react'
+import React from 'react'
 import { Project } from 'lib/data-model-types'
+import { Text } from '@radix-ui/themes'
 
 import { ProjectCreateTile } from './project-create-tile'
 import { ProjectDetailsTile } from './project-details-tile'
+import { Skeleton } from '@radix-ui/themes'
 
 interface ProjectDashboardProps {
-  projects: Project[]
+  projects: Project[] | undefined
   onProjectDelete: (projectId: string) => void
 }
 
@@ -23,27 +25,38 @@ const ProjectDashboard = ({
       </div>
       <div className="mb-10">
         <ProjectCreateTile />
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {projects.map(({ id, name, createdAt, lastUpdatedAt }) => (
-          <ProjectDetailsTile
-            key={id}
-            id={id}
-            name={name}
-            createdAt={
-              typeof createdAt === 'string'
-                ? createdAt
-                : createdAt.toDateString()
-            }
-            lastUpdatedAt={
-              typeof lastUpdatedAt === 'string'
-                ? lastUpdatedAt
-                : lastUpdatedAt.toDateString()
-            }
-            onProjectDelete={onProjectDelete}
-          />
-        ))}
-      </div>
+      </div>  
+      <Skeleton loading={projects === undefined}>
+        {projects !== undefined ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {projects.map(({ id, name, createdAt, lastUpdatedAt }) => (
+              <ProjectDetailsTile
+                key={id}
+                id={id}
+                name={name}
+                createdAt={
+                  typeof createdAt === 'string'
+                    ? createdAt
+                    : createdAt.toDateString()
+                }
+                lastUpdatedAt={
+                  typeof lastUpdatedAt === 'string'
+                    ? lastUpdatedAt
+                    : lastUpdatedAt.toDateString()
+                }
+                onProjectDelete={onProjectDelete}
+              />
+            ))}
+          </div>
+        ) : (
+          // projects is undefined, so we haven't finished loading projects yet - just say loading
+          <div className="text-center">
+            <Text size="2" className="italic text-gray-500">
+              Loading...
+            </Text>
+          </div>
+        )}
+      </Skeleton>
     </div>
   )
 }
