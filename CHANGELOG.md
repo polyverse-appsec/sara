@@ -14,6 +14,7 @@
 - Improve Status/Chat UI
 - Added navigation from Billing Account setup page to the parent Billing accounts page
 - Added clipboard copy buttons to the Project and Goals pages for troubleshooting
+- Enable Clipboard Copy of Project and Goal ids for troubleshooting
 
 ### Bug Fixes
 
