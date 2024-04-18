@@ -70,7 +70,7 @@ const renderQuerySubmittedAt = (querySubmittedAt?: Date) => {
   return (
     <Flex gap="1">
       <Text size="2" weight="bold">
-        {'Submitted: '}
+        {'Asked Sara: '}
       </Text>
       <Text size="2">{date}</Text>
     </Flex>
@@ -83,7 +83,7 @@ const renderLastCheckedAt = (responseReceivedAt?: Date) => {
   return (
     <Flex gap="1">
       <Text size="2" weight="bold">
-        {'Last Checked: '}
+        {'Sara Updated: '}
       </Text>
       <Text size="2">{date}</Text>
     </Flex>
@@ -100,7 +100,7 @@ const renderResponseReceivedAt = (responseReceivedAt?: Date) => {
   return (
     <Flex gap="1">
       <Text size="2" weight="bold">
-        {'Received: '}
+        {'Sara Answered: '}
       </Text>
       <Text size="2">{date}</Text>
     </Flex>
