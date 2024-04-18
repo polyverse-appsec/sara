@@ -117,7 +117,7 @@ const GoalIndex = ({ params: { id } }: { params: { id: string } }) => {
               <h3 className="text-xs text-gray-500 italic">ID</h3>
               <div className="flex items-center cursor-pointer" onClick={() => copyToClipboard(goal.id)}>
                 <p className="text-xs text-gray-500 italic ml-2">{goal.id}</p>
-                <CopyToClipboardIcon copied={copied} />
+                <CopyToClipboardIcon copied={copied} color='#6B7280' />
               </div>
             </div>
             {goal.description ? (

@@ -193,7 +193,7 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
               <h3 className="text-xs text-gray-500 italic">ID</h3>
               <div className="flex items-center cursor-pointer" onClick={() => copyToClipboard(project.id)}>
                 <p className="text-xs text-gray-500 italic ml-2">{project.id}</p>
-                <CopyToClipboardIcon copied={copied} />
+                <CopyToClipboardIcon copied={copied} color='#6B7280'/>
               </div>
             </div>
             {project.description ? (
