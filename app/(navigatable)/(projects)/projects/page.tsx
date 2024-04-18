@@ -5,12 +5,18 @@ import { useRouter } from 'next/navigation'
 import SaraLoading from 'components/sara-loading'
 import { Project } from 'lib/data-model-types'
 import toast from 'react-hot-toast'
+import { useSession } from 'next-auth/react'
+
+import { type SaraSession } from './../../../../auth'
 
 import { getResource } from './../../../../app/saraClient'
 import { useAppContext } from './../../../../lib/hooks/app-context'
 import ProjectDashboard from './project-dashboard'
 
 const ProjectIndex = () => {
+  const session = useSession()
+  const saraSession = session.data ? (session.data as SaraSession) : null  
+  
   const router = useRouter()
   const {
     activeBillingOrg,
@@ -22,32 +28,40 @@ const ProjectIndex = () => {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    ;(async () => {
-      setIsLoading(true)
-
-      if (!activeBillingOrg) {
-        toast.error(`Please select billing context`)
-        router.push('/orgs')
-
-        return
-      }
-
-      const projects = await getResource<Project[]>(
-        `/orgs/${activeBillingOrg.id}/projects`,
-      )
-
-      setProjects(projects)
+    if (saraSession && activeBillingOrg) {
       setIsLoading(false)
+    } else {
+      setIsLoading(true)
+    }
+  }, [saraSession, activeBillingOrg])
+
+  useEffect(() => {
+    if (!activeBillingOrg) {
+      return
+    }
+    
+    // Since we're in this effect, we know activeBillingOrg must exist
+    (async () => {
+      try {
+        const projects = await getResource<Project[]>(
+          `/orgs/${activeBillingOrg.id}/projects`,
+        )
+        setProjects(projects)
+      } catch (error: any) {
+        toast.error(`Failed to load projects: ${error.message}`)
+      } finally {
+        setIsLoading(false)
+      }
     })()
   }, [activeBillingOrg, router])
 
-  // Make sure to clear the active project to ensure we don't render the nav
-  // bar specific details to a previously selected project.
-  if (activeProjectDetails && activeProjectDetails.id) {
-    setProjectIdForConfiguration(null)
-  }
+  useEffect(() => {
+    if (activeProjectDetails?.id) {
+      setProjectIdForConfiguration(null)
+    }
+  }, [activeProjectDetails, setProjectIdForConfiguration])
 
-  if (isLoading) {
+  if (isLoading || !activeBillingOrg || !saraSession) {
     return <SaraLoading message="Sara is refreshing your projects..." />
   }
 
@@ -56,11 +70,7 @@ const ProjectIndex = () => {
       <ProjectDashboard
         projects={projects}
         onProjectDelete={(deletedProjectId) => {
-          const filteredProjects = projects.filter(
-            (project) => project.id !== deletedProjectId,
-          )
-
-          setProjects(filteredProjects)
+          setProjects(projects.filter((project) => project.id !== deletedProjectId))
         }}
       />
     </div>
