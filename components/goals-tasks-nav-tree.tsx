@@ -102,19 +102,20 @@ const renderTaskIcon = () => (
 
 const renderNodeName = (navigatableResource: NavigatableGoalOrTaskResource) =>
   navigatableResource.type === 'GOAL' ? (
-    <Link href={`/goals/${navigatableResource.id}`}>
+    <Link href={`/goals/${navigatableResource.id}`} title={navigatableResource.name}>
       {navigatableResource.isActive ? (
-        <Text weight="bold" color="green">
+        <Text weight="bold" color="green" title={navigatableResource.name}>
           {navigatableResource.name}
         </Text>
       ) : (
-        <Text>{navigatableResource.name}</Text>
+        <Text title={navigatableResource.name}>{navigatableResource.name}</Text>
       )}
     </Link>
   ) : (
-    <Text>{navigatableResource.name}</Text>
-  )
+    <Text title={navigatableResource.name}>{navigatableResource.name}</Text>
+  );
 
+  // TODO: need to hover over the goal or task and show the full text in a tooltip
 const renderGoalOrTaskNode = ({
   node,
   style,
