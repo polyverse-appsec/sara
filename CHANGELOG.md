@@ -137,13 +137,14 @@
 
 ### Enhancements
 
-- Update Sara to find the full list of project source files for cross-referencing in the 'Architectural Blueprint Summary'
-- Use a loading place holder on pages instead of returning null
-- Increase chat prompt form size
+- Improve Sara's ability to find and reference full paths to Source files and the Architectural Blueprint
+- Improvements to Page loading
+- UI improvements for Chat Requests
+- Automatically jump to default Learning Goal on Project Creation
 
 ### Bug Fixes
 
-- Re-direct to goal page for default goal on project creation
+- N/A
 
 ## Version 0.20.8: April 10th, 2024
 
