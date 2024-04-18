@@ -32,11 +32,11 @@ const ProjectGoalCreate = ({ params: { id } }: { params: { id: string } }) => {
           `/projects/${id}`,
           'Failed to load project details',
         )
+
+        setProject(project)
       } catch (error) {
         console.error(`Failed to load project ${id} details because: ${error}`)
       }
-
-      setProject(project)
     })()
   }, [id, project])
 

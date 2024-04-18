@@ -2,7 +2,7 @@
 
 # Release Notes
 
-## Version 0.20.17: April 18th, 2024
+## Version 0.20.17: April 19th, 2024
 
 ### New Features
 
@@ -14,7 +14,7 @@
 
 ### Bug Fixes
 
-- N/A
+- Fix issue with create Goals page not rendering
 
 ## Version 0.20.16: April 18th, 2024
 
