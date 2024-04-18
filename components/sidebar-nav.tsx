@@ -145,8 +145,8 @@ const SidebarNav = () => {
   //   : 'fixed overflow-hidden'
 
   const draggableDivClassname = saraSession
-    ? 'flex flex-col h-screen fixed inset-y-0 left-0 bg-white dark:bg-black transition duration-200 ease-in-out border-r-2 border-orange-500'
-    : 'flex flex-col h-screen fixed inset-y-0 left-0 bg-white dark:bg-black transition duration-200 ease-in-out border-orange-500'
+    ? 'flex flex-col h-screen fixed inset-y-0 left-0 bg-background dark:bg-black transition duration-200 ease-in-out border-r-2 border-orange-500'
+    : 'flex flex-col h-screen fixed inset-y-0 left-0 bg-background dark:bg-black transition duration-200 ease-in-out border-orange-500'
 
   const allDataLoaded =
     orgIsPremium !== undefined && userGitHubAppInstalled !== undefined
