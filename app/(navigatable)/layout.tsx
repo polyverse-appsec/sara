@@ -2,7 +2,7 @@
 
 import '@radix-ui/themes/styles.css'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Flex, Theme } from '@radix-ui/themes'
@@ -22,11 +22,20 @@ const NavigatableLayout = ({ children }: NavigatableLayoutProps) => {
   const router = useRouter()
   const session = useSession()
   const saraSession = session.data ? (session.data as SaraSession) : null
+  const [calloutHeight, setCalloutHeight] = useState(0)
+  const isProduction = process.env.NEXT_PUBLIC_SARA_STAGE?.toLowerCase() === 'prod'
 
   useEffect(() => {
     if (!saraSession) {
       return
     }
+
+    if (isProduction) {
+      setCalloutHeight(60)
+    } else {
+      setCalloutHeight(100)
+    }
+
   }, [saraSession])
 
   if (!saraSession) {
@@ -71,7 +80,7 @@ const NavigatableLayout = ({ children }: NavigatableLayoutProps) => {
           ) : (
             <>
               <SidebarNav />
-              <div className="flex-1 overflow-auto" style={{ marginLeft: '240px', marginTop: '100px' }}>{children}</div>
+              <div className="flex-1 overflow-auto" style={{ marginLeft: '240px', marginTop: `${calloutHeight}px` }}>{children}</div>
             </>
           )}
         </div>

@@ -61,6 +61,9 @@ const SidebarNav = () => {
   const dragRef = useRef(null)
   const sidebarRef = useRef(null)
 
+  const [calloutHeight, setCalloutHeight] = useState(0)
+  const isProduction = process.env.NEXT_PUBLIC_SARA_STAGE?.toLowerCase() === 'prod'
+
   useEffect(() => {
     // Effect to fetch the active billing organization
     const fetchAndSetActiveBillingOrg = async () => {
@@ -103,6 +106,13 @@ const SidebarNav = () => {
     }
 
     fetchGitHubAppAndPremiumStatus()
+
+    if (isProduction) {
+      setCalloutHeight(60)
+    } else {
+      setCalloutHeight(112)
+    }
+
   }, [activeBillingOrg, saraSession])
 
   const handleMouseUp = (_event: any) => {
@@ -126,163 +136,167 @@ const SidebarNav = () => {
     setMouseDown(true)
   }
 
-  // We do dynamic class naming here to position the sticky elements and
-  // determine the height of the draggable <div>. This is because there are
-  // sticky headers that are positioned in the component <HeaderCallouts>. For
-  // more details around sizing see <HeaderCallouts>.
-  const topDivClassname = saraSession
-    ? 'fixed top-112 overflow-hidden'
-    : 'fixed top-96 overflow-hidden'
+  // // We do dynamic class naming here to position the sticky elements and
+  // // determine the height of the draggable <div>. This is because there are
+  // // sticky headers that are positioned in the component <HeaderCallouts>. For
+  // // more details around sizing see <HeaderCallouts>.
+  // const topDivClassname = saraSession
+  //   ? 'fixed overflow-hidden'
+  //   : 'fixed overflow-hidden'
 
   const draggableDivClassname = saraSession
-    ? 'flex flex-col h-[calc(100vh-112px)] bg-white dark:bg-black transition duration-200 ease-in-out border-r-2 border-orange-500'
-    : 'flex flex-col h-[calc(100vh-96px)] bg-white dark:bg-black transition duration-200 ease-in-out border-r-2 border-orange-500'
+    ? 'flex flex-col h-screen fixed inset-y-0 left-0 bg-white dark:bg-black transition duration-200 ease-in-out border-r-2 border-orange-500'
+    : 'flex flex-col h-screen fixed inset-y-0 left-0 bg-white dark:bg-black transition duration-200 ease-in-out border-orange-500'
 
   const allDataLoaded =
     orgIsPremium !== undefined && userGitHubAppInstalled !== undefined
 
   return (
-    <div className={topDivClassname} style={{ marginTop: '112px' }}>
-      <div
-        ref={sidebarRef}
-        className={draggableDivClassname}
-        onMouseUp={handleMouseUp}
-        onMouseMove={handleMouseMove}
-        style={{ width: `${width}px` }} // Use inline style for dynamic width
-      >
-        {/* Logo section */}
-        <div className="flex flex-col items-center sticky top-0 z-10 p-4 mx-5 mt-5 rounded-full border-4 border-blue-500">
-          <Link href="/about">
-            <Image
-              src={SaraPortrait}
-              alt="Sara's AI Assistant"
-              title="Sara's AI Assistant"
-              width={100}
-              height={100}
-              className="rounded-full"
-            />
-            <p className="text-lg mt-2 text-center">Sara</p>
-            <p className="text-sm italic text-center">AI Assistant</p>
-          </Link>
-        </div>
+    <div
+      ref={sidebarRef}
+      className={draggableDivClassname}
+      onMouseUp={handleMouseUp}
+      onMouseMove={handleMouseMove}
+      style={{ width: `${width}px`, marginTop: `${calloutHeight}px` }} // Use inline style for dynamic width
+    >
+      {/* Logo section */}
+      <div className="flex flex-col items-center sticky top-0 z-10 p-4 mx-5 mt-5 rounded-full border-4 border-blue-500">
+        <Link href="/about">
+          <Image
+            src={SaraPortrait}
+            alt="Sara's AI Assistant"
+            title="Sara's AI Assistant"
+            width={100}
+            height={100}
+            className="rounded-full"
+          />
+          <p className="text-lg mt-2 text-center">Sara</p>
+          <p className="text-sm italic text-center">AI Assistant</p>
+        </Link>
+      </div>
 
-        {/* Navigation Buttons */}
-        <nav className="flex flex-col space-y-1 p-2">
-          {/* Projects Button */}
-          <Skeleton loading={loadingBillingOrg}>
-            <button
-              className="flex items-center justify-center px-4 py-2 rounded-lg hover:bg-secondary hover:text-secondary-foreground transition-colors"
-              onClick={() => {
-                if (!activeBillingOrg) {
-                  toast.error(`Please select billing context`)
-                  router.push('/orgs')
-                }
-                setProjectIdForConfiguration(null)
-                router.push('/projects')
-              }}
+      {/* Navigation Buttons */}
+      <nav className="flex flex-col space-y-1 p-2">
+        {/* Projects Button */}
+        <Skeleton loading={loadingBillingOrg}>
+          <button
+            className="flex items-center justify-center px-4 py-2 rounded-lg hover:bg-secondary hover:text-secondary-foreground transition-colors"
+            onClick={() => {
+              if (!activeBillingOrg) {
+                toast.error(`Please select billing context`)
+                router.push('/orgs')
+              }
+              setProjectIdForConfiguration(null)
+              router.push('/projects')
+            }}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="1.5"
+              stroke="currentColor"
+              className="w-6 h-6"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z"
-                />
-              </svg>
-              <span className="ml-3">Switch Project</span>
-            </button>
-          </Skeleton>
-          {/* ...other buttons */}
-        </nav>
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z"
+              />
+            </svg>
+            <span className="ml-3">Switch Project</span>
+          </button>
+        </Skeleton>
+        {/* ...other buttons */}
+      </nav>
 
-        <Flex direction="column" align="center">
-          <div className="w-1/2 border-t rounded-xl border-blue-600 mb-2"></div>
-        </Flex>
-        <HoverCard.Root>
-          <HoverCard.Trigger>
-            <Flex gap="2" align="center" direction="column">
-              <Skeleton loading={projectIdForConfiguration === undefined}>
-                {projectIdForConfiguration ? (
-                  activeProjectDetails ? (
-                    <>
-                      <Link
-                        href={`/projects/${activeProjectDetails?.id}`}
-                        className="hover:underline flex items-center"
+      <Flex direction="column" align="center">
+        <div className="w-1/2 border-t rounded-xl border-blue-600 mb-2"></div>
+      </Flex>
+      <HoverCard.Root>
+        <HoverCard.Trigger>
+          <Flex gap="2" align="center" direction="column">
+            <Skeleton loading={projectIdForConfiguration === undefined}>
+              {projectIdForConfiguration ? (
+                activeProjectDetails ? (
+                  <>
+                    <Link
+                      href={`/projects/${activeProjectDetails?.id}`}
+                      className="hover:underline flex items-center"
+                    >
+                      {activeProjectDetails
+                        ? renderHealthIcon(
+                            activeProjectDetails.health.readableValue,
+                          )
+                        : null}
+                      <Text
+                        size="2"
+                        as="span"
+                        className="align-middle"
+                        weight="bold"
                       >
-                        {activeProjectDetails
-                          ? renderHealthIcon(
-                              activeProjectDetails.health.readableValue,
-                            )
-                          : null}
-                        <Text
-                          size="2"
-                          as="span"
-                          className="align-middle"
-                          weight="bold"
-                        >
-                          {activeProjectDetails?.project.name}
-                        </Text>
-                      </Link>
-                    </>
-                  ) : (
-                    <Text size="2" className="italic text-gray-500">
-                      Loading...
-                    </Text>
-                  )
+                        {activeProjectDetails?.project.name}
+                      </Text>
+                    </Link>
+                  </>
                 ) : (
                   <Text size="2" className="italic text-gray-500">
-                    No Project Selected
+                    Loading...
                   </Text>
-                )}
-              </Skeleton>
+                )
+              ) : (
+                <Text size="2" className="italic text-gray-500">
+                  No Project Selected
+                </Text>
+              )}
+            </Skeleton>
+          </Flex>
+        </HoverCard.Trigger>
+        {activeProjectDetails ? (
+          <HoverCard.Content>
+            <Inset>
+              <ProjectStatusDetailsHoverCard
+                health={activeProjectDetails.health}
+                lastRefreshedAt={activeProjectDetails.project.lastRefreshedAt}
+              />
+            </Inset>
+          </HoverCard.Content>
+        ) : null}
+      </HoverCard.Root>
+
+      <div 
+        className={isProduction ? 
+          "rounded-lg border border-blue-500 no-scrollbar m-2 overflow-y-auto h-72" 
+          : "rounded-lg border border-blue-500 no-scrollbar m-2 overflow-y-auto h-60"}
+      >
+        {/* Resource Loader */}
+        {projectIdForConfiguration ? (
+          <GoalsTaskNavTree
+            projectId={projectIdForConfiguration}
+            activeGoalId={
+              activeWorkspaceDetails ? activeWorkspaceDetails.goalId : null
+            }
+            activeTaskId={
+              activeWorkspaceDetails ? activeWorkspaceDetails.taskId : null
+            }
+          />
+        ) : (
+          <div className="flex flex-col">
+            <p className="text-center font-semibold">
+              Goals & Tasks Explorer
+            </p>
+            <Flex direction="column" align="center">
+              <div className="w-1/2 border-t rounded-xl border-blue-600 my-2"></div>
             </Flex>
-          </HoverCard.Trigger>
-          {activeProjectDetails ? (
-            <HoverCard.Content>
-              <Inset>
-                <ProjectStatusDetailsHoverCard
-                  health={activeProjectDetails.health}
-                  lastRefreshedAt={activeProjectDetails.project.lastRefreshedAt}
-                />
-              </Inset>
-            </HoverCard.Content>
-          ) : null}
-        </HoverCard.Root>
+            <Text size="2" className="text-center italic text-gray-500">
+              None
+            </Text>
+          </div>
+        )}
+      </div>
 
-        <div className="grow rounded-lg border border-blue-500 no-scrollbar m-2 overflow-y-auto">
-          {/* Resource Loader */}
-          {projectIdForConfiguration ? (
-            <GoalsTaskNavTree
-              projectId={projectIdForConfiguration}
-              activeGoalId={
-                activeWorkspaceDetails ? activeWorkspaceDetails.goalId : null
-              }
-              activeTaskId={
-                activeWorkspaceDetails ? activeWorkspaceDetails.taskId : null
-              }
-            />
-          ) : (
-            <div className="flex flex-col h-full">
-              <p className="text-center font-semibold">
-                Goals & Tasks Explorer
-              </p>
-              <Flex direction="column" align="center">
-                <div className="w-1/2 border-t rounded-xl border-blue-600 my-2"></div>
-              </Flex>
-              <Text size="2" className="text-center italic text-gray-500">
-                None
-              </Text>
-            </div>
-          )}
-        </div>
-
-        {/* Bottom Section */}
+      {/* Bottom Section */}
+      <div>
         <div className="w-full mx-auto border-t rounded-xl border-blue-600 mt-2"></div>
         <div className="flex flex-col items-center sticky bottom-0 z-10 w-full p-2">
           <div className="flex items-center">
@@ -366,21 +380,21 @@ const SidebarNav = () => {
             </div>
           </div>
         </div>
-        {isPreviewFeatureEnabled('DraggableNav') ? (
-          <div
-            ref={dragRef}
-            className="absolute top-0 right-0 h-full w-1 bg-orange-500 cursor-col-resize"
-            style={{ zIndex: 1000 }} // Ensure drag handle is above all content for usability
-            onMouseDown={handleMouseDown}
-          ></div>
-        ) : (
-          /*<div
-            className="absolute top-0 right-0 h-full w-1 bg-orange-500"
-            style={{ zIndex: 1000 }}
-          ></div>*/
-          null
-        )}
       </div>
+      {isPreviewFeatureEnabled('DraggableNav') ? (
+        <div
+          ref={dragRef}
+          className="absolute top-0 right-0 h-full w-1 bg-orange-500 cursor-col-resize"
+          style={{ zIndex: 1000 }} // Ensure drag handle is above all content for usability
+          onMouseDown={handleMouseDown}
+        ></div>
+      ) : (
+        /*<div
+          className="absolute top-0 right-0 h-full w-1 bg-orange-500"
+          style={{ zIndex: 1000 }}
+        ></div>*/
+        null
+      )}
     </div>
   )
 }
