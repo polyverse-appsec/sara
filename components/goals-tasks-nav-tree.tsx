@@ -200,14 +200,15 @@ const renderNodeName = (navigatableResource: NavigatableGoalOrTaskResource) => {
             )}
         </HoverCard.Trigger>
         <HoverCard.Content>
-            <div className="flex flex-col p-2 bg-background rounded-lg blue-border">
+            <p className="mb-2 font-semibold">{(navigatableResource.type === 'GOAL' ?'Goal':'Task')}</p>
+            <div className="flex flex-col p-2 bg-background rounded-lg blue-border break-words">
                 <div className="flex flex-col">
                     {navigatableResource.type === 'GOAL' ? (
                         <Link href={`/goals/${navigatableResource.id}`}>
-                            <p className="mb-2 font-semibold hover:text-orange-500">Goal: {navigatableResource.name}</p>
+                            <p className="mb-2 font-semibold hover:text-orange-500">Name: {navigatableResource.name}</p>
                         </Link>
                     ) : (
-                        <p className="mb-2 font-semibold">Task: {navigatableResource.name}</p>
+                        <p className="mb-2 font-semibold">Name: {navigatableResource.name}</p>
                     ) }
                 </div>
                 <div className="flex flex-col items-start">
@@ -218,12 +219,14 @@ const renderNodeName = (navigatableResource: NavigatableGoalOrTaskResource) => {
                     )}
                     {navigatableResource.description && (
                         <div className="flex flex-col">
+                            <br/>
                             <p className="font-semibold">Description</p>
                             <p className="ml-4">{navigatableResource.description}</p>
                         </div>
                     )}
                     {navigatableResource.acceptanceCriteria && (
                         <div className="flex flex-col">
+                            <br/>
                             <p className="font-semibold">Acceptance Criteria</p>
                             <p className="ml-4">{navigatableResource.acceptanceCriteria}</p>
                         </div>
