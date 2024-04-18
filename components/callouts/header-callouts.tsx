@@ -30,7 +30,7 @@ const HeaderCallouts = () => {
   // Callouts as headers need to be sticky so they stay in position as the
   // user scrolls.
   return (
-    <div className="fixed w-full z-50 bg-white pb-2">
+    <div className="fixed w-full z-50 pb-2 bg-background">
       <Flex direction="column">
         {!isProduction && (
           <div className={deploymentStageClassname}>
