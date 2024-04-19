@@ -10,6 +10,7 @@ import { coldarkDark } from 'react-syntax-highlighter/dist/cjs/styles/prism'
 import { useCopyToClipboard } from './../../lib/hooks/use-copy-to-clipboard'
 import { Button } from './button'
 import { IconCheck, IconCopy, IconDownload } from './icons'
+import * as Tooltip from '@radix-ui/react-tooltip';
 
 interface Props {
   language: string
@@ -97,24 +98,44 @@ const CodeBlock: FC<Props> = memo(({ language, value }) => {
       <div className="flex items-center justify-between w-full px-6 py-2 pr-4 bg-zinc-800 text-zinc-100">
         <span className="text-xs lowercase">{language}</span>
         <div className="flex items-center space-x-1">
-          <Button
-            variant="ghost"
-            className="hover:bg-zinc-800 focus-visible:ring-1 focus-visible:ring-slate-700 focus-visible:ring-offset-0"
-            onClick={downloadAsFile}
-            size="icon"
-          >
-            <IconDownload />
-            <span className="sr-only">Download</span>
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="text-xs hover:bg-zinc-800 focus-visible:ring-1 focus-visible:ring-slate-700 focus-visible:ring-offset-0"
-            onClick={onCopy}
-          >
-            {isCopied ? <IconCheck /> : <IconCopy />}
-            <span className="sr-only">Copy code</span>
-          </Button>
+          <Tooltip.Root>
+              <Tooltip.Provider>
+                  <Tooltip.Trigger className="flex items-center cursor-pointer">
+                    <Button
+                      variant="ghost"
+                      className="hover:bg-zinc-800 focus-visible:ring-1 focus-visible:ring-slate-700 focus-visible:ring-offset-0"
+                      onClick={downloadAsFile}
+                      size="icon"
+                    >
+                      <IconDownload />
+                      <span className="sr-only">Download</span>
+                    </Button>
+                  </Tooltip.Trigger>
+                  <Tooltip.Content side="left" align="end" className="clipboardCopyToolTip">
+                      Download Source
+                  </Tooltip.Content>
+              </Tooltip.Provider>
+          </Tooltip.Root>
+
+          <Tooltip.Root>
+              <Tooltip.Provider>
+                  <Tooltip.Trigger className="flex items-center cursor-pointer">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="text-xs hover:bg-zinc-800 focus-visible:ring-1 focus-visible:ring-slate-700 focus-visible:ring-offset-0"
+                    onClick={onCopy}
+                  >
+                    {isCopied ? <IconCheck /> : <IconCopy />}
+                    <span className="sr-only">Copy code</span>
+                  </Button>
+                  </Tooltip.Trigger>
+                  <Tooltip.Content side="left" align="end" className="clipboardCopyToolTip">
+                      Copy to Clipboard
+                  </Tooltip.Content>
+              </Tooltip.Provider>
+          </Tooltip.Root>
+
         </div>
       </div>
       <SyntaxHighlighter

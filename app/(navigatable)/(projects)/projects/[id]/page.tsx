@@ -12,6 +12,7 @@ import { rediscoverProject } from 'lib/polyverse/backend/backend'
 import { isPreviewFeatureEnabled } from 'lib/service-utils'
 import { useSession } from 'next-auth/react'
 import toast from 'react-hot-toast'
+import * as Tooltip from '@radix-ui/react-tooltip';
 
 import { type SaraSession } from './../../../../../auth'
 import RenderableResource from './../../../../../components/renderable-resource/renderable-resource'
@@ -191,10 +192,17 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
             </div>
             <div className="my-1 flex items-center">
               <h3 className="text-xs text-gray-500 italic">ID</h3>
-              <div className="flex items-center cursor-pointer" onClick={() => copyToClipboard(project.id)}>
-                <p className="text-xs text-gray-500 italic ml-2">{project.id}</p>
-                <CopyToClipboardIcon copied={copied} color='#6B7280'/>
-              </div>
+              <p className="text-xs text-gray-500 italic ml-2">{project.id}</p>
+              <Tooltip.Root>
+                    <Tooltip.Provider>
+    <                   Tooltip.Trigger className="flex items-center cursor-pointer" onClick={() => copyToClipboard(project.id)}>
+                            <CopyToClipboardIcon copied={copied} color='#6B7280' />
+                        </Tooltip.Trigger>
+                        <Tooltip.Content side="left" align="end" className="clipboardCopyToolTip">
+                            Copy Project Id
+                        </Tooltip.Content>
+                    </Tooltip.Provider>
+                </Tooltip.Root>
             </div>
             {project.description ? (
               <div className="my-1 flex items-center">

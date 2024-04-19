@@ -313,7 +313,7 @@ function renderSideChatDetails(
     <                   Tooltip.Trigger className="flex items-center cursor-pointer" onClick={() => copyToClipboard(content)}>
                             <CopyToClipboardIcon copied={copied} color='#6B7280' />
                         </Tooltip.Trigger>
-                        <Tooltip.Content side="left" align="end" className="text-xs text-background p-2 bg-foreground/50 shadow-lg rounded">
+                        <Tooltip.Content side="left" align="end" className="clipboardCopyToolTip">
                             Copy Response to Clipboard
                         </Tooltip.Content>
                     </Tooltip.Provider>

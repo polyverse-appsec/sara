@@ -11,6 +11,7 @@ import RenderableSaraChatResourceContent from 'components/sara-chat/renderable-s
 import { useAppContext } from 'lib/hooks/app-context'
 import CopyToClipboardIcon from 'components/icons/CopyToClipboardIcon'
 import { useSession } from 'next-auth/react'
+import * as Tooltip from '@radix-ui/react-tooltip';
 
 import { type SaraSession } from './../../../../../auth'
 
@@ -115,10 +116,17 @@ const GoalIndex = ({ params: { id } }: { params: { id: string } }) => {
             </div>
             <div className="my-1 flex items-center">
               <h3 className="text-xs text-gray-500 italic">ID</h3>
-              <div className="flex items-center cursor-pointer" onClick={() => copyToClipboard(goal.id)}>
-                <p className="text-xs text-gray-500 italic ml-2">{goal.id}</p>
-                <CopyToClipboardIcon copied={copied} color='#6B7280' />
-              </div>
+              <p className="text-xs text-gray-500 italic ml-2">{goal.id}</p>
+              <Tooltip.Root>
+                    <Tooltip.Provider>
+    <                   Tooltip.Trigger className="flex items-center cursor-pointer" onClick={() => copyToClipboard(goal.id)}>
+                            <CopyToClipboardIcon copied={copied} color='#6B7280' />
+                        </Tooltip.Trigger>
+                        <Tooltip.Content side="left" align="end" className="clipboardCopyToolTip">
+                            Copy Goal Id
+                        </Tooltip.Content>
+                    </Tooltip.Provider>
+                </Tooltip.Root>
             </div>
             {goal.description ? (
               <div className="my-1 flex items-center">
