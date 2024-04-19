@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { ArrowLeftIcon, StarFilledIcon } from '@radix-ui/react-icons'
+import { Flex } from '@radix-ui/themes'
 import { getOrgUserStatus } from 'app/react-utils'
 import { SaraSession } from 'auth'
 import RenderableResourceContent from 'components/renderable-resource/renderable-resource-content'
@@ -11,7 +12,6 @@ import { useAppContext } from 'lib/hooks/app-context'
 import { preReleaseServiceDisclaimer } from 'lib/productDescriptions'
 import { isPreviewFeatureEnabled } from 'lib/service-utils'
 import { useSession } from 'next-auth/react'
-import { Flex } from '@radix-ui/themes'
 
 const SettingsOrgUpgrade = () => {
   const { activeBillingOrg } = useAppContext()

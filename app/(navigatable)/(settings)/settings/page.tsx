@@ -5,12 +5,12 @@ import Link from 'next/link'
 import { ExclamationTriangleIcon } from '@radix-ui/react-icons'
 import { getOrgUserStatus } from 'app/react-utils'
 import { SaraSession } from 'auth'
+import RenderableResourceContent from 'components/renderable-resource/renderable-resource-content'
 import { ThemeToggle } from 'components/theme-toggle'
 import { Button } from 'components/ui/button'
 import { useAppContext } from 'lib/hooks/app-context'
 import { signOut, useSession } from 'next-auth/react'
 import toast from 'react-hot-toast'
-import RenderableResourceContent from 'components/renderable-resource/renderable-resource-content'
 
 const SettingsIndex = () => {
   const { activeBillingOrg } = useAppContext()

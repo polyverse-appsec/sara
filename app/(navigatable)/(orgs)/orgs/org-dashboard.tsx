@@ -1,11 +1,11 @@
 'use client'
 
 import React from 'react'
+import RenderableResourceContent from 'components/renderable-resource/renderable-resource-content'
 
 import { type Org } from './../../../../lib/data-model-types'
 import { OrgCreateTile } from './org-create-tile'
 import { OrgDetailsTile } from './org-details-tile'
-import RenderableResourceContent from 'components/renderable-resource/renderable-resource-content'
 
 interface OrgDashboardProps {
   orgs: Org[]

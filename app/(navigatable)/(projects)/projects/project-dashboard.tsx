@@ -1,13 +1,12 @@
 'use client'
 
 import React from 'react'
+import { Skeleton, Text } from '@radix-ui/themes'
+import RenderableResourceContent from 'components/renderable-resource/renderable-resource-content'
 import { Project } from 'lib/data-model-types'
-import { Text } from '@radix-ui/themes'
 
 import { ProjectCreateTile } from './project-create-tile'
 import { ProjectDetailsTile } from './project-details-tile'
-import { Skeleton } from '@radix-ui/themes'
-import RenderableResourceContent from 'components/renderable-resource/renderable-resource-content'
 
 interface ProjectDashboardProps {
   projects: Project[] | undefined
@@ -47,7 +46,7 @@ const ProjectDashboard = ({
             <div className="flex items-center justify-center">
               <div className="w-1/2 flex items-center">
                 <ProjectCreateTile />
-              </div> 
+              </div>
             </div>
           </div>
         ) : (

@@ -139,12 +139,12 @@ export const PATCH = auth(async (req: NextAuthRequest) => {
     }
 
     if (reqBody.status !== 'QUERY_RECEIVED' && reqBody.status !== 'CANCELLED') {
-        return new Response(
-            `Chat query 'status' can only be set to 'QUERY_RECEIVED' or 'CANCELLED'`,
-            {
-              status: StatusCodes.BAD_REQUEST,
-            },
-        )
+      return new Response(
+        `Chat query 'status' can only be set to 'QUERY_RECEIVED' or 'CANCELLED'`,
+        {
+          status: StatusCodes.BAD_REQUEST,
+        },
+      )
     }
 
     // Validate that there is an OpenAI Thread associated with the chat for
@@ -176,51 +176,60 @@ export const PATCH = auth(async (req: NextAuthRequest) => {
 
     // Handle the logic to transition a chat query to the `CANCELLED` state
     if (reqBody.status === 'CANCELLED' && !chat.openAiThreadRunId) {
-        // Just return here since we haven't actually started the thread run yet
-        chatQuery.status = 'CANCELLED'
-        await updateChatQuery(chatQuery)
+      // Just return here since we haven't actually started the thread run yet
+      chatQuery.status = 'CANCELLED'
+      await updateChatQuery(chatQuery)
 
-        const logConext: SaraLogContext = {
-            user,
-            org,
-            project,
-            other: {
-                chat,
-                chatQuery
-            }
-        }
+      const logConext: SaraLogContext = {
+        user,
+        org,
+        project,
+        other: {
+          chat,
+          chatQuery,
+        },
+      }
 
-        logger.infoWithContext(`'CANCELLED' chat query '${chatQuery.id}' that didn't have a thread run`, logConext)
+      logger.infoWithContext(
+        `'CANCELLED' chat query '${chatQuery.id}' that didn't have a thread run`,
+        logConext,
+      )
 
-        return new Response(ReasonPhrases.OK, {
-            status: StatusCodes.OK,
-        })
+      return new Response(ReasonPhrases.OK, {
+        status: StatusCodes.OK,
+      })
     }
 
     if (reqBody.status === 'CANCELLED' && chat.openAiThreadRunId) {
-        await cancelThreadRunForProjectGoalChatting(chat.openAiThreadId, chat.openAiThreadRunId)
+      await cancelThreadRunForProjectGoalChatting(
+        chat.openAiThreadId,
+        chat.openAiThreadRunId,
+      )
 
-        chatQuery.status = 'CANCELLED'
-        await updateChatQuery(chatQuery)
+      chatQuery.status = 'CANCELLED'
+      await updateChatQuery(chatQuery)
 
-        chat.openAiThreadRunId = null
-        await updateChat(chat)
+      chat.openAiThreadRunId = null
+      await updateChat(chat)
 
-        const logConext: SaraLogContext = {
-            user,
-            org,
-            project,
-            other: {
-                chat,
-                chatQuery
-            }
-        }
+      const logConext: SaraLogContext = {
+        user,
+        org,
+        project,
+        other: {
+          chat,
+          chatQuery,
+        },
+      }
 
-        logger.infoWithContext(`'CANCELLED' chat query '${chatQuery.id}'`, logConext)
+      logger.infoWithContext(
+        `'CANCELLED' chat query '${chatQuery.id}'`,
+        logConext,
+      )
 
-        return new Response(ReasonPhrases.OK, {
-            status: StatusCodes.OK,
-        })
+      return new Response(ReasonPhrases.OK, {
+        status: StatusCodes.OK,
+      })
     }
 
     // Handle the logic to transition a chat query to the `QUERY_RECEIVED` state

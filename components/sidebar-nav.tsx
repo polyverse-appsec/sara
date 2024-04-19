@@ -9,7 +9,14 @@ import {
   GearIcon,
   StarFilledIcon,
 } from '@radix-ui/react-icons'
-import { Flex, HoverCard, Inset, Skeleton, Text, Tooltip } from '@radix-ui/themes'
+import {
+  Flex,
+  HoverCard,
+  Inset,
+  Skeleton,
+  Text,
+  Tooltip,
+} from '@radix-ui/themes'
 import { SaraSession } from 'auth'
 import ProjectStatusDetailsHoverCard from 'components/project-status/project-status-details-card'
 import { type Org } from 'lib/data-model-types'
@@ -62,7 +69,8 @@ const SidebarNav = () => {
   const sidebarRef = useRef(null)
 
   const [calloutHeight, setCalloutHeight] = useState(0)
-  const isProduction = process.env.NEXT_PUBLIC_SARA_STAGE?.toLowerCase() === 'prod'
+  const isProduction =
+    process.env.NEXT_PUBLIC_SARA_STAGE?.toLowerCase() === 'prod'
 
   useEffect(() => {
     // Effect to fetch the active billing organization
@@ -112,7 +120,6 @@ const SidebarNav = () => {
     } else {
       setCalloutHeight(112)
     }
-
   }, [activeBillingOrg, saraSession])
 
   const handleMouseUp = (_event: any) => {
@@ -200,7 +207,7 @@ const SidebarNav = () => {
                 </svg>
               </button>
             </Tooltip>
-          </Skeleton>   
+          </Skeleton>
           {/* Project Name Display */}
           <HoverCard.Root>
             <HoverCard.Trigger>
@@ -234,19 +241,21 @@ const SidebarNav = () => {
                       </Text>
                     )
                   ) : (
-                      <Text size="2" className="italic text-gray-500">
-                        No Project Selected
-                      </Text>
+                    <Text size="2" className="italic text-gray-500">
+                      No Project Selected
+                    </Text>
                   )}
                 </Skeleton>
               </Flex>
             </HoverCard.Trigger>
-            {(projectIdForConfiguration && activeProjectDetails) ? (
+            {projectIdForConfiguration && activeProjectDetails ? (
               <HoverCard.Content>
                 <Inset>
                   <ProjectStatusDetailsHoverCard
                     health={activeProjectDetails.health}
-                    lastRefreshedAt={activeProjectDetails.project.lastRefreshedAt}
+                    lastRefreshedAt={
+                      activeProjectDetails.project.lastRefreshedAt
+                    }
                   />
                 </Inset>
               </HoverCard.Content>
@@ -255,10 +264,12 @@ const SidebarNav = () => {
         </div>
       </nav>
 
-      <div 
-        className={isProduction ? 
-          "rounded-lg border border-blue-500 no-scrollbar m-2 overflow-y-auto h-72" 
-          : "rounded-lg border border-blue-500 no-scrollbar m-2 overflow-y-auto h-64"}
+      <div
+        className={
+          isProduction
+            ? 'rounded-lg border border-blue-500 no-scrollbar m-2 overflow-y-auto h-72'
+            : 'rounded-lg border border-blue-500 no-scrollbar m-2 overflow-y-auto h-64'
+        }
       >
         {/* Resource Loader */}
         {projectIdForConfiguration ? (
@@ -273,9 +284,7 @@ const SidebarNav = () => {
           />
         ) : (
           <div className="flex flex-col">
-            <p className="text-center font-semibold">
-              Goals & Tasks Explorer
-            </p>
+            <p className="text-center font-semibold">Goals & Tasks Explorer</p>
             <Flex direction="column" align="center">
               <div className="w-1/2 border-t rounded-xl border-blue-600 my-2"></div>
             </Flex>
@@ -379,13 +388,11 @@ const SidebarNav = () => {
           style={{ zIndex: 1000 }} // Ensure drag handle is above all content for usability
           onMouseDown={handleMouseDown}
         ></div>
-      ) : (
-        /*<div
+      ) : /*<div
           className="absolute top-0 right-0 h-full w-1 bg-orange-500"
           style={{ zIndex: 1000 }}
         ></div>*/
-        null
-      )}
+      null}
     </div>
   )
 }

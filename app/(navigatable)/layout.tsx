@@ -23,7 +23,8 @@ const NavigatableLayout = ({ children }: NavigatableLayoutProps) => {
   const session = useSession()
   const saraSession = session.data ? (session.data as SaraSession) : null
   const [calloutHeight, setCalloutHeight] = useState(0)
-  const isProduction = process.env.NEXT_PUBLIC_SARA_STAGE?.toLowerCase() === 'prod'
+  const isProduction =
+    process.env.NEXT_PUBLIC_SARA_STAGE?.toLowerCase() === 'prod'
 
   useEffect(() => {
     if (!saraSession) {
@@ -35,7 +36,6 @@ const NavigatableLayout = ({ children }: NavigatableLayoutProps) => {
     } else {
       setCalloutHeight(100)
     }
-
   }, [saraSession, isProduction])
 
   if (!saraSession) {
@@ -80,7 +80,12 @@ const NavigatableLayout = ({ children }: NavigatableLayoutProps) => {
           ) : (
             <>
               <SidebarNav />
-              <div className="flex-1 overflow-auto" style={{ marginLeft: '240px', marginTop: `${calloutHeight}px` }}>{children}</div>
+              <div
+                className="flex-1 overflow-auto"
+                style={{ marginLeft: '240px', marginTop: `${calloutHeight}px` }}
+              >
+                {children}
+              </div>
             </>
           )}
         </div>

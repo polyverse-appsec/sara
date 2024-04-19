@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { ArrowLeftIcon } from '@radix-ui/react-icons'
+import { Flex } from '@radix-ui/themes'
 import { getOrgUserStatus } from 'app/react-utils'
 import { SaraSession } from 'auth'
 import CollapsibleRenderableResourceContent from 'components/renderable-resource/collapsible-renderable-resource-content'
@@ -15,8 +17,6 @@ import { getResource } from './../../../../../app/saraClient'
 import auth1Image from './../../../../../public/auth1.png'
 import auth2Image from './../../../../../public/auth2.png'
 import auth3Image from './../../../../../public/auth3.png'
-import { Flex } from '@radix-ui/themes'
-import { ArrowLeftIcon } from '@radix-ui/react-icons'
 
 export interface OrgAndStatus {
   name: string
@@ -74,7 +74,9 @@ const SettingsGithubAppInstall = () => {
         </button>
       </div>
       <RenderableResourceContent>
-        <p className="text-2xl font-bold px-72">Authorize Private Repo Access</p>
+        <p className="text-2xl font-bold px-72">
+          Authorize Private Repo Access
+        </p>
       </RenderableResourceContent>
       <RenderableResourceContent>
         <div className="flex flex-col items-center text-center">

@@ -51,7 +51,6 @@ export const OrgDetailsTile = ({ name, id }: OrgDetailsTileProps) => {
     setOrgIsPersonal(name === saraSession?.username)
 
     fetchUserStatus()
-
   }, [activeBillingOrg, id, name, saraSession])
 
   return (

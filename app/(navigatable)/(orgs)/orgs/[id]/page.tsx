@@ -9,11 +9,11 @@ import { SaraSession } from 'auth'
 import RenderableResourceContent from 'components/renderable-resource/renderable-resource-content'
 import SaraLoading from 'components/sara-loading'
 import { IconExternalLink } from 'components/ui/icons'
+import { isPreviewFeatureEnabled } from 'lib/service-utils'
 import { useSession } from 'next-auth/react'
 
 import { type Org } from './../../../../../lib/data-model-types'
 import { useAppContext } from './../../../../../lib/hooks/app-context'
-import { isPreviewFeatureEnabled } from 'lib/service-utils'
 
 const OrgIndex = ({ params: { id } }: { params: { id: string } }) => {
   const { activeBillingOrg, setActiveBillingOrg } = useAppContext()
@@ -105,10 +105,10 @@ const OrgIndex = ({ params: { id } }: { params: { id: string } }) => {
               Your Account is currently a Free Subscription with supported
               features noted below.
             </h3>
-          ) : (          
+          ) : (
             <h3 className="text-lg font-semibold text-center">
-              Your Account has no current subscription. Please activate Premium Plan
-              to enable Sara, Project Creation, and Goals/Task Analysis.
+              Your Account has no current subscription. Please activate Premium
+              Plan to enable Sara, Project Creation, and Goals/Task Analysis.
             </h3>
           )}
         </div>
@@ -123,15 +123,17 @@ const OrgIndex = ({ params: { id } }: { params: { id: string } }) => {
                   : 'bg-background shadow-md rounded-lg p-6 border mb-4'
               }
             >
-                <div className="flex flex-col items-start">
-                  <p>Free Plan</p>
-                  <p>✅ Project creation to analyze GitHub repositories</p>
-                  <p>✅ Project Goals can be set to guide Sara analysis</p>
-                  <p>✅ Sara generated Task-plans to achieve Goals</p>
-                  <p>✅ Manual GitHub source synchronization</p>
-                  <p>❌ Projects limited to 5 per account</p>
-                  <p>❌ GitHub repositories limited to public repositories only</p>
-                </div>
+              <div className="flex flex-col items-start">
+                <p>Free Plan</p>
+                <p>✅ Project creation to analyze GitHub repositories</p>
+                <p>✅ Project Goals can be set to guide Sara analysis</p>
+                <p>✅ Sara generated Task-plans to achieve Goals</p>
+                <p>✅ Manual GitHub source synchronization</p>
+                <p>❌ Projects limited to 5 per account</p>
+                <p>
+                  ❌ GitHub repositories limited to public repositories only
+                </p>
+              </div>
             </div>
           )}
           <div

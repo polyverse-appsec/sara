@@ -3,9 +3,8 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import * as Label from '@radix-ui/react-label'
-import { Flex, Text } from '@radix-ui/themes'
+import { Flex, HoverCard, Text } from '@radix-ui/themes'
 import { NodeRendererProps, Tree } from 'react-arborist'
-import { HoverCard } from '@radix-ui/themes'
 
 import { type Goal, type Task } from '../lib/data-model-types'
 import { getResource } from './../app/saraClient'
@@ -64,12 +63,11 @@ interface NavigatableGoalOrTaskResource {
   description?: string
   acceptanceCriteria?: string
   status?: string
-
 }
 
-const renderGoalIcon = () => (
-    CheckedSquareIcon()
-/*
+const renderGoalIcon = () =>
+  CheckedSquareIcon()
+  /*
   <svg
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
@@ -85,7 +83,6 @@ const renderGoalIcon = () => (
     />
   </svg>
   */
-)
 
 const renderTaskIcon = () => (
   <svg
@@ -110,134 +107,207 @@ const renderTaskIcon = () => (
 )
 
 const CheckedSquareIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-        <path d="M9 11l3 3 5-5"></path>
-    </svg>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    width="24"
+    height="24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+    <path d="M9 11l3 3 5-5"></path>
+  </svg>
 )
 
 const UncheckedCircleIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    width="24"
+    height="24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
     <circle cx="12" cy="12" r="9"></circle>
-    </svg>
+  </svg>
 )
 
 const CheckedCircleIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="9"></circle>
-        <path d="M9 12l2 2 4-4"></path>
-    </svg>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    width="24"
+    height="24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <circle cx="12" cy="12" r="9"></circle>
+    <path d="M9 12l2 2 4-4"></path>
+  </svg>
 )
 
 const TargetIcon = () => (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <circle cx="12" cy="12" r="10" />
-      <circle cx="12" cy="12" r="6" />
-      <circle cx="12" cy="12" r="2" />
-      <line x1="12" y1="2" x2="12" y2="4" />
-      <line x1="12" y1="20" x2="12" y2="22" />
-      <line x1="2" y1="12" x2="4" y2="12" />
-      <line x1="20" y1="12" x2="22" y2="12" />
-    </svg>
-  );
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <circle cx="12" cy="12" r="10" />
+    <circle cx="12" cy="12" r="6" />
+    <circle cx="12" cy="12" r="2" />
+    <line x1="12" y1="2" x2="12" y2="4" />
+    <line x1="12" y1="20" x2="12" y2="22" />
+    <line x1="2" y1="12" x2="4" y2="12" />
+    <line x1="20" y1="12" x2="22" y2="12" />
+  </svg>
+)
 
 const ToDoTaskIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-  <path d="M9 10h.01M9 6h.01M9 14h.01M5 18h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-</svg>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    stroke-width="2"
+  >
+    <path d="M9 10h.01M9 6h.01M9 14h.01M5 18h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+  </svg>
 )
 
 const InProgressTaskIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-  <path d="M12 4v16m8-8H4" />
-</svg>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    stroke-width="2"
+  >
+    <path d="M12 4v16m8-8H4" />
+  </svg>
 )
 
 const CompletedTaskIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-</svg>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    stroke-width="2"
+  >
+    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+  </svg>
 )
-  
+
 const renderGoalOrTaskStatusIcon = (status: string) => {
-    if (status === 'OPEN' || status === 'TODO') {
-        return UncheckedCircleIcon()
-    } else if (status === 'IN_PROGRESS') {
-        return InProgressTaskIcon()
-    } else if (status === 'DONE') {
-        return CheckedCircleIcon()
-    } else {
-        return ToDoTaskIcon()
-    }
+  if (status === 'OPEN' || status === 'TODO') {
+    return UncheckedCircleIcon()
+  } else if (status === 'IN_PROGRESS') {
+    return InProgressTaskIcon()
+  } else if (status === 'DONE') {
+    return CheckedCircleIcon()
+  } else {
+    return ToDoTaskIcon()
+  }
 }
 
 const renderNodeName = (navigatableResource: NavigatableGoalOrTaskResource) => {
-    return (
+  return (
     <HoverCard.Root>
-        <HoverCard.Trigger>
-            {navigatableResource.type === 'GOAL' ? (
-                <Link href={`/goals/${navigatableResource.id}`} title={navigatableResource.name}>
-                    {navigatableResource.isActive ? (
-                        <Text weight="bold" color="green" title={navigatableResource.name}>
-                            {navigatableResource.name}
-                        </Text>
-                    ) : (
-                        <Text title={navigatableResource.name}>{navigatableResource.name}</Text>
-                    )}
-                </Link>
+      <HoverCard.Trigger>
+        {navigatableResource.type === 'GOAL' ? (
+          <Link
+            href={`/goals/${navigatableResource.id}`}
+            title={navigatableResource.name}
+          >
+            {navigatableResource.isActive ? (
+              <Text
+                weight="bold"
+                color="green"
+                title={navigatableResource.name}
+              >
+                {navigatableResource.name}
+              </Text>
             ) : (
-                <Text title={navigatableResource.name}>{navigatableResource.name}</Text>
+              <Text title={navigatableResource.name}>
+                {navigatableResource.name}
+              </Text>
             )}
-        </HoverCard.Trigger>
-        <HoverCard.Content>
-            <p className="mb-2 font-semibold">{(navigatableResource.type === 'GOAL' ?'Goal':'Task')}</p>
-            <div className="flex flex-col p-2 bg-background rounded-lg blue-border break-words">
-                <div className="flex flex-col">
-                    {navigatableResource.type === 'GOAL' ? (
-                        <Link href={`/goals/${navigatableResource.id}`}>
-                            <p className="mb-2 font-semibold hover:text-orange-500">Name: {navigatableResource.name}</p>
-                        </Link>
-                    ) : (
-                        <p className="mb-2 font-semibold">Name: {navigatableResource.name}</p>
-                    ) }
-                </div>
-                <div className="flex flex-col items-start">
-                    {navigatableResource.status && (
-                        <div className="flex flex-col">
-                            <span className="font-semibold mr-2">Status: {renderGoalOrTaskStatusIcon(navigatableResource.status)}</span>
-                        </div>
-                    )}
-                    {navigatableResource.description && (
-                        <div className="flex flex-col">
-                            <br/>
-                            <p className="font-semibold">Description</p>
-                            <p className="ml-4">{navigatableResource.description}</p>
-                        </div>
-                    )}
-                    {navigatableResource.acceptanceCriteria && (
-                        <div className="flex flex-col">
-                            <br/>
-                            <p className="font-semibold">Acceptance Criteria</p>
-                            <p className="ml-4">{navigatableResource.acceptanceCriteria}</p>
-                        </div>
-                    )}
-                </div>
-            </div>
-        </HoverCard.Content>
+          </Link>
+        ) : (
+          <Text title={navigatableResource.name}>
+            {navigatableResource.name}
+          </Text>
+        )}
+      </HoverCard.Trigger>
+      <HoverCard.Content>
+        <p className="mb-2 font-semibold">
+          {navigatableResource.type === 'GOAL' ? 'Goal' : 'Task'}
+        </p>
+        <div className="flex flex-col p-2 bg-background rounded-lg blue-border break-words">
+          <div className="flex flex-col">
+            {navigatableResource.type === 'GOAL' ? (
+              <Link href={`/goals/${navigatableResource.id}`}>
+                <p className="mb-2 font-semibold hover:text-orange-500">
+                  Name: {navigatableResource.name}
+                </p>
+              </Link>
+            ) : (
+              <p className="mb-2 font-semibold">
+                Name: {navigatableResource.name}
+              </p>
+            )}
+          </div>
+          <div className="flex flex-col items-start">
+            {navigatableResource.status && (
+              <div className="flex flex-col">
+                <span className="font-semibold mr-2">
+                  Status:{' '}
+                  {renderGoalOrTaskStatusIcon(navigatableResource.status)}
+                </span>
+              </div>
+            )}
+            {navigatableResource.description && (
+              <div className="flex flex-col">
+                <br />
+                <p className="font-semibold">Description</p>
+                <p className="ml-4">{navigatableResource.description}</p>
+              </div>
+            )}
+            {navigatableResource.acceptanceCriteria && (
+              <div className="flex flex-col">
+                <br />
+                <p className="font-semibold">Acceptance Criteria</p>
+                <p className="ml-4">{navigatableResource.acceptanceCriteria}</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </HoverCard.Content>
     </HoverCard.Root>
-    )
-};
-
+  )
+}
 
 const renderGoalOrTaskNode = ({
   node,
@@ -254,9 +324,13 @@ const renderGoalOrTaskNode = ({
     >
       <div className="flex">
         <span>
-          {node.data.type === 'GOAL' ? renderGoalIcon() :
-            ((node.data as NavigatableGoalOrTaskResource).status !== undefined)? renderGoalOrTaskStatusIcon((node.data as NavigatableGoalOrTaskResource).status!):
-            renderTaskIcon()}
+          {node.data.type === 'GOAL'
+            ? renderGoalIcon()
+            : (node.data as NavigatableGoalOrTaskResource).status !== undefined
+              ? renderGoalOrTaskStatusIcon(
+                  (node.data as NavigatableGoalOrTaskResource).status!,
+                )
+              : renderTaskIcon()}
         </span>
         <span
           className={node.data.type === 'GOAL' ? 'hover:text-orange-500' : ''}
@@ -312,8 +386,6 @@ const GoalsTaskNavTree = ({
                   status: task.status,
                 }) as NavigatableGoalOrTaskResource,
             ),
-
-
           } as NavigatableGoalOrTaskResource
         })
 

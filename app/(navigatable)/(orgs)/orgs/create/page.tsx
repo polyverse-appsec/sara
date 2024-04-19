@@ -9,6 +9,7 @@ import { getGitHubOrgs } from 'app/react-utils'
 import { SaraSession } from 'auth'
 import LoadingSpinner from 'components/loading-spinner'
 import OauthExplanation from 'components/oauth-explanation'
+import RenderableResourceContent from 'components/renderable-resource/renderable-resource-content'
 import { useSession } from 'next-auth/react'
 import toast from 'react-hot-toast'
 
@@ -16,7 +17,6 @@ import { Button } from './../../../../../components/ui/button'
 import { type GitHubOrg, type Org } from './../../../../../lib/data-model-types'
 import { useAppContext } from './../../../../../lib/hooks/app-context'
 import BusinessBillingContextCreator from './business-billing-context-creator'
-import RenderableResourceContent from 'components/renderable-resource/renderable-resource-content'
 
 const getBillingOrgs = async (): Promise<Org[]> => {
   const res = await fetch('/api/orgs')
@@ -96,7 +96,12 @@ const OrgCreate = () => {
         <div className="flex flex-col items-center">
           <RenderableResourceContent>
             <div className="text-left mb-2">
-              <button className={!disableButton ? "btn-blue text-sm" : "btn-gray text-sm"} disabled={disableButton}>
+              <button
+                className={
+                  !disableButton ? 'btn-blue text-sm' : 'btn-gray text-sm'
+                }
+                disabled={disableButton}
+              >
                 <Link href="/orgs">
                   <Flex align="center">
                     <ArrowLeftIcon className="mr-2" />

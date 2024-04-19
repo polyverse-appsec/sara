@@ -652,10 +652,13 @@ export const GET = auth(async (req: NextAuthRequest) => {
         user,
         org,
         project,
-        error
+        error,
       }
 
-      logger.errorWithContext(`Failed to get chat query response from thread`, logContext)
+      logger.errorWithContext(
+        `Failed to get chat query response from thread`,
+        logContext,
+      )
 
       return new Response(ReasonPhrases.INTERNAL_SERVER_ERROR, {
         status: StatusCodes.INTERNAL_SERVER_ERROR,
@@ -685,10 +688,13 @@ export const GET = auth(async (req: NextAuthRequest) => {
     })
   } catch (error) {
     const logContext: SaraLogContext = {
-      error
+      error,
     }
 
-    logger.errorWithContext(`Failed fetching chat queries for '${auth.user.email}'`, logContext)
+    logger.errorWithContext(
+      `Failed fetching chat queries for '${auth.user.email}'`,
+      logContext,
+    )
 
     return new Response('Failed to fetch chat queries', {
       status: StatusCodes.INTERNAL_SERVER_ERROR,

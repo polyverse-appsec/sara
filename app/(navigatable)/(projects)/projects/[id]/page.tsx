@@ -1,8 +1,12 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
+import Link from 'next/link'
+import { ArrowLeftIcon } from '@radix-ui/react-icons'
+import * as Tooltip from '@radix-ui/react-tooltip'
 import { Flex } from '@radix-ui/themes'
 import GoalsManager from 'components/goals/goals-manager'
+import CopyToClipboardIcon from 'components/icons/CopyToClipboardIcon'
 import DisabledResyncIcon from 'components/icons/DisabledResyncIcon'
 import EnabledResyncIcon from 'components/icons/EnabledResyncIcon'
 import ProjectSourceSyncStatus from 'components/project-status/project-source-sync-status'
@@ -12,7 +16,6 @@ import { rediscoverProject } from 'lib/polyverse/backend/backend'
 import { isPreviewFeatureEnabled } from 'lib/service-utils'
 import { useSession } from 'next-auth/react'
 import toast from 'react-hot-toast'
-import * as Tooltip from '@radix-ui/react-tooltip';
 
 import { type SaraSession } from './../../../../../auth'
 import RenderableResource from './../../../../../components/renderable-resource/renderable-resource'
@@ -24,9 +27,6 @@ import {
   type ProjectHealth,
 } from './../../../../../lib/data-model-types'
 import { useAppContext } from './../../../../../lib/hooks/app-context'
-import Link from 'next/link'
-import { ArrowLeftIcon } from '@radix-ui/react-icons'
-import CopyToClipboardIcon from 'components/icons/CopyToClipboardIcon'
 
 const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
   const session = useSession()
@@ -44,7 +44,7 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
   const [rediscoverButtonEnabled, setRediscoverButtonEnabled] =
     useState<boolean>(true)
   const [goals, setGoals] = useState<Goal[]>([])
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState(false)
 
   const [toastedInactiveBillingOrg, setToastedInactiveBillingOrg] =
     useState<boolean>(false)
@@ -162,14 +162,20 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
   setProjectIdForConfiguration(project.id)
 
   const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000); // Reset icon after 2 seconds
-    }, (err) => {
-      console.error(`${saraSession.email} Failed to copy ID to clipboard:`, err);
-      setCopied(false);
-    });
-  };
+    navigator.clipboard.writeText(text).then(
+      () => {
+        setCopied(true)
+        setTimeout(() => setCopied(false), 2000) // Reset icon after 2 seconds
+      },
+      (err) => {
+        console.error(
+          `${saraSession.email} Failed to copy ID to clipboard:`,
+          err,
+        )
+        setCopied(false)
+      },
+    )
+  }
 
   return (
     <RenderableResource>
@@ -194,15 +200,22 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
               <h3 className="text-xs text-gray-500 italic">ID</h3>
               <p className="text-xs text-gray-500 italic ml-2">{project.id}</p>
               <Tooltip.Root>
-                    <Tooltip.Provider>
-    <                   Tooltip.Trigger className="flex items-center cursor-pointer" onClick={() => copyToClipboard(project.id)}>
-                            <CopyToClipboardIcon copied={copied} color='#6B7280' />
-                        </Tooltip.Trigger>
-                        <Tooltip.Content side="left" align="end" className="clipboardCopyToolTip">
-                            Copy Project Id
-                        </Tooltip.Content>
-                    </Tooltip.Provider>
-                </Tooltip.Root>
+                <Tooltip.Provider>
+                  <Tooltip.Trigger
+                    className="flex items-center cursor-pointer"
+                    onClick={() => copyToClipboard(project.id)}
+                  >
+                    <CopyToClipboardIcon copied={copied} color="#6B7280" />
+                  </Tooltip.Trigger>
+                  <Tooltip.Content
+                    side="left"
+                    align="end"
+                    className="clipboardCopyToolTip"
+                  >
+                    Copy Project Id
+                  </Tooltip.Content>
+                </Tooltip.Provider>
+              </Tooltip.Root>
             </div>
             {project.description ? (
               <div className="my-1 flex items-center">

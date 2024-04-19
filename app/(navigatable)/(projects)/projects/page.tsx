@@ -4,19 +4,18 @@ import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import SaraLoading from 'components/sara-loading'
 import { Project } from 'lib/data-model-types'
-import toast from 'react-hot-toast'
 import { useSession } from 'next-auth/react'
-
-import { type SaraSession } from './../../../../auth'
+import toast from 'react-hot-toast'
 
 import { getResource } from './../../../../app/saraClient'
+import { type SaraSession } from './../../../../auth'
 import { useAppContext } from './../../../../lib/hooks/app-context'
 import ProjectDashboard from './project-dashboard'
 
 const ProjectIndex = () => {
   const session = useSession()
-  const saraSession = session.data ? (session.data as SaraSession) : null  
-  
+  const saraSession = session.data ? (session.data as SaraSession) : null
+
   const router = useRouter()
   const {
     activeBillingOrg,
@@ -39,9 +38,9 @@ const ProjectIndex = () => {
     if (!activeBillingOrg) {
       return
     }
-    
+
     // Since we're in this effect, we know activeBillingOrg must exist
-    (async () => {
+    ;(async () => {
       try {
         const projects = await getResource<Project[]>(
           `/orgs/${activeBillingOrg.id}/projects`,
@@ -69,11 +68,13 @@ const ProjectIndex = () => {
     <div className="flex-1 p-10 text-2xl font-bold">
       <ProjectDashboard
         projects={projects}
-        onProjectDelete={(deletedProjectId : any) => {
+        onProjectDelete={(deletedProjectId: any) => {
           if (!projects) {
             return
           }
-          setProjects(projects.filter((project) => project.id !== deletedProjectId))
+          setProjects(
+            projects.filter((project) => project.id !== deletedProjectId),
+          )
         }}
       />
     </div>
