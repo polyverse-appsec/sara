@@ -9,12 +9,17 @@ import LoadingSpinner from 'components/loading-spinner'
 import { ChatQueryStatus } from 'lib/data-model-types'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
+import { useState } from 'react'
+import { useSession } from 'next-auth/react'
+import { SaraSession } from 'auth'
 
 import { cn } from '../../lib/utils'
 import { MemoizedReactMarkdown } from '../markdown'
 import { CodeBlock } from '../ui/codeblock'
 import { IconUser } from '../ui/icons'
 import Sara32x32 from './../../public/Sara_Cartoon_Portrait-32x32.png'
+import CopyToClipboardIcon from 'components/icons/CopyToClipboardIcon'
+import * as Tooltip from '@radix-ui/react-tooltip';
 
 export interface ChatAvatarDetails {
   name: string
@@ -284,17 +289,38 @@ const renderChatQueryProgressUpdate = (querySubmittedAt: Date) => {
 
 function renderSideChatDetails(
   contentType: 'QUERY' | 'RESPONSE',
+  copyToClipboard: (id: string) => void,
+  copied: boolean,
+  setCopied: React.Dispatch<React.SetStateAction<boolean>>,
   chatAvatarDetails?: ChatAvatarDetails,
   chatQueryStatus?: ChatQueryStatus,
   querySubmittedAt?: Date,
   responseReceivedAt?: Date,
+  content?: string,
 ) {
   return (
     <Flex direction="column" maxWidth="280px">
       <Card>
         <Flex direction="column" width="260px" gap="1">
-          {renderAvatar(contentType, chatAvatarDetails)}
-          {renderTimestamp(contentType, querySubmittedAt, responseReceivedAt)}
+            {/* This is the header row containing the avatar and the clipboard icon */}
+            <Flex justify="between" align="center" width="100%">
+                {renderAvatar(contentType, chatAvatarDetails)}
+            
+                {/* This div is aligned to the right and contains the clipboard icon */}
+                { content && contentType === 'RESPONSE' && (
+                <Tooltip.Root>
+                    <Tooltip.Provider>
+    <                   Tooltip.Trigger className="flex items-center cursor-pointer" onClick={() => copyToClipboard(content)}>
+                            <CopyToClipboardIcon copied={copied} color='#6B7280' />
+                        </Tooltip.Trigger>
+                        <Tooltip.Content side="left" align="end" className="text-xs text-background p-2 bg-foreground/50 shadow-lg rounded">
+                            Copy Response to Clipboard
+                        </Tooltip.Content>
+                    </Tooltip.Provider>
+                </Tooltip.Root>
+                )}
+            </Flex>
+            {renderTimestamp(contentType, querySubmittedAt, responseReceivedAt)}
           <Flex align="center" gap="1">
             {renderChatQueryStatusIcon(chatQueryStatus)}
             {renderChatQueryStatusText(chatQueryStatus)}
@@ -320,14 +346,37 @@ const SaraChatQueryContent = ({
   responseReceivedAt,
   ...props
 }: SaraChatQueryContentProps) => {
+  const [copied, setCopied] = useState(false);
+
+  const session = useSession()
+  const saraSession = session.data ? (session.data as SaraSession) : null
+
+  if (!saraSession) {
+    return null
+  }
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000); // Reset icon after 2 seconds
+    }, (err) => {
+      console.error(`${saraSession.email} Failed to copy ID to clipboard:`, err);
+      setCopied(false);
+    });
+  };
+
   return (
     <div className={cn('group relative mb-4 flex items-start')} {...props}>
       {renderSideChatDetails(
         contentType,
+        copyToClipboard,
+        copied,
+        setCopied,
         chatAvatarDetails,
         chatQueryStatus,
         querySubmittedAt,
         responseReceivedAt,
+        content,
       )}
       <div className="flex-1 px-1 ml-4 space-y-2 overflow-auto" style={{ maxWidth: 'calc(100vw)' }}>
         <MemoizedReactMarkdown
