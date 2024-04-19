@@ -8,7 +8,7 @@ import createTask from './../../../lib/polyverse/db/create-task'
 import getGoal from './../../../lib/polyverse/db/get-goal'
 import updateGoal from './../../../lib/polyverse/db/update-goal'
 import { createBaseSaraObject } from './../../../lib/polyverse/db/utils'
-import { aispecId, blueprintId, projectsourceId } from './utils'
+import { aiSpecificationId, blueprintId, projectSourceId } from './constants'
 
 const oaiClient = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -29,7 +29,7 @@ export const submitTaskStepsAssistantFunction: Assistant.Function = {
   function: {
     name: 'submitWorkItemsForGoal',
     description:
-      'If an answer has identified individual work items that will be required to complete the project goal, this function will let you record the work items in our database.',
+      'Record Work items in database that will be required to complete the Project Goal',
     parameters: {
       type: 'object',
       properties: {
@@ -40,17 +40,17 @@ export const submitTaskStepsAssistantFunction: Assistant.Function = {
             properties: {
               title: {
                 type: 'string',
-                description: 'The title of the work item',
+                description: 'The title of the Work Item',
               },
               description: {
                 type: 'string',
                 description:
-                  'The description of the work item to be done in markdown format',
+                  'The description of the Work Item to be done in markdown format',
               },
               acceptanceCriteria: {
                 type: 'string',
                 description:
-                  'Well defined acceptance criteria in a markdown bullet list format used to determine when the work item is complete',
+                  'Well defined Acceptance Criteria in a Markdown bullet list format used to determine when the Work Item is complete',
               },
             },
           },
@@ -184,35 +184,34 @@ export const createOpenAIAssistantPromptForGoals = (
   goalDescription?: string,
   goalAcceptanceCriteria?: string,
 ): string => `
-      You will be asked a question in the context of trying to accomplish the high-level project goal named ${goalName}.
+      You are a Software Architect named Sara helper a user achieve the Goal of: ${goalName}.
+
       ${
         goalDescription
-          ? 'The description of the goal is as follows: ' + goalDescription
+          ? 'More information about the Goal: ' + goalDescription
           : ''
       }
+
       ${
         goalAcceptanceCriteria
-          ? 'The acceptance criteria that needs to be satisfied to accomplish the goal is as follows: ' +
-            goalAcceptanceCriteria
+          ? 'The Goal is considered achieved / completed when: \n\t' +
+            goalAcceptanceCriteria.split('\n').join('\n\t* ')
           : ''
       }
 
-      The answers you provide to asked questions ought to focus on trying to:
-      1. Provide knowledge around understanding the Project goal named ${goalName}
-      2. Remove any ambiguity around understanding the project goal named ${goalName}
-      3. Identify individual work items that will be required to complete the project goal name ${goalName}
-      4. For each Task identified, please note the list of relative paths to Project source file paths from ${projectsourceId}
+      All answers to user questions should help achieve the above Goal:
+      1. Provide knowledge to the user to help achieve the Project Goal
+      2. Remove any ambiguity around understanding the Project Goal
+      3. Create Work Items to achieve the Goal, if no previous Work Items identified
+      4. Add New Work Items to the Project Goal, if prior Work Items were identified
+      5. Always provide code snippets, examples and references to source files embedded or referenced in ${blueprintId}, ${aiSpecificationId} and ${projectSourceId}
 
-      Important: When asked a question that identifies invidiual work items required to complete the project goal named ${goalName} you should record the 
-      individual work items in our database using the submitWorkItemsForGoal function provided to you. Each individual work item needs the following details:
-      1. Title
-      2. Description
-      3. Well defined acceptance criteria in a bullet list format (this will be used to determine when the work item is complete)
+      Important: For each Work Item created and added via the submitWorkItemsForGoal function, include:
+      1. Title of the Work Item
+      2. Description of the Work Item in markdown format
+      3. Well defined Acceptance Criteria in a bullet list markdown format (this will be used to determine when the work item is complete)
 
-      You do not need to ask for permission or if the work items should be written to the database. Please always write the work items to the database.
-
-      You can then continue to response to the question as you normally would by provide both the answer as well as the individual work items you recorded 
-      that are required to complete the project goal named ${goalName}.`
+      You do not need to ask for permission or if the work items should be written to the database. Please always write the work items to the database.`
 
 export const createThreadForProjectGoalChatting = async (
   projectId: string,

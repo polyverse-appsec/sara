@@ -15,6 +15,9 @@ import { NodeRendererProps, Tree } from 'react-arborist'
 
 import { type Goal, type Task } from '../lib/data-model-types'
 import { getResource } from './../app/saraClient'
+import remarkGfm from 'remark-gfm'
+import remarkMath from 'remark-math'
+import { MemoizedReactMarkdown } from './markdown'
 
 interface GoalsTaskNavTreeProps {
   projectId: string
@@ -58,7 +61,9 @@ const getTasks = (goalId: string): Promise<Task[]> =>
     }
   })
 
-type NavigatableResourceTypes = 'GOAL' | 'TASK'
+const GoalResourceType = 'GOAL'
+const TaskResourceType = 'TASK'
+type NavigatableResourceTypes = typeof GoalResourceType | typeof TaskResourceType
 
 interface NavigatableGoalOrTaskResource {
   id: string
@@ -225,94 +230,97 @@ const CompletedTaskIcon = () => (
     <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
   </svg>
 )
-
-const renderGoalOrTaskStatusIcon = (status: string) => {
-  if (status === 'OPEN' || status === 'TODO') {
-    return UncheckedCircleIcon()
-  } else if (status === 'IN_PROGRESS') {
-    return InProgressTaskIcon()
-  } else if (status === 'DONE') {
-    return CheckedCircleIcon()
-  } else {
-    return ToDoTaskIcon()
-  }
+  
+const renderGoalOrTaskStatusIcon = (type: string, status: string) => {
+    if (type === GoalResourceType) {
+        return renderGoalIcon()
+    } else if (status === 'OPEN' || status === 'TODO') {
+        return UncheckedCircleIcon()
+    } else if (status === 'IN_PROGRESS') {
+        return InProgressTaskIcon()
+    } else if (status === 'DONE') {
+        return CheckedCircleIcon()
+    } else {
+        return ToDoTaskIcon()
+    }
 }
 
 const renderNodeName = (navigatableResource: NavigatableGoalOrTaskResource) => {
   return (
     <HoverCard.Root>
-      <HoverCard.Trigger>
-        {navigatableResource.type === 'GOAL' ? (
-          <Link
-            href={`/goals/${navigatableResource.id}`}
-            title={navigatableResource.name}
-          >
-            {navigatableResource.isActive ? (
-              <Text
-                weight="bold"
-                color="green"
-                title={navigatableResource.name}
-              >
-                {navigatableResource.name}
-              </Text>
+        <HoverCard.Trigger>
+            {navigatableResource.type === GoalResourceType ? (
+                <Link href={`/goals/${navigatableResource.id}`} title={navigatableResource.name}>
+                    {navigatableResource.isActive ? (
+                        <Text weight="bold" color="green" title={navigatableResource.name}>
+                            {navigatableResource.name}
+                        </Text>
+                    ) : (
+                        <Text title={navigatableResource.name}>{navigatableResource.name}</Text>
+                    )}
+                </Link>
             ) : (
-              <Text title={navigatableResource.name}>
-                {navigatableResource.name}
-              </Text>
+                <Text title={navigatableResource.name}>{navigatableResource.name}</Text>
             )}
-          </Link>
-        ) : (
-          <Text title={navigatableResource.name}>
-            {navigatableResource.name}
-          </Text>
-        )}
-      </HoverCard.Trigger>
-      <HoverCard.Content style={{ left: '200px' }}>
-        <Flex direction="column" gap="1">
-          <Flex align="center" gap="1">
-            <Text>
-              <Strong>
-                {navigatableResource.type === 'GOAL'
-                  ? 'Goal Name: '
-                  : 'Task Name: '}
-              </Strong>
-            </Text>
-
-            {navigatableResource.type === 'GOAL' ? (
-              <Link href={`/goals/${navigatableResource.id}`}>
-                <Text color="blue">{navigatableResource.name}</Text>
-              </Link>
-            ) : (
-              <Text>{navigatableResource.name}</Text>
-            )}
-          </Flex>
-
-          {navigatableResource.status && (
-            <Flex gap="1" align="center">
-              <Text>
-                <Strong>Status:</Strong>
-              </Text>
-              {renderGoalOrTaskStatusIcon(navigatableResource.status)}
+        </HoverCard.Trigger>
+        <HoverCard.Content>
+            <Flex>
+                {navigatableResource.status && renderGoalOrTaskStatusIcon(navigatableResource.type, navigatableResource.status)}
+                <div className="flex flex-col">
+                    {navigatableResource.type === GoalResourceType ? (
+                        <Link href={`/goals/${navigatableResource.id}`}>
+                            <p className="mb-2 font-semibold hover:text-orange-500">{navigatableResource.name}</p>
+                        </Link>
+                    ) : (
+                        <p className="mb-2 font-semibold">{navigatableResource.name}</p>
+                    ) }
+                </div>
             </Flex>
-          )}
-          {navigatableResource.description && (
-            <Flex direction="column">
-              <Text>
-                <Strong>Description</Strong>
-              </Text>
-              <Text>{navigatableResource.description}</Text>
-            </Flex>
-          )}
-          {navigatableResource.acceptanceCriteria && (
-            <Flex direction="column">
-              <Text>
-                <Strong>Acceptance Criteria</Strong>
-              </Text>
-              <Text>{navigatableResource.acceptanceCriteria}</Text>
-            </Flex>
-          )}
-        </Flex>
-      </HoverCard.Content>
+            <div className="flex flex-col p-2 bg-background rounded-lg blue-border break-words">
+                <div className="flex flex-col items-start">
+                    {/*navigatableResource.status && (
+                        <div className="flex flex-col">
+                            <span className="font-semibold mr-2">Status: {renderGoalOrTaskStatusIcon(navigatableResource.type, navigatableResource.status)}</span>
+                        </div>
+                    )*/}
+                    <div className="flex flex-col">
+                        <div>
+                            <MemoizedReactMarkdown
+                                className="markdownDisplay"
+                                remarkPlugins={[remarkGfm, remarkMath]}
+                                components={{
+                                    p({ children }) {
+                                        return <p className="mb-2 last:mb-0">{children}</p>
+                                    },
+                                }}
+                            >
+                                {navigatableResource.description !== undefined?navigatableResource.description:"No description available"}
+                            </MemoizedReactMarkdown>
+                        </div>
+                    </div>
+                    {navigatableResource.acceptanceCriteria && (
+                        <div className="flex flex-col">
+                            <br/>
+                            <p className="font-semibold">Acceptance Criteria</p>
+                            {/* indent */}
+                            <div className="pl-2">
+                                <MemoizedReactMarkdown
+                                    className="markdownDisplay"
+                                    remarkPlugins={[remarkGfm, remarkMath]}
+                                    components={{
+                                        p({ children }) {
+                                            return <p className="mb-2 last:mb-0">{children}</p>
+                                        },
+                                    }}
+                                >
+                                    {navigatableResource.acceptanceCriteria}
+                                </MemoizedReactMarkdown>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </HoverCard.Content>
     </HoverCard.Root>
   )
 }
@@ -332,16 +340,12 @@ const renderGoalOrTaskNode = ({
     >
       <div className="flex">
         <span>
-          {node.data.type === 'GOAL'
-            ? renderGoalIcon()
-            : (node.data as NavigatableGoalOrTaskResource).status !== undefined
-              ? renderGoalOrTaskStatusIcon(
-                  (node.data as NavigatableGoalOrTaskResource).status!,
-                )
-              : renderTaskIcon()}
+          {node.data.type === GoalResourceType ? renderGoalIcon() :
+            ((node.data as NavigatableGoalOrTaskResource).status !== undefined)? renderGoalOrTaskStatusIcon(node.data.type, (node.data as NavigatableGoalOrTaskResource).status!):
+            renderTaskIcon()}
         </span>
         <span
-          className={node.data.type === 'GOAL' ? 'hover:text-orange-500' : ''}
+          className={node.data.type === GoalResourceType ? 'hover:text-orange-500' : ''}
         >
           {renderNodeName(node.data)}
         </span>
@@ -374,7 +378,7 @@ const GoalsTaskNavTree = ({
             id: goal.id,
             name: goal.name,
             isActive: goal.id === activeGoalId,
-            type: 'GOAL',
+            type: GoalResourceType,
 
             description: goal.description,
             acceptanceCriteria: goal.acceptanceCriteria,
@@ -386,7 +390,7 @@ const GoalsTaskNavTree = ({
                   id: task.id,
                   name: task.name,
                   isActive: task.id === activeTaskId,
-                  type: 'TASK',
+                  type: TaskResourceType,
                   children: [],
 
                   description: task.description,

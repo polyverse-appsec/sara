@@ -8,6 +8,7 @@ import { IconRefresh } from 'components/ui/icons'
 import { ChatQuery } from './../../lib/data-model-types'
 import { Separator } from './../ui/separator'
 import SaraChatQueryContent from './sara-chat-query-content'
+import { ChatContentTypeQuery } from 'components/chat/chat-query-content'
 
 export interface SaraChatListProps {
   chatQueries: ChatQuery[]
@@ -32,7 +33,7 @@ const SaraChatList = ({
             <Separator className="my-4" />
             <SaraChatQueryContent
               content={chatQuery.query}
-              contentType="QUERY"
+              contentType={ChatContentTypeQuery}
               querySubmittedAt={chatQuery.querySubmittedAt}
               chatAvatarDetails={
                 saraSession.picture

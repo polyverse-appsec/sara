@@ -6,8 +6,10 @@ import remarkMath from 'remark-math'
 import { MemoizedReactMarkdown } from '../markdown'
 import { CodeBlock } from '../ui/codeblock'
 
+export const ChatContentTypeQuery = 'QUERY'
+
 // p({ children }) {
-//   if (contentType === 'QUERY') {
+//   if (contentType === ChatQueryContentTypeQuery) {
 //     return <p className="mb-2 last:mb-0 font-semimedium">{children}</p>
 //   } else {
 //     return <p className="mb-2 last:mb-0">{children}</p>
@@ -23,7 +25,7 @@ const testQueryContentWithCode =
 const ChatQueryContent = () => {
   return (
     <MemoizedReactMarkdown
-      className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0"
+      className="markdownDisplay"
       remarkPlugins={[remarkGfm, remarkMath]}
       components={{
         p({ children }) {

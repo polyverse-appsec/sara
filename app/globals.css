@@ -126,6 +126,10 @@
   .clipboardCopyToolTip {
     @apply text-xs text-background p-2 bg-foreground/75 shadow-lg rounded;
   }
+  
+  .markdownDisplay {
+    @apply pr-16 prose-base break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0;
+  }
 }
 
 @layer utilities {

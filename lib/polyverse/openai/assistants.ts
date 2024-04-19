@@ -11,7 +11,7 @@ import { BoostProjectStatusState } from '../backend/types/BoostProjectStatus'
 import { usFormatter } from '../backend/utils/log'
 import { isRecord } from '../typescript/helpers'
 import { OPENAI_MODEL } from './constants'
-import { aispecId, blueprintId, projectsourceId } from './utils'
+import { aiSpecificationId, blueprintId, projectSourceId } from './constants'
 
 export const ASSISTANT_METADATA_CREATOR = 'sara.frontend'
 
@@ -176,7 +176,7 @@ function getOpenAIAssistantInstructions(
       projectsourceStatus === 'Processing'
     ) {
       assistantPromptInstructions += `
-        You have access to the full codebase of the project in your files in ${projectsourceId}.`
+        You have access to the full codebase of the project in your files in ${projectSourceId}.`
 
       // if the file is in error, we will leave it out of the prompt
     } else {
@@ -191,7 +191,7 @@ function getOpenAIAssistantInstructions(
       aiSpecStatus === 'Idle'
     ) {
       assistantPromptInstructions += `
-        You have access to a data file ${aispecId} that summarizes all of the project code. This file contains short summaries of all of the important code in the project. Each summary includes the project source file name it summarizes, followed by the summary starting and ending with triple quotes.`
+        You have access to a data file ${aiSpecificationId} that summarizes all of the project code. This file contains short summaries of all of the important code in the project. Each summary includes the project source file name it summarizes, followed by the summary starting and ending with triple quotes.`
     } else {
       assistantPromptInstructions += `
         You are having trouble analyzing the project code to build a good understanding, but you hope to overcome these challenges soon.
@@ -239,10 +239,10 @@ function getOpenAIAssistantInstructions(
         aiSpecStatus === 'Idle'
       ) {
         assistantPromptInstructions += `
-          2. ${aispecId} ${aispecDataInfo.name} (or file: ${aispecDataInfo.id}) is another useful file that has short summaries of all of the important code in the project.`
+          2. ${aiSpecificationId} ${aispecDataInfo.name} (or file: ${aispecDataInfo.id}) is another useful file that has short summaries of all of the important code in the project.`
       } else {
         assistantPromptInstructions += `
-          2. ${aispecId} ${aispecDataInfo.name} (or file: ${aispecDataInfo.id}) should contain many short summaries of the functions, classes and data in the project code, but it is having an issue and may not be reliable. You should be extra cautious about incomplete architectural analysis.`
+          2. ${aiSpecificationId} ${aispecDataInfo.name} (or file: ${aispecDataInfo.id}) should contain many short summaries of the functions, classes and data in the project code, but it is having an issue and may not be reliable. You should be extra cautious about incomplete architectural analysis.`
       }
     }
 
@@ -255,36 +255,36 @@ function getOpenAIAssistantInstructions(
         projectsourceStatus === 'Idle'
       ) {
         assistantPromptInstructions += `
-          3. ${projectsourceId} ${projectsourceDataInfo.name} (or file: ${projectsourceDataInfo.id}) is the concatenation of all of the source code in the project.`
+          3. ${projectSourceId} ${projectsourceDataInfo.name} (or file: ${projectsourceDataInfo.id}) is the concatenation of all of the source code in the project.`
       } else {
         assistantPromptInstructions += `
-          3. ${projectsourceId} is not yet available. You should be extra cautious about citing code from this file.`
+          3. ${projectSourceId} is not yet available. You should be extra cautious about citing code from this file.`
       }
     }
 
     assistantPromptInstructions += `
-        For all questions asked of you, use the contents of ${blueprintId} and ${aispecId} resources.
+        For all questions asked of you, use the contents of ${blueprintId} and ${aiSpecificationId} resources.
         
-        A complete list of all source files and their file paths in the software project is available in the ${blueprintId} resource. The summary of each of those files is in ${aispecId} resource. You can use the ${projectsourceId} resource to retrieve the code snippets for project source files.`
+        A complete list of all source files and their file paths in the software project is available in the ${blueprintId} resource. The summary of each of those files is in ${aiSpecificationId} resource. You can use the ${projectSourceId} resource to retrieve the code snippets for project source files.`
 
     if (
       projectsourceStatus === 'Complete' ||
       projectsourceStatus === 'Processing' ||
       projectsourceStatus === 'Idle'
     ) {
-      assistantPromptInstructions += ` Retrieve code snippets as needed from the concatenated code in the file ${projectsourceId}.`
+      assistantPromptInstructions += ` Retrieve code snippets as needed from the concatenated code in the file ${projectSourceId}.`
     } else {
-      assistantPromptInstructions += ` You should be extra cautious about citing code from ${projectsourceId} since it isn't fully available yet.`
+      assistantPromptInstructions += ` You should be extra cautious about citing code from ${projectSourceId} since it isn't fully available yet.`
     }
 
     const doNotMentionFileNames = fileInfos.map(({ name }) => name).join(', ')
     const doNotMentionFileIds = fileInfos.map(({ id }) => id).join(', ')
     assistantPromptInstructions += `
-        When answering questions, do not mention these specific resource ids to the user: ${doNotMentionFileNames} and ${doNotMentionFileIds}. These are dynamically generated and change frequently as you answer questions. Instead, refer to the resources by their descriptive names: ${blueprintId}, ${aispecId}, and ${projectsourceId}.
+        When answering questions, do not mention these specific resource ids to the user: ${doNotMentionFileNames} and ${doNotMentionFileIds}. These are dynamically generated and change frequently as you answer questions. Instead, refer to the resources by their descriptive names: ${blueprintId}, ${aiSpecificationId}, and ${projectSourceId}.
 
-        When you are asked about the list of project files, or to retrieve content from specific files, you should use the project source filenames embedded in the ${aispecId} and ${projectsourceId} files.
+        When you are asked about the list of project files, or to retrieve content from specific files, you should use the project source filenames embedded in the ${aiSpecificationId} and ${projectSourceId} files.
 
-        When you produce annotations, please include the full path to the actual project source filenames from the ${aispecId} and ${projectsourceId} files.
+        When you produce annotations, please include the full path to the actual project source filenames from the ${aiSpecificationId} and ${projectSourceId} files.
 
         Always include citations with the full path to the project source filenames when you provide code snippets.
 
