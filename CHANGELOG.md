@@ -10,7 +10,7 @@
 
 ### Enhancements
 
-- N/A
+- Add support for providing a public GitHub repo URL
 
 ### Bug Fixes
 
