@@ -55,7 +55,9 @@ const getTasks = (goalId: string): Promise<Task[]> =>
     }
   })
 
-type NavigatableResourceTypes = 'GOAL' | 'TASK'
+const GoalResourceType = 'GOAL'
+const TaskResourceType = 'TASK'
+type NavigatableResourceTypes = typeof GoalResourceType | typeof TaskResourceType
 
 interface NavigatableGoalOrTaskResource {
   id: string
@@ -173,7 +175,7 @@ const CompletedTaskIcon = () => (
 )
   
 const renderGoalOrTaskStatusIcon = (type: string, status: string) => {
-    if (type === 'GOAL') {
+    if (type === GoalResourceType) {
         return renderGoalIcon()
     } else if (status === 'OPEN' || status === 'TODO') {
         return UncheckedCircleIcon()
@@ -190,7 +192,7 @@ const renderNodeName = (navigatableResource: NavigatableGoalOrTaskResource) => {
     return (
     <HoverCard.Root>
         <HoverCard.Trigger>
-            {navigatableResource.type === 'GOAL' ? (
+            {navigatableResource.type === GoalResourceType ? (
                 <Link href={`/goals/${navigatableResource.id}`} title={navigatableResource.name}>
                     {navigatableResource.isActive ? (
                         <Text weight="bold" color="green" title={navigatableResource.name}>
@@ -208,7 +210,7 @@ const renderNodeName = (navigatableResource: NavigatableGoalOrTaskResource) => {
             <Flex>
                 {navigatableResource.status && renderGoalOrTaskStatusIcon(navigatableResource.type, navigatableResource.status)}
                 <div className="flex flex-col">
-                    {navigatableResource.type === 'GOAL' ? (
+                    {navigatableResource.type === GoalResourceType ? (
                         <Link href={`/goals/${navigatableResource.id}`}>
                             <p className="mb-2 font-semibold hover:text-orange-500">{navigatableResource.name}</p>
                         </Link>
@@ -282,12 +284,12 @@ const renderGoalOrTaskNode = ({
     >
       <div className="flex">
         <span>
-          {node.data.type === 'GOAL' ? renderGoalIcon() :
+          {node.data.type === GoalResourceType ? renderGoalIcon() :
             ((node.data as NavigatableGoalOrTaskResource).status !== undefined)? renderGoalOrTaskStatusIcon(node.data.type, (node.data as NavigatableGoalOrTaskResource).status!):
             renderTaskIcon()}
         </span>
         <span
-          className={node.data.type === 'GOAL' ? 'hover:text-orange-500' : ''}
+          className={node.data.type === GoalResourceType ? 'hover:text-orange-500' : ''}
         >
           {renderNodeName(node.data)}
         </span>
@@ -320,7 +322,7 @@ const GoalsTaskNavTree = ({
             id: goal.id,
             name: goal.name,
             isActive: goal.id === activeGoalId,
-            type: 'GOAL',
+            type: GoalResourceType,
 
             description: goal.description,
             acceptanceCriteria: goal.acceptanceCriteria,
@@ -332,7 +334,7 @@ const GoalsTaskNavTree = ({
                   id: task.id,
                   name: task.name,
                   isActive: task.id === activeTaskId,
-                  type: 'TASK',
+                  type: TaskResourceType,
                   children: [],
 
                   description: task.description,
