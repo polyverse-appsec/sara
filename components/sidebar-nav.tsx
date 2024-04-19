@@ -296,7 +296,7 @@ const SidebarNav = () => {
       </div>
 
       {/* Bottom Section */}
-      <div>
+      <div className="sticky bottom-0">
         <div className="w-full mx-auto border-t rounded-xl border-blue-600 mt-2"></div>
         <div className="flex flex-col items-center sticky bottom-0 z-10 w-full p-2">
           <div className="flex items-center">
