@@ -267,7 +267,7 @@ const renderNodeName = (navigatableResource: NavigatableGoalOrTaskResource) => {
           </Text>
         )}
       </HoverCard.Trigger>
-      <HoverCard.Content>
+      <HoverCard.Content style={{ left: '200px' }}>
         <Flex direction="column" gap="1">
           <Flex align="center" gap="1">
             <Text>
@@ -283,7 +283,7 @@ const renderNodeName = (navigatableResource: NavigatableGoalOrTaskResource) => {
                 <Text color="blue">{navigatableResource.name}</Text>
               </Link>
             ) : (
-              <Text>navigatableResource.name</Text>
+              <Text>{navigatableResource.name}</Text>
             )}
           </Flex>
 
