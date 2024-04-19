@@ -60,49 +60,83 @@ const renderAvatar = (
   )
 }
 
-const renderQuerySubmittedAt = (querySubmittedAt?: Date) => {
-  const date = querySubmittedAt
-    ? `${new Date(querySubmittedAt).toLocaleDateString()} ${new Date(
-        querySubmittedAt,
-      ).toLocaleTimeString()}`
-    : 'Unknown'
+function formatDateTimeSinceOperationOccurred(dateInput?: Date): string {
+    if (!dateInput) return 'awhile ago';
 
-  return (
-    <Flex gap="1">
-      <Text size="2" weight="bold">
-        {'Asked Sara: '}
-      </Text>
-      <Text size="2">{date}</Text>
-    </Flex>
-  )
+    const now = new Date();
+    const date = new Date(dateInput);
+    const diff = now.getTime() - date.getTime();
+
+    const seconds = Math.floor(diff / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+
+    if (seconds < 60) {
+        return `${seconds} seconds ago`;
+    } else if (minutes < 60) {
+        return `${minutes} minutes ago`;
+    } else if (hours < 24 && date.toDateString() === now.toDateString()) {
+        return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+    } else if (days === 1 && new Date(Date.now() - 86400000).toDateString() === date.toDateString()) {
+        return `${date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })} yesterday`;
+    } else if (days < 7) {
+        return `${date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })} ${date.toLocaleDateString('en-US', { weekday: 'long' })}`;
+    } else {
+        const currentYear = now.getFullYear();
+        const submittedYear = date.getFullYear();
+        const optionsDate: Intl.DateTimeFormatOptions = {
+            month: 'long',
+            day: 'numeric',
+            ...(submittedYear !== currentYear && { year: 'numeric' })
+        };
+
+        const formattedDate = new Intl.DateTimeFormat('en-US', optionsDate).format(date);
+        const formattedTime = new Intl.DateTimeFormat('en-US', {
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+        }).format(date);
+
+        return `${formattedTime} on ${formattedDate}`;
+    }
+}
+const renderQuerySubmittedAt = (querySubmittedAt?: Date) => {
+    const timeStr = formatDateTimeSinceOperationOccurred(querySubmittedAt);
+
+    return (
+        <Flex gap="1">
+            <Text size="2">
+                {'You asked '}
+            </Text>
+            <Text size="2">{timeStr}</Text>
+        </Flex>
+    );
 }
 
-const renderLastCheckedAt = (responseReceivedAt?: Date) => {
-  const date = `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`
+
+const renderLastCheckedAt = (lastCheckedTime?: Date) => {
+  const timeStr = formatDateTimeSinceOperationOccurred(lastCheckedTime);
 
   return (
     <Flex gap="1">
-      <Text size="2" weight="bold">
-        {'Sara Updated: '}
+      <Text size="2">
+        {'Sara checked '}
       </Text>
-      <Text size="2">{date}</Text>
+      <Text size="2">{timeStr}</Text>
     </Flex>
   )
 }
 
 const renderResponseReceivedAt = (responseReceivedAt?: Date) => {
-  const date = responseReceivedAt
-    ? `${new Date(responseReceivedAt).toLocaleDateString()} ${new Date(
-        responseReceivedAt,
-      ).toLocaleTimeString()}`
-    : 'Unknown'
+    const timeStr = formatDateTimeSinceOperationOccurred(responseReceivedAt);
 
   return (
     <Flex gap="1">
-      <Text size="2" weight="bold">
-        {'Sara Answered: '}
+      <Text size="2">
+        {'Sara answered '}
       </Text>
-      <Text size="2">{date}</Text>
+      <Text size="2">{timeStr}</Text>
     </Flex>
   )
 }
