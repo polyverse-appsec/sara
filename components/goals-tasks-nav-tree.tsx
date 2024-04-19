@@ -3,7 +3,14 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import * as Label from '@radix-ui/react-label'
-import { Flex, HoverCard, Text } from '@radix-ui/themes'
+import {
+  Card,
+  Flex,
+  HoverCard,
+  Link as RadixLink,
+  Strong,
+  Text,
+} from '@radix-ui/themes'
 import { NodeRendererProps, Tree } from 'react-arborist'
 
 import { type Goal, type Task } from '../lib/data-model-types'
@@ -65,9 +72,8 @@ interface NavigatableGoalOrTaskResource {
   status?: string
 }
 
-const renderGoalIcon = () =>
-  CheckedSquareIcon()
-  /*
+const renderGoalIcon = () => CheckedSquareIcon()
+/*
   <svg
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
@@ -262,48 +268,50 @@ const renderNodeName = (navigatableResource: NavigatableGoalOrTaskResource) => {
         )}
       </HoverCard.Trigger>
       <HoverCard.Content>
-        <p className="mb-2 font-semibold">
-          {navigatableResource.type === 'GOAL' ? 'Goal' : 'Task'}
-        </p>
-        <div className="flex flex-col p-2 bg-background rounded-lg blue-border break-words">
-          <div className="flex flex-col">
+        <Flex direction="column" gap="1">
+          <Flex align="center" gap="1">
+            <Text>
+              <Strong>
+                {navigatableResource.type === 'GOAL'
+                  ? 'Goal Name: '
+                  : 'Task Name: '}
+              </Strong>
+            </Text>
+
             {navigatableResource.type === 'GOAL' ? (
               <Link href={`/goals/${navigatableResource.id}`}>
-                <p className="mb-2 font-semibold hover:text-orange-500">
-                  Name: {navigatableResource.name}
-                </p>
+                <Text color="blue">{navigatableResource.name}</Text>
               </Link>
             ) : (
-              <p className="mb-2 font-semibold">
-                Name: {navigatableResource.name}
-              </p>
+              <Text>navigatableResource.name</Text>
             )}
-          </div>
-          <div className="flex flex-col items-start">
-            {navigatableResource.status && (
-              <div className="flex flex-col">
-                <span className="font-semibold mr-2">
-                  Status:{' '}
-                  {renderGoalOrTaskStatusIcon(navigatableResource.status)}
-                </span>
-              </div>
-            )}
-            {navigatableResource.description && (
-              <div className="flex flex-col">
-                <br />
-                <p className="font-semibold">Description</p>
-                <p className="ml-4">{navigatableResource.description}</p>
-              </div>
-            )}
-            {navigatableResource.acceptanceCriteria && (
-              <div className="flex flex-col">
-                <br />
-                <p className="font-semibold">Acceptance Criteria</p>
-                <p className="ml-4">{navigatableResource.acceptanceCriteria}</p>
-              </div>
-            )}
-          </div>
-        </div>
+          </Flex>
+
+          {navigatableResource.status && (
+            <Flex gap="1" align="center">
+              <Text>
+                <Strong>Status:</Strong>
+              </Text>
+              {renderGoalOrTaskStatusIcon(navigatableResource.status)}
+            </Flex>
+          )}
+          {navigatableResource.description && (
+            <Flex direction="column">
+              <Text>
+                <Strong>Description</Strong>
+              </Text>
+              <Text>{navigatableResource.description}</Text>
+            </Flex>
+          )}
+          {navigatableResource.acceptanceCriteria && (
+            <Flex direction="column">
+              <Text>
+                <Strong>Acceptance Criteria</Strong>
+              </Text>
+              <Text>{navigatableResource.acceptanceCriteria}</Text>
+            </Flex>
+          )}
+        </Flex>
       </HoverCard.Content>
     </HoverCard.Root>
   )
