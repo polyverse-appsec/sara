@@ -2,12 +2,9 @@
 
 import * as React from 'react'
 import { ExclamationTriangleIcon } from '@radix-ui/react-icons'
-// TODO: Do I need to use this package at all?
 import { type UseChatHelpers } from 'ai/react'
-import SaraLoading from 'components/sara-loading'
 
 import {
-  type ChatQuery,
   type ProjectHealthStatusValue,
 } from './../../lib/data-model-types'
 import { ButtonScrollToBottom } from './../button-scroll-to-bottom'
