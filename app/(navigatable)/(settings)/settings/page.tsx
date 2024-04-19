@@ -10,6 +10,7 @@ import { Button } from 'components/ui/button'
 import { useAppContext } from 'lib/hooks/app-context'
 import { signOut, useSession } from 'next-auth/react'
 import toast from 'react-hot-toast'
+import RenderableResourceContent from 'components/renderable-resource/renderable-resource-content'
 
 const SettingsIndex = () => {
   const { activeBillingOrg } = useAppContext()
@@ -50,8 +51,9 @@ const SettingsIndex = () => {
 
   return (
     <div className="flex flex-col items-center p-10 font-bold space-y-4">
-      <p className="text-2xl font-bold">Account Settings</p>
-      <div className="w-1/2 border-t-2 border-blue-600 my-2"></div>
+      <RenderableResourceContent>
+        <p className="text-2xl font-bold px-72">Account Settings</p>
+      </RenderableResourceContent>
       <Link
         href="https://github.com/settings/connections/applications/b2fe85230b8f365e87f8"
         target="_blank"

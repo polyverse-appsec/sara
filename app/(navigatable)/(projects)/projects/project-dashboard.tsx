@@ -7,6 +7,7 @@ import { Text } from '@radix-ui/themes'
 import { ProjectCreateTile } from './project-create-tile'
 import { ProjectDetailsTile } from './project-details-tile'
 import { Skeleton } from '@radix-ui/themes'
+import RenderableResourceContent from 'components/renderable-resource/renderable-resource-content'
 
 interface ProjectDashboardProps {
   projects: Project[] | undefined
@@ -19,13 +20,9 @@ const ProjectDashboard = ({
 }: ProjectDashboardProps) => {
   return (
     <div>
-      <div className="text-center mb-2">Projects</div>
-      <div className="flex justify-center w-full">
-        <div className="w-1/2 border-t-2 border-blue-600 mb-5"></div>
-      </div>
-      <div className="mb-10">
-        <ProjectCreateTile />
-      </div>  
+      <RenderableResourceContent>
+        <div className="text-center mb-2">Projects</div>
+      </RenderableResourceContent>
       <Skeleton loading={projects === undefined}>
         {projects !== undefined ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -47,6 +44,11 @@ const ProjectDashboard = ({
                 onProjectDelete={onProjectDelete}
               />
             ))}
+            <div className="flex items-center justify-center">
+              <div className="w-1/2 flex items-center">
+                <ProjectCreateTile />
+              </div> 
+            </div>
           </div>
         ) : (
           // projects is undefined, so we haven't finished loading projects yet - just say loading

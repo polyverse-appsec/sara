@@ -15,6 +15,8 @@ import { getResource } from './../../../../../app/saraClient'
 import auth1Image from './../../../../../public/auth1.png'
 import auth2Image from './../../../../../public/auth2.png'
 import auth3Image from './../../../../../public/auth3.png'
+import { Flex } from '@radix-ui/themes'
+import { ArrowLeftIcon } from '@radix-ui/react-icons'
 
 export interface OrgAndStatus {
   name: string
@@ -61,8 +63,19 @@ const SettingsGithubAppInstall = () => {
 
   return (
     <div className="flex flex-col items-center p-10">
-      <p className="text-2xl font-bold">Authorize Private Repo Access</p>
-      <div className="w-1/2 border-t-2 border-blue-600 my-2"></div>
+      <div className="flex items-left text-left mb-2 w-full">
+        <button className="btn-blue text-sm">
+          <Link href="/settings">
+            <Flex align="center">
+              <ArrowLeftIcon className="mr-2" />
+              Back to Settings
+            </Flex>
+          </Link>
+        </button>
+      </div>
+      <RenderableResourceContent>
+        <p className="text-2xl font-bold px-72">Authorize Private Repo Access</p>
+      </RenderableResourceContent>
       <RenderableResourceContent>
         <div className="flex flex-col items-center text-center">
           <p className="font-bold">User App Installation Status</p>

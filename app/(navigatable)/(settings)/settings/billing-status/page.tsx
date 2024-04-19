@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { StarFilledIcon } from '@radix-ui/react-icons'
+import { ArrowLeftIcon, StarFilledIcon } from '@radix-ui/react-icons'
 import { getOrgUserStatus } from 'app/react-utils'
 import { SaraSession } from 'auth'
 import RenderableResourceContent from 'components/renderable-resource/renderable-resource-content'
@@ -11,6 +11,7 @@ import { useAppContext } from 'lib/hooks/app-context'
 import { preReleaseServiceDisclaimer } from 'lib/productDescriptions'
 import { isPreviewFeatureEnabled } from 'lib/service-utils'
 import { useSession } from 'next-auth/react'
+import { Flex } from '@radix-ui/themes'
 
 const SettingsOrgUpgrade = () => {
   const { activeBillingOrg } = useAppContext()
@@ -55,8 +56,19 @@ const SettingsOrgUpgrade = () => {
 
   return (
     <div className="flex flex-col items-center pt-10 px-10">
-      <p className="text-2xl font-bold">Billing Status</p>
-      <div className="w-1/2 border-t-2 border-blue-600 my-2"></div>
+      <div className="flex items-left text-left mb-2 w-full">
+        <button className="btn-blue text-sm">
+          <Link href="/settings">
+            <Flex align="center">
+              <ArrowLeftIcon className="mr-2" />
+              Back to Settings
+            </Flex>
+          </Link>
+        </button>
+      </div>
+      <RenderableResourceContent>
+        <p className="text-2xl font-bold px-72">Billing Status</p>
+      </RenderableResourceContent>
       {activeBillingOrg ? (
         <p className="m-4 font-semibold">
           Your current billing context is {activeBillingOrg.name}{' '}
