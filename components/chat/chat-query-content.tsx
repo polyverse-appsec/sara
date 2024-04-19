@@ -23,7 +23,7 @@ const testQueryContentWithCode =
 const ChatQueryContent = () => {
   return (
     <MemoizedReactMarkdown
-      className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0"
+      className="markdownDisplay"
       remarkPlugins={[remarkGfm, remarkMath]}
       components={{
         p({ children }) {
