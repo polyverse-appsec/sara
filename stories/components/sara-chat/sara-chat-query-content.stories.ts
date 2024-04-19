@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
+import { ChatContentTypeQuery } from 'components/chat/chat-query-content'
 
 import SaraChatQueryContent from 'components/sara-chat/sara-chat-query-content'
 
@@ -17,6 +18,6 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
     args: {
         content: 'Some content',
-        contentType: 'QUERY',
+        contentType: ChatContentTypeQuery,
     }
 }

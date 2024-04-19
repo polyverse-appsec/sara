@@ -17,7 +17,7 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
     // args: {
     //     content: 'Some content',
-    //     contentType: 'QUERY',
+    //     contentType: ChatContentTypeQuery,
     //     timestamp: new Date(),
     //     shouldRenderLoadingSpinner: true,
     // }
