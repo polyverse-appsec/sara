@@ -9,7 +9,7 @@ import {
   GearIcon,
   StarFilledIcon,
 } from '@radix-ui/react-icons'
-import { Flex, HoverCard, Inset, Skeleton, Text } from '@radix-ui/themes'
+import { Flex, HoverCard, Inset, Skeleton, Text, Tooltip } from '@radix-ui/themes'
 import { SaraSession } from 'auth'
 import ProjectStatusDetailsHoverCard from 'components/project-status/project-status-details-card'
 import { type Org } from 'lib/data-model-types'
@@ -136,14 +136,6 @@ const SidebarNav = () => {
     setMouseDown(true)
   }
 
-  // // We do dynamic class naming here to position the sticky elements and
-  // // determine the height of the draggable <div>. This is because there are
-  // // sticky headers that are positioned in the component <HeaderCallouts>. For
-  // // more details around sizing see <HeaderCallouts>.
-  // const topDivClassname = saraSession
-  //   ? 'fixed overflow-hidden'
-  //   : 'fixed overflow-hidden'
-
   const draggableDivClassname = saraSession
     ? 'flex flex-col h-screen fixed inset-y-0 left-0 bg-background dark:bg-black transition duration-200 ease-in-out border-r-2 border-orange-500'
     : 'flex flex-col h-screen fixed inset-y-0 left-0 bg-background dark:bg-black transition duration-200 ease-in-out border-orange-500'
@@ -175,99 +167,98 @@ const SidebarNav = () => {
         </Link>
       </div>
 
-      {/* Navigation Buttons */}
+      {/* Navigation Area */}
       <nav className="flex flex-col space-y-1 p-2">
-        {/* Projects Button */}
-        <Skeleton loading={loadingBillingOrg}>
-          <button
-            className="flex items-center justify-center px-4 py-2 rounded-lg hover:bg-secondary hover:text-secondary-foreground transition-colors"
-            onClick={() => {
-              if (!activeBillingOrg) {
-                toast.error(`Please select billing context`)
-                router.push('/orgs')
-              }
-              setProjectIdForConfiguration(null)
-              router.push('/projects')
-            }}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-              className="w-6 h-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z"
-              />
-            </svg>
-            <span className="ml-3">Switch Project</span>
-          </button>
-        </Skeleton>
-        {/* ...other buttons */}
-      </nav>
-
-      <Flex direction="column" align="center">
-        <div className="w-1/2 border-t rounded-xl border-blue-600 mb-2"></div>
-      </Flex>
-      <HoverCard.Root>
-        <HoverCard.Trigger>
-          <Flex gap="2" align="center" direction="column">
-            <Skeleton loading={projectIdForConfiguration === undefined}>
-              {projectIdForConfiguration ? (
-                activeProjectDetails ? (
-                  <>
-                    <Link
-                      href={`/projects/${activeProjectDetails?.id}`}
-                      className="hover:underline flex items-center"
-                    >
-                      {activeProjectDetails
-                        ? renderHealthIcon(
-                            activeProjectDetails.health.readableValue,
-                          )
-                        : null}
-                      <Text
-                        size="2"
-                        as="span"
-                        className="align-middle"
-                        weight="bold"
-                      >
-                        {activeProjectDetails?.project.name}
+        <div className="flex items-center justify-center">
+          {/* Projects Button */}
+          <Skeleton loading={loadingBillingOrg}>
+            <Tooltip content="Switch Project">
+              <button
+                className="flex items-center justify-center px-4 py-2 rounded-lg hover:bg-secondary hover:text-secondary-foreground transition-colors"
+                onClick={() => {
+                  if (!activeBillingOrg) {
+                    toast.error(`Please select billing context`)
+                    router.push('/orgs')
+                  }
+                  setProjectIdForConfiguration(null)
+                  router.push('/projects')
+                }}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z"
+                  />
+                </svg>
+              </button>
+            </Tooltip>
+          </Skeleton>   
+          {/* Project Name Display */}
+          <HoverCard.Root>
+            <HoverCard.Trigger>
+              <Flex gap="2" align="center" direction="column">
+                <Skeleton loading={projectIdForConfiguration === undefined}>
+                  {projectIdForConfiguration ? (
+                    activeProjectDetails ? (
+                      <>
+                        <Link
+                          href={`/projects/${activeProjectDetails?.id}`}
+                          className="hover:underline flex items-center"
+                        >
+                          {activeProjectDetails
+                            ? renderHealthIcon(
+                                activeProjectDetails.health.readableValue,
+                              )
+                            : null}
+                          <Text
+                            size="2"
+                            as="span"
+                            className="align-middle"
+                            weight="bold"
+                          >
+                            {activeProjectDetails?.project.name}
+                          </Text>
+                        </Link>
+                      </>
+                    ) : (
+                      <Text size="2" className="italic text-gray-500">
+                        Loading...
                       </Text>
-                    </Link>
-                  </>
-                ) : (
-                  <Text size="2" className="italic text-gray-500">
-                    Loading...
-                  </Text>
-                )
-              ) : (
-                <Text size="2" className="italic text-gray-500">
-                  No Project Selected
-                </Text>
-              )}
-            </Skeleton>
-          </Flex>
-        </HoverCard.Trigger>
-        {activeProjectDetails ? (
-          <HoverCard.Content>
-            <Inset>
-              <ProjectStatusDetailsHoverCard
-                health={activeProjectDetails.health}
-                lastRefreshedAt={activeProjectDetails.project.lastRefreshedAt}
-              />
-            </Inset>
-          </HoverCard.Content>
-        ) : null}
-      </HoverCard.Root>
+                    )
+                  ) : (
+                      <Text size="2" className="italic text-gray-500">
+                        No Project Selected
+                      </Text>
+                  )}
+                </Skeleton>
+              </Flex>
+            </HoverCard.Trigger>
+            {(projectIdForConfiguration && activeProjectDetails) ? (
+              <HoverCard.Content>
+                <Inset>
+                  <ProjectStatusDetailsHoverCard
+                    health={activeProjectDetails.health}
+                    lastRefreshedAt={activeProjectDetails.project.lastRefreshedAt}
+                  />
+                </Inset>
+              </HoverCard.Content>
+            ) : null}
+          </HoverCard.Root>
+        </div>
+      </nav>
 
       <div 
         className={isProduction ? 
           "rounded-lg border border-blue-500 no-scrollbar m-2 overflow-y-auto h-72" 
-          : "rounded-lg border border-blue-500 no-scrollbar m-2 overflow-y-auto h-60"}
+          : "rounded-lg border border-blue-500 no-scrollbar m-2 overflow-y-auto h-64"}
       >
         {/* Resource Loader */}
         {projectIdForConfiguration ? (
