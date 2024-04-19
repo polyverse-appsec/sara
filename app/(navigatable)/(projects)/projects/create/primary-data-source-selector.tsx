@@ -8,10 +8,11 @@ import {
   LockClosedIcon,
   LockOpen2Icon,
 } from '@radix-ui/react-icons'
-import { Badge, Callout, Skeleton } from '@radix-ui/themes'
+import { Badge, Callout, Skeleton, TextField } from '@radix-ui/themes'
 import { getGitHubOrgs, getOrgStatus } from 'app/react-utils'
 import { SaraSession } from 'auth'
 import { use } from 'chai'
+import CloudArrowDownIcon from 'components/icons/CloudArrowDownIcon'
 import { Button } from 'components/ui/button'
 import { useSession } from 'next-auth/react'
 import toast from 'react-hot-toast'
@@ -34,12 +35,14 @@ interface DataSourceSelectorProps {
   userIsPremium: boolean
   disableInput: boolean
   setControlledProjectDataSources: (gitHubRepos: GitHubRepo[]) => void
+  setControlledPublicDataSourceUrl: (publicDataSourceUrl: string | null) => void
 }
 
 const PrimaryDataSourceSelector = ({
   userIsPremium,
   disableInput,
   setControlledProjectDataSources,
+  setControlledPublicDataSourceUrl,
 }: DataSourceSelectorProps) => {
   const session = useSession()
   const saraSession = session.data ? (session.data as SaraSession) : null
@@ -55,6 +58,9 @@ const PrimaryDataSourceSelector = ({
   >([])
 
   const [personalReposSelected, setPersonalReposSelected] =
+    useState<boolean>(false)
+
+  const [publicGitHubRepoSelected, setPublicGitHubRepoSelected] =
     useState<boolean>(false)
 
   const [
@@ -192,18 +198,47 @@ const PrimaryDataSourceSelector = ({
             {selectedGithubOrg && (
               <span className="pl-1">{selectedGithubOrg.login}</span>
             )}
-            {!personalReposSelected && !selectedGithubOrg && (
-              <span className="flex pl-1 min-w-64 text-left">
-                Select Repo Source...
-              </span>
+            {publicGitHubRepoSelected && (
+              <span className="pl-1">Public GitHub Repo</span>
             )}
+            {!personalReposSelected &&
+              !selectedGithubOrg &&
+              !publicGitHubRepoSelected && (
+                <span className="flex pl-1 min-w-64 text-left">
+                  Select Repo Source...
+                </span>
+              )}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start" className="min-w-64 max-h-60">
           <DropdownMenuItem
             onSelect={(event) => {
+              // Signal the local state to correctly render the correct repo
+              // selector or input boxes
+              setPublicGitHubRepoSelected(true)
+              setPersonalReposSelected(false)
               setSelectedGithubOrg(null)
+
+              // Blank the controlled array of repos that could be selected from
+              // dropdowns when manually providing a Git URL
+              setControlledProjectDataSources([])
+            }}
+          >
+            <span className="font-semibold truncate whitespace-nowrap overflow-hidden">
+              Public Repo
+            </span>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onSelect={(event) => {
+              // Signal the local state to correctly render the correct repo
+              // selector or input boxes
               setPersonalReposSelected(true)
+              setPublicGitHubRepoSelected(false)
+              setSelectedGithubOrg(null)
+
+              // Blank the controlled public Git URL that might have been
+              // provided
+              setControlledPublicDataSourceUrl(null)
             }}
           >
             <span className="font-semibold truncate whitespace-nowrap overflow-hidden">
@@ -216,8 +251,15 @@ const PrimaryDataSourceSelector = ({
               <DropdownMenuItem
                 key={org.login}
                 onSelect={(event) => {
-                  setPersonalReposSelected(false)
+                  // Signal the local state to correctly render the correct repo
+                  // selector or input boxes
                   setSelectedGithubOrg(org)
+                  setPersonalReposSelected(false)
+                  setPublicGitHubRepoSelected(false)
+
+                  // Blank the controlled public Git URL that might have been
+                  // provided
+                  setControlledPublicDataSourceUrl(null)
                 }}
               >
                 <span className="ml-2 truncate whitespace-nowrap overflow-hidden">
@@ -228,6 +270,19 @@ const PrimaryDataSourceSelector = ({
           </DropdownMenuLabel>
         </DropdownMenuContent>
       </DropdownMenu>
+
+      {publicGitHubRepoSelected && (
+        <TextField.Root
+          placeholder="Full GitHub URL (e.g. https://github.com/mui/material-ui)"
+          onChange={(e) => {
+            setControlledPublicDataSourceUrl(e.target.value)
+          }}
+        >
+          <TextField.Slot>
+            <CloudArrowDownIcon />
+          </TextField.Slot>
+        </TextField.Root>
+      )}
 
       {/* PERSONAL REPO DROPDOWN */}
       {personalReposSelected && (

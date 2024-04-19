@@ -39,6 +39,9 @@ const ProjectCreate = () => {
   const [controlledProjectDataSources, setControlledProjectDataSources] =
     useState<GitHubRepo[]>([])
 
+  const [controlledPublicDataSourceUrl, setControlledPublicDataSourceUrl] =
+    useState<string | null>(null)
+
   const [projectName, setProjectName] = useState<string>('')
 
   const [projectDescription, setProjectDescription] = useState<string>('')
@@ -148,6 +151,9 @@ const ProjectCreate = () => {
               disableInput={!saveButtonEnabled}
               setControlledProjectDataSources={(gitHubRepos) =>
                 setControlledProjectDataSources(gitHubRepos)
+              }
+              setControlledPublicDataSourceUrl={(publicDataSourceUrl) =>
+                setControlledPublicDataSourceUrl(publicDataSourceUrl)
               }
             />
             <Callout.Root color="orange" className="mt-2">
@@ -269,14 +275,43 @@ const ProjectCreate = () => {
                 return
               }
 
+              // Enforce either selecting a data source that we retrieved or the
+              // user entering a public GitHub URL
               if (
-                !controlledProjectDataSources ||
-                controlledProjectDataSources.length === 0
+                controlledProjectDataSources &&
+                controlledProjectDataSources.length === 0 &&
+                !controlledPublicDataSourceUrl
               ) {
                 setDisplayRequiredText(true)
-                toast.error(`Please select a primary data source`)
+                toast.error(
+                  `Please select a primary data source or enter a public Git URL`,
+                )
                 setSaveButtonEnabled(true)
                 return
+              }
+
+              // Validate that the input to the public GitHub URL may be valid
+              // by verifying there is a forward slash denoting the start of the
+              // last URI segment with the name of the repo.
+              if (controlledPublicDataSourceUrl) {
+                const lastUriSegmentIndex =
+                  controlledPublicDataSourceUrl.lastIndexOf('/')
+
+                if (lastUriSegmentIndex === -1) {
+                  toast.error(`Please provide a full GitHub URL`)
+                  setSaveButtonEnabled(true)
+                  return
+                }
+
+                // Validate that the last character in the string isn't a '/'
+                if (
+                  lastUriSegmentIndex ===
+                  controlledPublicDataSourceUrl.length - 1
+                ) {
+                  toast.error(`Please provide a full GitHub URL`)
+                  setSaveButtonEnabled(true)
+                  return
+                }
               }
 
               // Make sure to trim the guidelines to start pull out any
@@ -286,11 +321,41 @@ const ProjectCreate = () => {
                 .filter((guideline) => guideline !== '')
 
               try {
+                // The <PrimaryDataSourceSelector> component ought to either set
+                // an array of project data sources if a personal/organizational
+                // repo was selected in a dropdown or set the full Git URL if
+                // provided in an input box by the user. If the full Git URL was
+                // provided convert it into the type `GitHubRepo` type as best
+                // as we can since it is what the Boost service expects.
+                let projectDataSources = null
+
+                if (controlledPublicDataSourceUrl) {
+                  // Having already done validation of the public URL above we
+                  // add one here to ensure that we are picking up the starting
+                  // position of the name and not the forward slash in our
+                  // substring
+                  const lastUriSegment =
+                    controlledPublicDataSourceUrl.lastIndexOf('/') + 1
+
+                  const publicDataSourceName =
+                    controlledPublicDataSourceUrl.substring(lastUriSegment)
+
+                  const userProvidedGitHubRepo: GitHubRepo = {
+                    name: publicDataSourceName,
+                    htmlUrl: controlledPublicDataSourceUrl,
+                    private: false,
+                  }
+
+                  projectDataSources = [userProvidedGitHubRepo]
+                } else {
+                  projectDataSources = controlledProjectDataSources
+                }
+
                 // First create the project for the user...
                 const projectBody = {
                   name: trimmedProjectName,
                   description: projectDescription,
-                  projectDataSources: controlledProjectDataSources,
+                  projectDataSources,
                   guidelines,
                 }
 
