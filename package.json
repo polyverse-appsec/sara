@@ -1,6 +1,6 @@
 {
   "name": "polyverse-sara-web-ui",
-  "version": "0.20.18",
+  "version": "0.20.19",
   "private": true,
   "scripts": {
     "dev": "cross-env NODE_OPTIONS='--inspect' next dev -p 5000",
