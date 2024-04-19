@@ -9,6 +9,9 @@ import { HoverCard } from '@radix-ui/themes'
 
 import { type Goal, type Task } from '../lib/data-model-types'
 import { getResource } from './../app/saraClient'
+import remarkGfm from 'remark-gfm'
+import remarkMath from 'remark-math'
+import { MemoizedReactMarkdown } from './markdown'
 
 interface GoalsTaskNavTreeProps {
   projectId: string
@@ -169,8 +172,10 @@ const CompletedTaskIcon = () => (
 </svg>
 )
   
-const renderGoalOrTaskStatusIcon = (status: string) => {
-    if (status === 'OPEN' || status === 'TODO') {
+const renderGoalOrTaskStatusIcon = (type: string, status: string) => {
+    if (type === 'GOAL') {
+        return renderGoalIcon()
+    } else if (status === 'OPEN' || status === 'TODO') {
         return UncheckedCircleIcon()
     } else if (status === 'IN_PROGRESS') {
         return InProgressTaskIcon()
@@ -200,35 +205,58 @@ const renderNodeName = (navigatableResource: NavigatableGoalOrTaskResource) => {
             )}
         </HoverCard.Trigger>
         <HoverCard.Content>
-            <p className="mb-2 font-semibold">{(navigatableResource.type === 'GOAL' ?'Goal':'Task')}</p>
-            <div className="flex flex-col p-2 bg-background rounded-lg blue-border break-words">
+            <Flex>
+                {navigatableResource.status && renderGoalOrTaskStatusIcon(navigatableResource.type, navigatableResource.status)}
                 <div className="flex flex-col">
                     {navigatableResource.type === 'GOAL' ? (
                         <Link href={`/goals/${navigatableResource.id}`}>
-                            <p className="mb-2 font-semibold hover:text-orange-500">Name: {navigatableResource.name}</p>
+                            <p className="mb-2 font-semibold hover:text-orange-500">{navigatableResource.name}</p>
                         </Link>
                     ) : (
-                        <p className="mb-2 font-semibold">Name: {navigatableResource.name}</p>
+                        <p className="mb-2 font-semibold">{navigatableResource.name}</p>
                     ) }
                 </div>
+            </Flex>
+            <div className="flex flex-col p-2 bg-background rounded-lg blue-border break-words">
                 <div className="flex flex-col items-start">
-                    {navigatableResource.status && (
+                    {/*navigatableResource.status && (
                         <div className="flex flex-col">
-                            <span className="font-semibold mr-2">Status: {renderGoalOrTaskStatusIcon(navigatableResource.status)}</span>
+                            <span className="font-semibold mr-2">Status: {renderGoalOrTaskStatusIcon(navigatableResource.type, navigatableResource.status)}</span>
                         </div>
-                    )}
-                    {navigatableResource.description && (
-                        <div className="flex flex-col">
-                            <br/>
-                            <p className="font-semibold">Description</p>
-                            <p className="ml-4">{navigatableResource.description}</p>
+                    )*/}
+                    <div className="flex flex-col">
+                        <div>
+                            <MemoizedReactMarkdown
+                                className="markdownDisplay"
+                                remarkPlugins={[remarkGfm, remarkMath]}
+                                components={{
+                                    p({ children }) {
+                                        return <p className="mb-2 last:mb-0">{children}</p>
+                                    },
+                                }}
+                            >
+                                {navigatableResource.description !== undefined?navigatableResource.description:"No description available"}
+                            </MemoizedReactMarkdown>
                         </div>
-                    )}
+                    </div>
                     {navigatableResource.acceptanceCriteria && (
                         <div className="flex flex-col">
                             <br/>
                             <p className="font-semibold">Acceptance Criteria</p>
-                            <p className="ml-4">{navigatableResource.acceptanceCriteria}</p>
+                            {/* indent */}
+                            <div className="pl-2">
+                                <MemoizedReactMarkdown
+                                    className="markdownDisplay"
+                                    remarkPlugins={[remarkGfm, remarkMath]}
+                                    components={{
+                                        p({ children }) {
+                                            return <p className="mb-2 last:mb-0">{children}</p>
+                                        },
+                                    }}
+                                >
+                                    {navigatableResource.acceptanceCriteria}
+                                </MemoizedReactMarkdown>
+                            </div>
                         </div>
                     )}
                 </div>
@@ -255,7 +283,7 @@ const renderGoalOrTaskNode = ({
       <div className="flex">
         <span>
           {node.data.type === 'GOAL' ? renderGoalIcon() :
-            ((node.data as NavigatableGoalOrTaskResource).status !== undefined)? renderGoalOrTaskStatusIcon((node.data as NavigatableGoalOrTaskResource).status!):
+            ((node.data as NavigatableGoalOrTaskResource).status !== undefined)? renderGoalOrTaskStatusIcon(node.data.type, (node.data as NavigatableGoalOrTaskResource).status!):
             renderTaskIcon()}
         </span>
         <span
