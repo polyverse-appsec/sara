@@ -329,7 +329,7 @@ const SaraChatQueryContent = ({
         querySubmittedAt,
         responseReceivedAt,
       )}
-      <div className="flex-1 px-1 ml-4 space-y-2 overflow-auto" style={{ maxWidth: 'calc(100vw)' }}>
+      <div className="flex-1 px-1 ml-4 space-y-2 overflow-auto" style={{ maxWidth: 'calc(100vh)' }}>
         <MemoizedReactMarkdown
           className="pr-16 prose-base break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0"
           remarkPlugins={[remarkGfm, remarkMath]}
