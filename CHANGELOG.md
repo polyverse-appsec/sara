@@ -2,7 +2,7 @@
 
 # Release Notes
 
-## Version 0.20.21: April 20th, 2024
+## Version 1.0.0: April 20th, 2024
 
 ### New Features
 
@@ -10,21 +10,7 @@
 
 ### Enhancements
 
-- N/A
-
-### Bug Fixes
-
-- N/A
-
-## Version 0.20.20: April 20th, 2024
-
-### New Features
-
-- N/A
-
-### Enhancements
-
-- N/A
+- Periodically refresh Project Healths on Projects page
 
 ### Bug Fixes
 
