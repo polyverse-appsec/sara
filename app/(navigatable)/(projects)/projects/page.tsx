@@ -65,18 +65,20 @@ const ProjectIndex = () => {
   }
 
   return (
-    <div className="flex-1 p-10 text-2xl font-bold">
-      <ProjectDashboard
-        projects={projects}
-        onProjectDelete={(deletedProjectId: any) => {
-          if (!projects) {
-            return
-          }
-          setProjects(
-            projects.filter((project) => project.id !== deletedProjectId),
-          )
-        }}
-      />
+    <div className="flex-1 p-2 text-2xl font-bold">
+      <div className="bg-background shadow-md rounded-lg border border-blue-500 p-5 block transition" style={{ height: 'calc(100% - 2rem)' }}>
+        <ProjectDashboard
+            projects={projects}
+            onProjectDelete={(deletedProjectId: any) => {
+            if (!projects) {
+                return
+            }
+            setProjects(
+                projects.filter((project) => project.id !== deletedProjectId),
+            )
+            }}
+        />
+      </div>
     </div>
   )
 }

@@ -18,7 +18,7 @@ const ProjectDashboard = ({
   onProjectDelete,
 }: ProjectDashboardProps) => {
   return (
-    <div className="bg-background shadow-md rounded-lg border border-blue-500 p-6 block transition">
+    <div>
       <RenderableResourceContent>
         <div className="text-center mb-2">Projects</div>
         <Flex align="center" justify="end" className="w-full">
