@@ -18,7 +18,7 @@ import createPromptFileInfo from './../../../../../../../lib/polyverse/db/create
 import deletePromptFileInfo from './../../../../../../../lib/polyverse/db/delete-prompt-file-info'
 import getChat from './../../../../../../../lib/polyverse/db/get-chat'
 import getChatQuery from './../../../../../../../lib/polyverse/db/get-chat-query'
-import getChatQueryRangeFromChat from './../../../../../../../lib/polyverse/db/get-chat-query-range-from-chat'
+import getChatQueryRangeFromChat, { GetMaxQueryEntries } from './../../../../../../../lib/polyverse/db/get-chat-query-range-from-chat'
 import getGoal from './../../../../../../../lib/polyverse/db/get-goal'
 import getOrg from './../../../../../../../lib/polyverse/db/get-org'
 import getProject from './../../../../../../../lib/polyverse/db/get-project'
@@ -477,9 +477,8 @@ export const GET = auth(async (req: NextAuthRequest) => {
     // If we aren't in the `QUERY_SUBMITTED` state then we don't need to try to
     // query for any responses
     if (tailChatQuery.status !== 'QUERY_SUBMITTED') {
-      // This REST API doesn't support paging yet but we are returning results
-      // like we do. Something for us to build on.
-      const chatQueries = await getChatQueryRangeFromChat(chat.id)
+      // This REST API doesn't support paging yet so we'll just grab all entries (default is only 100)
+      const chatQueries = await getChatQueryRangeFromChat(chat.id, GetMaxQueryEntries)
 
       return new Response(JSON.stringify(chatQueries), {
         status: StatusCodes.OK,
@@ -547,13 +546,8 @@ export const GET = auth(async (req: NextAuthRequest) => {
         org.id,
       )
 
-      // We tried to use the status code '102 Processing' in the response but
-      // NextJS (?) errored on the range and said it needed to be 200-599. Just
-      // return an OK response with the tail query still saying its processed.
-      // Then gather the a range of chat queries from the chat and return it to
-      // the user. This REST API doesn't support paging yet but we are returning
-      // results like we do. Something for us to build on.
-      const chatQueries = await getChatQueryRangeFromChat(chat.id)
+      // This REST API doesn't support paging yet so we'll just grab all entries (default is only 100)
+      const chatQueries = await getChatQueryRangeFromChat(chat.id, GetMaxQueryEntries)
 
       return new Response(JSON.stringify(chatQueries), {
         status: StatusCodes.OK,
@@ -598,13 +592,9 @@ export const GET = auth(async (req: NextAuthRequest) => {
         status: StatusCodes.INTERNAL_SERVER_ERROR,
       })
     } else if (threadRunStatus === 'in_progress') {
-      // We tried to use the status code '102 Processing' in the response but
-      // NextJS (?) errored on the range and said it needed to be 200-599. Just
-      // return an OK response with the tail query still saying its processed.
-      // Then gather the a range of chat queries from the chat and return it to
-      // the user. This REST API doesn't support paging yet but we are returning
-      // results like we do. Something for us to build on.
-      const chatQueries = await getChatQueryRangeFromChat(chat.id)
+
+        // This REST API doesn't support paging yet so we'll just grab all entries (default is only 100)
+      const chatQueries = await getChatQueryRangeFromChat(chat.id, GetMaxQueryEntries)
 
       return new Response(JSON.stringify(chatQueries), {
         status: StatusCodes.OK,
@@ -671,10 +661,8 @@ export const GET = auth(async (req: NextAuthRequest) => {
 
     await updateChatQuery(tailChatQuery)
 
-    // Then gather the a range of chat queries from the chat and return it to
-    // the user. This REST API doesn't support paging yet but we are returning
-    // results like we do. Something for us to build on.
-    const chatQueries = await getChatQueryRangeFromChat(chat.id)
+      // This REST API doesn't support paging yet so we'll just grab all entries (default is only 100)
+      const chatQueries = await getChatQueryRangeFromChat(chat.id, GetMaxQueryEntries)
 
     // Strip out the prompt that was used to generate the response for trade
     // secret purposes

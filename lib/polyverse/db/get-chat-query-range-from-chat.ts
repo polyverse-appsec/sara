@@ -3,24 +3,29 @@ import { kv } from '@vercel/kv'
 import { type ChatQuery } from '../../data-model-types'
 import { chatQueryKey, relatedChatQueriesToChatIdsSetKey } from './keys'
 
+export const GetMaxQueryEntries = -1
+
 const getChatQueryRangeFromChat = async (
   chatId: string,
-  rangeSize: number = 20,
+  rangeSize: number = 100,
 ): Promise<ChatQuery[]> => {
   const chatQueriesToChatIdsSetKey = relatedChatQueriesToChatIdsSetKey(chatId)
-
   const totalChatQueries = await kv.zcard(chatQueriesToChatIdsSetKey)
 
-  // Ensure that our starting index isn't negative if someone requested more
-  // entries than actually exist in the set
-  const startingIndex = Math.max(totalChatQueries - rangeSize, 0)
-  const endingIndex = totalChatQueries - 1
+  // Handle the special case where rangeSize is -1, to fetch all entries
+  let startingIndex = 0
+  let endingIndex = totalChatQueries - 1
 
-  const chatQueryIds = (await kv.zrange(
+  // If rangeSize is not GetMaxQueryEntries, adjust indices to get only a range of items
+  if (rangeSize !== GetMaxQueryEntries) {
+    startingIndex = Math.max(totalChatQueries - rangeSize, 0)
+  }
+
+  const chatQueryIds = await kv.zrange(
     chatQueriesToChatIdsSetKey,
     startingIndex,
-    endingIndex,
-  )) as string[]
+    endingIndex
+  ) as string[]
 
   if (chatQueryIds.length === 0) {
     return []
@@ -31,7 +36,7 @@ const getChatQueryRangeFromChat = async (
     chatQueriesPipeline.hgetall(chatQueryKey(chatQueryId)),
   )
 
-  const chatQueries = (await chatQueriesPipeline.exec()) as ChatQuery[]
+  const chatQueries = await chatQueriesPipeline.exec() as ChatQuery[]
 
   return chatQueries
 }

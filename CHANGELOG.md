@@ -11,6 +11,9 @@
 ### Enhancements
 
 - Add support for providing a public GitHub repo URL
+- Enable Clipboard Copy of Goals and Tasks
+- Navigation Bar UI Improvements
+- Support for Goal-based Chat threads over 20 messages
 
 ### Bug Fixes
 
