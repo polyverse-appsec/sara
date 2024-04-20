@@ -11,6 +11,7 @@ import {
 } from '@radix-ui/react-icons'
 import {
   Flex,
+  Button,
   HoverCard,
   Inset,
   Skeleton,
@@ -34,6 +35,7 @@ import { useAppContext } from './../lib/hooks/app-context'
 import SaraPortrait from './../public/Sara_Cartoon_Portrait.png'
 import GoalsTaskNavTree from './goals-tasks-nav-tree'
 import LoadingCircle from './loading-spinner'
+import { FolderIcon } from './icons/FolderIcon'
 
 function getUserInitials(name: string) {
   const [firstName, lastName] = name.split(' ')
@@ -120,7 +122,7 @@ const SidebarNav = () => {
     } else {
       setCalloutHeight(112)
     }
-  }, [activeBillingOrg, saraSession])
+  }, [activeBillingOrg, saraSession, isProduction])
 
   const handleMouseUp = (_event: any) => {
     setMouseDown(false)
@@ -176,11 +178,11 @@ const SidebarNav = () => {
 
       {/* Navigation Area */}
       <nav className="flex flex-col space-y-1 p-2">
-        <div className="flex items-center justify-center">
+        <Flex gap="0" align="end" justify="start">
           {/* Projects Button */}
           <Skeleton loading={loadingBillingOrg}>
             <Tooltip content="Switch Project">
-              <button
+              <Button
                 className="flex items-center justify-center px-4 py-2 rounded-lg hover:bg-secondary hover:text-secondary-foreground transition-colors"
                 onClick={() => {
                   if (!activeBillingOrg) {
@@ -191,21 +193,8 @@ const SidebarNav = () => {
                   router.push('/projects')
                 }}
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z"
-                  />
-                </svg>
-              </button>
+                <FolderIcon />
+              </Button>
             </Tooltip>
           </Skeleton>
           {/* Project Name Display */}
@@ -225,14 +214,16 @@ const SidebarNav = () => {
                                 activeProjectDetails.health.readableValue,
                               )
                             : null}
-                          <Text
-                            size="2"
-                            as="span"
-                            className="align-middle"
-                            weight="bold"
-                          >
-                            {activeProjectDetails?.project.name}
-                          </Text>
+                                <Text
+                                size="2"
+                                as="span"
+                                className={`align-middle ${activeProjectDetails?.project.name.length > 15 ? 'truncate-text' : ''}`}
+                                weight="bold"
+                                >
+                                {activeProjectDetails?.project.name?activeProjectDetails?.project.name.length > 15
+                                  ? `${activeProjectDetails?.project.name.slice(0, 15)}...`
+                                    : activeProjectDetails?.project.name: `No Project Selected`}
+                                </Text>
                         </Link>
                       </>
                     ) : (
@@ -250,18 +241,31 @@ const SidebarNav = () => {
             </HoverCard.Trigger>
             {projectIdForConfiguration && activeProjectDetails ? (
               <HoverCard.Content>
-                <Inset>
+                    <Text size="2" className="font-semibold">
+                        <Link
+                          href={`/projects/${activeProjectDetails?.id}`}
+                          className="hover:underline flex items-center hover:text-orange-500"
+                        >
+                          <Text
+                            size="2"
+                            as="span"
+                            className="align-middle"
+                            weight="bold"
+                          >
+                            Project: {activeProjectDetails?.project.name}
+                          </Text>
+                        </Link>
+                    </Text>
                   <ProjectStatusDetailsHoverCard
                     health={activeProjectDetails.health}
                     lastRefreshedAt={
                       activeProjectDetails.project.lastRefreshedAt
                     }
                   />
-                </Inset>
               </HoverCard.Content>
             ) : null}
           </HoverCard.Root>
-        </div>
+        </Flex>
       </nav>
 
       <div
