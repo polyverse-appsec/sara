@@ -527,7 +527,7 @@ const GoalsTaskNavTree = ({
         </Label.Root>
       </div>
       <Flex direction="column" align="center">
-        <div className="w-1/2 border-t rounded-xl border-blue-600 my-2"></div>
+        <div className="w-full border-t rounded-xl border-blue-600 my-2"></div>
       </Flex>
       {goalsTasksTreeData === undefined ? (
         <div className="flex flex-col items-center">

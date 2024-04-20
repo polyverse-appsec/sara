@@ -183,7 +183,7 @@ const SidebarNav = () => {
           <Skeleton loading={loadingBillingOrg}>
             <Tooltip content="Switch Project">
               <Button
-                className="flex items-center justify-center px-4 py-2 rounded-lg hover:bg-secondary hover:text-secondary-foreground transition-colors"
+                className="flex items-center justify-center p-0 rounded-lg hover:bg-secondary hover:text-secondary-foreground transition-colors"
                 onClick={() => {
                   if (!activeBillingOrg) {
                     toast.error(`Please select billing context`)
@@ -222,13 +222,13 @@ const SidebarNav = () => {
                                 >
                                 {activeProjectDetails?.project.name?activeProjectDetails?.project.name.length > 15
                                   ? `${activeProjectDetails?.project.name.slice(0, 15)}...`
-                                    : activeProjectDetails?.project.name: `No Project Selected`}
+                                    : activeProjectDetails?.project.name: `Loading`}
                                 </Text>
                         </Link>
                       </>
                     ) : (
                       <Text size="2" className="italic text-gray-500">
-                        Loading...
+                        Loading
                       </Text>
                     )
                   ) : (
@@ -290,7 +290,7 @@ const SidebarNav = () => {
           <div className="flex flex-col">
             <p className="text-center font-semibold">Goals & Tasks Explorer</p>
             <Flex direction="column" align="center">
-              <div className="w-1/2 border-t rounded-xl border-blue-600 my-2"></div>
+              <div className="w-full border-t rounded-xl border-blue-600 my-2"></div>
             </Flex>
             <Text size="2" className="text-center italic text-gray-500">
               None
