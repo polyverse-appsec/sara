@@ -181,7 +181,7 @@ const SidebarNav = () => {
 
           {/* Navigation Area */}
           <nav className="flex flex-col space-y-1 p-2">
-            <Flex gap="0" align="end" justify="start">
+            <Flex gap="0" align="center" justify="center">
               {/* Projects Button */}
               <Skeleton loading={loadingBillingOrg}>
                 <Tooltip content="Switch Project">

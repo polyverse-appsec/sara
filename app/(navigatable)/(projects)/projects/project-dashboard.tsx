@@ -24,9 +24,6 @@ const ProjectDashboard = ({
         <Flex align="center" justify="end" className="w-full">
             <Button
                 className="btn-blue hover:bg-blue-700 hover:text-foreground transition duration-300"
-                onClick={(e) => {
-                    e.preventDefault();
-                }}
             >
                 <Link href={`/projects/create`}>
                     Create Project
