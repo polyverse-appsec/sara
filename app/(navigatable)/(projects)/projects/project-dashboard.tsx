@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { Skeleton, Text } from '@radix-ui/themes'
+import { Skeleton, Text, Flex, Button, Link } from '@radix-ui/themes'
 import RenderableResourceContent from 'components/renderable-resource/renderable-resource-content'
 import { Project } from 'lib/data-model-types'
 
@@ -18,9 +18,21 @@ const ProjectDashboard = ({
   onProjectDelete,
 }: ProjectDashboardProps) => {
   return (
-    <div>
+    <div className="bg-background shadow-md rounded-lg border border-blue-500 p-6 block transition">
       <RenderableResourceContent>
         <div className="text-center mb-2">Projects</div>
+        <Flex align="center" justify="end" className="w-full">
+            <Button
+                className="btn-blue hover:bg-blue-700 hover:text-foreground transition duration-300"
+                onClick={(e) => {
+                    e.preventDefault();
+                }}
+            >
+                <Link href={`/projects/create`}>
+                    Create Project
+                </Link>
+            </Button>
+        </Flex>
       </RenderableResourceContent>
       <Skeleton loading={projects === undefined}>
         {projects !== undefined ? (
@@ -43,11 +55,6 @@ const ProjectDashboard = ({
                 onProjectDelete={onProjectDelete}
               />
             ))}
-            <div className="flex items-center justify-center">
-              <div className="w-1/2 flex items-center">
-                <ProjectCreateTile />
-              </div>
-            </div>
           </div>
         ) : (
           // projects is undefined, so we haven't finished loading projects yet - just say loading
