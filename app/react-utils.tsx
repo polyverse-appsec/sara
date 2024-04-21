@@ -98,7 +98,7 @@ export const renderReadableHealthValue = (
             {'Status: '}
           </Text>
           <Text size="2" className="text-green-500">
-            Healthy
+            Synchronized
           </Text>
         </Flex>
       )
@@ -110,7 +110,7 @@ export const renderReadableHealthValue = (
             {'Status: '}
           </Text>
           <Text size="2" className="text-yellow-500">
-            Becoming Healthy
+            Learning
           </Text>
         </Flex>
       )
