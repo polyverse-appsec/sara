@@ -28,6 +28,7 @@ import { projectNameSchema } from './../../../../../lib/polyverse/db/validators'
 import DataSourceSelector from './data-source-selector'
 import GuidelineInputs from './guideline-inputs'
 import PrimaryDataSourceSelector from './primary-data-source-selector'
+import { isPreviewFeatureEnabled } from 'lib/service-utils'
 
 const ProjectCreate = () => {
   const router = useRouter()
@@ -201,24 +202,26 @@ const ProjectCreate = () => {
                   }
                 />
               </div>
-              <div className="my-1">
-                <div className="flex items-center">
-                  <h3 className="text-lg font-semibold">
-                    Additional Data Sources
-                  </h3>
-                  <p className="text-sm ml-2">(optional)</p>
-                </div>
-                {/* Currently this data source selector is only able to select one repo, it's the same one that was used for primary repo select I just 
-              moved it here to replace it with a dropdown menu to signal clearer ui. Once we build multi project functionality we'll need to 
-              change this */}
-                <DataSourceSelector
-                  orgName={activeBillingOrg.name}
-                  disableInput={!saveButtonEnabled}
-                  setControlledProjectDataSources={(gitHubRepos) =>
-                    setControlledProjectDataSources(gitHubRepos)
-                  }
-                />
-              </div>
+              {isPreviewFeatureEnabled("MultiTierProjectRepos", saraSession.email)?
+                (<div className="my-1">
+                    <div className="flex items-center">
+                        <h3 className="text-lg font-semibold">
+                            Additional Data Sources
+                        </h3>
+                        <p className="text-sm ml-2">(optional)</p>
+                    </div>
+                    {/* Currently this data source selector is only able to select one repo, it's the same one that was used for primary repo select I just 
+                moved it here to replace it with a dropdown menu to signal clearer ui. Once we build multi project functionality we'll need to 
+                change this */}
+                    <DataSourceSelector
+                    orgName={activeBillingOrg.name}
+                    disableInput={!saveButtonEnabled}
+                    setControlledProjectDataSources={(gitHubRepos) =>
+                        setControlledProjectDataSources(gitHubRepos)
+                    }
+                    />
+                 </div>)
+              :null}
             </div>
           )}
         </div>
