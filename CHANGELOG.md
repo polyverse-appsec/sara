@@ -2,6 +2,34 @@
 
 # Release Notes
 
+## Version 1.0.1: April 21th, 2024
+
+### New Features
+
+- N/A
+
+### Enhancements
+
+- N/A
+
+### Bug Fixes
+
+- N/A
+
+## Version 1.0.0: April 20th, 2024
+
+### New Features
+
+- N/A
+
+### Enhancements
+
+- Periodically refresh Project Healths on Projects page
+
+### Bug Fixes
+
+- N/A
+
 ## Version 0.20.19: April 19th, 2024
 
 ### New Features
@@ -11,6 +39,9 @@
 ### Enhancements
 
 - Add support for providing a public GitHub repo URL
+- Enable Clipboard Copy of Goals and Tasks
+- Navigation Bar UI Improvements
+- Support for Goal-based Chat threads over 20 messages
 
 ### Bug Fixes
 

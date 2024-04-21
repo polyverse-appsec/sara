@@ -36,6 +36,7 @@ import SaraPortrait from './../public/Sara_Cartoon_Portrait.png'
 import GoalsTaskNavTree from './goals-tasks-nav-tree'
 import LoadingCircle from './loading-spinner'
 import { FolderIcon } from './icons/FolderIcon'
+import { headerCalloutsHeight_NonProduction, headerCalloutsHeight_Production } from './callouts/header-callouts'
 
 function getUserInitials(name: string) {
   const [firstName, lastName] = name.split(' ')
@@ -118,9 +119,9 @@ const SidebarNav = () => {
     fetchGitHubAppAndPremiumStatus()
 
     if (isProduction) {
-      setCalloutHeight(60)
+      setCalloutHeight(headerCalloutsHeight_Production)
     } else {
-      setCalloutHeight(112)
+      setCalloutHeight(headerCalloutsHeight_NonProduction)
     }
   }, [activeBillingOrg, saraSession, isProduction])
 
@@ -160,8 +161,8 @@ const SidebarNav = () => {
       onMouseMove={handleMouseMove}
       style={{ width: `${width}px`, marginTop: `${calloutHeight}px` }} // Use inline style for dynamic width
     >
-    <Flex justify="between" direction="column" className="h-full">
-      <Flex justify="start" direction="column" className="h-full">
+    <Flex justify="between" direction="column">
+      <Flex justify="start" direction="column">
 
           {/* Logo section */}
           <div className="flex flex-col items-center sticky top-0 z-10 p-4 mx-5 mt-5 rounded-full border-4 border-blue-500">
@@ -181,7 +182,7 @@ const SidebarNav = () => {
 
           {/* Navigation Area */}
           <nav className="flex flex-col space-y-1 p-2">
-            <Flex gap="0" align="end" justify="start">
+            <Flex gap="0" align="center" justify="center">
               {/* Projects Button */}
               <Skeleton loading={loadingBillingOrg}>
                 <Tooltip content="Switch Project">
@@ -302,94 +303,94 @@ const SidebarNav = () => {
             )}
           </div>
         </Flex>
+      </Flex>
 
-        {/* Bottom Section */}
-        <Flex justify="end" direction="column" className="h-full">
-          <div className="grow overflow-auto">
-            <div className="w-full mx-auto border-t rounded-xl border-blue-600 mt-2"></div>
-          </div>
-          <div className="flex flex-col items-center sticky bottom-0 z-10 w-full p-2">
-            <div className="flex items-center">
+      {/* Bottom Section */}
+      <Flex justify="end" direction="column">
+        <div className="grow overflow-auto">
+          <div className="w-full mx-auto border-t rounded-xl border-blue-600 mt-2"></div>
+        </div>
+        <Flex justify="start" direction="column" className="items-center z-10 w-full p-2">
+          <div className="flex items-center">
               {/* Github User Info */}
               {!saraSession ? (
-                <LoadingCircle />
+                  <LoadingCircle />
               ) : saraSession.picture ? (
-                <Image
+                  <Image
                   className="w-8 h-8 transition-opacity duration-300 rounded-full select-none ring-1 ring-zinc-100/10 hover:opacity-80"
                   src={saraSession.picture ? `${saraSession.picture}&s=60` : ''}
                   alt={saraSession.name ?? 'Avatar'}
                   title={saraSession.name ?? 'Avatar'}
                   height={48}
                   width={48}
-                />
+                  />
               ) : (
-                <div className="flex items-center justify-center text-xs font-medium uppercase rounded-full select-none h-7 w-7 shrink-0 bg-muted/50 text-muted-foreground">
+                  <div className="flex items-center justify-center text-xs font-medium uppercase rounded-full select-none h-7 w-7 shrink-0 bg-muted/50 text-muted-foreground">
                   {saraSession.name ? getUserInitials(saraSession.name) : null}
-                </div>
+                  </div>
               )}
               <span className="ml-2 dark:text-white">{saraSession?.name}</span>
               <div className="relative w-5 h-5 ml-2">
-                <GearIcon
+                  <GearIcon
                   className="w-full h-full transition-opacity duration-300 rounded-full select-none ring-1 ring-zinc-100/10 dark:text-white hover:opacity-50"
                   onClick={() => {
-                    setProjectIdForConfiguration(null)
-                    router.push('/settings')
+                      setProjectIdForConfiguration(null)
+                      router.push('/settings')
                   }}
-                />
-                <Skeleton loading={!allDataLoaded}>
+                  />
+                  <Skeleton loading={!allDataLoaded}>
                   {allDataLoaded &&
-                    (!orgIsPremium || !userGitHubAppInstalled) && (
+                      (!orgIsPremium || !userGitHubAppInstalled) && (
                       <span className="absolute top-0 right-0 block w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
-                    )}
-                </Skeleton>
+                      )}
+                  </Skeleton>
               </div>
               <Skeleton loading={!allDataLoaded}>
-                {allDataLoaded && (!orgIsPremium || !userGitHubAppInstalled) && (
+                  {allDataLoaded && (!orgIsPremium || !userGitHubAppInstalled) && (
                   <div title="Sara not properly configured" className="ml-2">
-                    <ExclamationTriangleIcon className="w-4 h-4 text-red-500" />
+                      <ExclamationTriangleIcon className="w-4 h-4 text-red-500" />
                   </div>
-                )}
+                  )}
               </Skeleton>
             </div>
 
             {/* Organization Info */}
             <div className="px-4 mt-2 rounded-lg">
-              <div className="text-sm text-center text-zinc-500">
+            <div className="text-sm text-center text-zinc-500">
                 {saraSession?.email}
-              </div>
-              <div className="flex items-center justify-center mt-1">
+            </div>
+            <div className="flex items-center justify-center mt-1">
                 {orgIsPremium && (
-                  <div
+                <div
                     title="Premium Plan"
                     className="flex items-center justify-center mr-2 p-1 border border-yellow-500 rounded-full"
-                  >
+                >
                     <StarFilledIcon className="w-2 h-2 text-yellow-500" />
-                  </div>
+                </div>
                 )}
                 <Skeleton loading={loadingBillingOrg}>
-                  <span className="text-sm truncate dark:text-white">
+                <span className="text-sm truncate dark:text-white">
                     {activeBillingOrg ? (
-                      <Link href={`/orgs/${activeBillingOrg.id}`}>
+                    <Link href={`/orgs/${activeBillingOrg.id}`}>
                         {activeBillingOrg.name === saraSession?.username ? (
-                          <p className="hover:underline">Personal</p>
+                        <p className="hover:underline">Personal</p>
                         ) : (
-                          <p className="hover:underline">
-                            {activeBillingOrg.name}
-                          </p>
-                        )}
-                      </Link>
-                    ) : (
-                      <Link href="/orgs">
                         <p className="hover:underline">
-                          No Billing Context Selected
+                            {activeBillingOrg.name}
                         </p>
-                      </Link>
+                        )}
+                    </Link>
+                    ) : (
+                    <Link href="/orgs">
+                        <p className="hover:underline">
+                        No Billing Context Selected
+                        </p>
+                    </Link>
                     )}
-                  </span>
+                </span>
                 </Skeleton>
               </div>
             </div>
-          </div>
         </Flex>
       </Flex>
       {isPreviewFeatureEnabled('DraggableNav') ? (

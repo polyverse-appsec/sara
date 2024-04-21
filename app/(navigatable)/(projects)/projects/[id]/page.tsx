@@ -64,7 +64,7 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
   useEffect(() => {
     let isMounted = true
 
-    const fetchProjectDeatilsFrequencyMilliseconds = 5000
+    const fetchProjectDetailsFrequencyMilliseconds = 5000
 
     const fetchProjectDetails = async () => {
       try {
@@ -94,9 +94,39 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
 
         const healthRes = await fetch(`/api/projects/${id}/health`)
 
+        let projectDetailsRefreshCycleWithBackoffInMs = fetchProjectDetailsFrequencyMilliseconds
+
         if (healthRes.ok) {
           const fetchedHealth = (await healthRes.json()) as ProjectHealth
           setHealth(fetchedHealth)
+
+          const oneMinuteInMs = 60 * 1000
+          const oneMinuteInSeconds = 60
+          // if we're healthy, then just recheck health every so often
+          if (fetchedHealth.backgroundProjectStatus?.synchronized === true) {
+            projectDetailsRefreshCycleWithBackoffInMs = 5 * oneMinuteInMs
+
+          // if not synchronized, and not actively updating, then we can back off the refresh cycle - wait for manual repair
+          } else if (fetchedHealth.backgroundProjectStatus?.activelyUpdating !== true) {
+            projectDetailsRefreshCycleWithBackoffInMs = 15 * oneMinuteInMs
+
+            // otherwise, we're not synchronized but we're actively updating, so we should refresh more frequently
+            //      with a backoff
+          } else {
+            // if its less than a minute since the last discovery was launched, check every 5 seconds
+            const timeElapsedSinceLastDiscoveryLaunchInSeconds = fetchedHealth.backgroundProjectStatus?.lastDiscoveryLaunch?
+                (Date.now() - new Date(fetchedHealth.backgroundProjectStatus?.lastDiscoveryLaunch * 1000).getTime()) / 1000
+                : 0
+            if (timeElapsedSinceLastDiscoveryLaunchInSeconds <= oneMinuteInSeconds) {
+              projectDetailsRefreshCycleWithBackoffInMs = 5 * 1000 // every 5 seconds for first minute
+            } else if (timeElapsedSinceLastDiscoveryLaunchInSeconds <= 5 * oneMinuteInSeconds) {
+              projectDetailsRefreshCycleWithBackoffInMs = 30 * 1000 // every 30 seconds for up to 5 mins
+            } else if (timeElapsedSinceLastDiscoveryLaunchInSeconds <= 15 * oneMinuteInSeconds) {
+              projectDetailsRefreshCycleWithBackoffInMs = 60 * 1000 // every minute up to 15 minutes
+            } else {
+              projectDetailsRefreshCycleWithBackoffInMs = 15 * oneMinuteInMs // every 15 minutes after 15 minutes
+            }
+          }
 
           // we're only going to enable source resynchronization if the project is healthy and already synchronized
           //    no reason to let a user interupt or hijack a synchronization already in progress
@@ -106,9 +136,10 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
         }
 
         if (isMounted) {
+
           setTimeout(
             fetchProjectDetails,
-            fetchProjectDeatilsFrequencyMilliseconds,
+            projectDetailsRefreshCycleWithBackoffInMs,
           )
         }
       } catch (err) {
@@ -117,7 +148,7 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
         if (isMounted) {
           setTimeout(
             fetchProjectDetails,
-            fetchProjectDeatilsFrequencyMilliseconds,
+            fetchProjectDetailsFrequencyMilliseconds,
           )
         }
       }

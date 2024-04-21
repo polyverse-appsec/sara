@@ -44,6 +44,7 @@ export interface BoostProjectStatusState {
   lastSynchronized?: number
   lastUpdated: number
   lastDiscoveryTrigger?: DiscoveryTrigger
+  lastDiscoveryLaunch?: number
   assistant?: ProjectAssistantInfo
   sourceDataStatus?: ResourceSourceState[]
 }

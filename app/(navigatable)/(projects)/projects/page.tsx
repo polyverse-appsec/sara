@@ -60,6 +60,56 @@ const ProjectIndex = () => {
     }
   }, [activeProjectDetails, setProjectIdForConfiguration])
 
+  // This use effect is to just refresh the project details...
+  useEffect(() => {
+    let isMounted = true
+
+    if (!saraSession || !activeBillingOrg) {
+      return
+    }
+
+    if (!projects || projects.length === 0) {
+      return
+    }
+
+    const fetchProjectHealthFrequencyMilliseconds = 5 * 60 * 1000
+
+    const fetchHealthOfAllProjects = async () => {
+      try {
+        for (const project of projects) {
+            const healthRes = await fetch(`/api/projects/${project.id}/health`)
+
+          if (!healthRes.ok) {
+            console.debug(`${saraSession.email} Failed to get project health for project ${project.id}`)
+          }
+        }
+
+        if (isMounted) {
+
+          setTimeout(
+            fetchHealthOfAllProjects,
+            fetchProjectHealthFrequencyMilliseconds,
+          )
+        }
+      } catch (err) {
+        console.debug(`Failed to fetch project details because: ${err}`)
+
+        if (isMounted) {
+          setTimeout(
+            fetchHealthOfAllProjects,
+            fetchProjectHealthFrequencyMilliseconds,
+          )
+        }
+      }
+    }
+
+    fetchHealthOfAllProjects()
+
+    return () => {
+      isMounted = false
+    }
+  }, [activeBillingOrg, saraSession, projects])
+
   if (isLoading || !activeBillingOrg || !saraSession) {
     return <SaraLoading message="Sara is refreshing your projects..." />
   }
@@ -68,15 +118,15 @@ const ProjectIndex = () => {
     <div className="flex-1 p-5 text-2xl font-bold">
       <div className="bg-background shadow-md rounded-lg border border-blue-500 p-5 block transition" style={{ height: 'calc(100% - 2rem)' }}>
         <ProjectDashboard
-            projects={projects}
-            onProjectDelete={(deletedProjectId: any) => {
+          projects={projects}
+          onProjectDelete={(deletedProjectId: any) => {
             if (!projects) {
                 return
             }
             setProjects(
                 projects.filter((project) => project.id !== deletedProjectId),
             )
-            }}
+          }}
         />
       </div>
     </div>
