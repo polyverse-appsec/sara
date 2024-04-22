@@ -366,7 +366,7 @@ export const getChatQueryResponseFromThread = async (
           ) {
             const annotation = annotations[annotationIndex]
 
-            console.info(`${annotation.type} annotation found: ${JSON.stringify(annotation)}`)
+            // console.info(`${annotation.type} annotation found: ${JSON.stringify(annotation)}`)
 
             // Replace the text with a footnote
             textContent.value = textContent.value.replace(
