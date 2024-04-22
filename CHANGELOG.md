@@ -6,7 +6,7 @@
 
 ### New Features
 
-- N/A
+- Enable Manual Source File Refresh for Projects, once Project reaches Healthy/Synchronized
 
 ### Enhancements
 

@@ -44,7 +44,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
     }
 
     // Call the rediscoverProject function
-    await rediscoverProject(org.id, project.id, userEmail)
+    await rediscoverProject(org.name, project.id, userEmail)
 
     return new Response('Project rediscovery initiated successfully.', {
       status: StatusCodes.OK,

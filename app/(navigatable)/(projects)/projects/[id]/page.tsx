@@ -7,7 +7,6 @@ import * as Tooltip from '@radix-ui/react-tooltip'
 import { Flex } from '@radix-ui/themes'
 import GoalsManager from 'components/goals/goals-manager'
 import CopyToClipboardIcon from 'components/icons/CopyToClipboardIcon'
-import DisabledResyncIcon from 'components/icons/DisabledResyncIcon'
 import EnabledResyncIcon from 'components/icons/EnabledResyncIcon'
 import ProjectSourceSyncStatus from 'components/project-status/project-source-sync-status'
 import ProjectStatusCard from 'components/project-status/project-status-card'
@@ -59,6 +58,21 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
       return
     }
   }, [activeBillingOrg, saraSession])
+
+  // Define fetchHealth as an async function
+  const fetchHealth = async () => {
+    const healthRes = await fetch(`/api/projects/${id}/health`);
+    if (healthRes.ok) {
+      const fetchedHealth = (await healthRes.json()) as ProjectHealth;
+      setHealth(fetchedHealth);
+
+      // we're only going to enable source resynchronization if the project is healthy and already synchronized
+      //    no reason to let a user interupt or hijack a synchronization already in progress
+      setRediscoverButtonEnabled(fetchedHealth.readableValue === 'HEALTHY')
+    } else {
+      console.debug(`Failed to get project health`);
+    }
+  };
 
   // This use effect is to just get the project details...
   useEffect(() => {
@@ -255,7 +269,7 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
               </div>
             ) : null}
           </div>
-          <Flex direction="column">
+          <Flex direction="column" align="center">
             <div className="mr-2">
               <ProjectStatusCard
                 health={health}
@@ -267,52 +281,60 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
               'ProjectSourceSyncStatus',
               saraSession?.email,
             ) && (
-              <Flex>
-                <div className="mr-2">
-                  <ProjectSourceSyncStatus
-                    health={health}
-                    projectResources={[]}
-                  />
-                </div>
-                <Button
-                  variant="ghost"
-                  className="hover:bg-red-200"
-                  onClick={async (e) => {
-                    e.preventDefault()
-
-                    setRediscoverButtonEnabled(false)
-
-                    if (!activeBillingOrg || !saraSession) {
-                      console.error(
-                        `${project.id} Missing required billing and user information.`,
-                      )
-                      return
-                    }
-
-                    try {
-                      await rediscoverProject(
-                        activeBillingOrg.id,
-                        project.id,
-                        saraSession.email,
-                      )
-                    } catch (err) {
-                      console.error(
-                        `${activeBillingOrg.id} ${saraSession.email} ${project.id} Caught error when trying to rediscover a project: ${err}`,
-                      )
-                    }
-                  }}
-                >
-                  <Flex gap="2">
-                    {rediscoverButtonEnabled ? (
-                      <EnabledResyncIcon />
-                    ) : (
-                      <DisabledResyncIcon />
-                    )}
-                    {rediscoverButtonEnabled ? 'Resync Source' : 'Synchronized'}
-                  </Flex>
-                </Button>
-              </Flex>
+              <div className="mr-2">
+                <ProjectSourceSyncStatus
+                  health={health}
+                  projectResources={[]}
+                />
+              </div>
             )}
+
+            <Flex gap="1">
+              <Button
+                variant="ghost"
+                className={(rediscoverButtonEnabled && health?.readableValue === "HEALTHY")?"btn-blue hover:bg-blue-700 text-sm":"bg-gray-500 hover:cursor-not-allowed text-sm"}
+                disabled={!(rediscoverButtonEnabled && health?.readableValue === "HEALTHY")}
+                onClick={async (e) => {
+                  e.preventDefault()
+
+                  setRediscoverButtonEnabled(false)
+
+                  if (!activeBillingOrg || !saraSession) {
+                    console.error(
+                      `${project.id} Missing required billing and user information.`,
+                    )
+                    return
+                  }
+
+                  try {
+                    // Best effort collect goals associated with the project and its health
+                    const discoverRes = await fetch(`/api/projects/${id}/discover`, {
+                      method: 'POST',
+                    })
+
+                    if (discoverRes.ok) {
+                      fetchHealth()
+                    }
+                  } catch (err) {
+                    console.error(
+                      `${activeBillingOrg.id} ${saraSession.email} ${project.id} Caught error when trying to rediscover a project: ${err}`,
+                    )
+                  }
+                }}
+              >
+                <Flex gap="2">
+                  {rediscoverButtonEnabled && health?.readableValue === "HEALTHY" ? (
+                    <EnabledResyncIcon
+                      />
+                  ) : (
+                      <EnabledResyncIcon
+                      color="gray"
+                      />
+                  )}
+                  Refresh Source
+                </Flex>
+              </Button>
+            </Flex>
           </Flex>
         </div>
       </RenderableResourceContent>

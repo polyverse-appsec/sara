@@ -85,7 +85,6 @@ const renderBriefSourceSyncDetails = (
   ) {
     return (
       <Flex gap="3" align="center">
-        <LoadingSpinner />
         <Box>
           <Flex gap="1">
             <Text as="div" size="2" weight="bold">

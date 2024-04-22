@@ -1,5 +1,3 @@
-import { userInfo } from 'os'
-
 import { createSignedHeader, getBodyFromBoostServiceResponse, USER_SERVICE_URI } from './utils'
 
 export interface BoostUserOrgStatusResponse {
@@ -36,15 +34,15 @@ export async function rediscoverProject(
 
     if (!res.ok) {
       console.error(
-        `Got a failure response while trying to start project for '${orgId}/${projectId} for ${email}' - Status: ${res.status}`,
+        `Got a failure response while trying to rediscovery project for '${orgId}/${projectId} for ${email}' - Status: ${res.status}`,
       )
 
       return
     }
-  } catch (error) {
-    const errMsg = `Error while trying to discover project for '${orgId}/${projectId} for ${email}' - ${error}`
+  } catch (error: any) {
+    const errMsg = `Error while trying to discover project for '${orgId}/${projectId} for ${email}'`
 
-    console.error(errMsg)
+    console.error(errMsg, error.stack || error)
 
     throw new Error(errMsg)
   }
