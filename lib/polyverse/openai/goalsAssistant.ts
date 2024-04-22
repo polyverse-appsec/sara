@@ -9,6 +9,7 @@ import getGoal from './../../../lib/polyverse/db/get-goal'
 import updateGoal from './../../../lib/polyverse/db/update-goal'
 import { createBaseSaraObject } from './../../../lib/polyverse/db/utils'
 import { aiSpecificationId, blueprintId, projectSourceId } from './constants'
+import { ProjectDataFilename } from '../backend/types/ProjectDataFilename'
 
 const oaiClient = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -314,6 +315,18 @@ export const getChatQueryResponseFromThread = async (
     )
   }
 
+  const getFriendlyAnnotationResource = (filename: string) => {
+    if (filename.includes(ProjectDataFilename.ArchitecturalBlueprint)) {
+        return blueprintId
+    } else if (filename.includes(ProjectDataFilename.ProjectSpecification)) {
+        return aiSpecificationId
+    } else if (filename.includes(ProjectDataFilename.ProjectSource)) {
+        return projectSourceId
+    }
+
+    return "Sara Analysis Archive"
+  }
+
   // Presuming that the messages returned by OpenAI are listed with the most
   // recent message as the first index in the array returned take a slice of the
   // responses up to our user query.
@@ -353,10 +366,12 @@ export const getChatQueryResponseFromThread = async (
           ) {
             const annotation = annotations[annotationIndex]
 
+            console.info(`${annotation.type} annotation found: ${JSON.stringify(annotation)}`)
+
             // Replace the text with a footnote
             textContent.value = textContent.value.replace(
               annotation.text,
-              ` [${annotationIndex}]`,
+              ` ( Footnote ${annotationIndex + 1} )`,
             )
 
             if (
@@ -377,25 +392,21 @@ export const getChatQueryResponseFromThread = async (
                 annotation.file_citation.file_id,
               )
 
-              citations.push(`[${annotationIndex}] ${citedFile.filename}`)
+              citations.push(`Footnote [${annotationIndex + 1}] ${getFriendlyAnnotationResource(citedFile.filename)}`)
             }
 
             // Handle citation within a message that generated a URL for the file
             // the assistant used the 'code_interpreter' tool to generate a file.
             if (annotation.type === 'file_path') {
-              const citedFile = await oaiClient.files.retrieve(
-                annotation.file_path.file_id,
-              )
+                console.warn(`File path annotation found: ${JSON.stringify(annotation)}`)
 
-              citations.push(
-                `[${annotationIndex}] Click <here> to download ${citedFile.filename}`,
-              )
+                const citedFile = await oaiClient.files.retrieve(annotation.file_path.file_id)
+                //citations.push(`Footnote [${annotationIndex + 1}] Click <here> to download ${citedFile.id}`)
+                // Note: Actual file download link or mechanism to trigger downloads not implemented
             }
-
-            // Note: Actual file download link or mechanism to trigger downloads not implemented
           }
 
-          textContent.value += '\n\n' + citations.join('\n')
+          textContent.value += '\n\n' + citations.join('\n\n\n')
 
           concatenatedMessage += textContent.value
           concatenatedMessage += '\n'
