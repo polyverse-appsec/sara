@@ -2,6 +2,20 @@
 
 # Release Notes
 
+## Version 1.0.2: April 22th, 2024
+
+### New Features
+
+- N/A
+
+### Enhancements
+
+- N/A
+
+### Bug Fixes
+
+- N/A
+
 ## Version 1.0.1: April 21th, 2024
 
 ### New Features
