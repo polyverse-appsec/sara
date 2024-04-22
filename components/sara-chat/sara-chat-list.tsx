@@ -70,7 +70,7 @@ const SaraChatList = ({
                 {index == chatQueries.length - 1 && (
                   <div className="w-full flex items-center justify-center">
                     <button
-                      className="flex items-center p-2 border-2 border-invisible hover:border-black text-sm leading-5 font-medium rounded-md text-grey"
+                      className="flex items-center p-2 border-2 border-invisible hover:border-black text-sm leading-5 font-medium rounded-md text-gray"
                       onClick={() => {
                         if (handleResubmitChatQuery) {
                           handleResubmitChatQuery(chatQuery.id)
