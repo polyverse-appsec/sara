@@ -7,7 +7,7 @@ const { sign } = jsonwebtoken
 
 // Local: 'http://localhost:8000'
 const URL_SERVICE_URI_DEV =
-  'https://3c27qu2ddje63mw2dmuqp6oa7u0ergex.lambda-url.us-west-2.on.aws' // SARA_STAGE=dev
+  'https://e22ksqihwjm3chxizytehhluee0jckbd.lambda-url.us-west-2.on.aws' // SARA_STAGE=dev
 const URL_SERVICE_URI_PREVIEW =
   'https://sztg3725fqtcptfts5vrvcozoe0nxcew.lambda-url.us-west-2.on.aws' // SARA_STAGE=test
 const URL_SERVICE_URI_PROD =
