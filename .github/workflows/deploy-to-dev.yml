@@ -28,7 +28,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v2
         with:
-          version: 8.6.3
+          version: 9.0.4
 
       - name: Install Vercel CLI
         run: pnpm i --global vercel@latest
