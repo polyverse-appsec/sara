@@ -10,7 +10,8 @@
 
 ### Enhancements
 
-- N/A
+- Clarify User Data never used for training outside of User or their Organization
+- Goals and Task Explorer UI Improvements
 
 ### Bug Fixes
 

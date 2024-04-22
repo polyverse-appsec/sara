@@ -12,6 +12,7 @@ import { useAppContext } from 'lib/hooks/app-context'
 import { preReleaseServiceDisclaimer } from 'lib/productDescriptions'
 import { isPreviewFeatureEnabled } from 'lib/service-utils'
 import { useSession } from 'next-auth/react'
+import { PremiumPlanUIDescription } from 'components/product-descriptions'
 
 const SettingsOrgUpgrade = () => {
   const { activeBillingOrg } = useAppContext()
@@ -132,26 +133,7 @@ const SettingsOrgUpgrade = () => {
                 : 'bg-background shadow-md rounded-lg p-6 border mb-4'
             }
           >
-            <div className="flex flex-col items-start">
-              <div className="w-full flex items-center justify-between pb-2">
-                <div className="flex items-center">
-                  <p className="mr-2">Premium Plan</p>
-                  <div
-                    title="Premium Plan"
-                    className="flex items-center justify-center mr-2 p-1 border border-yellow-500 rounded-full w-5 h-5"
-                  >
-                    <StarFilledIcon className="w-2 h-2 text-yellow-500" />
-                  </div>
-                </div>
-                <p>100$/Month (per user)</p>
-              </div>
-              <p>✅ Project creation to analyze GitHub repositories</p>
-              <p>✅ Project Goals can be set to guide Sara analysis</p>
-              <p>✅ Sara generated Task-plans to achieve Goals</p>
-              <p>✅ Manual GitHub source synchronization</p>
-              <p>✅ Unlimited project creation</p>
-              <p>✅ Access to private repositories for projects</p>
-            </div>
+            <PremiumPlanUIDescription />
           </div>
         </div>
         <div className="py-1 px-2 rounded-lg text-center text-orange-400 bg-orange-200">

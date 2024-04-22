@@ -6,7 +6,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { CaretDownIcon } from '@radix-ui/react-icons'
-import { Badge, Button, TextArea } from '@radix-ui/themes'
+import { Flex, TextArea } from '@radix-ui/themes'
 import { createResourceNoResponseBody } from 'app/saraClient'
 import {
   preReleaseServiceDisclaimer,
@@ -24,6 +24,7 @@ import goalsExplorerImage from './../../public/goalsexplorer.png'
 import guidelinesImage from './../../public/guidelines.png'
 import PolyverseLogo from './../../public/Polyverse logo medium.jpg'
 import SaraPortrait from './../../public/Sara_Cartoon_Portrait.png'
+import { PremiumPlanUIDescription } from 'components/product-descriptions'
 
 interface CarouselItem {
   image: StaticImageData
@@ -348,30 +349,17 @@ const CarouselSignIn = () => {
               </div>
             </div>
           )}
-          <div className="bg-background shadow-md rounded-lg p-6 border mb-4">
-            <div className="flex flex-col items-start">
-              <div className="w-full flex justify-between items-center">
-                <p className="text-2xl font-semibold">Premium Plan</p>
-                <p>100$/Month (per user)</p>
-              </div>
-              <div className="text-xl mt-2">
-                <p>✅ Project creation to analyze GitHub repositories</p>
-                <p>✅ Project Goals can be set to guide Sara analysis</p>
-                <p>✅ Sara generated Task-plans to achieve Goals</p>
-                <p>✅ Manual GitHub source synchronization</p>
-                <p>✅ Unlimited project creation</p>
-                <p>✅ Access to private repositories for projects</p>
-              </div>
-            </div>
-          </div>
+          <PremiumPlanUIDescription />
         </div>
-        <div className="py-1 px-2 rounded-lg text-center text-orange-400 bg-orange-200">
+        <br />
+        <div className="py-1 px-2 rounded-lg text-center text-amber-800 bg-amber-600">
           {preReleaseServiceDisclaimer}
         </div>
       </div>
+
       <div id="emailsubmit" className="flex flex-col items-center my-24">
         <h2 className="text-4xl font-bold text-blue-600 mt-8">
-          Subscribe to Our Product Updates!
+          Subscribe to Polyverse and Sara Product Updates!
         </h2>
         <div className="w-1/2 border-t-2 border-blue-600 my-2"></div>
         <form
@@ -395,19 +383,15 @@ const CarouselSignIn = () => {
             e.preventDefault()
           }}
         >
-          <div className="flex items-center">
-            <>
-              <div className="flex flex-col pr-16">
+          <div className="flex items-center justify-center space-x-4">
                 <TextArea
                   placeholder="Enter your email…"
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={!emailSubmitButtonOpen}
                 />
-              </div>
-            </>
             <button
               type="submit"
-              className="p-1 bg-blue-500 hover:bg-blue-700 rounded-lg"
+              className="px-4 py-2 bg-blue-500 hover:bg-blue-700 rounded-lg"
               disabled={!emailSubmitButtonOpen}
             >
               Submit
@@ -420,6 +404,7 @@ const CarouselSignIn = () => {
           </div>
         )}
       </div>
+
       <div
         id="footer"
         className="h-44 bg-gradient-to-tr from-orange-400 to-blue-500 min-h-44"
