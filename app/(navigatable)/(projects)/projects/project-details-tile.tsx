@@ -62,7 +62,7 @@ export const ProjectDetailsTile = ({
     }
 
     fetchProjectHealth()
-  }, [id])
+  }, [id, ])
 
   return (
     <Link href={`/projects/${id}`} className="block transition hover:scale-105">

@@ -3,9 +3,8 @@ import jsonwebtoken from 'jsonwebtoken'
 const { sign } = jsonwebtoken
 
 // AWS Endpoints for our Boost ReST API (Backend)
-// Legacy:  'https://pt5sl5vwfjn6lsr2k6szuvfhnq0vaxhl.lambda-url.us-west-2.on.aws/api/user_project'
 
-// Local: 'http://localhost:8000'
+const URL_SERVICE_URI_LOCAL = 'http://localhost:3000'
 const URL_SERVICE_URI_DEV =
   'https://e22ksqihwjm3chxizytehhluee0jckbd.lambda-url.us-west-2.on.aws' // SARA_STAGE=dev
 const URL_SERVICE_URI_PREVIEW =
@@ -19,7 +18,9 @@ export const USER_SERVICE_URI =
     ? URL_SERVICE_URI_PREVIEW
     : process.env.SARA_STAGE?.toLowerCase() === 'prod'
       ? URL_SERVICE_URI_PROD
-      : URL_SERVICE_URI_DEV
+      : process.env.SARA_STAGE?.toLowerCase() === 'dev'
+        ? URL_SERVICE_URI_DEV
+        : URL_SERVICE_URI_LOCAL
 
 interface SignedHeader {
   'x-signed-identity': string
