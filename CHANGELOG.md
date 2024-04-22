@@ -12,6 +12,7 @@
 
 - Clarify User Data never used for training outside of User or their Organization
 - Goals and Task Explorer UI Improvements
+- Improvements to Project Resource footnotes in Sara answers
 
 ### Bug Fixes
 
