@@ -633,7 +633,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
         chat.openAiThreadId,
         chat.tailChatQueryId,
       )
-    } catch (error) {
+    } catch (error: any) {
       tailChatQuery.status = 'ERROR'
 
       await updateChatQuery(tailChatQuery)
@@ -642,7 +642,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
         user,
         org,
         project,
-        error,
+        error:error?JSON.stringify(error):null,
       }
 
       logger.errorWithContext(
