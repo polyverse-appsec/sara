@@ -3,24 +3,24 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import * as Label from '@radix-ui/react-label'
+import * as Tooltip from '@radix-ui/react-tooltip'
 import {
   Flex,
   HoverCard,
   Link as RadixLink,
-  Text,
   Strong,
+  Text,
 } from '@radix-ui/themes'
-import { toast } from 'react-hot-toast'
-import { NodeRendererProps, Tree } from 'react-arborist'
-import * as Tooltip from '@radix-ui/react-tooltip'
 import CopyToClipboardIcon from 'components/icons/CopyToClipboardIcon'
 import { useSession } from 'next-auth/react'
-import { SaraSession } from '../auth'
-
-import { type Goal, type Task } from '../lib/data-model-types'
-import { getResource } from './../app/saraClient'
+import { NodeRendererProps, Tree } from 'react-arborist'
+import { toast } from 'react-hot-toast'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
+
+import { SaraSession } from '../auth'
+import { type Goal, type Task } from '../lib/data-model-types'
+import { getResource } from './../app/saraClient'
 import { MemoizedReactMarkdown } from './markdown'
 
 interface GoalsTaskNavTreeProps {
@@ -67,7 +67,9 @@ const getTasks = (goalId: string): Promise<Task[]> =>
 
 const GoalResourceType = 'GOAL'
 const TaskResourceType = 'TASK'
-type NavigatableResourceTypes = typeof GoalResourceType | typeof TaskResourceType
+type NavigatableResourceTypes =
+  | typeof GoalResourceType
+  | typeof TaskResourceType
 
 interface NavigatableGoalOrTaskResource {
   id: string
@@ -234,148 +236,176 @@ const CompletedTaskIcon = () => (
     <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
   </svg>
 )
-  
+
 const renderGoalOrTaskStatusIcon = (type: string, status: string) => {
-    if (type === GoalResourceType) {
-        return renderGoalIcon()
-    } else if (status === 'OPEN' || status === 'TODO') {
-        return UncheckedCircleIcon()
-    } else if (status === 'IN_PROGRESS') {
-        return InProgressTaskIcon()
-    } else if (status === 'DONE') {
-        return CheckedCircleIcon()
-    } else {
-        return ToDoTaskIcon()
-    }
+  if (type === GoalResourceType) {
+    return renderGoalIcon()
+  } else if (status === 'OPEN' || status === 'TODO') {
+    return UncheckedCircleIcon()
+  } else if (status === 'IN_PROGRESS') {
+    return InProgressTaskIcon()
+  } else if (status === 'DONE') {
+    return CheckedCircleIcon()
+  } else {
+    return ToDoTaskIcon()
+  }
 }
 
-const getNodeMarkdown = (navigatableResource: NavigatableGoalOrTaskResource) => {
-    let markdown = ''
-    if (navigatableResource.type === 'GOAL') {
-        markdown += `# Goal: ${navigatableResource.name}\n`
-    } else {
-        markdown += `# Task: ${navigatableResource.name}\n`
-    }
-    
-    if (navigatableResource.status) {
-        markdown += `## Status\n${navigatableResource.status}\n`
-    }
-    
-    if (navigatableResource.description) {
-        markdown += `## Description\n${navigatableResource.description}\n`
-    }
-    
-    if (navigatableResource.acceptanceCriteria) {
-        markdown += `## Acceptance Criteria\n${navigatableResource.acceptanceCriteria.split(`\n`).join(`\n###`)}\n`
-    }
-    
-    return markdown
+const getNodeMarkdown = (
+  navigatableResource: NavigatableGoalOrTaskResource,
+) => {
+  let markdown = ''
+  if (navigatableResource.type === 'GOAL') {
+    markdown += `# Goal: ${navigatableResource.name}\n`
+  } else {
+    markdown += `# Task: ${navigatableResource.name}\n`
+  }
+
+  if (navigatableResource.status) {
+    markdown += `## Status\n${navigatableResource.status}\n`
+  }
+
+  if (navigatableResource.description) {
+    markdown += `## Description\n${navigatableResource.description}\n`
+  }
+
+  if (navigatableResource.acceptanceCriteria) {
+    markdown += `## Acceptance Criteria\n${navigatableResource.acceptanceCriteria
+      .split(`\n`)
+      .join(`\n###`)}\n`
+  }
+
+  return markdown
 }
 
 const renderNodeName = (
-    copyToClipboard: (title: string, text: string) => void,
-    copied : boolean,
-    navigatableResource: NavigatableGoalOrTaskResource) => {
-    const resourceType = (navigatableResource.type === 'GOAL')? 'Goal': 'Task'
+  copyToClipboard: (title: string, text: string) => void,
+  copied: boolean,
+  navigatableResource: NavigatableGoalOrTaskResource,
+) => {
+  const resourceType = navigatableResource.type === 'GOAL' ? 'Goal' : 'Task'
 
-    return (
+  return (
     <HoverCard.Root>
-        <HoverCard.Trigger>
-            {navigatableResource.type === GoalResourceType ? (
-                <Link href={`/goals/${navigatableResource.id}`} title={navigatableResource.name}>
-                    {navigatableResource.isActive ? (
-                        <Text weight="bold" color="green" title={navigatableResource.name}>
-                            {navigatableResource.name}
-                        </Text>
-                    ) : (
-                        <Text title={navigatableResource.name}>{navigatableResource.name}</Text>
-                    )}
-                </Link>
+      <HoverCard.Trigger>
+        {navigatableResource.type === GoalResourceType ? (
+          <Link
+            href={`/goals/${navigatableResource.id}`}
+            title={navigatableResource.name}
+          >
+            {navigatableResource.isActive ? (
+              <Text
+                weight="bold"
+                color="green"
+                title={navigatableResource.name}
+              >
+                {navigatableResource.name}
+              </Text>
             ) : (
-                <Text title={navigatableResource.name}>{navigatableResource.name}</Text>
+              <Text title={navigatableResource.name}>
+                {navigatableResource.name}
+              </Text>
             )}
-        </HoverCard.Trigger>
-        <HoverCard.Content>
-        <Flex className="mb-2 font-semibold p-2 bg-background rounded-lg blue-border break-words" justify="between" gap="1">
-            <Flex align="start" gap="1">
-                <Text>
-                <Strong>
-                    {resourceType}: 
-                </Strong>
-                </Text>
+          </Link>
+        ) : (
+          <Text title={navigatableResource.name}>
+            {navigatableResource.name}
+          </Text>
+        )}
+      </HoverCard.Trigger>
+      <HoverCard.Content>
+        <Flex
+          className="mb-2 font-semibold p-2 bg-background rounded-lg blue-border break-words"
+          justify="between"
+          gap="1"
+        >
+          <Flex align="start" gap="1">
+            <Text>
+              <Strong>{resourceType}:</Strong>
+            </Text>
 
-                {navigatableResource.type === 'GOAL' ? (
-                <Link href={`/goals/${navigatableResource.id}`} className="hover:text-orange-500">
-                    <Text>{navigatableResource.name}</Text>
-                </Link>
-                ) : (
-                    <Text>{navigatableResource.name}</Text>
-                )}
-            </Flex>
+            {navigatableResource.type === 'GOAL' ? (
+              <Link
+                href={`/goals/${navigatableResource.id}`}
+                className="hover:text-orange-500"
+              >
+                <Text>{navigatableResource.name}</Text>
+              </Link>
+            ) : (
+              <Text>{navigatableResource.name}</Text>
+            )}
+          </Flex>
 
-            {/* This div is aligned to the right and contains the clipboard icon */}
-            <Tooltip.Root>
+          {/* This div is aligned to the right and contains the clipboard icon */}
+          <Tooltip.Root>
             <Tooltip.Provider>
-                <Tooltip.Trigger
+              <Tooltip.Trigger
                 className="flex items-center cursor-pointer"
-                onClick={() => copyToClipboard(`${resourceType}: ${navigatableResource.name}`, getNodeMarkdown(navigatableResource))}
-                >
+                onClick={() =>
+                  copyToClipboard(
+                    `${resourceType}: ${navigatableResource.name}`,
+                    getNodeMarkdown(navigatableResource),
+                  )
+                }
+              >
                 <CopyToClipboardIcon copied={copied} color="#6B7280" />
-                </Tooltip.Trigger>
-                <Tooltip.Content
+              </Tooltip.Trigger>
+              <Tooltip.Content
                 side="right"
                 align="end"
                 className="clipboardCopyToolTip"
-                >
+              >
                 Copy {resourceType} to Clipboard
-                </Tooltip.Content>
+              </Tooltip.Content>
             </Tooltip.Provider>
-            </Tooltip.Root>
+          </Tooltip.Root>
         </Flex>
 
         <Flex className="p-2 bg-background rounded-lg blue-border break-words">
-            <Flex direction="column" gap="1">
-                {/*navigatableResource.status && (
+          <Flex direction="column" gap="1">
+            {/*navigatableResource.status && (
                     <div className="flex flex-col">
                         <span className="font-semibold mr-2">Status: {renderGoalOrTaskStatusIcon(navigatableResource.type, navigatableResource.status)}</span>
                     </div>
                 )*/}
-                {navigatableResource.acceptanceCriteria && (
-                    <Flex direction="column" gap="1">
-                        <MemoizedReactMarkdown
-                            className="markdownDisplay"
-                            remarkPlugins={[remarkGfm, remarkMath]}
-                            components={{
-                                p({ children }) {
-                                    return <p className="mb-2 last:mb-0">{children}</p>
-                                },
-                            }}
-                        >
-                            {navigatableResource.description !== undefined?navigatableResource.description:"No description available"}
-                        </MemoizedReactMarkdown>
-                    </Flex>
-                )}
-                {navigatableResource.acceptanceCriteria && (
-                    <Flex direction="column" gap="1">
-                        <br/>
-                        <p className="font-semibold">Acceptance Criteria</p>
-                        {/* indent */}
-                        <Flex direction="column" gap="1">
-                            <MemoizedReactMarkdown
-                                className="markdownDisplay"
-                                remarkPlugins={[remarkGfm, remarkMath]}
-                                components={{
-                                    p({ children }) {
-                                        return <p className="mb-2 last:mb-0">{children}</p>
-                                    },
-                                }}
-                            >
-                                {navigatableResource.acceptanceCriteria}
-                            </MemoizedReactMarkdown>
-                        </Flex>
-                    </Flex>
-                )}
-            </Flex>
+            {navigatableResource.acceptanceCriteria && (
+              <Flex direction="column" gap="1">
+                <MemoizedReactMarkdown
+                  className="markdownDisplay"
+                  remarkPlugins={[remarkGfm, remarkMath]}
+                  components={{
+                    p({ children }) {
+                      return <p className="mb-2 last:mb-0">{children}</p>
+                    },
+                  }}
+                >
+                  {navigatableResource.description !== undefined
+                    ? navigatableResource.description
+                    : 'No description available'}
+                </MemoizedReactMarkdown>
+              </Flex>
+            )}
+            {navigatableResource.acceptanceCriteria && (
+              <Flex direction="column" gap="1">
+                <br />
+                <p className="font-semibold">Acceptance Criteria</p>
+                {/* indent */}
+                <Flex direction="column" gap="1">
+                  <MemoizedReactMarkdown
+                    className="markdownDisplay"
+                    remarkPlugins={[remarkGfm, remarkMath]}
+                    components={{
+                      p({ children }) {
+                        return <p className="mb-2 last:mb-0">{children}</p>
+                      },
+                    }}
+                  >
+                    {navigatableResource.acceptanceCriteria}
+                  </MemoizedReactMarkdown>
+                </Flex>
+              </Flex>
+            )}
+          </Flex>
         </Flex>
       </HoverCard.Content>
     </HoverCard.Root>
@@ -389,8 +419,8 @@ const renderGoalOrTaskNode = ({
   copyToClipboard, // Ensure these are listed in the destructured props
   copied,
 }: NodeRendererProps<NavigatableGoalOrTaskResource> & {
-  copyToClipboard: (title: string, text: string) => void;
-  copied: boolean;
+  copyToClipboard: (title: string, text: string) => void
+  copied: boolean
 }) => {
   return (
     <div
@@ -402,12 +432,19 @@ const renderGoalOrTaskNode = ({
     >
       <div className="flex">
         <span>
-          {node.data.type === GoalResourceType ? renderGoalIcon() :
-            ((node.data as NavigatableGoalOrTaskResource).status !== undefined)? renderGoalOrTaskStatusIcon(node.data.type, (node.data as NavigatableGoalOrTaskResource).status!):
-            renderTaskIcon()}
+          {node.data.type === GoalResourceType
+            ? renderGoalIcon()
+            : (node.data as NavigatableGoalOrTaskResource).status !== undefined
+              ? renderGoalOrTaskStatusIcon(
+                  node.data.type,
+                  (node.data as NavigatableGoalOrTaskResource).status!,
+                )
+              : renderTaskIcon()}
         </span>
         <span
-          className={node.data.type === GoalResourceType ? 'hover:text-orange-500' : ''}
+          className={
+            node.data.type === GoalResourceType ? 'hover:text-orange-500' : ''
+          }
         >
           {renderNodeName(copyToClipboard, copied, node.data)}
         </span>
@@ -510,12 +547,15 @@ const GoalsTaskNavTree = ({
         return () => clearTimeout(timeoutId)
       },
       (err) => {
-        console.error(`${saraSession.email} Failed to copy ID to clipboard:`, err)
+        console.error(
+          `${saraSession.email} Failed to copy ID to clipboard:`,
+          err,
+        )
         setCopied(false)
-      }
+      },
     )
   }
-  
+
   // Note that our `<Tree>` is a controlled component since we pass our goals
   // and tasks in through `data`. We need to eventually add handlers to it if
   // we want to enable any of its functionality.
@@ -536,12 +576,16 @@ const GoalsTaskNavTree = ({
           </Text>
         </div>
       ) : (
-        <Tree
-          className="overflow-y-auto overflow-x-visible"
-          data={goalsTasksTreeData}
-        >
-          {(props) => renderGoalOrTaskNode({...props, copyToClipboard, copied})}
-        </Tree>
+        <div className="text-sm">
+          <Tree
+            className="overflow-y-auto overflow-x-visible"
+            data={goalsTasksTreeData}
+          >
+            {(props) =>
+              renderGoalOrTaskNode({ ...props, copyToClipboard, copied })
+            }
+          </Tree>
+        </div>
       )}
     </>
   )
