@@ -6,14 +6,16 @@ import { Button } from 'components/ui/button'
 
 interface ProjectGuidelinesProps {
   disableInput: boolean
+  existingProjectGuidelines: string[]
   setProjectGuidelines: (guidelines: string[]) => void
 }
 
 const GuidelineInputs = ({
   disableInput,
+  existingProjectGuidelines,
   setProjectGuidelines,
 }: ProjectGuidelinesProps) => {
-  const [guidelineValues, setGuidelineValues] = useState<string[]>([''])
+  const [guidelineValues, setGuidelineValues] = useState<string[]>(existingProjectGuidelines)
 
   const handleAddGuideline = () => {
     setGuidelineValues([...guidelineValues, ''])
@@ -49,15 +51,17 @@ const GuidelineInputs = ({
             <Button
               className="shrink-0 bg-red-500 hover:bg-red-700"
               onClick={() => handleDeleteGuideline(index)}
+              disabled={disableInput}
             >
               Delete
             </Button>
           </div>
         ))}
       </div>
-      <Button
+      <Button type="button"
         className="mt-2 p-2 bg-blue-500 hover:bg-blue-700"
         onClick={handleAddGuideline}
+        disabled={disableInput}
       >
         Add Guideline
       </Button>

@@ -10,7 +10,7 @@
 
 ### Enhancements
 
-- N/A
+- Added edit project functionality
 
 ### Bug Fixes
 

@@ -197,6 +197,7 @@ const ProjectCreate = () => {
                 </div>
                 <GuidelineInputs
                   disableInput={!saveButtonEnabled}
+                  existingProjectGuidelines={controlledProjectGuidelines}
                   setProjectGuidelines={(guidelines: string[]) =>
                     setControlledProjectGuidelines(guidelines)
                   }

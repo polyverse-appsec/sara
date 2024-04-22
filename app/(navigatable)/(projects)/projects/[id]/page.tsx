@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { ArrowLeftIcon } from '@radix-ui/react-icons'
+import { ArrowLeftIcon, Pencil2Icon } from '@radix-ui/react-icons'
 import * as Tooltip from '@radix-ui/react-tooltip'
 import { Flex } from '@radix-ui/themes'
 import GoalsManager from 'components/goals/goals-manager'
@@ -26,6 +26,7 @@ import {
   type ProjectHealth,
 } from './../../../../../lib/data-model-types'
 import { useAppContext } from './../../../../../lib/hooks/app-context'
+import EditProjectPopout from 'components/project-details/edit-project-popout'
 
 const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
   const session = useSession()
@@ -47,6 +48,7 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
 
   const [toastedInactiveBillingOrg, setToastedInactiveBillingOrg] =
     useState<boolean>(false)
+  const [refreshPage, setRefreshPage] = useState<boolean>(false)
 
   useEffect(() => {
     if (!activeBillingOrg) {
@@ -173,7 +175,11 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
     return () => {
       isMounted = false
     }
-  }, [id, activeBillingOrg, saraSession])
+  }, [id, activeBillingOrg, saraSession, refreshPage])
+
+  if (refreshPage) {
+    setTimeout(() => setRefreshPage(false), 2000)
+  }
 
   if (!activeBillingOrg) {
     return <SaraLoading />
@@ -225,15 +231,25 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
   return (
     <RenderableResource>
       <RenderableResourceContent>
-        <div className="text-left mb-2">
-          <button className="btn-blue text-sm">
-            <Link href="/projects">
-              <Flex align="center">
-                <ArrowLeftIcon className="mr-2" />
-                Back to Projects
-              </Flex>
-            </Link>
-          </button>
+        <div className="flex justify-between items-center w-full">
+          <div className="text-left mb-2">
+            <button className="btn-blue text-sm">
+              <Link href="/projects">
+                <Flex align="center">
+                  <ArrowLeftIcon className="mr-2" />
+                  Back to Projects
+                </Flex>
+              </Link>
+            </button>
+          </div>
+          <div className="mr-2">
+            <EditProjectPopout 
+              projectId={project.id}
+              existingProjectName={project.name}
+              existingProjectDescription={project.description}
+              existingProjectGuidelines={project.guidelines}
+              onSubmitChange={setRefreshPage} />
+          </div>
         </div>
         <div className="my-1 flex justify-between w-full">
           <div className="flex flex-col">

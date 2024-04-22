@@ -24,6 +24,10 @@ import {
   type AssistantMetadata,
 } from './../../../../../lib/polyverse/openai/assistants'
 import { promptFileInfosEqual } from './../../../../../lib/utils'
+import Joi from 'joi'
+import { projectNameSchema } from 'lib/polyverse/db/validators'
+import { Project } from 'lib/data-model-types'
+import UpdateBoostProject from 'lib/polyverse/backend/update-boost-project'
 
 // 03/04/24: We set this max duration to 60 seconds during initial development
 // with no real criteria to use as a starting point for the max duration. We see
@@ -32,6 +36,12 @@ import { promptFileInfosEqual } from './../../../../../lib/utils'
 // setting the max duration and measuring response times/latency on routes and
 // adjust them accordingly.
 export const maxDuration = 60
+
+export interface UpdateProjectRequestBody {
+  projectName: string
+  projectDescription: string
+  controlledProjectGuidelines: string[]
+}
 
 export const POST = auth(async (req: NextAuthRequest) => {
   const { auth } = req
@@ -262,6 +272,142 @@ export const POST = auth(async (req: NextAuthRequest) => {
   } catch (error) {
     console.error(
       `Failed refreshing project '${requestedProjectId}' for '${auth.user.name}' because: ${error}`,
+    )
+
+    return new Response('Failed to create project', {
+      status: StatusCodes.INTERNAL_SERVER_ERROR,
+    })
+  }
+}) as any
+
+export const PATCH = auth(async (req: NextAuthRequest) => {
+  const { auth } = req
+
+  if (!auth || !auth.accessToken || !auth.user.email || !auth.user.id) {
+    return new Response(ReasonPhrases.UNAUTHORIZED, {
+      status: StatusCodes.UNAUTHORIZED,
+    })
+  }
+
+  try {
+    // TODO: Should be able to do Dynamic Route segments as documented:
+    // https://nextjs.org/docs/app/building-your-application/routing/route-handlers#dynamic-route-segments
+    // Problem is our Auth wrapper doesn't like it. See if we can figure
+    // out a way to move to this pattern.
+    const reqUrl = new URL(req.url)
+    const reqUrlSlices = reqUrl.toString().split('/')
+
+    // The 2nd to the last slice ought to be the slug for the repo name
+    const requestedProjectId = reqUrlSlices[reqUrlSlices.length - 2]
+
+    const user = await getUser(auth.user.email)
+    const project = await getProject(requestedProjectId)
+    const org = await getOrg(project.orgId)
+
+    try {
+      authz.userListedOnOrg(org, user.id)
+      authz.orgListedOnUser(user, org.id)
+      authz.userListedOnProject(project, user.id)
+    } catch (error) {
+      return new Response(ReasonPhrases.FORBIDDEN, {
+        status: StatusCodes.FORBIDDEN,
+      })
+    }
+
+    // Validate that the name of the project doesn't already exist as
+    // another project within the organization
+    const reqBody = (await req.json()) as UpdateProjectRequestBody
+
+    if (!reqBody.projectName || Joi.string().required().validate(reqBody.projectName).error) {
+      return new Response(`Request body is missing 'name'`, {
+        status: StatusCodes.BAD_REQUEST,
+      })
+    }
+
+    if (projectNameSchema.validate(reqBody.projectName).error) {
+      return new Response(`'name' can only be alphanumerics - _ . and spaces`, {
+        status: StatusCodes.BAD_REQUEST,
+      })
+    }
+
+    // TODO: Add more rigourous validation of the data that we receive
+
+    // 03/12/24: For now we are blocking project creation unless you have the
+    // GitHub App installed for the org you are trying to create a project under
+    // and you are a premium user. In the future we will more intelligently
+    // allow projects to be created and thus making this workflow more
+    // permissive.
+    const boostOrgUserStatus = await getBoostOrgUserStatus(org.name, user.email)
+
+    // If the `username` data member shows up on the user status that means
+    // the user has the GitHub App installed.
+    const gitHubAppInstalled =
+      boostOrgUserStatus.backgroundAnalysisAuthorized !== undefined &&
+      boostOrgUserStatus.backgroundAnalysisAuthorized
+
+    if (!gitHubAppInstalled) {
+      console.log(
+        `User with email '${user.email}' for org '${org.id}' tried to create a project but doesn't have the GitHub app installed`,
+      )
+      return new Response(ReasonPhrases.FORBIDDEN, {
+        status: StatusCodes.FORBIDDEN,
+      })
+    }
+
+    const isPremiumUser =
+      boostOrgUserStatus.plan && boostOrgUserStatus.plan == 'premium'
+
+    if (!isPremiumUser) {
+      console.log(
+        `User with email '${user.email}' for org '${org.id}' tried to create a project but isn't a premium user`,
+      )
+      return new Response(ReasonPhrases.FORBIDDEN, {
+        status: StatusCodes.FORBIDDEN,
+      })
+    }
+
+    project.name = reqBody.projectName
+    project.description = reqBody.projectDescription
+    project.guidelines = reqBody.controlledProjectGuidelines
+
+    // Start now by creating the project on Boost. We wait til here since we
+    // pass the project ID to the Boost backend.
+    await UpdateBoostProject(
+      project.id,
+      org.name,
+      project.name,
+      project.description,
+      project.guidelines,
+      user.email,
+    )
+
+    // Now create the project in our Sara K/V
+    await updateProject(project)
+
+    // It may seem weird that we don't go on to create the OpenAI Assistant
+    // here or cache the file info used when building the OpenAI Assistant
+    // prompt but we defer this logic to the handler for:
+    // `POST /api/projects/projectId/config`.
+    //
+    // This is done for UX/UI synchronization pruposes wherein the UI can
+    // start polling for the projects health at:
+    // `GET /api/projects/projectId/health`.
+    //
+    // This allows the UI to provide a more responsive - and restrictive if
+    // need be - experience. For example we can prevent chatting if the project
+    // is in an `UNHEALTHY` state if it doesn't have the most up-to-date files.
+    //
+    // This solution/API may not be suitable for a headless agent model so in
+    // the future we may need to revisit this logic/approach to project
+    // creation.
+
+    // Return the project we created to the user...
+    return new Response(JSON.stringify(project), {
+      status: StatusCodes.CREATED,
+    })
+  } catch (error) {
+    console.error(
+      `Failed creating project for '${auth.user.name}' because: ${error}`,
     )
 
     return new Response('Failed to create project', {
