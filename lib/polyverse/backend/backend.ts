@@ -1,6 +1,6 @@
 import { userInfo } from 'os'
 
-import { createSignedHeader, USER_SERVICE_URI } from './utils'
+import { createSignedHeader, getBodyFromBoostServiceResponse, USER_SERVICE_URI } from './utils'
 
 export interface BoostUserOrgStatusResponse {
   enabled?: boolean
@@ -110,17 +110,7 @@ export async function getBoostOrgUserStatus(
     throw new Error(errLogMsg)
   }
 
-  // TODO: Return this if we actually get something in the response
-  // TODO: Properly type the return of this
-  const jsonRes = await res.json()
-
-  if (!jsonRes.body) {
-    throw new Error(`Response to GET ${url} doesn't have the 'body' property`)
-  }
-
-  const userStatus = JSON.parse(jsonRes.body) as BoostUserOrgStatusResponse
-
-  return userStatus as BoostUserOrgStatusResponse
+  return getBodyFromBoostServiceResponse<BoostUserOrgStatusResponse>(res)
 }
 
 export async function updateBoostOrgUserStatus(
@@ -176,15 +166,5 @@ export async function getBoostOrgStatus(
     throw new Error(errLogMsg)
   }
 
-  // TODO: Return this if we actually get something in the response
-  // TODO: Properly type the return of this
-  const jsonRes = await res.json()
-
-  if (!jsonRes.body) {
-    throw new Error(`Response to GET ${url} doesn't have the 'body' property`)
-  }
-
-  const userStatus = JSON.parse(jsonRes.body) as BoostUserOrgStatusResponse
-
-  return userStatus as BoostUserOrgStatusResponse
+  return getBodyFromBoostServiceResponse<BoostUserOrgStatusResponse>(res)
 }

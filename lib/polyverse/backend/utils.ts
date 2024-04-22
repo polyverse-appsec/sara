@@ -54,9 +54,7 @@ export const getBodyFromBoostServiceResponse = async <DeserializedType>(
   const boostJsonRes = (await res.json()) as BoostServiceResponseJsonBody
 
   if (!boostJsonRes.body) {
-    throw new Error(
-      `Boost service response doesn't contain 'body' in JSON response`,
-    )
+    return boostJsonRes as DeserializedType
   }
 
   return JSON.parse(boostJsonRes.body) as DeserializedType
