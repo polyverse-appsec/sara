@@ -12,6 +12,7 @@
 
 - Users can Edit existing Project details - including Description and Guidelines to improve Sara's understanding
 - Users can view the last GitHub.com source pull time and link to the specific Commit that was analyzed via the Project details page
+- Users can view the history of Sara's product improvememnts by hovering over the Sara logo in the top left corner
 
 ### Bug Fixes
 

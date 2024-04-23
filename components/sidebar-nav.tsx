@@ -13,7 +13,6 @@ import {
   Flex,
   Button,
   HoverCard,
-  Inset,
   Skeleton,
   Text,
   Tooltip,
@@ -28,7 +27,6 @@ import toast from 'react-hot-toast'
 import {
   getOrgUserStatus,
   renderHealthIcon,
-  renderReadableHealthValue,
 } from './../app/react-utils'
 import { getResource } from './../app/saraClient'
 import { useAppContext } from './../lib/hooks/app-context'
@@ -37,6 +35,7 @@ import GoalsTaskNavTree from './goals-tasks-nav-tree'
 import LoadingCircle from './loading-spinner'
 import { FolderIcon } from './icons/FolderIcon'
 import { headerCalloutsHeight_NonProduction, headerCalloutsHeight_Production } from './callouts/header-callouts'
+import ProductChangelog from './ui/ProductChangelog'
 
 function getUserInitials(name: string) {
   const [firstName, lastName] = name.split(' ')
@@ -166,18 +165,27 @@ const SidebarNav = () => {
 
           {/* Logo section */}
           <div className="flex flex-col items-center sticky top-0 z-10 p-4 mx-5 mt-5 rounded-full border-4 border-blue-500">
-            <Link href="/about">
-              <Image
-                src={SaraPortrait}
-                alt="Sara's AI Assistant"
-                title="Sara's AI Assistant"
-                width={100}
-                height={100}
-                className="rounded-full"
-              />
-              <p className="text-lg mt-2 text-center">Sara</p>
-              <p className="text-sm italic text-center">AI Assistant</p>
-            </Link>
+            <HoverCard.Root>
+              <HoverCard.Trigger>
+                <div className="flex items-center justify-center p-4">
+                  <Link href="/about">
+                    <Image
+                      src={SaraPortrait}
+                      alt="Sara's AI Assistant"
+                      title="Sara's AI Assistant"
+                      width={100}
+                      height={100}
+                      className="rounded-full"
+                    />
+                    <p className="text-lg mt-2 text-center">Sara</p>
+                    <p className="text-sm italic text-center">AI Assistant</p>
+                  </Link>
+              </div>
+            </HoverCard.Trigger>
+              <HoverCard.Content>
+                <ProductChangelog />
+              </HoverCard.Content>
+            </HoverCard.Root>
           </div>
 
           {/* Navigation Area */}
