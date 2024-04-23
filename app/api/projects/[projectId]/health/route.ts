@@ -87,6 +87,21 @@ export const GET = auth(async (req: NextAuthRequest) => {
       })
     }
 
+    let checkedBoostProjectStatus
+
+    try {
+        checkedBoostProjectStatus = await getBoostProjectStatus(
+        user.email,
+        org.name,
+        project.id,
+      )
+    } catch (error: any) {
+      console.error(`${auth.user.email} failed to get Boost project status for project '${project.id}' because: ${error.stack || error}`)
+      checkedBoostProjectStatus = undefined
+    }
+    
+    const boostProjectStatus = checkedBoostProjectStatus
+
     // For a project to be healthy we need to meet these circumstances:
     // 1) 3 files returned from
     // `GET /api/user_project/${billingOrgName}/${projectId}/data_references`
@@ -130,6 +145,8 @@ export const GET = auth(async (req: NextAuthRequest) => {
         'UNHEALTHY',
         'UNKNOWN',
         errMsg,
+        null,
+        boostProjectStatus,
       )
 
       return new Response(JSON.stringify(projectHealth), {
@@ -144,6 +161,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
         'UNKNOWN',
         'Data references not available',
         'Try to get data references again',
+        boostProjectStatus,
       )
 
       return new Response(JSON.stringify(projectHealth), {
@@ -184,6 +202,8 @@ export const GET = auth(async (req: NextAuthRequest) => {
         'UNHEALTHY',
         'UNKNOWN',
         errMsg,
+        null,
+        boostProjectStatus,
       )
 
       return new Response(JSON.stringify(projectHealth), {
@@ -203,6 +223,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
         'VECTOR_DATA_AVAILABLE',
         `LLM not yet created`,
         `Refresh project`,
+        boostProjectStatus,
       )
 
       return new Response(JSON.stringify(projectHealth), {
@@ -218,6 +239,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
         'LLM_CREATED',
         `LLM missing full file references`,
         `Refresh project`,
+        boostProjectStatus,
       )
 
       return new Response(JSON.stringify(projectHealth), {
@@ -245,6 +267,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
         'VECTOR_DATA_ATTACHED_TO_LLM',
         `File references need to be updated for the LLM`,
         `Refresh project`,
+        boostProjectStatus,
       )
 
       return new Response(JSON.stringify(projectHealth), {
@@ -254,12 +277,6 @@ export const GET = auth(async (req: NextAuthRequest) => {
 
     // 5) The 3 files attached to the OpenAI Assistant are completely processed
     try {
-      const boostProjectStatus = await getBoostProjectStatus(
-        user.email,
-        org.name,
-        project.id,
-      )
-
       // Rather than check all of the file states just check that the project is
       // fully synchronized
       if (boostProjectStatus.status !== BoostProjectStatus.Synchronized) {
@@ -284,6 +301,8 @@ export const GET = auth(async (req: NextAuthRequest) => {
         'UNHEALTHY',
         'UNKNOWN',
         errMsg,
+        null,
+        boostProjectStatus,
       )
 
       return new Response(JSON.stringify(projectHealth), {
@@ -298,6 +317,8 @@ export const GET = auth(async (req: NextAuthRequest) => {
       'HEALTHY',
       'CONFIGURED',
       'Sara LLM configured',
+      null,
+      boostProjectStatus
     )
 
     // Return a healthy project status
