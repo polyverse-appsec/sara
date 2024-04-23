@@ -245,13 +245,11 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
               </Link>
             </button>
           </div>
-          <div className="mr-2">
-            <EditProjectPopout 
-              projectId={project.id}
-              existingProjectName={project.name}
-              existingProjectDescription={project.description}
-              existingProjectGuidelines={project.guidelines}
-              onSubmitChange={setRefreshPage} />
+          <div className="mr-0">
+              <ProjectStatusCard
+                health={health}
+                lastRefreshedAt={project.lastRefreshedAt}
+              />
           </div>
         </div>
         <div className="my-1 flex justify-between w-full">
@@ -259,6 +257,14 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
             <div className="flex items-center">
               <h3 className="text-lg font-semibold">Project:</h3>
               <p className="mx-2">{project.name}</p>
+              <div className="mr-2">
+                <EditProjectPopout 
+                  projectId={project.id}
+                  existingProjectName={project.name}
+                  existingProjectDescription={project.description}
+                  existingProjectGuidelines={project.guidelines}
+                  onSubmitChange={setRefreshPage} />
+              </div>
             </div>
             <div className="my-1 flex items-center">
               <h3 className="text-xs text-gray-500 italic">ID</h3>
@@ -289,13 +295,6 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
             ) : null}
           </div>
           <Flex direction="column" align="center">
-            <div className="mr-2">
-              <ProjectStatusCard
-                health={health}
-                lastRefreshedAt={project.lastRefreshedAt}
-              />
-            </div>
-
             <Flex gap="1">
               <Button
                 variant="ghost"
