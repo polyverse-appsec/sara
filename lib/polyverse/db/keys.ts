@@ -33,6 +33,14 @@ export const globalTaskIdsSetKey = () => `global:task:ids`
 // TODO: Test
 export const globalUserEmailsSetKey = () => `global:user:emails`
 
+export const globalFineTuningTagFavoriteChatQueryIdsSetKey = () => `global:fine-tuning-tag:favorite:chat-query:ids`
+
+export const globalFineTuningTagInsightfulChatQueryIdsSetKey = () => `global:fine-tuning-tag:insightful:chat-query:ids`
+
+export const globalFineTuningTagProductiveChatQueryIdsSetKey = () => `global:fine-tuning-tag:productive:chat-query:ids`
+
+export const globalFineTuningTagUnhelpfulChatQueryIdsSetKey = () => `global:fine-tuning-tag:unhelpful:chat-query:ids`
+
 ///////////////////////////
 // Relationship Key Sets
 ///////////////////////////

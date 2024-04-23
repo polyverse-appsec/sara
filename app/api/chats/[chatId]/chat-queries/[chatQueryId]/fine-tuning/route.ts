@@ -14,6 +14,8 @@ import { NextAuthRequest } from 'next-auth/lib'
 import { auth } from '../../../../../../../auth'
 import authz from './../../../../../../../app/api/authz'
 import getProject from './../../../../../../../lib/polyverse/db/get-project'
+import addChatQueryIdToGlobalFineTuningSet from 'lib/polyverse/db/add-chat-query-id-to-global-fine-tuning-set'
+import removeChatQueryIdFromGlobalFineTuningSet from 'lib/polyverse/db/remove-chat-query-id-from-global-fine-tuning-set'
 
 export interface FineTuningChatQueryRequestBody {
   fineTuningTags: FineTuningTags[]
@@ -90,6 +92,34 @@ export const POST = auth(async (req: NextAuthRequest) => {
 
     chatQuery.fineTuningTags = fineTuningTags
     await updateChatQuery(chatQuery)
+
+    const fineTuningTaggingPromises: Promise<void>[] = []
+
+    if (fineTuningTags.includes('FAVORITE')) {
+        fineTuningTaggingPromises.push(addChatQueryIdToGlobalFineTuningSet('FAVORITE', chatQuery.id))
+    } else {
+        fineTuningTaggingPromises.push(removeChatQueryIdFromGlobalFineTuningSet('FAVORITE', chatQuery.id))
+    }
+
+    if (fineTuningTags.includes('INSIGHTFUL')) {
+        fineTuningTaggingPromises.push(addChatQueryIdToGlobalFineTuningSet('INSIGHTFUL', chatQuery.id))
+    } else {
+        fineTuningTaggingPromises.push(removeChatQueryIdFromGlobalFineTuningSet('INSIGHTFUL', chatQuery.id))
+    }
+
+    if (fineTuningTags.includes('PRODUCTIVE')) {
+        fineTuningTaggingPromises.push(addChatQueryIdToGlobalFineTuningSet('PRODUCTIVE', chatQuery.id))
+    } else {
+        fineTuningTaggingPromises.push(removeChatQueryIdFromGlobalFineTuningSet('PRODUCTIVE', chatQuery.id))
+    }
+
+    if (fineTuningTags.includes('UNHELPFUL')) {
+        fineTuningTaggingPromises.push(addChatQueryIdToGlobalFineTuningSet('UNHELPFUL', chatQuery.id))
+    } else {
+        fineTuningTaggingPromises.push(removeChatQueryIdFromGlobalFineTuningSet('UNHELPFUL', chatQuery.id))
+    }
+
+    await Promise.all(fineTuningTaggingPromises)
 
     return new Response(JSON.stringify(chatQuery), {
       status: StatusCodes.OK,
