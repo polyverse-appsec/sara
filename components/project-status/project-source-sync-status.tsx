@@ -1,11 +1,11 @@
 'use client'
 
 import { Url } from 'next/dist/shared/lib/router/router'
-import { Box, Card, Flex, HoverCard, Inset, Text } from '@radix-ui/themes'
-import LoadingSpinner from 'components/loading-spinner'
+import { Box, Flex, Inset, Text } from '@radix-ui/themes'
+import Link from 'next/link'
 import { type ProjectHealth } from 'lib/data-model-types'
 import { BoostProjectStatusState } from 'lib/polyverse/backend/types/BoostProjectStatus'
-import { usFormatter } from 'lib/polyverse/backend/utils/log'
+import { formatDateTimeSinceOperationOccurred } from 'lib/utils'
 
 export const renderSourceSyncValue = (
   backgroundProjectStatus: BoostProjectStatusState,
@@ -19,16 +19,13 @@ export const renderSourceSyncValue = (
     const firstResource = backgroundProjectStatus.sourceDataStatus[0]
 
     if (firstResource && firstResource.syncTime) {
-      syncTime = usFormatter.format(firstResource.syncTime * 1000)
+      syncTime = formatDateTimeSinceOperationOccurred(new Date(firstResource.syncTime * 1000), true)
     }
 
-    if (
-      firstResource &&
-      firstResource.syncHash &&
-      projectResources &&
-      projectResources.length > 0
-    ) {
+    if (firstResource?.syncHash) {
       syncCommitHash = firstResource.syncHash
+    }
+    if (projectResources && projectResources.length > 0) {
       commitLink = `${projectResources[0].toString()}/commit/${syncCommitHash}`
     }
   }
@@ -36,7 +33,7 @@ export const renderSourceSyncValue = (
     <Flex direction="column">
       <div>
         <Text size="2" weight="bold">
-          {'Sync Time: '}
+          {'Source Pulled: '}
         </Text>
         <Text size="2" className="text-green-500">
           {syncTime}
@@ -46,9 +43,17 @@ export const renderSourceSyncValue = (
         <Text size="2" weight="bold">
           {'Commit: '}
         </Text>
-        <Text size="2" className="text-green-500">
-          {syncCommitHash}
-        </Text>
+        {commitLink?(
+          <Link href={commitLink} target="_blank" rel="noopener noreferrer">
+            <Text size="2" className="text-green-500" onClick={(e) => e.stopPropagation()}>
+              GitHub.com: {syncCommitHash}
+            </Text>
+          </Link>
+          ) : (
+          <Text size="2" className="text-green-500">
+            {syncCommitHash}
+          </Text>
+        )}
       </div>
     </Flex>
   )
@@ -111,25 +116,46 @@ const renderFullSourceSyncDetails = (
   health: ProjectHealth | null,
   projectResources: Url[],
 ) => {
-  if (!health || !health.backgroundProjectStatus) {
-    return <LoadingSpinner />
-  }
-
   return (
-    <Inset>
-      {health ? (
-        <ProjectSourceSyncStatus
-          health={health}
-          projectResources={projectResources}
-        />
-      ) : null}
-    </Inset>
+    <div className="flex flex-col p-2 bg-background rounded-lg border border-blue">
+    <p className="mb-2 font-semibold text-center">Project Source Sync Status</p>
+    <Flex
+          className="mb-2 font-semibold p-10 bg-background rounded-lg blue-border break-words"
+          justify="between"
+          gap="1"
+        >
+          <Inset>
+            {health?.backgroundProjectStatus ? (
+              renderSourceSyncValue(health.backgroundProjectStatus, projectResources)
+            ) : (
+              health?(
+                <div>
+                <p>
+                  <p>Source data status not yet available</p>
+                  {health.readableValue === 'UNHEALTHY' ? (
+                    <p>Source Sync is temporarily unavailable</p>):
+                    (
+                      <p>Source Sync should be available soon.</p>)
+                  }
+                </p>
+              </div>
+              ):(
+                <div>
+                  <p>
+                    <span>Source data status not yet available</span>
+                  </p>
+                </div>
+              )
+            )}
+          </Inset>
+        </Flex>
+    </div>
   )
 }
 
 interface ProjectSourceSyncStatusProps {
   health: ProjectHealth | null
-  projectResources: Url[]
+  projectResources: string[]
 }
 
 const ProjectSourceSyncStatus = ({
@@ -137,14 +163,9 @@ const ProjectSourceSyncStatus = ({
   projectResources,
 }: ProjectSourceSyncStatusProps) => {
   return (
-    <HoverCard.Root>
-      <HoverCard.Trigger>
-        <Card>{renderBriefSourceSyncDetails(health, projectResources)}</Card>
-      </HoverCard.Trigger>
-      <HoverCard.Content>
+    <div>
         {renderFullSourceSyncDetails(health, projectResources)}
-      </HoverCard.Content>
-    </HoverCard.Root>
+    </div>
   )
 }
 

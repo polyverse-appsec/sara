@@ -10,7 +10,8 @@
 
 ### Enhancements
 
-- Added edit project functionality
+- Users can Edit existing Project details - including Description and Guidelines to improve Sara's understanding
+- Users can view the last GitHub.com source pull time and link to the specific Commit that was analyzed via the Project details page
 
 ### Bug Fixes
 

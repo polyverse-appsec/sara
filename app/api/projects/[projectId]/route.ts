@@ -19,60 +19,63 @@ import {
   findAssistantFromMetadata,
   type AssistantMetadata,
 } from './../../../../lib/polyverse/openai/assistants'
+import getProjectDataSource from 'lib/polyverse/db/get-project-data-source'
+import { ProjectWithDataSources } from 'lib/data-model-types'
 
 export const GET = auth(async (req: NextAuthRequest) => {
-  const { auth } = req
-
-  if (!auth || !auth.accessToken || !auth.user.email) {
-    return new Response(ReasonPhrases.FORBIDDEN, {
-      status: StatusCodes.FORBIDDEN,
-    })
-  }
-
-  try {
-    // TODO: Should be able to do Dynamic Route segments as documented:
-    // https://nextjs.org/docs/app/building-your-application/routing/route-handlers#dynamic-route-segments
-    // Problem is our Auth wrapper doesn't like it. See if we can figure
-    // out a way to move to this pattern.
-    const reqUrl = new URL(req.url)
-    const requestedProjectId = reqUrl
-      .toString()
-      .substring(reqUrl.toString().lastIndexOf('/') + 1)
-
-    const project = await getProjectDb(requestedProjectId)
-
-    if (!project) {
-      return new Response(ReasonPhrases.NOT_FOUND, {
-        status: StatusCodes.NOT_FOUND,
-      })
-    }
-
-    const user = await getUser(auth.user.email)
-    const org = await getOrg(project.orgId)
-
-    try {
-      authz.userListedOnOrg(org, user.id)
-      authz.orgListedOnUser(user, org.id)
-      authz.userListedOnProject(project, user.id)
-    } catch (error) {
+    const { auth } = req;
+  
+    if (!auth || !auth.accessToken || !auth.user.email) {
       return new Response(ReasonPhrases.FORBIDDEN, {
         status: StatusCodes.FORBIDDEN,
       })
     }
-
-    return new Response(JSON.stringify(project), {
-      status: StatusCodes.OK,
-    })
-  } catch (error) {
-    console.error(
-      `Failed fetching project for '${auth.user.email}' because: ${error}`,
-    )
-
-    return new Response(ReasonPhrases.INTERNAL_SERVER_ERROR, {
-      status: StatusCodes.INTERNAL_SERVER_ERROR,
-    })
-  }
-}) as any
+  
+    try {
+      const reqUrl = new URL(req.url)
+      const requestedProjectId = reqUrl.toString().substring(reqUrl.toString().lastIndexOf('/') + 1)
+  
+      const project = await getProjectDb(requestedProjectId)
+  
+      if (!project) {
+        return new Response(ReasonPhrases.NOT_FOUND, {
+          status: StatusCodes.NOT_FOUND,
+        })
+      }
+  
+      const user = await getUser(auth.user.email)
+      const org = await getOrg(project.orgId)
+  
+      try {
+        authz.userListedOnOrg(org, user.id)
+        authz.orgListedOnUser(user, org.id)
+        authz.userListedOnProject(project, user.id)
+      } catch (error) {
+        return new Response(ReasonPhrases.FORBIDDEN, {
+          status: StatusCodes.FORBIDDEN,
+        })
+      }
+  
+      (project as ProjectWithDataSources).dataSourceUris = []
+      for (const projectDataSourceId of project.projectDataSourceIds) {
+        try {
+          const thisProjectDataSource = await getProjectDataSource(projectDataSourceId);
+          (project as ProjectWithDataSources).dataSourceUris.push(thisProjectDataSource.uri)
+        } catch (error) {
+          console.error(`Failed to get project data source with ID: ${projectDataSourceId}`, error)
+        }
+      }
+  
+      return new Response(JSON.stringify(project), {
+        status: StatusCodes.OK,
+      })
+    } catch (error) {
+      console.error(`Failed fetching project for '${auth.user.email}' because: ${error}`)
+      return new Response(ReasonPhrases.INTERNAL_SERVER_ERROR, {
+        status: StatusCodes.INTERNAL_SERVER_ERROR,
+      })
+    }
+  }) as any
 
 // TODO: Should this live at /org/<orgId>/projects/<projectId>?
 export const DELETE = auth(async (req: NextAuthRequest) => {

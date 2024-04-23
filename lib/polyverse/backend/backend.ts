@@ -14,11 +14,16 @@ export async function rediscoverProject(
   orgId: string,
   projectId: string,
   email: string,
+  resetResources = false,
 ): Promise<void> {
   const url = `${USER_SERVICE_URI}/api/user_project/${orgId}/${projectId}/discovery`
 
   const rediscoveryRequest = {
     resetResources: true,
+  }
+  let payloadBody = undefined
+  if (resetResources) {
+    payloadBody = JSON.stringify(rediscoveryRequest)
   }
 
   try {
@@ -29,7 +34,7 @@ export async function rediscoverProject(
         'Content-Type': 'application/json',
         ...signedHeader,
       },
-      body: JSON.stringify(rediscoveryRequest),
+      body: payloadBody,
     })
 
     if (!res.ok) {

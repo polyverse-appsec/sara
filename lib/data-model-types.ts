@@ -97,6 +97,10 @@ export interface Project extends BaseSaraObject {
   lastRefreshedAt: Date
 }
 
+export interface ProjectWithDataSources extends Project {
+    dataSourceUris: string[]
+    }
+
 export enum ProjectDataSourceAccessPermission {
   // User read-only to source
   PRIMARY_READ = 'PRIMARY_READ',

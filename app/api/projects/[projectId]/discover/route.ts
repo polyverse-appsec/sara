@@ -10,6 +10,10 @@ import getUser from './../../../../../lib/polyverse/db/get-user'
 
 export const maxDuration = 30
 
+export interface ProjectDiscoverRequestBody {
+    reset: boolean
+  }
+
 export const POST = auth(async (req: NextAuthRequest) => {
   const { auth } = req
 
@@ -28,6 +32,18 @@ export const POST = auth(async (req: NextAuthRequest) => {
   // The 2nd to the last slice ought to be the slug for the project ID
   const projectId = reqUrlSlices[reqUrlSlices.length - 2]
 
+  let reqBody = undefined
+  
+  try {
+    reqBody = (await req.json()) as ProjectDiscoverRequestBody
+  } catch (err: any) {
+    console.debug(
+      `${userEmail} ${projectId} Caught error when trying to parse the request body - default no reset: `,
+      err.stack || err,
+    )
+  }
+  const reset = reqBody?.reset || false
+
   try {
     const user = await getUser(userEmail)
     const project = await getProject(projectId as string)
@@ -44,7 +60,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
     }
 
     // Call the rediscoverProject function
-    await rediscoverProject(org.name, project.id, userEmail)
+    await rediscoverProject(org.name, project.id, userEmail, reset)
 
     return new Response('Project rediscovery initiated successfully.', {
       status: StatusCodes.OK,

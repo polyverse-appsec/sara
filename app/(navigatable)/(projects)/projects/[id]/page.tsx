@@ -1,8 +1,8 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import Link from 'next/link'
-import { ArrowLeftIcon, Pencil2Icon } from '@radix-ui/react-icons'
+import { ArrowLeftIcon } from '@radix-ui/react-icons'
 import * as Tooltip from '@radix-ui/react-tooltip'
 import { Flex } from '@radix-ui/themes'
 import GoalsManager from 'components/goals/goals-manager'
@@ -11,22 +11,22 @@ import EnabledResyncIcon from 'components/icons/EnabledResyncIcon'
 import ProjectSourceSyncStatus from 'components/project-status/project-source-sync-status'
 import ProjectStatusCard from 'components/project-status/project-status-card'
 import SaraLoading from 'components/sara-loading'
-import { rediscoverProject } from 'lib/polyverse/backend/backend'
-import { isPreviewFeatureEnabled } from 'lib/service-utils'
 import { useSession } from 'next-auth/react'
 import toast from 'react-hot-toast'
+import { HoverCard } from '@radix-ui/themes'
 
 import { type SaraSession } from './../../../../../auth'
 import RenderableResource from './../../../../../components/renderable-resource/renderable-resource'
 import RenderableResourceContent from './../../../../../components/renderable-resource/renderable-resource-content'
 import { Button } from './../../../../../components/ui/button'
 import {
+  ProjectWithDataSources,
   type Goal,
-  type Project,
   type ProjectHealth,
 } from './../../../../../lib/data-model-types'
 import { useAppContext } from './../../../../../lib/hooks/app-context'
 import EditProjectPopout from 'components/project-details/edit-project-popout'
+import { ProjectDiscoverRequestBody } from 'app/api/projects/[projectId]/discover/route'
 
 const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
   const session = useSession()
@@ -39,7 +39,9 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
     activeWorkspaceDetails,
   } = useAppContext()
 
-  const [project, setProject] = useState<Project | null>(null)
+  const [refreshHealth, setRefreshHealth] = useState(false);
+
+  const [project, setProject] = useState<ProjectWithDataSources | null>(null)
   const [health, setHealth] = useState<ProjectHealth | null>(null)
   const [rediscoverButtonEnabled, setRediscoverButtonEnabled] =
     useState<boolean>(true)
@@ -60,21 +62,22 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
       return
     }
   }, [activeBillingOrg, saraSession])
-
-  // Define fetchHealth as an async function
-  const fetchHealth = async () => {
+  // Memoizing fetchHealth using useCallback
+  const fetchHealth = useCallback(async () => {
     const healthRes = await fetch(`/api/projects/${id}/health`);
     if (healthRes.ok) {
-      const fetchedHealth = (await healthRes.json()) as ProjectHealth;
+      const fetchedHealth = await healthRes.json() as ProjectHealth;
       setHealth(fetchedHealth);
-
-      // we're only going to enable source resynchronization if the project is healthy and already synchronized
-      //    no reason to let a user interupt or hijack a synchronization already in progress
-      setRediscoverButtonEnabled(fetchedHealth.readableValue === 'HEALTHY')
+      setRediscoverButtonEnabled(fetchedHealth.readableValue === 'HEALTHY');
     } else {
-      console.debug(`Failed to get project health`);
+      console.debug('Failed to get project health');
     }
-  };
+  }, [id]); // Dependency array includes `id` since it's used in the fetch URL
+
+  // Use fetchHealth in useEffect
+  useEffect(() => {
+    fetchHealth();
+  }, [fetchHealth, refreshHealth]);
 
   // This use effect is to just get the project details...
   useEffect(() => {
@@ -94,7 +97,7 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
           )
         }
 
-        const fetchedProject = (await projectRes.json()) as Project
+        const fetchedProject = (await projectRes.json()) as ProjectWithDataSources
         setProject(fetchedProject)
 
         // Best effort collect goals associated with the project and its health
@@ -176,7 +179,7 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
       isMounted = false
     }
   }, [id, activeBillingOrg, saraSession, refreshPage])
-
+  
   if (refreshPage) {
     setTimeout(() => setRefreshPage(false), 2000)
   }
@@ -293,23 +296,16 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
               />
             </div>
 
-            {isPreviewFeatureEnabled(
-              'ProjectSourceSyncStatus',
-              saraSession?.email,
-            ) && (
-              <div className="mr-2">
-                <ProjectSourceSyncStatus
-                  health={health}
-                  projectResources={[]}
-                />
-              </div>
-            )}
-
             <Flex gap="1">
               <Button
                 variant="ghost"
-                className={(rediscoverButtonEnabled && health?.readableValue === "HEALTHY")?"btn-blue hover:bg-blue-700 text-sm":"bg-gray-500 hover:cursor-not-allowed text-sm"}
-                disabled={!(rediscoverButtonEnabled && health?.readableValue === "HEALTHY")}
+                className={(rediscoverButtonEnabled &&
+                    (health?.readableValue === "HEALTHY" || !health?.backgroundProjectStatus?.activelyUpdating))?
+                        "btn-blue hover:bg-blue-700 text-sm":
+                        "bg-gray-500 hover:cursor-not-allowed text-sm"}
+                disabled={!(rediscoverButtonEnabled &&
+                    (health?.readableValue === "HEALTHY" || !health?.backgroundProjectStatus?.activelyUpdating)
+                )}
                 onClick={async (e) => {
                   e.preventDefault()
 
@@ -323,9 +319,17 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
                   }
 
                   try {
-                    // Best effort collect goals associated with the project and its health
+                    // try to rediscover the project ; or restart discovery if errored
+                    const rediscoveryBody = {
+                      reset: health?.readableValue === "HEALTHY" ? false : true,
+                    } as ProjectDiscoverRequestBody
+                    
                     const discoverRes = await fetch(`/api/projects/${id}/discover`, {
                       method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                      },
+                      body: JSON.stringify(rediscoveryBody)
                     })
 
                     if (discoverRes.ok) {
@@ -338,17 +342,25 @@ const ProjectPageIndex = ({ params: { id } }: { params: { id: string } }) => {
                   }
                 }}
               >
-                <Flex gap="2">
-                  {rediscoverButtonEnabled && health?.readableValue === "HEALTHY" ? (
-                    <EnabledResyncIcon
-                      />
-                  ) : (
-                      <EnabledResyncIcon
-                      color="gray"
-                      />
-                  )}
-                  Refresh Source
-                </Flex>
+                <HoverCard.Root>
+                  <HoverCard.Trigger>
+                    <Flex gap="2">
+                      {rediscoverButtonEnabled &&
+                      (health?.readableValue === "HEALTHY" || !health?.backgroundProjectStatus?.activelyUpdating) ? (
+                        <EnabledResyncIcon
+                        />
+                      ) : (
+                        <EnabledResyncIcon
+                          color="gray"
+                        />
+                      )}
+                      Refresh Source
+                    </Flex>
+                  </HoverCard.Trigger>
+                  <HoverCard.Content>
+                    <ProjectSourceSyncStatus health={health} projectResources={project.dataSourceUris}/>
+                  </HoverCard.Content>
+                </HoverCard.Root>
               </Button>
             </Flex>
           </Flex>
