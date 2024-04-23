@@ -95,7 +95,11 @@ const GoalsManager = ({ projectId, goals }: GoalsManagerProps) => {
               return
             }
 
-            // add a popup confirmation dialog
+            // Confirmation dialog
+            if (!confirm(`Are you sure you want to delete the ${checkedGoalIds.length} selected goals?`)) {
+              setDeleteGoalsButtonEnabled(true); // Re-enable the button if the user cancels.
+              return; // Exit if the user cancels the action.
+            }
 
             try {
               const deleteGoalPromises = checkedGoalIds.map((goalId) =>
