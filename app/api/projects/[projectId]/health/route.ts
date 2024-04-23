@@ -279,7 +279,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
     try {
       // Rather than check all of the file states just check that the project is
       // fully synchronized
-      if (boostProjectStatus.status !== BoostProjectStatus.Synchronized) {
+      if (boostProjectStatus?.status !== BoostProjectStatus.Synchronized) {
         const projectHealth = createProjectHealth(
           project.id,
           'PARTIALLY_HEALTHY',
