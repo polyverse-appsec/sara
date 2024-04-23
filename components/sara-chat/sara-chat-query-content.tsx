@@ -510,20 +510,23 @@ const SaraChatQueryContent = ({
         components={{
             p({ children }: { children: React.ReactNode }) {
             if (contentType === 'QUERY') {
-                return <p className="mb-2 last:mb-0 font-semimedium">{children}</p>;
+                return <p className="mb-2 last:mb-0 font-semimedium">{children}</p>
             } else {
-                return <p className="mb-2 last:mb-0">{children}</p>;
+                return <p className="mb-2 last:mb-0">{children}</p>
             }
             },
             code({ node, inline, className, children, ...props }: any) {
-            const match = /language-(\w+)/.exec(className || '');
+            const match = /language-(\w+)/.exec(className || '')
 
             if (inline) {
                 return <code className={className} {...props}>{children}</code>;
             } else {
                 // Check if this is a Mermaid code block
                 if (match && match[1] === 'mermaid') {
-                  return <MermaidWrapper markup={String(children).replace(/\n$/, '')} />;
+
+                  return (
+                    <MermaidWrapper markup={String(children).replace(/\n$/, '')} />
+                  )
                 } else {
                 // Render as regular code block if not Mermaid
                   return <CodeBlock
@@ -531,7 +534,7 @@ const SaraChatQueryContent = ({
                     language={(match && match[1]) || ''}
                     value={String(children).replace(/\n$/, '')}
                     {...props}
-                />;
+                />
                 }
             }
             },
