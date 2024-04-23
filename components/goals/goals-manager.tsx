@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Button, Flex, Heading } from '@radix-ui/themes'
 import toast from 'react-hot-toast'
@@ -8,6 +8,8 @@ import toast from 'react-hot-toast'
 import { deleteResource } from './../../app/saraClient'
 import ScrollableGoalsTable from './../../components/goals/scrollable-goals-table'
 import { type Goal } from './../../lib/data-model-types'
+import { use } from 'chai'
+import { TrashIcon } from '@radix-ui/react-icons'
 
 interface GoalsManagerProps {
   projectId: string
@@ -22,9 +24,18 @@ const GoalsManager = ({ projectId, goals }: GoalsManagerProps) => {
   const handleGoalChecked = (checkedGoalId: string) => {
     const newCheckedGoalIds = [...checkedGoalIds]
     newCheckedGoalIds.push(checkedGoalId)
+    setDeleteGoalsButtonEnabled(true)
 
     setCheckedGoalIds(newCheckedGoalIds)
   }
+
+  useEffect(() => {
+    if (checkedGoalIds.length === 0) {
+      setDeleteGoalsButtonEnabled(false)
+    } else {
+      setDeleteGoalsButtonEnabled(true)
+    }
+  } , [checkedGoalIds])
 
   const handleGoalUnchecked = (uncheckedGoalId: string) => {
     const newCheckedGoalIds = [
@@ -32,6 +43,9 @@ const GoalsManager = ({ projectId, goals }: GoalsManagerProps) => {
         (checkedGoalId) => checkedGoalId !== uncheckedGoalId,
       ),
     ]
+    if (newCheckedGoalIds.length === 0) {
+      setDeleteGoalsButtonEnabled(false)
+    }
 
     setCheckedGoalIds(newCheckedGoalIds)
   }
@@ -65,7 +79,12 @@ const GoalsManager = ({ projectId, goals }: GoalsManagerProps) => {
       />
       <Flex direction="row-reverse">
         <Button
-          color="red"
+          className=
+            {deleteGoalsButtonEnabled
+              ? 'btn-red'
+              : 'bg-gray-500 hover:cursor-not-allowed'
+            }
+          disabled={!deleteGoalsButtonEnabled}
           onClick={async () => {
             setDeleteGoalsButtonEnabled(false)
 
@@ -75,6 +94,8 @@ const GoalsManager = ({ projectId, goals }: GoalsManagerProps) => {
             if (!deleteGoalsButtonEnabled) {
               return
             }
+
+            // add a popup confirmation dialog
 
             try {
               const deleteGoalPromises = checkedGoalIds.map((goalId) =>
@@ -91,7 +112,7 @@ const GoalsManager = ({ projectId, goals }: GoalsManagerProps) => {
             setDeleteGoalsButtonEnabled(true)
           }}
         >
-          Delete Goals
+          Delete Goals <TrashIcon />
         </Button>
       </Flex>
     </Flex>
