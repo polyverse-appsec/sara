@@ -1,14 +1,24 @@
 'use client'
 
-import { updateResource } from 'app/saraClient'
+import {
+  createResourceNoResponseBody,
+  updateResource,
+  updateResourceNoResponseBody,
+} from 'app/saraClient'
 import { SaraSession } from 'auth'
+import { ChatContentTypeQuery } from 'components/chat/chat-query-content'
 import SaraLoading from 'components/sara-loading'
 import { IconRefresh } from 'components/ui/icons'
 
-import { ChatQuery } from './../../lib/data-model-types'
+import {
+  type ChatQuery,
+  type FineTuningTags,
+} from './../../lib/data-model-types'
 import { Separator } from './../ui/separator'
 import SaraChatQueryContent from './sara-chat-query-content'
-import { ChatContentTypeQuery } from 'components/chat/chat-query-content'
+
+const buildFineTuningUrl = (chatId: string, chatQueryId: string) =>
+  `/api/chats/${chatId}/chat-queries/${chatQueryId}/fine-tuning`
 
 export interface SaraChatListProps {
   chatQueries: ChatQuery[]
@@ -40,6 +50,27 @@ const SaraChatList = ({
                   ? { pictureSrc: saraSession.picture, name: saraSession.name }
                   : undefined
               }
+              fineTuningTags={
+                chatQuery.fineTuningTags ? chatQuery.fineTuningTags : []
+              }
+              onFineTuningTagsModified={async (
+                fineTuningTags: FineTuningTags[],
+              ) => {
+                const fineTuningUrl = buildFineTuningUrl(
+                  chatQuery.chatId,
+                  chatQuery.id,
+                )
+
+                const postReqBody = {
+                  fineTuningTags,
+                }
+
+                await createResourceNoResponseBody(
+                  fineTuningUrl,
+                  postReqBody,
+                  'Failed to set the fine tuning tags',
+                )
+              }}
             />
             <br></br>
             {chatQuery.response ? (
@@ -66,6 +97,27 @@ const SaraChatList = ({
                       ? chatQuery.status
                       : undefined
                   }
+                  fineTuningTags={
+                    chatQuery.fineTuningTags ? chatQuery.fineTuningTags : []
+                  }
+                  onFineTuningTagsModified={async (
+                    fineTuningTags: FineTuningTags[],
+                  ) => {
+                    const fineTuningUrl = buildFineTuningUrl(
+                      chatQuery.chatId,
+                      chatQuery.id,
+                    )
+
+                    const patchReqBody = {
+                      fineTuningTags,
+                    }
+
+                    await createResourceNoResponseBody(
+                      fineTuningUrl,
+                      patchReqBody,
+                      'Failed to set the fine tuning tags',
+                    )
+                  }}
                 />
                 {index == chatQueries.length - 1 && (
                   <div className="w-full flex items-center justify-center">
@@ -94,6 +146,27 @@ const SaraChatList = ({
                       : undefined
                   }
                   querySubmittedAt={chatQuery.querySubmittedAt}
+                  fineTuningTags={
+                    chatQuery.fineTuningTags ? chatQuery.fineTuningTags : []
+                  }
+                  onFineTuningTagsModified={async (
+                    fineTuningTags: FineTuningTags[],
+                  ) => {
+                    const fineTuningUrl = buildFineTuningUrl(
+                      chatQuery.chatId,
+                      chatQuery.id,
+                    )
+
+                    const patchReqBody = {
+                      fineTuningTags,
+                    }
+
+                    await createResourceNoResponseBody(
+                      fineTuningUrl,
+                      patchReqBody,
+                      'Failed to set the fine tuning tags',
+                    )
+                  }}
                 />
               </>
             )}

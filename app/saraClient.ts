@@ -110,6 +110,24 @@ export const updateResource = async <T>(
   return (await res.json()) as T
 }
 
+export const updateResourceNoResponseBody = async (
+  resourcePath: string,
+  reqBody: PATCHRequestBody,
+  errorMessage: string = '',
+): Promise<void> => {
+  const prefixedResourcePath = prefixResourcePath(resourcePath)
+
+  const res = await fetch(prefixedResourcePath, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(reqBody),
+  })
+
+  await throwIfResNotOk(res, errorMessage)
+}
+
 export const deleteResource = async (
   resourcePath: string,
   errorMessage: string = '',

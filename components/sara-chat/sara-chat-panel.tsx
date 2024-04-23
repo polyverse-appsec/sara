@@ -4,9 +4,7 @@ import * as React from 'react'
 import { ExclamationTriangleIcon } from '@radix-ui/react-icons'
 import { type UseChatHelpers } from 'ai/react'
 
-import {
-  type ProjectHealthStatusValue,
-} from './../../lib/data-model-types'
+import { type ProjectHealthStatusValue } from './../../lib/data-model-types'
 import { ButtonScrollToBottom } from './../button-scroll-to-bottom'
 import { IconRefresh, IconStop } from './../ui/icons'
 import SaraPromptForm from './sara-prompt-form'
@@ -52,40 +50,6 @@ const SaraChatPanel = ({
   projectHealth,
 }: SaraChatPanelProps) => {
   const [shareDialogOpen, setShareDialogOpen] = React.useState(false)
-
-  // TODO: Cut the stop generating and regenerate response buttons/icons for now
-  // {true ? (
-  //   <Button
-  //     variant="outline"
-  //     onClick={() => {
-  //       // Used to be stop() here
-  //       console.log(
-  //         `****** onClick invoked for Button to stop generation`,
-  //       )
-  //     }}
-  //     className="bg-background"
-  //   >
-  //     <IconStop className="mr-2" />
-  //     Stop generating
-  //   </Button>
-  // ) : (
-  //   chatQueries.length > 0 && (
-  //     <div className="flex space-x-2">
-  //       <Button
-  //         variant="outline"
-  //         onClick={() => {
-  //           // Used to be reload() here
-  //           console.log(
-  //             `****** onClick invoked for Button to regenerate response`,
-  //           )
-  //         }}
-  //       >
-  //         <IconRefresh className="mr-2" />
-  //         Regenerate response
-  //       </Button>
-  //     </div>
-  //   )
-  // )}
 
   const alertContent = renderChatAlert(projectHealth)
 

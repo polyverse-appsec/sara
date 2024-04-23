@@ -1,27 +1,37 @@
 'use client'
 
-import { useState } from 'react'
+import { error } from 'console'
+import { ReactElement, ReactNode, useState } from 'react'
 import Image from 'next/image'
 import * as Tooltip from '@radix-ui/react-tooltip'
-import { Card, Flex, Progress, Text } from '@radix-ui/themes'
+import { Button, Card, Flex, Progress, Text } from '@radix-ui/themes'
 import { SaraSession } from 'auth'
+import { ChatContentTypeQuery } from 'components/chat/chat-query-content'
+import BoltOutlineIcon from 'components/icons/BoltOutlineIcon'
+import BoltSolidIcon from 'components/icons/BoltSolidIcon'
+import BulbOutlineIcon from 'components/icons/BulbOutlineIcon'
+import BulbSolidIcon from 'components/icons/BulbSolidIcon'
 import CopyToClipboardIcon from 'components/icons/CopyToClipboardIcon'
 import GreenSolidCheckIcon from 'components/icons/GreenSolidCheckIcon'
+import HeartOutlineIcon from 'components/icons/HeartOutlineIcon'
+import HeartSolidIcon from 'components/icons/HeartSolidIcon'
 import RedSolidStopIcon from 'components/icons/RedSolidStopIcon'
 import RedSolidXIcon from 'components/icons/RedSolidXIcon'
+import XCircleOutlineIcon from 'components/icons/XCircleOutlineIcon'
+import XCircleSolidIcon from 'components/icons/XCircleSolidIcon'
 import LoadingSpinner from 'components/loading-spinner'
-import { ChatQueryStatus } from 'lib/data-model-types'
+import { type ChatQueryStatus, type FineTuningTags } from 'lib/data-model-types'
+import { last } from 'lodash'
 import { useSession } from 'next-auth/react'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
 
 import { cn, formatDateTimeSinceOperationOccurred } from '../../lib/utils'
-import { MemoizedReactMarkdown}  from '../markdown'
-import MermaidWrapper from "../ui/MermaidWrapper"
+import { MemoizedReactMarkdown } from '../markdown'
 import { CodeBlock } from '../ui/codeblock'
 import { IconUser } from '../ui/icons'
+import MermaidWrapper from '../ui/MermaidWrapper'
 import Sara32x32 from './../../public/Sara_Cartoon_Portrait-32x32.png'
-import { ChatContentTypeQuery } from 'components/chat/chat-query-content'
 
 export interface ChatAvatarDetails {
   name: string
@@ -37,6 +47,8 @@ export interface SaraChatQueryContentProps {
   chatQueryStatus?: ChatQueryStatus
   querySubmittedAt?: Date
   responseReceivedAt?: Date
+  fineTuningTags: FineTuningTags[]
+  onFineTuningTagsModified: (fineTunningTags: FineTuningTags[]) => void
 }
 
 const renderAvatar = (
@@ -70,27 +82,22 @@ const renderAvatar = (
 }
 
 const renderQuerySubmittedAt = (querySubmittedAt?: Date) => {
-    const timeStr = formatDateTimeSinceOperationOccurred(querySubmittedAt)
+  const timeStr = formatDateTimeSinceOperationOccurred(querySubmittedAt)
 
-    return (
-        <Flex gap="1">
-            <Text size="2">
-                {'You asked '}
-            </Text>
-            <Text size="2">{timeStr}</Text>
-        </Flex>
-    );
+  return (
+    <Flex gap="1">
+      <Text size="2">{'You asked '}</Text>
+      <Text size="2">{timeStr}</Text>
+    </Flex>
+  )
 }
-
 
 const renderLastCheckedAt = (lastCheckedTime?: Date) => {
   const timeStr = formatDateTimeSinceOperationOccurred(lastCheckedTime, false)
 
   return (
     <Flex gap="1">
-      <Text size="2">
-        {'Sara thinking for '}
-      </Text>
+      <Text size="2">{'Sara thinking for '}</Text>
       <Text size="2">{timeStr}</Text>
     </Flex>
   )
@@ -110,7 +117,7 @@ const cancelledAt = (cancelledAt?: Date) => {
 }
 
 const errorOccurredAt = (errorAt?: Date) => {
-    const timeStr = formatDateTimeSinceOperationOccurred(errorAt)
+  const timeStr = formatDateTimeSinceOperationOccurred(errorAt)
 
   return (
     <Flex gap="1">
@@ -123,13 +130,11 @@ const errorOccurredAt = (errorAt?: Date) => {
 }
 
 const renderResponseReceivedAt = (responseReceivedAt?: Date) => {
-    const timeStr = formatDateTimeSinceOperationOccurred(responseReceivedAt)
+  const timeStr = formatDateTimeSinceOperationOccurred(responseReceivedAt)
 
   return (
     <Flex gap="1">
-      <Text size="2">
-        {'Sara answered '}
-      </Text>
+      <Text size="2">{'Sara answered '}</Text>
       <Text size="2">{timeStr}</Text>
     </Flex>
   )
@@ -248,22 +253,22 @@ const renderChatQueryStatusText = (chatQueryStatus?: ChatQueryStatus) => {
 const FOUR_MINS_IN_MILLIS = 4 * 60 * 1000
 
 const renderChatQueryProgressBar = (querySubmittedAt: Date) => {
-
-  const elapsed = (new Date().getTime() - new Date(querySubmittedAt).getTime()) / 1000
+  const elapsed =
+    (new Date().getTime() - new Date(querySubmittedAt).getTime()) / 1000
 
   let progressValue
 
   // first 60 seconds... up to 50%
   if (elapsed < 60) {
-    progressValue = elapsed / (60 * 2) * 100
+    progressValue = (elapsed / (60 * 2)) * 100
   }
   // next 60 seconds... up to 75%
   else if (elapsed < 120) {
-    progressValue = 50 + (elapsed - 60) / (60 * 4) * 100
+    progressValue = 50 + ((elapsed - 60) / (60 * 4)) * 100
   }
   // next 120 seconds... up to 100%
   else if (elapsed < 240) {
-    progressValue = 75 + (elapsed - 120) / (120 * 4) * 100
+    progressValue = 75 + ((elapsed - 120) / (120 * 4)) * 100
   } else {
     progressValue = 1
   }
@@ -277,7 +282,8 @@ const renderChatQueryProgressBar = (querySubmittedAt: Date) => {
 }
 
 const renderChatQueryProgressUpdate = (querySubmittedAt: Date) => {
-  const elapsed = (new Date().getTime() - new Date(querySubmittedAt).getTime()) / 1000
+  const elapsed =
+    (new Date().getTime() - new Date(querySubmittedAt).getTime()) / 1000
 
   const saraIs = 'Sara is '
 
@@ -292,12 +298,12 @@ const renderChatQueryProgressUpdate = (querySubmittedAt: Date) => {
     'summarizing findings',
     'updating notes',
     'preparing tasks',
-    
+
     // Third to fourth minute: deep learning mode (every 30 seconds)
     'deep learning',
     'rechecking archives',
     'synthesizing response',
-    'completing the response'
+    'completing the response',
   ]
 
   const secsPerMin = 60
@@ -305,36 +311,180 @@ const renderChatQueryProgressUpdate = (querySubmittedAt: Date) => {
   if (elapsed < secsPerMin) {
     let index = (elapsed / 15) % 4
     saraProgressValue = SaraProgressValues[Math.floor(index)]
-  } else if (elapsed < (2 * secsPerMin)) {
-    let index = ((elapsed - secsPerMin) / 20) % 3 + 4
+  } else if (elapsed < 2 * secsPerMin) {
+    let index = (((elapsed - secsPerMin) / 20) % 3) + 4
     saraProgressValue = SaraProgressValues[Math.floor(index)]
-  } else if (elapsed < (4 * secsPerMin)) {
-    let index = ((elapsed - (2 * secsPerMin)) / 30) % 4 + 7
+  } else if (elapsed < 4 * secsPerMin) {
+    let index = (((elapsed - 2 * secsPerMin) / 30) % 4) + 7
     saraProgressValue = SaraProgressValues[Math.floor(index)]
   } else {
-    saraProgressValue = SaraProgressValues[Object.keys(SaraProgressValues).length - 1]
+    saraProgressValue =
+      SaraProgressValues[Object.keys(SaraProgressValues).length - 1]
   }
 
   return (
     <Flex gap="1">
-      <Text size="2">
-        {saraIs}
-      </Text>
+      <Text size="2">{saraIs}</Text>
       <Text size="2">{saraProgressValue}</Text>
     </Flex>
   )
 }
 
+interface FineTuningButtonProps {
+  isTaggedChildren: ReactElement
+  isUntaggedChildren: ReactElement
+  tag: FineTuningTags
+  isInitiallyTagged?: boolean
+  onFineTuningTagAdded: (fineTunningTag: FineTuningTags) => void
+  onFineTuningTagRemoved: (fineTunningTag: FineTuningTags) => void
+}
+
+const FineTuningButton = ({
+  isTaggedChildren,
+  isUntaggedChildren,
+  tag,
+  isInitiallyTagged,
+  onFineTuningTagAdded,
+  onFineTuningTagRemoved,
+}: FineTuningButtonProps) => {
+  const [isTagged, setIsTagged] = useState<boolean>(
+    isInitiallyTagged ? isInitiallyTagged : false,
+  )
+
+  return (
+    <Button
+      variant="ghost"
+      onClick={() => {
+        if (isTagged) {
+          setIsTagged(false)
+          onFineTuningTagRemoved(tag)
+          return
+        }
+
+        setIsTagged(true)
+        onFineTuningTagAdded(tag)
+      }}
+    >
+      {isTagged ? isTaggedChildren : isUntaggedChildren}
+    </Button>
+  )
+}
+
+interface FineTuningTagsManagerProps {
+  onFineTuningTagsModified: (fineTunningTags: FineTuningTags[]) => void
+  fineTuningTags: FineTuningTags[]
+  tagsToRender: FineTuningTags[]
+}
+
+const FineTuningTagsManager = ({
+  onFineTuningTagsModified,
+  fineTuningTags,
+  tagsToRender,
+}: FineTuningTagsManagerProps) => {
+  const handleFineTuningTagAdded = (fineTuningTag: FineTuningTags) => {
+    const newFineTuningTags = [...fineTuningTags]
+    newFineTuningTags.push(fineTuningTag)
+
+    onFineTuningTagsModified(newFineTuningTags)
+  }
+
+  const handleFineTuningTagRemoved = (fineTuningTag: FineTuningTags) => {
+    const newFineTuningTags = [...fineTuningTags].filter(
+      (filteredFineTuningTag) => filteredFineTuningTag !== fineTuningTag,
+    )
+
+    onFineTuningTagsModified(newFineTuningTags)
+  }
+
+  return (
+    <Flex direction="column" align="start">
+      {tagsToRender.includes('FAVORITE') && (
+        <FineTuningButton
+          tag="FAVORITE"
+          isInitiallyTagged={fineTuningTags.includes('FAVORITE')}
+          onFineTuningTagAdded={handleFineTuningTagAdded}
+          onFineTuningTagRemoved={handleFineTuningTagRemoved}
+          isTaggedChildren={
+            <>
+              <HeartSolidIcon /> Favorite
+            </>
+          }
+          isUntaggedChildren={
+            <>
+              <HeartOutlineIcon /> Favorite
+            </>
+          }
+        />
+      )}
+      {tagsToRender.includes('INSIGHTFUL') && (
+        <FineTuningButton
+          tag="INSIGHTFUL"
+          isInitiallyTagged={fineTuningTags.includes('INSIGHTFUL')}
+          onFineTuningTagAdded={handleFineTuningTagAdded}
+          onFineTuningTagRemoved={handleFineTuningTagRemoved}
+          isTaggedChildren={
+            <>
+              <BulbSolidIcon /> Insightful
+            </>
+          }
+          isUntaggedChildren={
+            <>
+              <BulbOutlineIcon /> Insightful
+            </>
+          }
+        />
+      )}
+      {tagsToRender.includes('PRODUCTIVE') && (
+        <FineTuningButton
+          tag="PRODUCTIVE"
+          isInitiallyTagged={fineTuningTags.includes('PRODUCTIVE')}
+          onFineTuningTagAdded={handleFineTuningTagAdded}
+          onFineTuningTagRemoved={handleFineTuningTagRemoved}
+          isTaggedChildren={
+            <>
+              <BoltSolidIcon /> Productive
+            </>
+          }
+          isUntaggedChildren={
+            <>
+              <BoltOutlineIcon /> Productive
+            </>
+          }
+        />
+      )}
+      {tagsToRender.includes('UNHELPFUL') && (
+        <FineTuningButton
+          tag="UNHELPFUL"
+          isInitiallyTagged={fineTuningTags.includes('UNHELPFUL')}
+          onFineTuningTagAdded={handleFineTuningTagAdded}
+          onFineTuningTagRemoved={handleFineTuningTagRemoved}
+          isTaggedChildren={
+            <>
+              <XCircleSolidIcon /> Unhelpful
+            </>
+          }
+          isUntaggedChildren={
+            <>
+              <XCircleOutlineIcon /> Unhelpful
+            </>
+          }
+        />
+      )}
+    </Flex>
+  )
+}
+
 function renderSideChatDetails(
+  content: string,
   contentType: 'QUERY' | 'RESPONSE',
   copyToClipboard: (id: string) => void,
   copied: boolean,
-  setCopied: React.Dispatch<React.SetStateAction<boolean>>,
+  fineTuningTags: FineTuningTags[],
+  onFineTuningTagsModified: (fineTunningTags: FineTuningTags[]) => void,
   chatAvatarDetails?: ChatAvatarDetails,
   chatQueryStatus?: ChatQueryStatus,
   querySubmittedAt?: Date,
   responseReceivedAt?: Date,
-  content?: string,
   showRawStatus?: boolean,
 ) {
   showRawStatus = false // disable debugging for now
@@ -369,19 +519,43 @@ function renderSideChatDetails(
           </Flex>
           <Flex align="start" gap="1">
             {renderChatQueryStatusIcon(chatQueryStatus)}
-            {renderTimestamp(contentType, chatQueryStatus, querySubmittedAt, responseReceivedAt)}
+            {renderTimestamp(
+              contentType,
+              chatQueryStatus,
+              querySubmittedAt,
+              responseReceivedAt,
+            )}
           </Flex>
           <Flex align="center" gap="1">
-            {showRawStatus?renderChatQueryStatusText(chatQueryStatus):
-            chatQueryStatus === 'QUERY_SUBMITTED' && querySubmittedAt !== undefined?renderChatQueryProgressUpdate(querySubmittedAt):null
-            }
+            {showRawStatus
+              ? renderChatQueryStatusText(chatQueryStatus)
+              : chatQueryStatus === 'QUERY_SUBMITTED' &&
+                  querySubmittedAt !== undefined
+                ? renderChatQueryProgressUpdate(querySubmittedAt)
+                : null}
           </Flex>
           {chatQueryStatus === 'QUERY_SUBMITTED' && querySubmittedAt
             ? renderChatQueryProgressBar(querySubmittedAt)
             : null}
-          {chatQueryStatus === 'QUERY_SUBMITTED' && querySubmittedAt && showRawStatus
+          {chatQueryStatus === 'QUERY_SUBMITTED' &&
+          querySubmittedAt &&
+          showRawStatus
             ? renderChatQueryProgressUpdate(querySubmittedAt)
             : null}
+          {contentType === 'QUERY' && (
+            <FineTuningTagsManager
+              onFineTuningTagsModified={onFineTuningTagsModified}
+              fineTuningTags={fineTuningTags}
+              tagsToRender={['FAVORITE']}
+            />
+          )}
+          {contentType === 'RESPONSE' && (
+            <FineTuningTagsManager
+              onFineTuningTagsModified={onFineTuningTagsModified}
+              fineTuningTags={fineTuningTags}
+              tagsToRender={['INSIGHTFUL', 'PRODUCTIVE', 'UNHELPFUL']}
+            />
+          )}
         </Flex>
       </Card>
     </Flex>
@@ -395,6 +569,8 @@ const SaraChatQueryContent = ({
   chatQueryStatus,
   querySubmittedAt,
   responseReceivedAt,
+  fineTuningTags,
+  onFineTuningTagsModified,
   ...props
 }: SaraChatQueryContentProps) => {
   const [copied, setCopied] = useState(false)
@@ -422,62 +598,75 @@ const SaraChatQueryContent = ({
     )
   }
 
-  const isProduction = process.env.NEXT_PUBLIC_SARA_STAGE?.toLowerCase() === 'prod'
+  const isProduction =
+    process.env.NEXT_PUBLIC_SARA_STAGE?.toLowerCase() === 'prod'
 
   return (
     <div className={cn('group relative mb-4 flex items-start')} {...props}>
       {renderSideChatDetails(
+        content,
         contentType,
         copyToClipboard,
         copied,
-        setCopied,
+        fineTuningTags,
+        onFineTuningTagsModified,
         chatAvatarDetails,
         chatQueryStatus,
         querySubmittedAt,
         responseReceivedAt,
-        content,
         !isProduction,
       )}
-      <div className="flex-1 px-1 ml-4 space-y-2 overflow-auto" style={{ maxWidth: 'calc(100vh)' }}>
-      <MemoizedReactMarkdown
-        className="markdownDisplay"
-        remarkPlugins={[remarkGfm, remarkMath]}
-        components={{
+      <div
+        className="flex-1 px-1 ml-4 space-y-2 overflow-auto"
+        style={{ maxWidth: 'calc(100vh)' }}
+      >
+        <MemoizedReactMarkdown
+          className="markdownDisplay"
+          remarkPlugins={[remarkGfm, remarkMath]}
+          components={{
             p({ children }: { children: React.ReactNode }) {
-            if (contentType === 'QUERY') {
-                return <p className="mb-2 last:mb-0 font-semimedium">{children}</p>
-            } else {
+              if (contentType === 'QUERY') {
+                return (
+                  <p className="mb-2 last:mb-0 font-semimedium">{children}</p>
+                )
+              } else {
                 return <p className="mb-2 last:mb-0">{children}</p>
-            }
+              }
             },
             code({ node, inline, className, children, ...props }: any) {
-            const match = /language-(\w+)/.exec(className || '')
+              const match = /language-(\w+)/.exec(className || '')
 
-            if (inline) {
-                return <code className={className} {...props}>{children}</code>;
-            } else {
+              if (inline) {
+                return (
+                  <code className={className} {...props}>
+                    {children}
+                  </code>
+                )
+              } else {
                 // Check if this is a Mermaid code block
                 if (match && match[1] === 'mermaid') {
-
                   return (
-                    <MermaidWrapper markup={String(children).replace(/\n$/, '')} />
+                    <MermaidWrapper
+                      markup={String(children).replace(/\n$/, '')}
+                    />
                   )
                 } else {
-                // Render as regular code block if not Mermaid
-                  return <CodeBlock
-                    key={Math.random()}
-                    language={(match && match[1]) || ''}
-                    value={String(children).replace(/\n$/, '')}
-                    {...props}
-                />
+                  // Render as regular code block if not Mermaid
+                  return (
+                    <CodeBlock
+                      key={Math.random()}
+                      language={(match && match[1]) || ''}
+                      value={String(children).replace(/\n$/, '')}
+                      {...props}
+                    />
+                  )
                 }
-            }
+              }
             },
-        }}
+          }}
         >
-        {content}
+          {content}
         </MemoizedReactMarkdown>
-
       </div>
     </div>
   )

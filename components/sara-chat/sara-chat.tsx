@@ -14,6 +14,7 @@ import {
   updateResource,
 } from './../../app/saraClient'
 import {
+  FineTuningTags,
   type Chat,
   type Chatable,
   type ChatQuery,
@@ -206,7 +207,7 @@ const SaraChat = <T extends Chatable>({
               chatQueries={chatQueries}
               saraSession={saraSession}
               handleResubmitChatQuery={async (chatQueryId: string) => {
-                // If the chat ID isn't yet return
+                // If the chat ID isn't available yet return
                 if (!chatId) {
                   return
                 }

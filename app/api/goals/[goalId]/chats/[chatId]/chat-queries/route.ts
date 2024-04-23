@@ -349,6 +349,7 @@ export const POST = auth(async (req: NextAuthRequest) => {
       nextChatQueryId: null,
 
       fineTuningScore: null,
+      fineTuningTags: null,
       fineTunedAt: null,
     }
 

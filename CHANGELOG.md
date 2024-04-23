@@ -2,6 +2,20 @@
 
 # Release Notes
 
+## Version 1.0.3: April 23rd, 2024
+
+### New Features
+
+- N/A
+
+### Enhancements
+
+- Users can improve responses by providing feedback to responses
+
+### Bug Fixes
+
+- N/A
+
 ## Version 1.0.2: April 22th, 2024
 
 ### New Features
