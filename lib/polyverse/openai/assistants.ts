@@ -12,6 +12,7 @@ import { usFormatter } from '../backend/utils/log'
 import { isRecord } from '../typescript/helpers'
 import { OPENAI_MODEL } from './constants'
 import { aiSpecificationId, blueprintId, projectSourceId } from './constants'
+import { ArchitecturalDiagramRenderingWithMermaid, ClassDiagramRenderingWithMermaid, DiagramRenderingShortInstructionsForAssistantWithMermaid, FlowDiagramRenderingWithMermaid } from './prompts/diagramRenderingInstructions'
 
 export const ASSISTANT_METADATA_CREATOR = 'sara.frontend'
 
@@ -207,6 +208,18 @@ function getOpenAIAssistantInstructions(
 
         If someone asks a more specific coding question about the project, unless otherwise explicitly told not to, you give answers that use the relevant frameworks, APIs, data structures, and other aspects of the existing code.
     `
+
+    assistantPromptInstructions += `
+${DiagramRenderingShortInstructionsForAssistantWithMermaid()}
+
+${FlowDiagramRenderingWithMermaid()}
+
+${ClassDiagramRenderingWithMermaid()}
+
+${ArchitecturalDiagramRenderingWithMermaid()}
+
+`
+
     assistantPromptInstructions += `
     You have the following sets of data resources that will help you answer questions:`
 

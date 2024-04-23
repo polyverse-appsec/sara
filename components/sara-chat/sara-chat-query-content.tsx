@@ -16,13 +16,12 @@ import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
 
 import { cn } from '../../lib/utils'
-import { MemoizedReactMarkdown } from '../markdown'
+import { MemoizedReactMarkdown}  from '../markdown'
+import MermaidWrapper from "../ui/MermaidWrapper"
 import { CodeBlock } from '../ui/codeblock'
 import { IconUser } from '../ui/icons'
 import Sara32x32 from './../../public/Sara_Cartoon_Portrait-32x32.png'
 import { ChatContentTypeQuery } from 'components/chat/chat-query-content'
-import { last } from 'lodash'
-import { error } from 'console'
 
 export interface ChatAvatarDetails {
   name: string
@@ -488,7 +487,6 @@ const SaraChatQueryContent = ({
     )
   }
 
-
   const isProduction = process.env.NEXT_PUBLIC_SARA_STAGE?.toLowerCase() === 'prod'
 
   return (
@@ -506,53 +504,42 @@ const SaraChatQueryContent = ({
         !isProduction,
       )}
       <div className="flex-1 px-1 ml-4 space-y-2 overflow-auto" style={{ maxWidth: 'calc(100vh)' }}>
-        <MemoizedReactMarkdown
-          className="markdownDisplay"
-          remarkPlugins={[remarkGfm, remarkMath]}
-          components={{
-            p({ children }) {
-              if (contentType === ChatContentTypeQuery) {
-                return (
-                  <p className="mb-2 last:mb-0 font-semimedium">{children}</p>
-                )
-              } else {
-                return <p className="mb-2 last:mb-0">{children}</p>
-              }
+      <MemoizedReactMarkdown
+        className="markdownDisplay"
+        remarkPlugins={[remarkGfm, remarkMath]}
+        components={{
+            p({ children }: { children: React.ReactNode }) {
+            if (contentType === 'QUERY') {
+                return <p className="mb-2 last:mb-0 font-semimedium">{children}</p>;
+            } else {
+                return <p className="mb-2 last:mb-0">{children}</p>;
+            }
             },
-            code({ node, inline, className, children, ...props }) {
-              if (children.length) {
-                if (children[0] == '▍') {
-                  return (
-                    <span className="mt-1 cursor-default animate-pulse">▍</span>
-                  )
+            code({ node, inline, className, children, ...props }: any) {
+            const match = /language-(\w+)/.exec(className || '');
+
+            if (inline) {
+                return <code className={className} {...props}>{children}</code>;
+            } else {
+                // Check if this is a Mermaid code block
+                if (match && match[1] === 'mermaid') {
+                  return <MermaidWrapper markup={String(children).replace(/\n$/, '')} />;
+                } else {
+                // Render as regular code block if not Mermaid
+                  return <CodeBlock
+                    key={Math.random()}
+                    language={(match && match[1]) || ''}
+                    value={String(children).replace(/\n$/, '')}
+                    {...props}
+                />;
                 }
-
-                children[0] = (children[0] as string).replace('`▍`', '▍')
-              }
-
-              const match = /language-(\w+)/.exec(className || '')
-
-              if (inline) {
-                return (
-                  <code className={className} {...props}>
-                    {children}
-                  </code>
-                )
-              }
-
-              return (
-                <CodeBlock
-                  key={Math.random()}
-                  language={(match && match[1]) || ''}
-                  value={String(children).replace(/\n$/, '')}
-                  {...props}
-                />
-              )
+            }
             },
-          }}
+        }}
         >
-          {content}
+        {content}
         </MemoizedReactMarkdown>
+
       </div>
     </div>
   )

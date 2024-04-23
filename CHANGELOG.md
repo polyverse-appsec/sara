@@ -6,7 +6,7 @@
 
 ### New Features
 
-- N/A
+- Sara can provide Visual Diagrams for source code flow control, class diagrams, interfaces and architecture
 
 ### Enhancements
 

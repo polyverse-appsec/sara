@@ -16,6 +16,7 @@ export const PremiumPlanUIDescription = () => {
     </div>
     <p>✅ Project creation to analyze GitHub repositories</p>
     <p>✅ Project Goals can be set to guide Sara analysis</p>
+    <p>✅ Sara Class, Flow &amp; Architecture Diagrams for your code</p>
     <p>✅ Sara generated Task-plans to achieve Goals</p>
     <p>✅ Ability to Analyze Any Public GitHub project</p>
     <p>✅ Access to Analyze Private Source Repos</p>

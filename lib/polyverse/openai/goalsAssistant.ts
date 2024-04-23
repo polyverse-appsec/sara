@@ -3,13 +3,14 @@ import { Assistant } from 'openai/resources/beta/assistants/assistants'
 import { Run } from 'openai/resources/beta/threads/runs/runs'
 import { Thread } from 'openai/resources/beta/threads/threads'
 
-import { type PromptFileInfo, type Task } from './../../../lib/data-model-types'
+import { type Task } from './../../../lib/data-model-types'
 import createTask from './../../../lib/polyverse/db/create-task'
 import getGoal from './../../../lib/polyverse/db/get-goal'
 import updateGoal from './../../../lib/polyverse/db/update-goal'
 import { createBaseSaraObject } from './../../../lib/polyverse/db/utils'
 import { aiSpecificationId, blueprintId, projectSourceId } from './constants'
 import { ProjectDataFilename } from '../backend/types/ProjectDataFilename'
+import { DiagramRenderingShortInstructionsForGoalsWithMermaid } from './prompts/diagramRenderingInstructions'
 
 const oaiClient = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -206,6 +207,8 @@ export const createOpenAIAssistantPromptForGoals = (
       3. Create Work Items to achieve the Goal, if no previous Work Items identified
       4. Add New Work Items to the Project Goal, if prior Work Items were identified
       5. Always provide code snippets, examples and references to source files embedded or referenced in ${blueprintId}, ${aiSpecificationId} and ${projectSourceId}
+
+${DiagramRenderingShortInstructionsForGoalsWithMermaid()} +
 
       Important: For each Work Item created and added via the submitWorkItemsForGoal function, include:
       1. Title of the Work Item
