@@ -26,7 +26,7 @@ const ProjectDashboard = ({
                 className="btn-blue hover:bg-blue-700 hover:text-foreground transition duration-300"
             >
                 <Link href={`/projects/create`}>
-                    Create Project
+                    New Project
                 </Link>
             </Button>
         </Flex>
