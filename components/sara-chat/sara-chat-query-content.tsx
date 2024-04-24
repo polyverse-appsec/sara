@@ -373,13 +373,16 @@ const FineTuningTagsManager = ({
   tagsToRender,
 }: FineTuningTagsManagerProps) => {
   const handleFineTuningTagAdded = (fineTuningTag: FineTuningTags) => {
-    const newFineTuningTags = [...fineTuningTags]
+    const newFineTuningTags = fineTuningTags?[...fineTuningTags]:[]
     newFineTuningTags.push(fineTuningTag)
 
     onFineTuningTagsModified(newFineTuningTags)
   }
 
   const handleFineTuningTagRemoved = (fineTuningTag: FineTuningTags) => {
+    if (!fineTuningTags) {
+        return
+    }
     const newFineTuningTags = [...fineTuningTags].filter(
       (filteredFineTuningTag) => filteredFineTuningTag !== fineTuningTag,
     )
@@ -388,7 +391,7 @@ const FineTuningTagsManager = ({
   }
 
   return (
-    <Flex direction="column" align="start">
+    <Flex direction="row" align="start">
       {tagsToRender.includes('FAVORITE') && (
         <FineTuningButton
           tag="FAVORITE"
@@ -397,12 +400,12 @@ const FineTuningTagsManager = ({
           onFineTuningTagRemoved={handleFineTuningTagRemoved}
           isTaggedChildren={
             <>
-              <HeartSolidIcon /> Favorite
+              <HeartSolidIcon />
             </>
           }
           isUntaggedChildren={
             <>
-              <HeartOutlineIcon /> Favorite
+              <HeartOutlineIcon />
             </>
           }
         />
@@ -415,12 +418,12 @@ const FineTuningTagsManager = ({
           onFineTuningTagRemoved={handleFineTuningTagRemoved}
           isTaggedChildren={
             <>
-              <BulbSolidIcon /> Insightful
+              <BulbSolidIcon />
             </>
           }
           isUntaggedChildren={
             <>
-              <BulbOutlineIcon /> Insightful
+              <BulbOutlineIcon />
             </>
           }
         />
@@ -433,12 +436,12 @@ const FineTuningTagsManager = ({
           onFineTuningTagRemoved={handleFineTuningTagRemoved}
           isTaggedChildren={
             <>
-              <BoltSolidIcon /> Productive
+              <BoltSolidIcon />
             </>
           }
           isUntaggedChildren={
             <>
-              <BoltOutlineIcon /> Productive
+              <BoltOutlineIcon />
             </>
           }
         />
@@ -451,12 +454,12 @@ const FineTuningTagsManager = ({
           onFineTuningTagRemoved={handleFineTuningTagRemoved}
           isTaggedChildren={
             <>
-              <XCircleSolidIcon /> Unhelpful
+              <XCircleSolidIcon />
             </>
           }
           isUntaggedChildren={
             <>
-              <XCircleOutlineIcon /> Unhelpful
+              <XCircleOutlineIcon />
             </>
           }
         />
