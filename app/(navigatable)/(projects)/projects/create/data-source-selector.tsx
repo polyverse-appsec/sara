@@ -66,7 +66,7 @@ const DataSourceSelector = ({
   }
 
   if (Object.entries(dataSourceCheckboxStates).length === 0) {
-    return 'No repos available to use as data sources for a project'
+    return 'No Repositories Found'
   }
 
   return (
