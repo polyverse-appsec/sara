@@ -65,15 +65,16 @@ const GoalIndex = ({ params: { id } }: { params: { id: string } }) => {
     })()
   }, [id, setProjectIdForConfiguration])
 
+  useEffect(() => {
+    // Only attempt to set the active goal ID if the current goal ID differs from the active goal in the workspace details,
+    // or if there are no workspace details loaded yet.
+    if ((activeWorkspaceDetails && id !== activeWorkspaceDetails.goalId) || !activeWorkspaceDetails) {
+      setActiveGoalId(id);
+    }
+  }, [id, activeWorkspaceDetails, setActiveGoalId]);
+  
   if (!saraSession) {
     return <SaraLoading />
-  }
-
-  if (
-    (activeWorkspaceDetails && id !== activeWorkspaceDetails.goalId) ||
-    !activeWorkspaceDetails
-  ) {
-    setActiveGoalId(id)
   }
 
   if (!goal) {
