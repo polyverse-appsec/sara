@@ -134,8 +134,7 @@ const renderResponseReceivedAt = (responseReceivedAt?: Date) => {
 
   return (
     <Flex gap="1">
-      <Text size="2">{'Sara answered '}</Text>
-      <Text size="2">{timeStr}</Text>
+      <Text size="2">{'Sara answered '} {timeStr}</Text>
     </Flex>
   )
 }
@@ -401,7 +400,7 @@ const FineTuningTagsManager = ({
       {tagsToRender.includes('FAVORITE') && (
         <FineTuningButton
           tag="FAVORITE"
-          isInitiallyTagged={fineTuningTags.includes('FAVORITE')}
+          isInitiallyTagged={fineTuningTags?.includes('FAVORITE') === true}
           onFineTuningTagAdded={handleFineTuningTagAdded}
           onFineTuningTagRemoved={handleFineTuningTagRemoved}
           isTaggedChildren={
@@ -419,7 +418,7 @@ const FineTuningTagsManager = ({
       {tagsToRender.includes('INSIGHTFUL') && (
         <FineTuningButton
           tag="INSIGHTFUL"
-          isInitiallyTagged={fineTuningTags.includes('INSIGHTFUL')}
+          isInitiallyTagged={fineTuningTags?.includes('INSIGHTFUL') === true}
           onFineTuningTagAdded={handleFineTuningTagAdded}
           onFineTuningTagRemoved={handleFineTuningTagRemoved}
           isTaggedChildren={
@@ -437,7 +436,7 @@ const FineTuningTagsManager = ({
       {tagsToRender.includes('PRODUCTIVE') && (
         <FineTuningButton
           tag="PRODUCTIVE"
-          isInitiallyTagged={fineTuningTags.includes('PRODUCTIVE')}
+          isInitiallyTagged={fineTuningTags?.includes('PRODUCTIVE') === true}
           onFineTuningTagAdded={handleFineTuningTagAdded}
           onFineTuningTagRemoved={handleFineTuningTagRemoved}
           isTaggedChildren={
@@ -455,7 +454,7 @@ const FineTuningTagsManager = ({
       {tagsToRender.includes('UNHELPFUL') && (
         <FineTuningButton
           tag="UNHELPFUL"
-          isInitiallyTagged={fineTuningTags.includes('UNHELPFUL')}
+          isInitiallyTagged={fineTuningTags?.includes('UNHELPFUL') === true}
           onFineTuningTagAdded={handleFineTuningTagAdded}
           onFineTuningTagRemoved={handleFineTuningTagRemoved}
           isTaggedChildren={

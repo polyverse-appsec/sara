@@ -95,25 +95,25 @@ export const POST = auth(async (req: NextAuthRequest) => {
 
     const fineTuningTaggingPromises: Promise<void>[] = []
 
-    if (fineTuningTags.includes('FAVORITE')) {
+    if (fineTuningTags?.includes('FAVORITE')) {
         fineTuningTaggingPromises.push(addChatQueryIdToGlobalFineTuningSet('FAVORITE', chatQuery.id))
     } else {
         fineTuningTaggingPromises.push(removeChatQueryIdFromGlobalFineTuningSet('FAVORITE', chatQuery.id))
     }
 
-    if (fineTuningTags.includes('INSIGHTFUL')) {
+    if (fineTuningTags?.includes('INSIGHTFUL')) {
         fineTuningTaggingPromises.push(addChatQueryIdToGlobalFineTuningSet('INSIGHTFUL', chatQuery.id))
     } else {
         fineTuningTaggingPromises.push(removeChatQueryIdFromGlobalFineTuningSet('INSIGHTFUL', chatQuery.id))
     }
 
-    if (fineTuningTags.includes('PRODUCTIVE')) {
+    if (fineTuningTags?.includes('PRODUCTIVE')) {
         fineTuningTaggingPromises.push(addChatQueryIdToGlobalFineTuningSet('PRODUCTIVE', chatQuery.id))
     } else {
         fineTuningTaggingPromises.push(removeChatQueryIdFromGlobalFineTuningSet('PRODUCTIVE', chatQuery.id))
     }
 
-    if (fineTuningTags.includes('UNHELPFUL')) {
+    if (fineTuningTags?.includes('UNHELPFUL')) {
         fineTuningTaggingPromises.push(addChatQueryIdToGlobalFineTuningSet('UNHELPFUL', chatQuery.id))
     } else {
         fineTuningTaggingPromises.push(removeChatQueryIdFromGlobalFineTuningSet('UNHELPFUL', chatQuery.id))
