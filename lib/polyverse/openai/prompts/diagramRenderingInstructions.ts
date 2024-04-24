@@ -8,11 +8,11 @@ export const FlowDiagramRenderingWithMermaid = (): string => {
   
   \`\`\`mermaid
   graph TD;
-  style Start fill:#228B22, stroke:#000000, stroke-width:2px;
-  style ExampleProcess fill:#228B22, stroke:#000000, stroke-width:4px;
-  style ExampleErrorPath fill:#B22222, stroke:#000000, stroke-width:2px;
-  style ExampleProcess fill:#228B22, stroke:#000000, stroke-width:4px;
-  style ExampleErrorPath fill:#B22222, stroke:#000000, stroke-width:2px;
+  style Start fill:#228B22, stroke:#000000, strokeWidth:2px;
+  style ExampleProcess fill:#228B22, stroke:#000000, strokeWidth:4px;
+  style ExampleErrorPath fill:#B22222, stroke:#000000, strokeWidth:2px;
+  style ExampleProcess fill:#228B22, stroke:#000000, strokeWidth:4px;
+  style ExampleErrorPath fill:#B22222, stroke:#000000, strokeWidth:2px;
   
       Start-->ExampleProcess;
       Start-->ExampleErrorPath;
@@ -65,10 +65,10 @@ export const ClassDiagramRenderingWithMermaid = (): string => {
   
   \`\`\`mermaid
   graph TD;
-      style MainComponent fill:#228B22, stroke:#000000, stroke-width:2px;
-      style Database fill:#00008B, stroke:#FFFFFF, stroke-width:2px;
-      style ExternalService fill:#B8860B, stroke:#000000, stroke-width:2px;
-      style ErrorHandler fill:#B22222, stroke:#000000, stroke-width:2px;
+      style MainComponent fill:#228B22, stroke:#000000, strokeWidth:2px;
+      style Database fill:#00008B, stroke:#FFFFFF, strokeWidth:2px;
+      style ExternalService fill:#B8860B, stroke:#000000, strokeWidth:2px;
+      style ErrorHandler fill:#B22222, stroke:#000000, strokeWidth:2px;
   
       MainComponent-->Database;
       MainComponent-->ExternalService;

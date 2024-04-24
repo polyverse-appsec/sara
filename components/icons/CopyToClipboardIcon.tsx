@@ -17,16 +17,16 @@ const CopyToClipboardIcon = ({
       <path
         d="M9 12l2 2 4-4"
         stroke="#4CAF50"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <circle
         cx="12"
         cy="12"
         r="10"
         stroke="#4CAF50"
-        stroke-width="2"
+        strokeWidth="2"
         fill="none"
       />
     </svg>
@@ -36,9 +36,9 @@ const CopyToClipboardIcon = ({
       viewBox="0 0 24 24"
       fill="none"
       stroke={color}
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
       className="cursor-pointer w-4 h-4 ml-2"
     >
       <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>

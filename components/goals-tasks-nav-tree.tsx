@@ -89,13 +89,13 @@ const renderGoalIcon = () => CheckedSquareIcon()
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
     viewBox="0 0 24 24"
-    stroke-width="1.5"
+    strokeWidth="1.5"
     stroke="currentColor"
     className="w-6 h-6"
   >
     <path
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeLinecap="round"
+      strokeLinejoin="round"
       d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"
     />
   </svg>
@@ -106,18 +106,18 @@ const renderTaskIcon = () => (
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
     viewBox="0 0 24 24"
-    stroke-width="1.5"
+    strokeWidth="1.5"
     stroke="currentColor"
     className="w-6 h-6"
   >
     <path
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeLinecap="round"
+      strokeLinejoin="round"
       d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z"
     />
     <path
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeLinecap="round"
+      strokeLinejoin="round"
       d="M6 6h.008v.008H6V6Z"
     />
   </svg>
@@ -131,9 +131,9 @@ const CheckedSquareIcon = () => (
     height="24"
     fill="none"
     stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
   >
     <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
     <path d="M9 11l3 3 5-5"></path>
@@ -148,9 +148,9 @@ const UncheckedCircleIcon = () => (
     height="24"
     fill="none"
     stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
   >
     <circle cx="12" cy="12" r="9"></circle>
   </svg>
@@ -164,9 +164,9 @@ const CheckedCircleIcon = () => (
     height="24"
     fill="none"
     stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
   >
     <circle cx="12" cy="12" r="9"></circle>
     <path d="M9 12l2 2 4-4"></path>
@@ -203,7 +203,7 @@ const ToDoTaskIcon = () => (
     fill="none"
     viewBox="0 0 24 24"
     stroke="currentColor"
-    stroke-width="2"
+    strokeWidth="2"
   >
     <path d="M9 10h.01M9 6h.01M9 14h.01M5 18h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
   </svg>
@@ -217,7 +217,7 @@ const InProgressTaskIcon = () => (
     fill="none"
     viewBox="0 0 24 24"
     stroke="currentColor"
-    stroke-width="2"
+    strokeWidth="2"
   >
     <path d="M12 4v16m8-8H4" />
   </svg>
@@ -231,9 +231,9 @@ const CompletedTaskIcon = () => (
     fill="none"
     viewBox="0 0 24 24"
     stroke="currentColor"
-    stroke-width="2"
+    strokeWidth="2"
   >
-    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
   </svg>
 )
 
