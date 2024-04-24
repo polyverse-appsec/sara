@@ -426,7 +426,7 @@ const ProjectCreate = () => {
                 />
               </svg>
             )}
-            {saveButtonEnabled ? 'Create Project' : 'Building Project'}
+            {saveButtonEnabled ? 'Build Project' : 'Building Project'}
           </Button>
           <button
             onClick={toggleDropdown}
