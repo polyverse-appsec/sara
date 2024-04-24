@@ -10,13 +10,13 @@
 
 ### Enhancements
 
-- Users can improve responses by providing feedback to responses
+- Users can improve Sara analysis by providing feedback to Sara responses (e.g. Favorite, Insightful, Productive, or Unhelpful)
 
 ### Bug Fixes
 
 - N/A
 
-## Version 1.0.2: April 22th, 2024
+## Version 1.0.2: April 22nd, 2024
 
 ### New Features
 
@@ -26,13 +26,13 @@
 
 - Users can Edit existing Project details - including Description and Guidelines to improve Sara's understanding
 - Users can view the last GitHub.com source pull time and link to the specific Commit that was analyzed via the Project details page
-- Users can view the history of Sara's product improvememnts by hovering over the Sara logo in the top left corner
+- Users can view the history of Sara's product improvements by hovering over the Sara logo in the top left corner
 
 ### Bug Fixes
 
 - N/A
 
-## Version 1.0.1: April 21th, 2024
+## Version 1.0.1: April 21st, 2024
 
 ### New Features
 
@@ -346,7 +346,7 @@
 
 - Protect against referencing out-of-bounds when getting the sync status
 
-## Version 0.20.2: April 3nd, 2024
+## Version 0.20.2: April 3rd, 2024
 
 ### New Features
 
