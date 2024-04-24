@@ -108,13 +108,13 @@ const SaraChatList = ({
                       chatQuery.id,
                     )
 
-                    const patchReqBody = {
+                    const postReqBody = {
                       fineTuningTags,
                     }
 
                     await createResourceNoResponseBody(
                       fineTuningUrl,
-                      patchReqBody,
+                      postReqBody,
                       'Failed to set the fine tuning tags',
                     )
                   }}
@@ -157,13 +157,13 @@ const SaraChatList = ({
                       chatQuery.id,
                     )
 
-                    const patchReqBody = {
+                    const postReqBody = {
                       fineTuningTags,
                     }
 
                     await createResourceNoResponseBody(
                       fineTuningUrl,
-                      patchReqBody,
+                      postReqBody,
                       'Failed to set the fine tuning tags',
                     )
                   }}
