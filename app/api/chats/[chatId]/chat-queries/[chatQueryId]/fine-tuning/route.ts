@@ -14,8 +14,8 @@ import { NextAuthRequest } from 'next-auth/lib'
 import { auth } from '../../../../../../../auth'
 import authz from './../../../../../../../app/api/authz'
 import getProject from './../../../../../../../lib/polyverse/db/get-project'
-import addChatQueryIdToGlobalFineTuningSet from 'lib/polyverse/db/add-chat-query-id-to-global-fine-tuning-set'
-import removeChatQueryIdFromGlobalFineTuningSet from 'lib/polyverse/db/remove-chat-query-id-from-global-fine-tuning-set'
+import addFineTuningTagToChatQuery from 'lib/polyverse/db/add-fine-tuning-tag-to-chat-query'
+import removeFineTuningTagToChatQuery from 'lib/polyverse/db/remove-fine-tuning-tag-from-chat-query'
 
 export interface FineTuningChatQueryRequestBody {
   fineTuningTags: FineTuningTags[]
@@ -96,27 +96,27 @@ export const POST = auth(async (req: NextAuthRequest) => {
     const fineTuningTaggingPromises: Promise<void>[] = []
 
     if (fineTuningTags?.includes('FAVORITE')) {
-        fineTuningTaggingPromises.push(addChatQueryIdToGlobalFineTuningSet('FAVORITE', chatQuery.id))
+        fineTuningTaggingPromises.push(addFineTuningTagToChatQuery('FAVORITE', chatQuery.id, user.email))
     } else {
-        fineTuningTaggingPromises.push(removeChatQueryIdFromGlobalFineTuningSet('FAVORITE', chatQuery.id))
+        fineTuningTaggingPromises.push(removeFineTuningTagToChatQuery('FAVORITE', chatQuery.id, user.email))
     }
 
     if (fineTuningTags?.includes('INSIGHTFUL')) {
-        fineTuningTaggingPromises.push(addChatQueryIdToGlobalFineTuningSet('INSIGHTFUL', chatQuery.id))
+        fineTuningTaggingPromises.push(addFineTuningTagToChatQuery('INSIGHTFUL', chatQuery.id, user.email))
     } else {
-        fineTuningTaggingPromises.push(removeChatQueryIdFromGlobalFineTuningSet('INSIGHTFUL', chatQuery.id))
+      fineTuningTaggingPromises.push(removeFineTuningTagToChatQuery('INSIGHTFUL', chatQuery.id, user.email))
     }
 
     if (fineTuningTags?.includes('PRODUCTIVE')) {
-        fineTuningTaggingPromises.push(addChatQueryIdToGlobalFineTuningSet('PRODUCTIVE', chatQuery.id))
+        fineTuningTaggingPromises.push(addFineTuningTagToChatQuery('PRODUCTIVE', chatQuery.id, user.email))
     } else {
-        fineTuningTaggingPromises.push(removeChatQueryIdFromGlobalFineTuningSet('PRODUCTIVE', chatQuery.id))
+      fineTuningTaggingPromises.push(removeFineTuningTagToChatQuery('PRODUCTIVE', chatQuery.id, user.email))
     }
 
     if (fineTuningTags?.includes('UNHELPFUL')) {
-        fineTuningTaggingPromises.push(addChatQueryIdToGlobalFineTuningSet('UNHELPFUL', chatQuery.id))
+        fineTuningTaggingPromises.push(addFineTuningTagToChatQuery('UNHELPFUL', chatQuery.id, user.email))
     } else {
-        fineTuningTaggingPromises.push(removeChatQueryIdFromGlobalFineTuningSet('UNHELPFUL', chatQuery.id))
+      fineTuningTaggingPromises.push(removeFineTuningTagToChatQuery('UNHELPFUL', chatQuery.id, user.email))
     }
 
     await Promise.all(fineTuningTaggingPromises)

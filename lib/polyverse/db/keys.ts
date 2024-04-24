@@ -61,6 +61,14 @@ export const relatedChildTasksToParentGoalIdsSetKey = (parentGoalId: string) =>
 export const relatedChildTasksToParentTaskIdsSetKey = (parentTaskId: string) =>
   `parent-task:${parentTaskId}:child-task:ids`
 
+export const relatedFavoriteChatQueriesToUserEmailsSetKey = (email: string) => `user:${email}:fine-tuning-tag:favorite:chat-query:ids`
+
+export const relatedInsightfulChatQueriesToUserEmailsSetKey = (email: string) => `user:${email}:fine-tuning-tag:insightful:chat-query:ids`
+
+export const relatedProductiveChatQueriesToUserEmailsSetKey = (email: string) => `user:${email}:fine-tuning-tag:productive:chat-query:ids`
+
+export const relatedUnhelpfulChatQueriesToUserEmailsSetKey = (email: string) => `user:${email}:fine-tuning-tag:unhelpful:chat-query:ids`
+
 ///////////////////////////
 // Instance Keys
 ///////////////////////////
