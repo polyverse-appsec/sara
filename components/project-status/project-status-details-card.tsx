@@ -11,8 +11,9 @@ import {
 import { type ProjectHealth } from '../../lib/data-model-types'
 
 const renderDetailedHealthMessage = (
-  readableHealthValue: RenderableProjectHealthStatusValue,
+  projectHealth : ProjectHealth,
 ) => {
+  const readableHealthValue: RenderableProjectHealthStatusValue = projectHealth.readableValue
   switch (readableHealthValue) {
     case 'HEALTHY': {
       return (
@@ -37,6 +38,23 @@ const renderDetailedHealthMessage = (
       )
     }
     case 'UNHEALTHY': {
+      if (projectHealth.actionableRecourse) {
+        return (
+          <div className="max-w-64">
+            <p>
+                <Text size="2">
+                Sara is being pulled into a Black Hole! {projectHealth.message}
+                </Text>
+            </p>
+            <br />
+            <p>
+                <Text size="2">
+                Please help Sara escape! Can you {projectHealth.actionableRecourse}
+                </Text>
+            </p>
+          </div>
+        )
+      }
       return (
         <div className="max-w-64">
           <Text size="2">
@@ -47,7 +65,7 @@ const renderDetailedHealthMessage = (
         </div>
       )
     }
-    case 'UNKNOWN': {
+/*    case 'UNKNOWN': {
       return (
         <div className="max-w-64">
           <Text size="2">
@@ -57,6 +75,7 @@ const renderDetailedHealthMessage = (
         </div>
       )
     }
+*/
     default: {
       // Return the unknown details
       return (
@@ -331,7 +350,7 @@ const ProjectStatusDetailsCard = ({
         </Flex>
         {renderHumanReadableConfigurationState(health.configurationState)}
         {renderLastRefreshedAt(lastRefreshedAt)}
-        <Box>{renderDetailedHealthMessage(health.readableValue)}</Box>
+        <Box>{renderDetailedHealthMessage(health)}</Box>
       </Flex>
     </Card>
   )

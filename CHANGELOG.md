@@ -10,7 +10,8 @@
 
 ### Enhancements
 
-- N/A
+- Provide guidance in Project Health status if GitHub.com Repository is too large
+- Improve UI in Repository selection for Project creation
 
 ### Bug Fixes
 

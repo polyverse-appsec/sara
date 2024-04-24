@@ -53,6 +53,28 @@ const createProjectHealth = (
   return projectHealth
 }
 
+interface CriticalError {
+  message: string
+  actionableRecourse: string
+}
+
+const hasCriticalError = (projectStatus: BoostProjectStatusState): CriticalError | undefined => {
+  if (projectStatus.details?.startsWith('Some resource errors encountered')) {
+    const regex = /Filtered File List is (?:too )?large: (\d+) files with one of these Resources: (https?:\/\/[\S]+)/;
+    const match = projectStatus.details.match(regex);
+    const resource = match ? match[2].replace(`\\n`, '') : undefined;
+    const error = match? match[1]:undefined;
+
+    if (match) {
+        return {
+            message: `Project Data Resource ${resource} is too large: ${error}`,
+            actionableRecourse: `modify ${match[1]} to reduce the number of files or resources - below 500`,
+        }
+    }
+  }
+  return undefined
+}
+
 export const GET = auth(async (req: NextAuthRequest) => {
   const { auth } = req
 
@@ -160,7 +182,7 @@ export const GET = auth(async (req: NextAuthRequest) => {
         'UNHEALTHY',
         'UNKNOWN',
         'Data references not available',
-        'Try to get data references again',
+        null,
         boostProjectStatus,
       )
 
@@ -279,7 +301,24 @@ export const GET = auth(async (req: NextAuthRequest) => {
     try {
       // Rather than check all of the file states just check that the project is
       // fully synchronized
-      if (boostProjectStatus?.status !== BoostProjectStatus.Synchronized) {
+      if (!boostProjectStatus?.synchronized) {
+        const criticalError = boostProjectStatus?hasCriticalError(boostProjectStatus):undefined
+        if (criticalError) {
+          const projectHealth = createProjectHealth(
+              project.id,
+              'UNHEALTHY',
+              'UNKNOWN',
+              criticalError.message,
+              criticalError.actionableRecourse,
+              boostProjectStatus,
+          )
+  
+          return new Response(JSON.stringify(projectHealth), {
+              status: StatusCodes.OK,
+          })
+        }
+
+
         const projectHealth = createProjectHealth(
           project.id,
           'PARTIALLY_HEALTHY',
