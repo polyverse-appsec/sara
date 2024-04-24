@@ -169,7 +169,7 @@ const PrimaryDataSourceSelector = ({
 
       setShouldShowLoadingSpinner(false)
     })()
-  }, [saraSession])
+  }, [saraSession, githubReposForOrgs])
 
   if (!saraSession) {
     return null
@@ -375,43 +375,51 @@ const PrimaryDataSourceSelector = ({
                   align="start"
                   className="min-w-64 max-h-60"
                 >
-                  {githubReposForOrgs[selectedGithubOrg?.login] ? (
-                    githubReposForOrgs[selectedGithubOrg.login].map(
-                      (repo: GitHubRepo) => (
-                        <DropdownMenuItem
-                          key={repo.name}
-                          onSelect={async (event) => {
-                            setSelectedGithubRepo(repo)
-                            setControlledProjectDataSources([repo])
-                          }}
-                          disabled={repo.private && !userIsPremium}
-                        >
-                          <span className="mx-2 truncate whitespace-nowrap overflow-hidden">
-                            {repo.name}
-                          </span>
-                          {repo.private && !userIsPremium && (
-                            <div className="p-1 rounded text-red-500 font-semibold text-xs bg-red-100">
-                              Premium Requred
-                            </div>
-                          )}
-                          {repo.private && userIsPremium && (
-                            <div
-                              title="Premium Access"
-                              className="px-1 rounded text-green-500 font-semibold text-xs bg-green-100"
+                  {selectedGithubOrg?.login in githubReposForOrgs ? (
+                    githubReposForOrgs[selectedGithubOrg?.login] ? (
+                        githubReposForOrgs[selectedGithubOrg.login].map(
+                        (repo: GitHubRepo) => (
+                            <DropdownMenuItem
+                            key={repo.name}
+                            onSelect={async (event) => {
+                                setSelectedGithubRepo(repo)
+                                setControlledProjectDataSources([repo])
+                            }}
+                            disabled={repo.private && !userIsPremium}
                             >
-                              P
-                            </div>
-                          )}
+                            <span className="mx-2 truncate whitespace-nowrap overflow-hidden">
+                                {repo.name}
+                            </span>
+                            {repo.private && !userIsPremium && (
+                                <div className="p-1 rounded text-red-500 font-semibold text-xs bg-red-100">
+                                Premium Requred
+                                </div>
+                            )}
+                            {repo.private && userIsPremium && (
+                                <div
+                                title="Premium Access"
+                                className="px-1 rounded text-green-500 font-semibold text-xs bg-green-100"
+                                >
+                                P
+                                </div>
+                            )}
+                            </DropdownMenuItem>
+                        ),
+                        )
+                    ) : (
+                        <DropdownMenuItem>
+                        <span className="ml-2 truncate whitespace-nowrap overflow-hidden">
+                            No Repositories Available
+                        </span>
                         </DropdownMenuItem>
-                      ),
-                    )
-                  ) : (
-                    <DropdownMenuItem>
-                      <span className="ml-2 truncate whitespace-nowrap overflow-hidden">
-                        No repos available for this org
-                      </span>
-                    </DropdownMenuItem>
-                  )}
+                    )) : (
+                        <DropdownMenuItem>
+                        <span className="ml-2 truncate whitespace-nowrap overflow-hidden">
+                            <LoadingSpinner />
+                        </span>
+                        </DropdownMenuItem>
+                    
+                    )}
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
