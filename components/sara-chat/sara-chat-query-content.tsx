@@ -86,8 +86,7 @@ const renderQuerySubmittedAt = (querySubmittedAt?: Date) => {
 
   return (
     <Flex gap="1">
-      <Text size="2">{'You asked '}</Text>
-      <Text size="2">{timeStr}</Text>
+      <Text size="2">{'You asked '} {timeStr}</Text>
     </Flex>
   )
 }
@@ -97,8 +96,7 @@ const renderLastCheckedAt = (lastCheckedTime?: Date) => {
 
   return (
     <Flex gap="1">
-      <Text size="2">{'Sara thinking for '}</Text>
-      <Text size="2">{timeStr}</Text>
+      <Text size="2">{'Sara thinking for '} {timeStr}</Text>
     </Flex>
   )
 }
@@ -108,10 +106,7 @@ const cancelledAt = (cancelledAt?: Date) => {
 
   return (
     <Flex gap="1">
-      <Text size="2" className="text-yellow-500">
-        {'Sara stopped '}
-      </Text>
-      <Text size="2">{timeStr}</Text>
+      <Text size="2" className="text-yellow-500">{'Sara stopped '} {timeStr}</Text>
     </Flex>
   )
 }
@@ -121,10 +116,7 @@ const errorOccurredAt = (errorAt?: Date) => {
 
   return (
     <Flex gap="1">
-      <Text size="2" className="text-red-500">
-        {'Sara had a problem '}
-      </Text>
-      <Text size="2">{timeStr}</Text>
+      <Text size="2" className="text-red-500">{'Sara had a problem '} {timeStr}</Text>
     </Flex>
   )
 }
