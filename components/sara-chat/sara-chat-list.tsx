@@ -35,6 +35,22 @@ const SaraChatList = ({
     return null
   }
 
+  const fineTuningTagsModifiedClosure =
+    (chatId: string, chatQueryId: string) =>
+    async (fineTuningTags: FineTuningTags[]) => {
+      const fineTuningUrl = buildFineTuningUrl(chatId, chatQueryId)
+
+      const postReqBody = {
+        fineTuningTags,
+      }
+
+      await createResourceNoResponseBody(
+        fineTuningUrl,
+        postReqBody,
+        'Failed to set the fine tuning tags',
+      )
+    }
+
   return (
     <div className="relative mx-8 px-4">
       {chatQueries.map((chatQuery, index) => {
@@ -53,24 +69,10 @@ const SaraChatList = ({
               fineTuningTags={
                 chatQuery.fineTuningTags ? chatQuery.fineTuningTags : []
               }
-              onFineTuningTagsModified={async (
-                fineTuningTags: FineTuningTags[],
-              ) => {
-                const fineTuningUrl = buildFineTuningUrl(
-                  chatQuery.chatId,
-                  chatQuery.id,
-                )
-
-                const postReqBody = {
-                  fineTuningTags,
-                }
-
-                await createResourceNoResponseBody(
-                  fineTuningUrl,
-                  postReqBody,
-                  'Failed to set the fine tuning tags',
-                )
-              }}
+              onFineTuningTagsModified={fineTuningTagsModifiedClosure(
+                chatQuery.chatId,
+                chatQuery.id,
+              )}
             />
             <br></br>
             {chatQuery.response ? (
@@ -100,24 +102,10 @@ const SaraChatList = ({
                   fineTuningTags={
                     chatQuery.fineTuningTags ? chatQuery.fineTuningTags : []
                   }
-                  onFineTuningTagsModified={async (
-                    fineTuningTags: FineTuningTags[],
-                  ) => {
-                    const fineTuningUrl = buildFineTuningUrl(
-                      chatQuery.chatId,
-                      chatQuery.id,
-                    )
-
-                    const postReqBody = {
-                      fineTuningTags,
-                    }
-
-                    await createResourceNoResponseBody(
-                      fineTuningUrl,
-                      postReqBody,
-                      'Failed to set the fine tuning tags',
-                    )
-                  }}
+                  onFineTuningTagsModified={fineTuningTagsModifiedClosure(
+                    chatQuery.chatId,
+                    chatQuery.id,
+                  )}
                 />
                 {index == chatQueries.length - 1 && (
                   <div className="w-full flex items-center justify-center">
@@ -149,24 +137,10 @@ const SaraChatList = ({
                   fineTuningTags={
                     chatQuery.fineTuningTags ? chatQuery.fineTuningTags : []
                   }
-                  onFineTuningTagsModified={async (
-                    fineTuningTags: FineTuningTags[],
-                  ) => {
-                    const fineTuningUrl = buildFineTuningUrl(
-                      chatQuery.chatId,
-                      chatQuery.id,
-                    )
-
-                    const postReqBody = {
-                      fineTuningTags,
-                    }
-
-                    await createResourceNoResponseBody(
-                      fineTuningUrl,
-                      postReqBody,
-                      'Failed to set the fine tuning tags',
-                    )
-                  }}
+                  onFineTuningTagsModified={fineTuningTagsModifiedClosure(
+                    chatQuery.chatId,
+                    chatQuery.id,
+                  )}
                 />
               </>
             )}
